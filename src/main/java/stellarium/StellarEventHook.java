@@ -5,10 +5,15 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 public class StellarEventHook {
+	
+	public boolean disabled = false;
 
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e)
 	{
+		if(disabled)
+			return;
+		
 		if(e.world.provider.dimensionId == 0 || e.world.provider.dimensionId == -1)
 		{
 			e.world.provider.setSkyRenderer(new DrawSky());

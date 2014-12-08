@@ -13,23 +13,13 @@ import cpw.mods.fml.relauncher.Side;
 
 public class StellarTickHandler {
 	
-	Side side;
-	
-	public StellarTickHandler(Side pside)
-	{
-		side = pside;
-	}
-
-	@SubscribeEvent
-	public void tickStart(TickEvent.WorldTickEvent e) {
-		if(e.phase == Phase.START && side == Side.SERVER){
-			World world = e.world;
-			StellarManager.Update(world.getWorldTime(), world.provider.isSurfaceWorld());
-		}
-	}
+	public boolean disabled = false;
 	
 	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
+		if(disabled)
+			return;
+		
 		if(e.phase == Phase.START){
 			World world = Minecraft.getMinecraft().theWorld;
 			

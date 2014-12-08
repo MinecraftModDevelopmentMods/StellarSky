@@ -10,10 +10,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.common.*;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import stellarium.initials.CConstructManager;
 import stellarium.stellars.StellarManager;
-import stellarium.stellars.orbit.*;
-import stellarium.stellars.cbody.*;
 import stellarium.world.StellarWorldProvider;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -21,28 +18,29 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLModDisabledEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.*;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid=Stellarium.modid, name=Stellarium.name, version=Stellarium.version, dependencies="required-after:sciapi")
-public class Stellarium {
+@Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version, canBeDeactivated = true, dependencies="required-after:sciapi")
+public class StellarSky {
 	
-		public static final String modid = "stellarium";
-		public static final String name = "Stellarium";
-		public static final String version = "0.1.5";
+		public static final String modid = "stellarsky";
+		public static final String name = "Stellar Sky";
+		public static final String version = "0.1.6";
 
         // The instance of Stellarium
-        @Instance(Stellarium.modid)
-        public static Stellarium instance;
+        @Instance(StellarSky.modid)
+        public static StellarSky instance;
         
 //        public static ITickHandler tickhandler=new StellarTickHandler();
         public StellarManager manager;
         
-        @SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.ServerProxy")
-        public static BaseProxy proxy;
-        
+        public StellarEventHook eventHook = new StellarEventHook();
+        public StellarTickHandler tickHandler = new StellarTickHandler();
+                
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) throws IOException{
         	//Initialize Objects
@@ -70,25 +68,30 @@ public class Stellarium {
             
             manager = new StellarManager();
 			StellarManager.InitializeStars();
-			proxy.InitSided(manager);
 			
-			MinecraftForge.EVENT_BUS.register(new StellarEventHook());
+			MinecraftForge.EVENT_BUS.register(eventHook);
+			FMLCommonHandler.instance().bus().register(tickHandler);
         }
         
         @EventHandler
         public void load(FMLInitializationEvent event) {
 
 			StellarManager.Initialize();
-        	
-        	
+        
         }
         
         @EventHandler
         public void postInit(FMLPostInitializationEvent event) {
         	
-        	DimensionManager.unregisterDimension(0);
+        	/*DimensionManager.unregisterDimension(0);
         	DimensionManager.unregisterProviderType(0);
         	DimensionManager.registerProviderType(0, StellarWorldProvider.class, true);
-        	DimensionManager.registerDimension(0, 0);
+        	DimensionManager.registerDimension(0, 0);*/
+        }
+        
+        @EventHandler
+        public void onDisable(FMLModDisabledEvent event) {
+        	eventHook.disabled = true;
+        	tickHandler.disabled = true;
         }
 }

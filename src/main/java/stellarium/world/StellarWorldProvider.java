@@ -10,6 +10,7 @@ import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 import net.minecraft.world.WorldProviderSurface;
 
+//Not Used.
 public class StellarWorldProvider extends WorldProviderSurface {
 		
     public float calculateCelestialAngle(long par1, float par3)
