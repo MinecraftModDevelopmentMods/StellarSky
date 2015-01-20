@@ -6,24 +6,13 @@ import net.minecraftforge.event.world.WorldEvent;
 
 public class StellarEventHook {
 	
-	public boolean disabled = false;
-
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e)
 	{
-		if(disabled)
-			return;
-		
 		if(e.world.provider.dimensionId == 0 || e.world.provider.dimensionId == -1)
 		{
 			e.world.provider.setSkyRenderer(new DrawSky());
 		}
 	}
-	
-	/*@SubscribeEvent
-	public void onRenderPlayer(RenderPlayerEvent.Pre event)
-	{
-		System.out.print("C");
-	}*/
 	
 }

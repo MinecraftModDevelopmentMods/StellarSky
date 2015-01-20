@@ -24,74 +24,43 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.*;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version, canBeDeactivated = true, dependencies="required-after:sciapi")
+@Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version, dependencies="required-after:sciapi")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";
 		public static final String name = "Stellar Sky";
-		public static final String version = "0.1.6";
+		public static final String version = "0.1.7";
 
         // The instance of Stellarium
         @Instance(StellarSky.modid)
         public static StellarSky instance;
         
-//        public static ITickHandler tickhandler=new StellarTickHandler();
-        public StellarManager manager;
-        
+        @SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
+        public static CommonProxy proxy;
+                
         public StellarEventHook eventHook = new StellarEventHook();
         public StellarTickHandler tickHandler = new StellarTickHandler();
+        
+        public static StellarManager getManager() { return proxy.manager; }
                 
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) throws IOException{
-        	//Initialize Objects
-            Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-            
-            config.load();
-            Property Mag_Limit=config.get(Configuration.CATEGORY_GENERAL, "Mag_Limit", 5.0);
-            Mag_Limit.comment="Limit of magnitude can be seen on naked eye.\n" +
-            		"If you want to increase FPS, you can set this property a bit little (e.g. 0.3)\n" +
-            		"and FPS will be exponentially improved";
-            StellarManager.Mag_Limit=(float)Mag_Limit.getDouble(5.0);
-
-            config.load();
-            Property turb=config.get(Configuration.CATEGORY_GENERAL, "Twinkling(Turbulance)", 0.3);
-            turb.comment="Degree of the twinkling effect of star.\n"
-            		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect";
-            StellarManager.Turb=(float)turb.getDouble(0.3);
-            
-            Property Moon_Frac=config.get(Configuration.CATEGORY_GENERAL, "Moon_Fragments_Number", 16);
-            Moon_Frac.comment="Moon is drawn with fragments\n" +
-            		"Less fragments will increase FPS, but the moon become more defective\n";
-            StellarManager.ImgFrac=Moon_Frac.getInt(16);
-            
-            config.save();
-            
-            manager = new StellarManager();
-			StellarManager.InitializeStars();
-			
-			MinecraftForge.EVENT_BUS.register(eventHook);
-			FMLCommonHandler.instance().bus().register(tickHandler);
+        	
+        	proxy.preInit(event);
+        	
+    		MinecraftForge.EVENT_BUS.register(eventHook);
+    		FMLCommonHandler.instance().bus().register(tickHandler);
+    		
         }
         
         @EventHandler
         public void load(FMLInitializationEvent event) {
-
-			StellarManager.Initialize();
-        
+        	proxy.load(event);
         }
         
         @EventHandler
         public void postInit(FMLPostInitializationEvent event) {
-        	
-        	/*DimensionManager.unregisterDimension(0);
-        	DimensionManager.unregisterProviderType(0);
-        	DimensionManager.registerProviderType(0, StellarWorldProvider.class, true);
-        	DimensionManager.registerDimension(0, 0);*/
+        	proxy.postInit(event);
         }
         
-        @EventHandler
-        public void onDisable(FMLModDisabledEvent event) {
-        	eventHook.disabled = true;
-        	tickHandler.disabled = true;
-        }
 }

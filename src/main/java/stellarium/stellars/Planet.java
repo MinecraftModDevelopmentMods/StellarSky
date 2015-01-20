@@ -6,6 +6,7 @@ import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.util.BOp;
 import sciapi.api.value.util.VOp;
+import stellarium.StellarSky;
 import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
@@ -50,9 +51,8 @@ public class Planet extends SolarObj{
 	
 	@Override
 	//Calculate Planet's Ecliptic EVectortor from Sun
-	public IValRef<EVector> GetEcRPos(double time) {
-		double day=time/24000.0;
-		double cen=day/36525.0;
+	public IValRef<EVector> GetEcRPos(double yr) {
+		double cen=yr/100.0;
 		double a=a0+ad*cen,
 				e=e0+ed*cen,
 				I=I0+Id*cen,
@@ -85,7 +85,7 @@ public class Planet extends SolarObj{
 	public void UpdateMagnitude(){
 		double dist=Spmath.getD(VecMath.size(EcRPosE));
 		double distS=Spmath.getD(VecMath.size(EcRPos));
-		double distE=Spmath.getD(VecMath.size(StellarManager.Earth.EcRPos));
+		double distE=Spmath.getD(VecMath.size(StellarSky.getManager().Earth.EcRPos));
 		double LvsSun=this.Radius.asDouble()*this.Radius.asDouble()*this.GetPhase()*distE*distE*Albedo*1.4/(dist*dist*distS*distS);
 		this.Mag=-26.74-2.5*Math.log10(LvsSun);
 	}
@@ -95,8 +95,8 @@ public class Planet extends SolarObj{
 	//Update Planet
 	@Override
 	public void Update() {
-		EcRPos.set(GetEcRPos(Transforms.time));
-		EcRPosE.set(VecMath.sub(this.EcRPos, StellarManager.Earth.EcRPos));
+		EcRPos.set(GetEcRPos(Transforms.yr));
+		EcRPosE.set(VecMath.sub(this.EcRPos, StellarSky.getManager().Earth.EcRPos));
 		
 		for(int i=0; i<satellites.size(); i++)
 			satellites.get(i).Update();

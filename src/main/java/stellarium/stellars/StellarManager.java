@@ -11,48 +11,43 @@ import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
 
 public class StellarManager {
+		
+	public Sun Sun=new Sun();
+	public Earth Earth=new Earth();
+	public Moon Moon=new Moon();
+	public Planet Mercury=new Planet();
+	public Planet Venus=new Planet();
+	public Planet Mars=new Planet();
+	public Planet Jupiter=new Planet();
+	public Planet Saturn=new Planet();
+	public Planet Uranus=new Planet();
+	public Planet Neptune=new Planet();
 	
 	
-	public static Sun Sun=new Sun();
-	public static Earth Earth=new Earth();
-	public static Moon Moon=new Moon();
-	public static Planet Mercury=new Planet();
-	public static Planet Venus=new Planet();
-	public static Planet Mars=new Planet();
-	public static Planet Jupiter=new Planet();
-	public static Planet Saturn=new Planet();
-	public static Planet Uranus=new Planet();
-	public static Planet Neptune=new Planet();
+	public final double AU=1.496e+8;
 	
-	
-	public static final double AU=1.496e+8;
-	
-	
-	public static final int frac=4;
+	public final int frac=4;
 	
 	
 	public Side side;
 	
 	
-	public static float Mag_Limit;
+	public float Mag_Limit;
 	
-	public static int ImgFrac;
+	public int ImgFrac;
 	
-	public static float Turb;
+	public float Turb;
 
-	
+	public boolean serverEnabled;
 
+	public double day, year;
 	
-	public StellarManager(){
-
+	public StellarManager(Side pside){
+		side = pside;
 	}
 	
-
-	
-
-	
 	//Initialization Fuction
-	public static final void Initialize(){
+	public void Initialize(){
 		
 		System.out.println("[Stellarium]: "+"Initialization Starting...");
 		System.out.println("[Stellarium]: "+"Initializing Math class...");
@@ -267,7 +262,7 @@ public class StellarManager {
 
 	}
 	
-	public static final void InitializeStars() throws IOException{
+	public final void InitializeStars() throws IOException{
 		///Stars
 		System.out.println("[Stellarium]: "+"Initializing Stars...");
     	BrStar.InitializeAll();
@@ -275,7 +270,7 @@ public class StellarManager {
 	}
 	
 	//Update Objects
-	public static final void Update(double time, boolean IsOverWorld){
+	public final void Update(double time, boolean IsOverWorld){
 		time=time+5000.0;
 		
         long cur = System.currentTimeMillis();
@@ -294,7 +289,8 @@ public class StellarManager {
 		Uranus.Update();
 		Neptune.Update();
 		
-		if(BrStar.IsInitialized) BrStar.UpdateAll();
+		if(side == Side.CLIENT && BrStar.IsInitialized)
+			BrStar.UpdateAll();
 		
         //System.out.println(System.currentTimeMillis() - cur);
 

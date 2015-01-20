@@ -8,6 +8,7 @@ import sciapi.api.value.numerics.DDouble;
 import sciapi.api.value.numerics.IReal;
 import sciapi.api.value.util.BOp;
 import sciapi.api.value.util.VOp;
+import stellarium.StellarSky;
 import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
@@ -47,9 +48,7 @@ public class Moon extends Satellite {
 	}
 	
 	//Get Ecliptic Position Vector from Earth
-	public IValRef<EVector> GetEcRPosE(double time){
-		double day=time/24000.0;
-		double yr=day/365.25;
+	public IValRef<EVector> GetEcRPosE(double yr){
 		UpdateOrbE(yr);
 		double M=M0+mean_mot*yr;
 		return Spmath.GetOrbVec(a, e, ri.setRAngle(-Spmath.Radians(I)), rw.setRAngle(-Spmath.Radians(w)), rom.setRAngle(-Spmath.Radians(Omega)), M);
@@ -69,10 +68,10 @@ public class Moon extends Satellite {
 	
 	//Update Moon(Use After Earth is Updated)
 	public void Update(){
-		double time=Transforms.time;
+		double yr=Transforms.yr;
 		
-		EcRPosE.set(GetEcRPosE(time));
-		EcRPos.set(VecMath.add(Parplanet.GetEcRPos(time),EcRPosE));
+		EcRPosE.set(GetEcRPosE(yr));
+		EcRPos.set(VecMath.add(Parplanet.GetEcRPos(yr),EcRPosE));
 		EcRPosG.set(VecMath.sub(EcRPosE,Transforms.Zen));
 		
 		AppPos.set(GetAtmPos());
@@ -85,7 +84,7 @@ public class Moon extends Satellite {
 	public void UpdateMagnitude(){
 		double dist=Spmath.getD(VecMath.size(EcRPosG));
 		double distS=Spmath.getD(VecMath.size(EcRPos));
-		double distE=Spmath.getD(VecMath.size(StellarManager.Earth.EcRPos));
+		double distE=Spmath.getD(VecMath.size(StellarSky.getManager().Earth.EcRPos));
 		double LvsSun=this.Radius.asDouble()*this.Radius.asDouble()*this.GetPhase()*distE*distE*Albedo*1.4/(dist*dist*distS*distS);
 		this.Mag=-26.74-2.5*Math.log10(LvsSun);
 	}
@@ -99,10 +98,8 @@ public class Moon extends Satellite {
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)
-	public synchronized IValRef<EVector> PosLocalM(double longitude, double lattitude, double time){
-		time/=24000;
-		time/=365.25;
-		float longp=(float)Spmath.Radians(longitude+mean_mot*time);
+	public synchronized IValRef<EVector> PosLocalM(double longitude, double lattitude, double yr){
+		float longp=(float)Spmath.Radians(longitude+mean_mot*yr);
 		float lat=(float)Spmath.Radians(lattitude);
 		return VecMath.mult((IValRef)Radius, VecMath.add(VecMath.add(VecMath.mult(Spmath.sinf(lat), Pole), VecMath.mult(Spmath.cosf(lat)*Spmath.cosf(longp), PrMer0)), VecMath.mult(Spmath.cosf(lat)*Spmath.sinf(longp), East)));
 	}

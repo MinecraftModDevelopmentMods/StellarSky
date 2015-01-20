@@ -6,6 +6,7 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.EVectorSet;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
+import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 
 public class Transforms {
@@ -14,25 +15,27 @@ public class Transforms {
 	public static final double e=0.4090926;
 	//Precession
 	public static final double Prec=0.0;
-	//Real Day
-	public static final double Rot=0.000262516155;
+	//Rotation
+	public static double Rot;
 	//Latitude on Overworld
 	public static final double Lat=0.6544985;
 	//Latitude on Ender
 	public static final double Lat2=-0.9162979;
 	
 
-	public static double time;
+	public static double yr;
 	
 	
 	//Set Transforms' time and world (stime:tick)
 	public static void Update(double stime, boolean IsOverWorld){
-		time=stime;
+		yr = stime / StellarSky.getManager().day / StellarSky.getManager().year;
 		
-		ZTEctoNEc.setRAngle(-Prec*time);
-		NEctoZTEc.setRAngle(Prec*time);
-		NEqtoREq.setRAngle(-Rot*time);
-		REqtoNEq.setRAngle(Rot*time);
+		Rot = 2 * Math.PI / StellarSky.getManager().day * (1 + 1 / StellarSky.getManager().year);
+		
+		ZTEctoNEc.setRAngle(-Prec*stime);
+		NEctoZTEc.setRAngle(Prec*stime);
+		NEqtoREq.setRAngle(-Rot*stime);
+		REqtoNEq.setRAngle(Rot*stime);
 		if(IsOverWorld){
 			REqtoHor.setRAngle(Lat-Math.PI*0.5);
 			HortoREq.setRAngle(Math.PI*0.5-Lat);
@@ -47,7 +50,7 @@ public class Transforms {
 		ZenD.set(REqtoNEq.transform(ZenD));
 		ZenD.set(EqtoEc.transform(ZenD));
 		ZenD.set(NEctoZTEc.transform(ZenD));
-		Zen.set(VOp.mult(StellarManager.Earth.Radius, ZenD));
+		Zen.set(VOp.mult(StellarSky.getManager().Earth.Radius, ZenD));
 	}
 	
 	

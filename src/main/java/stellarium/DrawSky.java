@@ -242,8 +242,8 @@ public class DrawSky extends IRenderHandler {
             f10 = 30.0F;
  
             EVector pos = new EVector(3);
-            pos.set(StellarManager.Sun.GetPosition());
-            double size=StellarManager.Sun.Radius/Spmath.getD(VecMath.size(pos))*99.0*20;
+            pos.set(StellarSky.getManager().Sun.GetPosition());
+            double size=StellarSky.getManager().Sun.Radius/Spmath.getD(VecMath.size(pos))*99.0*20;
             pos.set(VecMath.normalize(pos));
         	dif.set(VOp.normalize(CrossUtil.cross((IEVector)pos, (IEVector)new EVector(0.0,0.0,1.0))));
         	dif2.set((IValRef)CrossUtil.cross((IEVector)dif, (IEVector)pos));
@@ -268,7 +268,7 @@ public class DrawSky extends IRenderHandler {
             
             //Rendering Moon
             
-            int latn=StellarManager.ImgFrac, longn=2*StellarManager.ImgFrac;
+            int latn=StellarSky.getManager().ImgFrac, longn=2*StellarSky.getManager().ImgFrac;
             EVector moonvec[][];
             double moonilum[][];
             moonvec=new EVector[longn][latn+1];
@@ -278,9 +278,9 @@ public class DrawSky extends IRenderHandler {
             int latc, longc;
             for(longc=0; longc<longn; longc++){
             	for(latc=0; latc<=latn; latc++){
-            		Buf.set(StellarManager.Moon.PosLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0, Transforms.time));
-            		moonilum[longc][latc]=StellarManager.Moon.Illumination(Buf);
-            		Buf.set(StellarManager.Moon.PosLocalG(Buf));
+            		Buf.set(StellarSky.getManager().Moon.PosLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0, Transforms.yr));
+            		moonilum[longc][latc]=StellarSky.getManager().Moon.Illumination(Buf);
+            		Buf.set(StellarSky.getManager().Moon.PosLocalG(Buf));
             		Buf.set(VecMath.mult(50000.0, Buf));
             		Buff.set(VecMath.getX(Buf),VecMath.getY(Buf),VecMath.getZ(Buf));
             		IValRef ref=Transforms.ZTEctoNEc.transform((IEVector)Buff);
@@ -316,10 +316,10 @@ public class DrawSky extends IRenderHandler {
             EVector posm = new EVector(3);
             
             
-            posm.set(ExtinctionRefraction.Refraction(StellarManager.Moon.GetPosition(), true));
+            posm.set(ExtinctionRefraction.Refraction(StellarSky.getManager().Moon.GetPosition(), true));
             
             if(VecMath.getZ(posm)>0.0f){
-            double sizem=StellarManager.Moon.Radius.asDouble()/Spmath.getD(VecMath.size(posm))*98.0*5.0;
+            double sizem=StellarSky.getManager().Moon.Radius.asDouble()/Spmath.getD(VecMath.size(posm))*98.0*5.0;
            
             posm.set(VOp.normalize(posm));
         	difm.set(VOp.normalize(CrossUtil.cross((IEVector)posm, (IEVector)new EVector(0.0,0.0,1.0))));
@@ -329,7 +329,7 @@ public class DrawSky extends IRenderHandler {
         	difm.set(VecMath.mult(sizem, difm));
         	difm2.set(VecMath.mult(sizem, difm2));
         	
-        	float alpha=Optics.GetAlphaFromMagnitude(-17.0-StellarManager.Moon.Mag,bglight);
+        	float alpha=Optics.GetAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.Mag,bglight);
         	
             GL11.glColor4d(1.0, 1.0, 1.0, f4*alpha);
             
@@ -375,13 +375,13 @@ public class DrawSky extends IRenderHandler {
             //Moon
             
             renderEngine.bindTexture(locationStarPng);
-            this.DrawStellarObj(f1+f2+f3, f4, StellarManager.Mercury.AppPos,StellarManager.Mercury.App_Mag);
-            this.DrawStellarObj(f1+f2+f3, f4, StellarManager.Venus.AppPos,StellarManager.Venus.App_Mag);
-            this.DrawStellarObj(f1+f2+f3, f4, StellarManager.Mars.AppPos,StellarManager.Mars.App_Mag);
-            this.DrawStellarObj(f1+f2+f3, f4, StellarManager.Jupiter.AppPos,StellarManager.Jupiter.App_Mag);
-            this.DrawStellarObj(f1+f2+f3, f4, StellarManager.Saturn.AppPos,StellarManager.Saturn.App_Mag);
-            this.DrawStellarObj(f1+f2+f3, f4, StellarManager.Uranus.AppPos,StellarManager.Uranus.App_Mag);
-            this.DrawStellarObj(f1+f2+f3, f4, StellarManager.Neptune.AppPos,StellarManager.Neptune.App_Mag);
+            this.DrawStellarObj(f1+f2+f3, f4, StellarSky.getManager().Mercury.AppPos,StellarSky.getManager().Mercury.App_Mag);
+            this.DrawStellarObj(f1+f2+f3, f4, StellarSky.getManager().Venus.AppPos,StellarSky.getManager().Venus.App_Mag);
+            this.DrawStellarObj(f1+f2+f3, f4, StellarSky.getManager().Mars.AppPos,StellarSky.getManager().Mars.App_Mag);
+            this.DrawStellarObj(f1+f2+f3, f4, StellarSky.getManager().Jupiter.AppPos,StellarSky.getManager().Jupiter.App_Mag);
+            this.DrawStellarObj(f1+f2+f3, f4, StellarSky.getManager().Saturn.AppPos,StellarSky.getManager().Saturn.App_Mag);
+            this.DrawStellarObj(f1+f2+f3, f4, StellarSky.getManager().Uranus.AppPos,StellarSky.getManager().Uranus.App_Mag);
+            this.DrawStellarObj(f1+f2+f3, f4, StellarSky.getManager().Neptune.AppPos,StellarSky.getManager().Neptune.App_Mag);
             
             
             GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -467,10 +467,10 @@ public class DrawSky extends IRenderHandler {
         	float Mag=star.App_Mag;
         	float B_V=star.App_B_V;
         	
-        	if(Mag > StellarManager.Mag_Limit)
+        	if(Mag > StellarSky.getManager().Mag_Limit)
         		continue;
         	
-        	float Turb = StellarManager.Turb *(float) random.nextGaussian();
+        	float Turb = StellarSky.getManager().Turb *(float) random.nextGaussian();
         	Mag+=Turb;
         	
         	if(VecMath.getZ(pos)<0) continue;
@@ -515,7 +515,7 @@ public class DrawSky extends IRenderHandler {
 		
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		
-		if(Mag > StellarManager.Mag_Limit) return;
+		if(Mag > StellarSky.getManager().Mag_Limit) return;
 		if(VecMath.getZ(pos)<0) return;
 		
 		float size=0.6f;
