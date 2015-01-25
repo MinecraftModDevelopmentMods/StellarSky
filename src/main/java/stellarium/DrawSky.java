@@ -28,7 +28,6 @@ import stellarium.util.math.VecMath;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class DrawSky extends IRenderHandler {
 	
 	private TextureManager renderEngine;

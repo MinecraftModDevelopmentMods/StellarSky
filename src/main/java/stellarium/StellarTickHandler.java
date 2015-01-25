@@ -17,7 +17,7 @@ public class StellarTickHandler {
 	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
 		if(e.phase == Phase.START){
-			World world = Minecraft.getMinecraft().theWorld;
+			World world = StellarSky.proxy.getDefWorld();
 			
 			if(world != null)
 				StellarSky.getManager().Update(world.getWorldTime(),

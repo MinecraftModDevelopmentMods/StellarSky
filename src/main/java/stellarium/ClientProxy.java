@@ -2,6 +2,8 @@ package stellarium;
 
 import java.io.IOException;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -59,4 +61,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
         		"Less fragments will increase FPS, but the moon become more defective\n";
         manager.ImgFrac=Moon_Frac.getInt(16);
    	}
+	
+	@Override
+	public World getDefWorld() {
+		return Minecraft.getMinecraft().theWorld;
+	}
 }

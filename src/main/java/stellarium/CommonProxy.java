@@ -2,6 +2,7 @@ package stellarium;
 
 import java.io.IOException;
 
+import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -57,5 +58,10 @@ public class CommonProxy implements IProxy {
         Property year=config.get(Configuration.CATEGORY_GENERAL, "Year_Length", 365.25);
         year.comment="Length of an year, in a day.\n";
         manager.year=year.getDouble(365.25);
+	}
+
+	@Override
+	public World getDefWorld() {
+		return null;
 	}
 }

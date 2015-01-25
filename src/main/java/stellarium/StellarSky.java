@@ -29,7 +29,7 @@ public class StellarSky {
 	
 		public static final String modid = "stellarsky";
 		public static final String name = "Stellar Sky";
-		public static final String version = "0.1.7";
+		public static final String version = "0.1.7a";
 
         // The instance of Stellarium
         @Instance(StellarSky.modid)
@@ -37,12 +37,12 @@ public class StellarSky {
         
         @SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
         public static CommonProxy proxy;
-                
+        
         public StellarEventHook eventHook = new StellarEventHook();
         public StellarTickHandler tickHandler = new StellarTickHandler();
         
         public static StellarManager getManager() { return proxy.manager; }
-                
+        
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) throws IOException{
         	
