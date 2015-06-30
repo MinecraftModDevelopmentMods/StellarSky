@@ -10,7 +10,7 @@ public class StellarEventHook {
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e)
 	{
-		if(StellarSky.getManager().side != Side.CLIENT)
+		if(!e.world.isRemote)
 			return;
 		
 		if(e.world.provider.dimensionId == 0 || e.world.provider.dimensionId == -1)

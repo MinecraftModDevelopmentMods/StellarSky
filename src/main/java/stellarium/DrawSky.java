@@ -453,59 +453,55 @@ public class DrawSky extends IRenderHandler {
 		renderEngine.bindTexture(locationStarPng);
 		
 		EVector pos = new EVector(3);
-           
+		
         if(!world.provider.isHellWorld){
-        for(int i=0; i<BrStar.NumStar; i++){
-        	if(BrStar.stars[i].unable) continue;
-//        	GL11.((7-Star.stars[i].Mag)*30.0f,(7-Star.stars[i].Mag)*30.0f,(7-Star.stars[i].Mag)*30.0f);
-        	
-        	BrStar star=BrStar.stars[i];
-        	
-        	
-        	pos.set(VecMath.normalize(star.AppPos));
-        	float Mag=star.App_Mag;
-        	float B_V=star.App_B_V;
-        	
-        	if(Mag > StellarSky.getManager().Mag_Limit)
-        		continue;
-        	
-        	float Turb = StellarSky.getManager().Turb *(float) random.nextGaussian();
-        	Mag+=Turb;
-        	
-        	if(VecMath.getZ(pos)<0) continue;
-        	
-        	float size=0.5f;
-        	float alpha=Optics.GetAlphaFromMagnitude(Mag, bglight);
-        	
-        	dif.set(CrossUtil.cross(pos, new EVector(0.0,0.0,1.0)));
-        	if(Spmath.getD(VecMath.size2(dif)) < 0.01)
-        		dif.set(CrossUtil.cross(pos, new EVector(0.0,1.0,0.0)));
-        	dif.set(VecMath.normalize(dif));
-        	dif2.set((IValRef)CrossUtil.cross(dif, pos));
-        	pos.set(VecMath.mult(100.0, pos));
-        	
-        	dif.set(VecMath.mult(size, dif));
-        	dif2.set(VecMath.mult(size, dif2));
-        	
-        	Color c=Color.GetColor(B_V);
-   
-
-        	GL11.glColor4f(((float)c.r)/255.0f, ((float)c.g)/255.0f, ((float)c.b)/255.0f, weathereff*alpha);
-        	
             tessellator1.startDrawingQuads();
-
-        	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
-        	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2),1.0,0.0);
-        	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif),1.0,1.0);
-        	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2),0.0,1.0);
+            for(int i=0; i<BrStar.NumStar; i++){
+            	if(BrStar.stars[i].unable) continue;
+//        	GL11.((7-Star.stars[i].Mag)*30.0f,(7-Star.stars[i].Mag)*30.0f,(7-Star.stars[i].Mag)*30.0f);
+            	
+            	BrStar star=BrStar.stars[i];
+            	
+            	pos.set(VecMath.normalize(star.AppPos));
+            	float Mag=star.App_Mag;
+            	float B_V=star.App_B_V;
+            	
+            	if(Mag > StellarSky.getManager().Mag_Limit)
+            		continue;
+            	
+            	float Turb = StellarSky.getManager().Turb *(float) random.nextGaussian();
+            	Mag+=Turb;
+            	
+            	if(VecMath.getZ(pos)<0) continue;
+            	
+            	float size=0.5f;
+            	float alpha=Optics.GetAlphaFromMagnitude(Mag, bglight);
+            	
+            	dif.set(CrossUtil.cross(pos, new EVector(0.0,0.0,1.0)));
+            	if(Spmath.getD(VecMath.size2(dif)) < 0.01)
+            		dif.set(CrossUtil.cross(pos, new EVector(0.0,1.0,0.0)));
+            	dif.set(VecMath.normalize(dif));
+            	dif2.set((IValRef)CrossUtil.cross(dif, pos));
+            	pos.set(VecMath.mult(100.0, pos));
+            	
+            	dif.set(VecMath.mult(size, dif));
+            	dif2.set(VecMath.mult(size, dif2));
+            	
+            	Color c=Color.GetColor(B_V);
+            	
+            	tessellator1.setColorRGBA(c.r, c.g, c.b, (int)(weathereff*alpha*255.0));
+            	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
+            	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2),1.0,0.0);
+            	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif),1.0,1.0);
+            	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2),0.0,1.0);
         	
-            tessellator1.draw();
-                                  
-        }
+            }
         
+            tessellator1.draw();
         }
 
 	}
+	
 	
 	EVector difm = new EVector(3);
 	EVector difm2 = new EVector(3);
@@ -532,9 +528,10 @@ public class DrawSky extends IRenderHandler {
     	difm.set(VecMath.mult(size, difm));
     	difm2.set(VecMath.mult(size, difm2));
     
-    	GL11.glColor4d(1.0, 1.0, 1.0, weathereff*alpha);
-        
         tessellator1.startDrawingQuads();
+    	
+    	tessellator1.setColorRGBA_F(1.0f, 1.0f, 1.0f, weathereff*alpha);
+      
     	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(difm), VecMath.getY(pos)+VecMath.getY(difm), VecMath.getZ(pos)+VecMath.getZ(difm),0.0,0.0);
     	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(difm2), VecMath.getY(pos)+VecMath.getY(difm2), VecMath.getZ(pos)+VecMath.getZ(difm2),1.0,0.0);
     	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(difm), VecMath.getY(pos)-VecMath.getY(difm), VecMath.getZ(pos)-VecMath.getZ(difm),1.0,1.0);

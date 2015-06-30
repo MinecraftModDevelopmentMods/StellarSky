@@ -3,6 +3,7 @@ package stellarium;
 import java.io.IOException;
 
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -38,6 +39,9 @@ public class CommonProxy implements IProxy {
 	public void postInit(FMLPostInitializationEvent event) {
 		if(manager.serverEnabled)
 		{
+			WorldProvider provider = DimensionManager.createProviderFor(0);
+			StellarWorldProvider.parProvider = provider;
+			
 			DimensionManager.unregisterDimension(0);
 			DimensionManager.unregisterProviderType(0);
 			DimensionManager.registerProviderType(0, StellarWorldProvider.class, true);
