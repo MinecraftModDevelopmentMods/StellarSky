@@ -39,8 +39,8 @@ public class CommonProxy implements IProxy {
 	public void postInit(FMLPostInitializationEvent event) {
 		if(manager.serverEnabled)
 		{
-			WorldProvider provider = DimensionManager.createProviderFor(0);
-			StellarWorldProvider.parProvider = provider;
+			for(Side side : Side.values())
+				StellarWorldProvider.preProviders[side.ordinal()] =  DimensionManager.createProviderFor(0);
 			
 			DimensionManager.unregisterDimension(0);
 			DimensionManager.unregisterProviderType(0);

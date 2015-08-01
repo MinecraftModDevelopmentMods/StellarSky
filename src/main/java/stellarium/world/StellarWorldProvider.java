@@ -33,7 +33,8 @@ import net.minecraftforge.common.DimensionManager;
 
 public class StellarWorldProvider extends WorldProvider {
 	
-	public static WorldProvider parProvider = new WorldProviderSurface();
+	public static WorldProvider[] preProviders = new WorldProvider[2];
+	private WorldProvider parProvider;
 	
 	@Override
     public float calculateCelestialAngle(long par1, float par3)
@@ -67,12 +68,17 @@ public class StellarWorldProvider extends WorldProvider {
 	
 	
     /**
-     * Creates the light to brightness table
+     * creates a new world chunk manager for WorldProvider
      */
 	@Override
-    protected void generateLightBrightnessTable()
+    protected void registerWorldChunkManager()
     {
-		parProvider.registerWorld(this.worldObj);
+		this.parProvider = worldObj.isRemote? preProviders[0] : preProviders[1];
+		
+		parProvider.setDimension(this.dimensionId);
+		
+        parProvider.registerWorld(this.worldObj);
+        this.worldChunkMgr = parProvider.worldChunkMgr;
     }
 
     /**
@@ -213,7 +219,7 @@ public class StellarWorldProvider extends WorldProvider {
     @Override
     public void setDimension(int dim)
     {
-        parProvider.setDimension(dim);
+        this.dimensionId = dim;
     }
 
     /**
