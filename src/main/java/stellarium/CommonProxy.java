@@ -60,7 +60,7 @@ public class CommonProxy implements IProxy {
         manager.day=day.getDouble(24000.0);
         
         Property year=config.get(Configuration.CATEGORY_GENERAL, "Year_Length", 365.25);
-        year.comment="Length of an year, in a day.\n";
+        year.comment="Length of a year, in a day.\n";
         manager.year=year.getDouble(365.25);
 	}
 
