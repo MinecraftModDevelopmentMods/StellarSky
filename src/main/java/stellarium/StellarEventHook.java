@@ -5,13 +5,11 @@ import java.lang.reflect.Modifier;
 
 import com.google.common.base.Throwables;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.ReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import stellarium.world.StellarWorldProvider;
 
 public class StellarEventHook {
@@ -32,7 +30,7 @@ public class StellarEventHook {
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e)
 	{
-		if(StellarSky.getManager().serverEnabled && e.world.provider.dimensionId == 0) {
+		if(StellarSky.getManager().serverEnabled && e.world.provider.getDimensionId() == 0) {
 			try {
 				providerField.set(e.world, new StellarWorldProvider(e.world.provider));
 			} catch (Exception exc) {
@@ -43,7 +41,7 @@ public class StellarEventHook {
 		if(!e.world.isRemote)
 			return;
 		
-		if(e.world.provider.dimensionId == 0 || e.world.provider.dimensionId == -1)
+		if(e.world.provider.getDimensionId() == 0 || e.world.provider.getDimensionId() == -1)
 		{
 			e.world.provider.setSkyRenderer(new DrawSky());
 		}

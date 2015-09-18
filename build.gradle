@@ -22,7 +22,7 @@ group= "stellarium" // http://maven.apache.org/guides/mini/guide-naming-conventi
 archivesBaseName = "Stellar Sky"
 
 minecraft {
-    version = "1.7.10-10.13.2.1230"
+    version = "1.8-11.14.3.1502"
     runDir = "eclipse"
 }
 

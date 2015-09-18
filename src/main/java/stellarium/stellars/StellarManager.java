@@ -1,11 +1,8 @@
 package stellarium.stellars;
 
 import java.io.IOException;
-import java.security.Timestamp;
-import java.sql.Time;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
