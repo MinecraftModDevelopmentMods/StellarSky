@@ -1,50 +1,31 @@
 package stellarium.world;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.EVectorSet;
-import sciapi.api.value.util.COp;
-import stellarium.StellarSky;
-import stellarium.stellars.ExtinctionRefraction;
-import stellarium.stellars.StellarManager;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldProviderEnd;
-import net.minecraft.world.WorldProviderHell;
-import net.minecraft.world.WorldProviderSurface;
-import net.minecraft.world.WorldSettings.GameType;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import sciapi.api.value.IValRef;
+import sciapi.api.value.euclidian.EVector;
+import sciapi.api.value.euclidian.EVectorSet;
+import stellarium.StellarSky;
+import stellarium.stellars.ExtinctionRefraction;
+import stellarium.util.math.Spmath;
+import stellarium.util.math.VecMath;
 
 public class StellarWorldProvider extends WorldProvider {
 	
 	private WorldProvider parProvider;
 	
-	public StellarWorldProvider(WorldProvider provider) {
+	public StellarWorldProvider(World world, WorldProvider provider) {
 		this.parProvider = provider;
-		this.worldObj = provider.worldObj;
-		this.field_82913_c = provider.field_82913_c;
-		this.terrainType = provider.terrainType;
-		this.worldChunkMgr = provider.worldChunkMgr;
-		this.isHellWorld = provider.isHellWorld;
-		this.hasNoSky = provider.hasNoSky;
-		this.lightBrightnessTable = provider.lightBrightnessTable;
-		this.dimensionId = provider.dimensionId;
+		this.worldObj = world;
 	}
 
 	@Override

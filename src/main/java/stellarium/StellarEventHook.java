@@ -32,7 +32,7 @@ public class StellarEventHook {
 	{
 		if(StellarSky.getManager().serverEnabled && e.world.provider.getDimensionId() == 0) {
 			try {
-				providerField.set(e.world, new StellarWorldProvider(e.world.provider));
+				providerField.set(e.world, new StellarWorldProvider(e.world, e.world.provider));
 			} catch (Exception exc) {
 				Throwables.propagate(exc);
 			}
