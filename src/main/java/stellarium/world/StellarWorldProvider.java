@@ -33,9 +33,20 @@ import net.minecraftforge.common.DimensionManager;
 
 public class StellarWorldProvider extends WorldProvider {
 	
-	public static WorldProvider[] preProviders = new WorldProvider[2];
 	private WorldProvider parProvider;
 	
+	public StellarWorldProvider(WorldProvider provider) {
+		this.parProvider = provider;
+		this.worldObj = provider.worldObj;
+		this.field_82913_c = provider.field_82913_c;
+		this.terrainType = provider.terrainType;
+		this.worldChunkMgr = provider.worldChunkMgr;
+		this.isHellWorld = provider.isHellWorld;
+		this.hasNoSky = provider.hasNoSky;
+		this.lightBrightnessTable = provider.lightBrightnessTable;
+		this.dimensionId = provider.dimensionId;
+	}
+
 	@Override
     public float calculateCelestialAngle(long par1, float par3)
     {
@@ -64,21 +75,6 @@ public class StellarWorldProvider extends WorldProvider {
     	if(StellarSky.getManager().Earth.EcRPos==null)
     		StellarSky.getManager().Update(par1, isSurfaceWorld());
     	return (int)(StellarSky.getManager().Moon.Phase_Time()*8);
-    }
-	
-	
-    /**
-     * creates a new world chunk manager for WorldProvider
-     */
-	@Override
-    protected void registerWorldChunkManager()
-    {
-		this.parProvider = worldObj.isRemote? preProviders[0] : preProviders[1];
-		
-		parProvider.setDimension(this.dimensionId);
-		
-        parProvider.registerWorld(this.worldObj);
-        this.worldChunkMgr = parProvider.worldChunkMgr;
     }
 
     /**
