@@ -101,7 +101,7 @@ public class DrawSky extends IRenderHandler {
                 }
 
                 worldRenderer.startDrawingQuads();
-                worldRenderer.func_178991_c(2631720);
+                worldRenderer.setColorOpaque_I(2631720);
                 worldRenderer.addVertexWithUV(-100.0D, -100.0D, -100.0D, 0.0D, 0.0D);
                 worldRenderer.addVertexWithUV(-100.0D, -100.0D, 100.0D, 0.0D, 16.0D);
                 worldRenderer.addVertexWithUV(100.0D, -100.0D, 100.0D, 16.0D, 16.0D);
@@ -185,7 +185,7 @@ public class DrawSky extends IRenderHandler {
                     f11 = (float)j * (float)Math.PI * 2.0F / (float)b0;
                     float f12 = MathHelper.sin(f11);
                     float f13 = MathHelper.cos(f11);
-                    tessellator1.addVertex((double)(f12 * 120.0F), (double)(f13 * 120.0F), (double)(-f13 * 40.0F * afloat[3]));
+                    worldRenderer.addVertex((double)(f12 * 120.0F), (double)(f13 * 120.0F), (double)(-f13 * 40.0F * afloat[3]));
                 }
 
                 tessellator1.draw();
@@ -206,23 +206,11 @@ public class DrawSky extends IRenderHandler {
            
             GL11.glTranslatef(f7, f8, f9); //e,z,s
             GL11.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); //e,n,z
-//            GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F); // s,z,w
             
             GL11.glColor4f(1.0F, 1.0F, 1.0F, f4);
             
             
-            double time=(double)world.getWorldTime()+par1;            
-            
-            /*if(par1>0.5 && !IsMid){
-            	IsMid=true;
-            	IsCalcd=false;
-            }
-            
-            if(StellarManager.Earth.EcRPos==null || !IsCalcd)
-            {
-            	StellarManager.Update(time, mc.theWorld.provider.isSurfaceWorld());
-            	IsCalcd=true;
-            }*/
+            double time=(double)world.getWorldTime()+par1;
                        
             
             this.RenderStar(bglight, f4, time);
@@ -231,15 +219,7 @@ public class DrawSky extends IRenderHandler {
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             
             GL11.glColor4f(1.0F, 1.0F, 1.0F, f4);
-           
-           /* GL11.glRotatef(-(float)(90-(Transforms.Lat*180.0/Math.PI)), 1.0f, 0.0f, 0.0f);
-            GL11.glRotatef((float)(-90.0-Transforms.Rot*time*180.0/Math.PI), 0.0f, 0.0f, 1.0f);//?,Sp,p
-            GL11.glRotatef(-(float) (Transforms.e*180.0/Math.PI), 0.0f, 1.0f, 0.0f);
-    		GL11.glRotatef((float)(Transforms.Prec*time*180.0/Math.PI), 0.0f, 0.0f, 1.0f);
-            GL11.glRotatef((float) (Transforms.e*180.0/Math.PI), 0.0f, 1.0f, 0.0f);*/
 
-//            GL11.glRotatef(world.getCelestialAngle(par1) * 360.0F, 1.0F, 0.0F, 0.0F);
-            
             
             //Rendering Sun
             f10 = 30.0F;
@@ -256,11 +236,11 @@ public class DrawSky extends IRenderHandler {
         	dif2.set(VecMath.mult(size, dif2));
         	
             renderEngine.bindTexture(this.locationSunPng);
-            tessellator1.startDrawingQuads();
-        	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
-        	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2),1.0,0.0);
-        	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif),1.0,1.0);
-        	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2),0.0,1.0);
+            worldRenderer.startDrawingQuads();
+            worldRenderer.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
+            worldRenderer.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2),1.0,0.0);
+            worldRenderer.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif),1.0,1.0);
+            worldRenderer.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2),0.0,1.0);
 /*            tessellator1.addVertexWithUV((double)(-f10), 100.0D, (double)(-f10), 0.0D, 0.0D);
             tessellator1.addVertexWithUV((double)f10, 100.0D, (double)(-f10), 1.0D, 0.0D);
             tessellator1.addVertexWithUV((double)f10, 100.0D, (double)f10, 1.0D, 1.0D);
@@ -336,11 +316,11 @@ public class DrawSky extends IRenderHandler {
         	
             GL11.glColor4d(1.0, 1.0, 1.0, f4*alpha);
             
-            tessellator1.startDrawingQuads();
-        	tessellator1.addVertexWithUV(VecMath.getX(posm)+VecMath.getX(difm), VecMath.getY(posm)+VecMath.getY(difm), VecMath.getZ(posm)+VecMath.getZ(difm),0.0,0.0);
-        	tessellator1.addVertexWithUV(VecMath.getX(posm)+VecMath.getX(difm2), VecMath.getY(posm)+VecMath.getY(difm2), VecMath.getZ(posm)+VecMath.getZ(difm2),0.0,1.0);
-        	tessellator1.addVertexWithUV(VecMath.getX(posm)-VecMath.getX(difm), VecMath.getY(posm)-VecMath.getY(difm), VecMath.getZ(posm)-VecMath.getZ(difm),1.0,1.0);
-        	tessellator1.addVertexWithUV(VecMath.getX(posm)-VecMath.getX(difm2), VecMath.getY(posm)-VecMath.getY(difm2), VecMath.getZ(posm)-VecMath.getZ(difm2),1.0,0.0);
+            worldRenderer.startDrawingQuads();
+            worldRenderer.addVertexWithUV(VecMath.getX(posm)+VecMath.getX(difm), VecMath.getY(posm)+VecMath.getY(difm), VecMath.getZ(posm)+VecMath.getZ(difm),0.0,0.0);
+            worldRenderer.addVertexWithUV(VecMath.getX(posm)+VecMath.getX(difm2), VecMath.getY(posm)+VecMath.getY(difm2), VecMath.getZ(posm)+VecMath.getZ(difm2),0.0,1.0);
+            worldRenderer.addVertexWithUV(VecMath.getX(posm)-VecMath.getX(difm), VecMath.getY(posm)-VecMath.getY(difm), VecMath.getZ(posm)-VecMath.getZ(difm),1.0,1.0);
+            worldRenderer.addVertexWithUV(VecMath.getX(posm)-VecMath.getX(difm2), VecMath.getY(posm)-VecMath.getY(difm2), VecMath.getZ(posm)-VecMath.getZ(difm2),1.0,0.0);
         	tessellator1.draw();
             }
         	
@@ -359,11 +339,11 @@ public class DrawSky extends IRenderHandler {
             		
                     GL11.glColor4d(1.0, 1.0, 1.0, (f4*moonilum[longc][latc]-4.0f*bglight)*2.0f);
                 	
-                    tessellator1.startDrawingQuads();
-                    tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), Spmath.fmod(longd+0.5, 1.0), latd);
-                	tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc]), Spmath.fmod(longdd+0.5,1.0), latd);
-                	tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1]), Spmath.fmod(longdd+0.5, 1.0), latdd);
-                	tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1]), Spmath.fmod(longd+0.5,1.0), latdd);
+                    worldRenderer.startDrawingQuads();
+                    worldRenderer.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), Spmath.fmod(longd+0.5, 1.0), latd);
+                    worldRenderer.addVertexWithUV(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc]), Spmath.fmod(longdd+0.5,1.0), latd);
+                    worldRenderer.addVertexWithUV(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1]), Spmath.fmod(longdd+0.5, 1.0), latdd);
+                    worldRenderer.addVertexWithUV(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1]), Spmath.fmod(longd+0.5,1.0), latdd);
                     tessellator1.draw();
             	}
             }
@@ -398,35 +378,35 @@ public class DrawSky extends IRenderHandler {
             GL11.glPopMatrix();
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glColor3f(0.0F, 0.0F, 0.0F);
-            double d0 = mc.thePlayer.getPosition(par1).yCoord - world.getHorizon();
+            double d0 = mc.thePlayer.getPositionEyes(par1).yCoord - world.getHorizon();
 
             if (d0 < 0.0D)
             {
                 f8 = 1.0F;
                 f9 = -((float)(d0 + 65.0D));
                 f10 = -f8;
-                tessellator1.startDrawingQuads();
-                tessellator1.setColorRGBA_I(0, 255);
-                tessellator1.addVertex((double)(-f8), (double)f9, (double)f8);
-                tessellator1.addVertex((double)f8, (double)f9, (double)f8);
-                tessellator1.addVertex((double)f8, (double)f10, (double)f8);
-                tessellator1.addVertex((double)(-f8), (double)f10, (double)f8);
-                tessellator1.addVertex((double)(-f8), (double)f10, (double)(-f8));
-                tessellator1.addVertex((double)f8, (double)f10, (double)(-f8));
-                tessellator1.addVertex((double)f8, (double)f9, (double)(-f8));
-                tessellator1.addVertex((double)(-f8), (double)f9, (double)(-f8));
-                tessellator1.addVertex((double)f8, (double)f10, (double)(-f8));
-                tessellator1.addVertex((double)f8, (double)f10, (double)f8);
-                tessellator1.addVertex((double)f8, (double)f9, (double)f8);
-                tessellator1.addVertex((double)f8, (double)f9, (double)(-f8));
-                tessellator1.addVertex((double)(-f8), (double)f9, (double)(-f8));
-                tessellator1.addVertex((double)(-f8), (double)f9, (double)f8);
-                tessellator1.addVertex((double)(-f8), (double)f10, (double)f8);
-                tessellator1.addVertex((double)(-f8), (double)f10, (double)(-f8));
-                tessellator1.addVertex((double)(-f8), (double)f10, (double)(-f8));
-                tessellator1.addVertex((double)(-f8), (double)f10, (double)f8);
-                tessellator1.addVertex((double)f8, (double)f10, (double)f8);
-                tessellator1.addVertex((double)f8, (double)f10, (double)(-f8));
+                worldRenderer.startDrawingQuads();
+                worldRenderer.setColorRGBA_I(0, 255);
+                worldRenderer.addVertex((double)(-f8), (double)f9, (double)f8);
+                worldRenderer.addVertex((double)f8, (double)f9, (double)f8);
+                worldRenderer.addVertex((double)f8, (double)f10, (double)f8);
+                worldRenderer.addVertex((double)(-f8), (double)f10, (double)f8);
+                worldRenderer.addVertex((double)(-f8), (double)f10, (double)(-f8));
+                worldRenderer.addVertex((double)f8, (double)f10, (double)(-f8));
+                worldRenderer.addVertex((double)f8, (double)f9, (double)(-f8));
+                worldRenderer.addVertex((double)(-f8), (double)f9, (double)(-f8));
+                worldRenderer.addVertex((double)f8, (double)f10, (double)(-f8));
+                worldRenderer.addVertex((double)f8, (double)f10, (double)f8);
+                worldRenderer.addVertex((double)f8, (double)f9, (double)f8);
+                worldRenderer.addVertex((double)f8, (double)f9, (double)(-f8));
+                worldRenderer.addVertex((double)(-f8), (double)f9, (double)(-f8));
+                worldRenderer.addVertex((double)(-f8), (double)f9, (double)f8);
+                worldRenderer.addVertex((double)(-f8), (double)f10, (double)f8);
+                worldRenderer.addVertex((double)(-f8), (double)f10, (double)(-f8));
+                worldRenderer.addVertex((double)(-f8), (double)f10, (double)(-f8));
+                worldRenderer.addVertex((double)(-f8), (double)f10, (double)f8);
+                worldRenderer.addVertex((double)f8, (double)f10, (double)f8);
+                worldRenderer.addVertex((double)f8, (double)f10, (double)(-f8));
                 tessellator1.draw();
             }
 
@@ -454,12 +434,13 @@ public class DrawSky extends IRenderHandler {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		
+		WorldRenderer worldRenderer = tessellator1.getWorldRenderer();
+		
 		renderEngine.bindTexture(locationStarPng);
 		
 		EVector pos = new EVector(3);
 		
-        if(!world.provider.isHellWorld){
-            tessellator1.startDrawingQuads();
+        	worldRenderer.startDrawingQuads();
             for(int i=0; i<BrStar.NumStar; i++){
             	if(BrStar.stars[i].unable) continue;
 //        	GL11.((7-Star.stars[i].Mag)*30.0f,(7-Star.stars[i].Mag)*30.0f,(7-Star.stars[i].Mag)*30.0f);
@@ -493,16 +474,15 @@ public class DrawSky extends IRenderHandler {
             	
             	Color c=Color.GetColor(B_V);
             	
-            	tessellator1.setColorRGBA(c.r, c.g, c.b, (int)(weathereff*alpha*255.0));
-            	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
-            	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2),1.0,0.0);
-            	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif),1.0,1.0);
-            	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2),0.0,1.0);
+            	worldRenderer.setColorRGBA(c.r, c.g, c.b, (int)(weathereff*alpha*255.0));
+            	worldRenderer.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
+            	worldRenderer.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2),1.0,0.0);
+            	worldRenderer.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif),1.0,1.0);
+            	worldRenderer.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2),0.0,1.0);
         	
             }
-        
+            
             tessellator1.draw();
-        }
 
 	}
 	
@@ -516,6 +496,8 @@ public class DrawSky extends IRenderHandler {
 		
 		if(Mag > StellarSky.getManager().Mag_Limit) return;
 		if(VecMath.getZ(pos)<0) return;
+		
+		WorldRenderer worldRenderer = tessellator1.getWorldRenderer();
 		
 		float size=0.6f;
     	float alpha=Optics.GetAlphaFromMagnitude(Mag, bglight);
@@ -532,14 +514,14 @@ public class DrawSky extends IRenderHandler {
     	difm.set(VecMath.mult(size, difm));
     	difm2.set(VecMath.mult(size, difm2));
     
-        tessellator1.startDrawingQuads();
+    	worldRenderer.startDrawingQuads();
     	
-    	tessellator1.setColorRGBA_F(1.0f, 1.0f, 1.0f, weathereff*alpha);
+    	worldRenderer.setColorRGBA_F(1.0f, 1.0f, 1.0f, weathereff*alpha);
       
-    	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(difm), VecMath.getY(pos)+VecMath.getY(difm), VecMath.getZ(pos)+VecMath.getZ(difm),0.0,0.0);
-    	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(difm2), VecMath.getY(pos)+VecMath.getY(difm2), VecMath.getZ(pos)+VecMath.getZ(difm2),1.0,0.0);
-    	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(difm), VecMath.getY(pos)-VecMath.getY(difm), VecMath.getZ(pos)-VecMath.getZ(difm),1.0,1.0);
-    	tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(difm2), VecMath.getY(pos)-VecMath.getY(difm2), VecMath.getZ(pos)-VecMath.getZ(difm2),0.0,1.0);
+    	worldRenderer.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(difm), VecMath.getY(pos)+VecMath.getY(difm), VecMath.getZ(pos)+VecMath.getZ(difm),0.0,0.0);
+    	worldRenderer.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(difm2), VecMath.getY(pos)+VecMath.getY(difm2), VecMath.getZ(pos)+VecMath.getZ(difm2),1.0,0.0);
+    	worldRenderer.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(difm), VecMath.getY(pos)-VecMath.getY(difm), VecMath.getZ(pos)-VecMath.getZ(difm),1.0,1.0);
+    	worldRenderer.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(difm2), VecMath.getY(pos)-VecMath.getY(difm2), VecMath.getZ(pos)-VecMath.getZ(difm2),0.0,1.0);
 
         tessellator1.draw();
 	}

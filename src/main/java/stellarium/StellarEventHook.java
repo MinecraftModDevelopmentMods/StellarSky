@@ -10,6 +10,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import stellarium.render.SkyRendererVanilla;
 import stellarium.world.StellarWorldProvider;
 
 public class StellarEventHook {
@@ -43,7 +44,7 @@ public class StellarEventHook {
 		
 		if(e.world.provider.getDimensionId() == 0 || e.world.provider.getDimensionId() == -1)
 		{
-			e.world.provider.setSkyRenderer(new DrawSky());
+			e.world.provider.setSkyRenderer(new SkyRendererVanilla());
 		}
 	}
 	
