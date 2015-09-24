@@ -338,7 +338,7 @@ public class SkyRendererVanilla extends IRenderHandler {
     	GlStateManager.enableAlpha();
     }
     
-    protected void renderStellar(int pass, float partialTicks, Tessellator tessellator, WorldRenderer worldrenderer) {
+    protected void renderStellar(int pass, float partialTicks, Tessellator tessellator, WorldRenderer worldrenderer, float red, float green, float blue) {
     	GlStateManager.enableBlend();
     	GlStateManager.disableFog();
     	GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0);
@@ -405,7 +405,7 @@ public class SkyRendererVanilla extends IRenderHandler {
     
     protected void renderSkyOverlay(int pass, float partialTicks, Tessellator tessellator, WorldRenderer worldrenderer, float red, float green, float blue) {
         GlStateManager.disableTexture2D();
-        GlStateManager.depthMask(false);
+        GlStateManager.depthMask(false); 
     	GlStateManager.color(0.0F, 0.0F, 0.0F);
         double d0 = mc.thePlayer.getPositionEyes(partialTicks).yCoord - theWorld.getHorizon();
 
@@ -499,7 +499,7 @@ public class SkyRendererVanilla extends IRenderHandler {
 
             this.renderSkyBg(pass, partialTicks, tessellator, worldrenderer, red, green, blue);
             this.renderSkyGlow(pass, partialTicks, tessellator, worldrenderer);
-            this.renderStellar(pass, partialTicks, tessellator, worldrenderer);
+            this.renderStellar(pass, partialTicks, tessellator, worldrenderer, red, green, blue);
             this.renderSkyOverlay(pass, partialTicks, tessellator, worldrenderer, red, green, blue);
         }
 	}

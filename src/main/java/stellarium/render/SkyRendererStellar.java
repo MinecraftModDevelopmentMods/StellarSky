@@ -1,5 +1,7 @@
 package stellarium.render;
 
+import java.util.Random;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -12,8 +14,10 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
+import stellarium.stellars.Color;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
+import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
@@ -31,26 +35,24 @@ public class SkyRendererStellar extends SkyRendererVanilla {
     private EVector difm = new EVector(3);
     private EVector difm2 = new EVector(3);
     
+    private Random random = new Random();
+    
     protected void renderStellarRaw(int pass, float partialTicks, Tessellator tessellator, WorldRenderer worldRenderer, float red, float green, float blue) {
-    	GL11.glPushMatrix();
+    	this.preRender();
+    	
         float weatherEffect = 1.0F - theWorld.getRainStrength(partialTicks);
         float bglight=red+blue+green;
         
-       
-        GL11.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); //e,n,z
+        GlStateManager.translate(0.0F, 0.0F, 0.0F);
+        GlStateManager.rotate(-90.0f, 1.0f, 0.0f, 0.0f); //e,n,z
         
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, weatherEffect);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, weatherEffect);
         
+        double time = (double)theWorld.getWorldTime() + partialTicks;          
         
-        double time = (double)theWorld.getWorldTime() + partialTicks;
-                   
+        this.renderStar(bglight, weatherEffect, time, tessellator, worldRenderer);
         
-        //this.RenderStar(bglight, weatherEffect, time);
-        
-        
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-        
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, weatherEffect);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, weatherEffect);
 
         
         //Rendering Sun
@@ -105,12 +107,7 @@ public class SkyRendererStellar extends SkyRendererVanilla {
 
         	}
         }
-      
-        
-        
-               
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-        
+                       
         renderEngine.bindTexture(locationhalolunePng);
         
         EVector posm = new EVector(3);
@@ -129,9 +126,9 @@ public class SkyRendererStellar extends SkyRendererVanilla {
     	difm.set(VecMath.mult(sizem, difm));
     	difm2.set(VecMath.mult(sizem, difm2));
     	
-    	float alpha=Optics.GetAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.Mag,bglight);
+    	float alpha=Optics.GetAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.Mag, bglight);
     	
-        GL11.glColor4d(1.0, 1.0, 1.0, weatherEffect*alpha);
+        GlStateManager.color(1.0f, 1.0f, 1.0f, weatherEffect*alpha / 100 / 100);
         
         worldRenderer.startDrawingQuads();
         worldRenderer.addVertexWithUV(VecMath.getX(posm)+VecMath.getX(difm), VecMath.getY(posm)+VecMath.getY(difm), VecMath.getZ(posm)+VecMath.getZ(difm),0.0,0.0);
@@ -154,7 +151,7 @@ public class SkyRendererStellar extends SkyRendererVanilla {
         		double longdd=(double)longcd/(double)longn;
         		double latdd=1.0-(double)(latc+1)/(double)latn;
         		
-                GL11.glColor4d(1.0, 1.0, 1.0, (weatherEffect*moonilum[longc][latc]-4.0f*bglight)*2.0f);
+                GlStateManager.color(1.0f, 1.0f, 1.0f, (float) ((weatherEffect*moonilum[longc][latc]-4.0f*bglight)*2.0f));
             	
                 worldRenderer.startDrawingQuads();
                 worldRenderer.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), Spmath.fmod(longd+0.5, 1.0), latd);
@@ -165,12 +162,87 @@ public class SkyRendererStellar extends SkyRendererVanilla {
         	}
         }
         //Moon
+        this.postRender();
     }
     
-    protected void renderStellar(int pass, float partialTicks, Tessellator tessellator, WorldRenderer worldrenderer) {
+    protected void preRender() {
     	GlStateManager.enableBlend();
+    	GlStateManager.disableAlpha();
     	GlStateManager.disableFog();
-    	GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0);
+    	GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE, GL11.GL_ZERO);
+        GlStateManager.depthMask(false);
+        
+        GlStateManager.pushMatrix();
+    }
+    
+    protected void postRender() {
+        GlStateManager.popMatrix();
+
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableFog();
+        GlStateManager.depthMask(true);
+    }
+    
+	public void renderStar(float bglight, float weathereff, double time, Tessellator tessellator, WorldRenderer worldRenderer){				
+		
+		GlStateManager.enableColorMaterial();
+		renderEngine.bindTexture(locationStarPng);
+		
+		EVector pos = new EVector(3);
+		
+        	worldRenderer.startDrawingQuads();
+            for(int i=0; i<BrStar.NumStar; i++){
+            	if(BrStar.stars[i].unable) continue;
+//        	GL11.((7-Star.stars[i].Mag)*30.0f,(7-Star.stars[i].Mag)*30.0f,(7-Star.stars[i].Mag)*30.0f);
+            	
+            	BrStar star=BrStar.stars[i];
+            	
+            	pos.set(VecMath.normalize(star.AppPos));
+            	float Mag=star.App_Mag;
+            	float B_V=star.App_B_V;
+            	
+            	if(Mag > StellarSky.getManager().Mag_Limit)
+            		continue;
+            	
+            	float Turb = StellarSky.getManager().Turb *(float) random.nextGaussian();
+            	Mag+=Turb;
+            	
+            	if(VecMath.getZ(pos)<0) continue;
+            	
+            	float size=0.5f;
+            	float alpha=Optics.GetAlphaFromMagnitude(Mag, bglight);
+            	
+            	dif.set(CrossUtil.cross(pos, new EVector(0.0,0.0,1.0)));
+            	if(Spmath.getD(VecMath.size2(dif)) < 0.01)
+            		dif.set(CrossUtil.cross(pos, new EVector(0.0,1.0,0.0)));
+            	dif.set(VecMath.normalize(dif));
+            	dif2.set((IValRef)CrossUtil.cross(dif, pos));
+            	pos.set(VecMath.mult(100.0, pos));
+            	
+            	dif.set(VecMath.mult(size, dif));
+            	dif2.set(VecMath.mult(size, dif2));
+            	
+            	Color c=Color.GetColor(B_V);
+            	
+            	worldRenderer.setColorRGBA(c.r, c.g, c.b, (int)(weathereff*alpha*255.0));
+            	worldRenderer.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
+            	worldRenderer.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2),1.0,0.0);
+            	worldRenderer.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif),1.0,1.0);
+            	worldRenderer.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2),0.0,1.0);
+            }
+            
+            tessellator.draw();
+            GlStateManager.disableColorMaterial();
+	}
+    
+	@Override
+    protected void renderStellar(int pass, float partialTicks, Tessellator tessellator, WorldRenderer worldrenderer, float red, float green, float blue) {
+		this.renderStellarRaw(pass, partialTicks, tessellator, worldrenderer, red, green, blue);
+    	/*GlStateManager.enableBlend();
+    	GlStateManager.disableFog();
+    	GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE, GL11.GL_ZERO);
         GlStateManager.depthMask(false);
         
         GlStateManager.pushMatrix();
@@ -189,7 +261,7 @@ public class SkyRendererStellar extends SkyRendererVanilla {
         tessellator.draw();
         stellarDepth = 20.0F;
         this.renderEngine.bindTexture(locationMoonPng);
-        int k = theWorld.getMoonPhase();
+        int k = theWorld.getMoonPhase(); 
         int l = k % 4;
         int i1 = k / 4 % 2;
         float red5 = (float)(l + 0) / 4.0F;
@@ -231,6 +303,6 @@ public class SkyRendererStellar extends SkyRendererVanilla {
         GlStateManager.disableBlend();
         GlStateManager.enableFog();
         GlStateManager.popMatrix();
-        GlStateManager.depthMask(true);
+        GlStateManager.depthMask(true);*/
     }	
 }

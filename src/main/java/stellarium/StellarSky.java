@@ -18,7 +18,7 @@ public class StellarSky {
 	
 		public static final String modid = "stellarsky";
 		public static final String name = "Stellar Sky";
-		public static final String version = "0.1.10";
+		public static final String version = "0.1.11[1.8]";
 
         // The instance of Stellarium
         @Instance(StellarSky.modid)
