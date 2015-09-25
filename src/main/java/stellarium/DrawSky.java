@@ -266,19 +266,28 @@ public class DrawSky extends IRenderHandler {
           
             
             //Rendering Moon
+            EVector posm = new EVector(3);
+            
+            posm.set(ExtinctionRefraction.Refraction(StellarSky.getManager().Moon.GetPosition(), true));
+            double sizem=StellarSky.getManager().Moon.Radius.asDouble()/Spmath.getD(VecMath.size(posm));
+        	
+            double difactor = 0.8 / 180.0 * Math.PI / sizem;
+        	difactor = difactor * difactor / Math.PI;
+        	
+        	sizem *= (98.0*5.0);
             
             int latn=StellarSky.getManager().ImgFrac, longn=2*StellarSky.getManager().ImgFrac;
             EVector moonvec[][];
-            double moonilum[][];
+            float moonilum[][];
             moonvec=new EVector[longn][latn+1];
-            moonilum=new double[longn][latn+1];
+            moonilum=new float[longn][latn+1];
             EVector Buf = new EVector(3);
             EVector Buff = new EVector(3);
             int latc, longc;
             for(longc=0; longc<longn; longc++){
             	for(latc=0; latc<=latn; latc++){
             		Buf.set(StellarSky.getManager().Moon.PosLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0, Transforms.yr));
-            		moonilum[longc][latc]=StellarSky.getManager().Moon.Illumination(Buf);
+            		moonilum[longc][latc]=(float) (StellarSky.getManager().Moon.Illumination(Buf) * difactor);
             		Buf.set(StellarSky.getManager().Moon.PosLocalG(Buf));
             		Buf.set(VecMath.mult(50000.0, Buf));
             		Buff.set(VecMath.getX(Buf),VecMath.getY(Buf),VecMath.getZ(Buf));
@@ -290,7 +299,7 @@ public class DrawSky extends IRenderHandler {
             		moonvec[longc][latc] = new EVector(3);
             		moonvec[longc][latc].set(ExtinctionRefraction.Refraction(ref, true));
             		
-            		 if(VecMath.getZ(moonvec[longc][latc])<0.0f) moonilum[longc][latc]=0.0;
+            		 if(VecMath.getZ(moonvec[longc][latc])<0.0f) moonilum[longc][latc]=0.0f;
 
             	}
             }
@@ -312,13 +321,8 @@ public class DrawSky extends IRenderHandler {
             float f17 = (float)(i1 + 1) / 2.0F;*/
           
             
-            EVector posm = new EVector(3);
-            
-            
-            posm.set(ExtinctionRefraction.Refraction(StellarSky.getManager().Moon.GetPosition(), true));
             
             if(VecMath.getZ(posm)>0.0f){
-            double sizem=StellarSky.getManager().Moon.Radius.asDouble()/Spmath.getD(VecMath.size(posm))*98.0*5.0;
            
             posm.set(VOp.normalize(posm));
         	difm.set(VOp.normalize(CrossUtil.cross((IEVector)posm, (IEVector)new EVector(0.0,0.0,1.0))));
@@ -328,7 +332,7 @@ public class DrawSky extends IRenderHandler {
         	difm.set(VecMath.mult(sizem, difm));
         	difm2.set(VecMath.mult(sizem, difm2));
         	
-        	float alpha=Optics.GetAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.Mag,bglight);
+        	float alpha=Optics.GetAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.Mag-2.5*Math.log10(difactor * 0.1),bglight);
         	
             GL11.glColor4d(1.0, 1.0, 1.0, f4*alpha);
             
@@ -343,6 +347,7 @@ public class DrawSky extends IRenderHandler {
         	
             renderEngine.bindTexture(locationMoonPng);
             
+            tessellator1.startDrawingQuads();
             
             for(longc=0; longc<longn; longc++){
             	for(latc=0; latc<latn; latc++){
@@ -353,17 +358,15 @@ public class DrawSky extends IRenderHandler {
             		double longdd=(double)longcd/(double)longn;
             		double latdd=1.0-(double)(latc+1)/(double)latn;
             		
-                    GL11.glColor4d(1.0, 1.0, 1.0, (f4*moonilum[longc][latc]-4.0f*bglight)*2.0f);
-                	
-                    tessellator1.startDrawingQuads();
+                	tessellator1.setColorRGBA_F(1.0f, 1.0f, 1.0f, (f4*moonilum[longc][latc]-4.0f*bglight)*2.0f);
                     tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), Spmath.fmod(longd+0.5, 1.0), latd);
                 	tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc]), Spmath.fmod(longdd+0.5,1.0), latd);
                 	tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1]), Spmath.fmod(longdd+0.5, 1.0), latdd);
                 	tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1]), Spmath.fmod(longd+0.5,1.0), latdd);
-                    tessellator1.draw();
             	}
             }
         	
+            tessellator1.draw();
             
            /* tessellator1.startDrawingQuads();
             tessellator1.addVertexWithUV((double)(-f10), -100.0D, (double)1.0, (double)f16, (double)f17);
