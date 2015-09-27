@@ -11,39 +11,60 @@ import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
 
 public class StellarManager {
-		
+	
+	public final double AU=1.496e+8;
+
 	public Sun Sun=new Sun();
 	public Earth Earth=new Earth();
 	public Moon Moon=new Moon();
-	public Planet Mercury=new Planet();
-	public Planet Venus=new Planet();
-	public Planet Mars=new Planet();
-	public Planet Jupiter=new Planet();
-	public Planet Saturn=new Planet();
-	public Planet Uranus=new Planet();
-	public Planet Neptune=new Planet();
 	
+	private Planet Mercury=new Planet();
+	private Planet Venus=new Planet();
+	private Planet Mars=new Planet();
+	private Planet Jupiter=new Planet();
+	private Planet Saturn=new Planet();
+	private Planet Uranus=new Planet();
+	private Planet Neptune=new Planet();
 	
-	public final double AU=1.496e+8;
-	
-	public final int frac=4;
-	
-	
-	public Side side;
-	
-	
+	public Planet[] planets = {Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune};
+		
+	private Side side;
+
+	//Client-Side Config
 	public float Mag_Limit;
-	
 	public int ImgFrac;
-	
 	public float Turb;
-
+	
+	//Common Config
 	public boolean serverEnabled;
-
 	public double day, year;
+	public int yearOffset, dayOffset;
+	public double tickOffset;
+	public double lattitudeOverworld, lattitudeEnder;
+	public double longitudeOverworld, longitudeEnder;
+	
+	
+	//View Mode
+	public int viewMode = 0;
 	
 	public StellarManager(Side pside){
-		side = pside;
+		this.side = pside;
+	}
+	
+	public Side getSide() {
+		return this.side;
+	}
+	
+	public Planet[] getPlanets() {
+		return this.planets;
+	}
+	
+	public void incrementViewMode() {
+		this.viewMode = (this.viewMode + 1) % 3;
+	}
+	
+	public int getViewMode() {
+		return this.viewMode;
 	}
 	
 	//Initialization Fuction
@@ -269,30 +290,29 @@ public class StellarManager {
     	System.out.println("[Stellarium]: "+"Stars Initialized!");
 	}
 	
+	public double getSkyTime(double currentTick) {
+		return currentTick + (yearOffset * year + dayOffset) * day + tickOffset;
+	}
+	
 	//Update Objects
-	public final void Update(double time, boolean IsOverWorld){
-		time=time+5000.0;
+	public final void Update(double time, boolean isOverWorld){
+		double longitude = isOverWorld? longitudeOverworld : longitudeEnder;
+		time = this.getSkyTime(time);
 		
         long cur = System.currentTimeMillis();
 		
 		//Must be first
-		Transforms.Update(time, IsOverWorld);
+		Transforms.Update(time, longitude, isOverWorld);
 		
 		//Must be second
 		Earth.Update();
 		
-		Mercury.Update();
-		Venus.Update();
-		Mars.Update();
-		Jupiter.Update();
-		Saturn.Update();
-		Uranus.Update();
-		Neptune.Update();
+		for(StellarObj obj : this.planets)
+			obj.Update();
 		
 		if(side == Side.CLIENT && BrStar.IsInitialized)
 			BrStar.UpdateAll();
 		
         //System.out.println(System.currentTimeMillis() - cur);
-
 	}
 }

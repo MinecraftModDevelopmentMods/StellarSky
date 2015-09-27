@@ -19,6 +19,8 @@ public class CommonProxy implements IProxy {
 	public StellarManager manager;
 	public Configuration config;
 	
+	private static final String serverConfigCategory = "serverconfig";
+	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) throws IOException {
 		manager = new StellarManager(Side.SERVER);
@@ -42,18 +44,46 @@ public class CommonProxy implements IProxy {
 
 	
 	public void setupConfig() {
-        Property serverEnabled=config.get(Configuration.CATEGORY_GENERAL, "Server_Enabled", true);
-        serverEnabled.comment="Enables Server-Side Sky change.\n";
+        Property serverEnabled=config.get(serverConfigCategory, "Server_Enabled", true);
+        serverEnabled.comment="Enables Server-Side Sky change.";
         manager.serverEnabled=serverEnabled.getBoolean(true);
         
-        Property day=config.get(Configuration.CATEGORY_GENERAL, "Day_Length", 24000.0);
-        day.comment="Length of a day, in a tick.\n";
-        manager.day=day.getDouble(24000.0);
+        Property day=config.get(serverConfigCategory, "Day_Length", 24000.0);
+        day.comment="Length of a day, in a tick.";
+        manager.day=day.getDouble();
         
-        Property year=config.get(Configuration.CATEGORY_GENERAL, "Year_Length", 365.25);
-        year.comment="Length of a year, in a day.\n";
-        manager.year=year.getDouble(365.25);
-	}
+        Property year=config.get(serverConfigCategory, "Year_Length", 365.25);
+        year.comment="Length of a year, in a day.";
+        manager.year=year.getDouble();
+        
+       	Property yearOffset = config.get(serverConfigCategory, "Year_Offset", 0);
+       	yearOffset.comment = "Year offset on world starting time.";
+       	manager.yearOffset = yearOffset.getInt();
+       	
+       	Property dayOffset = config.get(serverConfigCategory, "Day_Offset", 0);
+       	dayOffset.comment = "Day offset on world starting time.";
+       	manager.dayOffset = dayOffset.getInt();
+       	
+       	Property tickOffset = config.get(serverConfigCategory, "Tick_Offset", 5000.0);
+       	tickOffset.comment = "Tick offset on world starting time.";
+       	manager.tickOffset = tickOffset.getDouble();
+       	
+       	Property lattitudeOverworld = config.get(serverConfigCategory, "Lattitude_Overworld", 37.5);
+       	lattitudeOverworld.comment = "Lattitude on Overworld, in Degrees.";
+       	manager.lattitudeOverworld = lattitudeOverworld.getDouble();
+       	
+       	Property longitudeOverworld = config.get(serverConfigCategory, "Longitude_Overworld", 0.0);
+       	longitudeOverworld.comment = "Longitude on Overworld, in Degrees. (East is +)";
+       	manager.longitudeOverworld = longitudeOverworld.getDouble();
+       	
+       	Property lattitudeEnder = config.get(serverConfigCategory, "Lattitude_Ender", -52.5);
+       	lattitudeEnder.comment = "Lattitude on Ender, in Degrees.";
+       	manager.lattitudeEnder = lattitudeEnder.getDouble();
+       	
+       	Property longitudeEnder = config.get(serverConfigCategory, "Longitude_Ender", 180.0);
+       	longitudeEnder.comment = "Longitude on Ender, in Degrees. (East is +)";
+       	manager.longitudeEnder = longitudeEnder.getDouble();
+  	}
 
 	@Override
 	public World getDefWorld() {

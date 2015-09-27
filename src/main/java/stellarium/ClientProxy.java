@@ -16,6 +16,8 @@ import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
+	private static final String clientConfigCategory = "clientconfig";
+	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) throws IOException {
 		manager = new StellarManager(Side.CLIENT);
@@ -29,6 +31,8 @@ public class ClientProxy extends CommonProxy implements IProxy {
         
 		manager.InitializeStars();
 	
+		MinecraftForge.EVENT_BUS.register(new StellarClientHook());
+		FMLCommonHandler.instance().bus().register(new StellarKeyHook());
 	}
 
 	@Override
@@ -45,18 +49,18 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public void setupConfig() {
         super.setupConfig();
 		
-        Property Mag_Limit=config.get(Configuration.CATEGORY_GENERAL, "Mag_Limit", 5.0);
+        Property Mag_Limit=config.get(clientConfigCategory, "Mag_Limit", 5.0);
         Mag_Limit.comment="Limit of magnitude can be seen on naked eye.\n" +
         		"If you want to increase FPS, you can set this property a bit little (e.g. 0.3)\n" +
         		"and FPS will be exponentially improved";
         manager.Mag_Limit=(float)Mag_Limit.getDouble(5.0);
 
-        Property turb=config.get(Configuration.CATEGORY_GENERAL, "Twinkling(Turbulance)", 0.3);
+        Property turb=config.get(clientConfigCategory, "Twinkling(Turbulance)", 0.3);
         turb.comment="Degree of the twinkling effect of star.\n"
         		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect";
         manager.Turb=(float)turb.getDouble(0.3);
         
-        Property Moon_Frac=config.get(Configuration.CATEGORY_GENERAL, "Moon_Fragments_Number", 16);
+        Property Moon_Frac=config.get(clientConfigCategory, "Moon_Fragments_Number", 16);
         Moon_Frac.comment="Moon is drawn with fragments\n" +
         		"Less fragments will increase FPS, but the moon become more defective\n";
         manager.ImgFrac=Moon_Frac.getInt(16);

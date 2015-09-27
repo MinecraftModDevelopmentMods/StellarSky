@@ -29,7 +29,7 @@ public class StellarSky {
 	
 		public static final String modid = "stellarsky";
 		public static final String name = "Stellar Sky";
-		public static final String version = "0.1.12";
+		public static final String version = "0.1.13";
 
         // The instance of Stellarium
         @Instance(StellarSky.modid)
@@ -50,7 +50,6 @@ public class StellarSky {
         	
     		MinecraftForge.EVENT_BUS.register(eventHook);
     		FMLCommonHandler.instance().bus().register(tickHandler);
-    		
         }
         
         @EventHandler

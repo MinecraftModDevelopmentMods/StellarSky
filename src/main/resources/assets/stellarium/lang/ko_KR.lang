@@ -1,0 +1,8 @@
+﻿
+key.stellarsky=Stellar Sky
+key.stellarsky.viewmod.description=시각 표시 모드 바꾸기
+
+hud.text.year=제 %d년
+hud.text.day=#%4d일 (/%.2f)
+hud.text.tick=#%4d틱 (/%.2f)
+hud.text.time=%3d분 %02d초(/%d:%02d)

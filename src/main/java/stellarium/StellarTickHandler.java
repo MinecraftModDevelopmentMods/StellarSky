@@ -61,7 +61,7 @@ public class StellarTickHandler {
 				}
 			}
 			
-			if(!(StellarSky.getManager().side == Side.SERVER
+			if(!(StellarSky.getManager().getSide() == Side.SERVER
 					&& StellarSky.getManager().serverEnabled))
 				return;
 			
@@ -75,6 +75,7 @@ public class StellarTickHandler {
 
 	private void tryWakePlayers(WorldServer world) {
 		double dayLength = StellarSky.getManager().day;
+		double tickOffset = StellarSky.getManager().tickOffset;
 		
 		if(!StellarSky.getManager().serverEnabled)
 			dayLength = 24000.0;
@@ -82,8 +83,7 @@ public class StellarTickHandler {
         if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
         {
         	WorldInfo info = world.getWorldInfo();
-            double i = info.getWorldTime() + dayLength;
-            info.setWorldTime((long) (i - i % dayLength));
+            info.setWorldTime((long) (info.getWorldTime() + dayLength - tickOffset));
         }
 
         Iterator iterator = world.playerEntities.iterator();

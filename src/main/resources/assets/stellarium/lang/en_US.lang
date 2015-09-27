@@ -1,0 +1,8 @@
+﻿
+key.stellarsky=Stellar Sky
+key.stellarsky.viewmod.description=Change Time Info Text
+
+hud.text.year=Year %d
+hud.text.day=Day  #%-7d (/%.2f)
+hud.text.tick=Tick  #%-6d (/%.2f)
+hud.text.time=Time %3d:%02d    (/%d:%02d)
