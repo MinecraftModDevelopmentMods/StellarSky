@@ -1,8 +1,65 @@
 ﻿
+//Keys
 key.stellarsky=Stellar Sky
 key.stellarsky.viewmod.description=시각 표시 모드 바꾸기
 
+//HUD Texts
 hud.text.year=제 %d년
 hud.text.day=#%4d일 (/%.2f)
 hud.text.tick=#%4d틱 (/%.2f)
 hud.text.time=%3d분 %02d초(/%d:%02d)
+
+
+//Client Configs
+config.category.client=클라이언트 컨피그
+config.category.client.tooltip=클라이언트 수정 관련 컨피그로서, 대부분 시각적인 효과에 관련되어 있습니다.
+
+config.property.client.maglimit=한계등급
+config.property.client.maglimit.tooltip=맨눈으로 볼 수 있는 등급의 한계입니다. FPS를 좋게 하기 위해 0.3만큼 작게 설정하시는 것만으로도 FPS가 기하급수적으로 좋아질 것입니다.
+
+config.property.client.turbulance=별의 반짝임(대기 교란)
+config.property.client.turbulance.tooltip=별의 반짝임 효과의 정도를 나타내며, 별의 반짝임을 일으키는 대기의 교란이 얼마나 심할 것인가를 결정합니다.
+
+config.property.client.moonfrac=달의 조각 개수
+config.property.client.moonfrac.tooltip=달은 여러 조각으로 나뉘어 그려지게 됩니다. 조각 개수를 줄임으로서 FPS를 증가시킬 수 있지만, 그렇게 하면 달은 불완전하게 보일 것입니다.
+
+config.property.client.minutelength=1분의 길이
+config.property.client.minutelength.tooltip=Tick 단위로 나타낸 1분의 길이입니다. 현재 시간은 시간:분의 형식으로 HUD에 보여질 것입니다.
+
+config.property.client.hourlength=1시간의 길이
+config.property.client.hourlength.tooltip=Tick 단위로 나타낸 1시간의 길이입니다. 현재 시간은 시간:분의 형식으로 HUD에 보여질 것입니다.
+
+
+//Server Configs
+config.category.server=서버(일반[Common]) 컨피그
+config.category.server.tooltip=서버 수정 관련 컨피그입니다.
+
+config.property.server.serverenabled=서버 수정 허용 여부
+config.property.server.serverenabled.tooltip=서버에서의 하늘의 변화를 허용합니다.
+
+config.property.server.daylength=하루의 길이
+config.property.server.daylength.tooltip=Tick 단위로 나타낸 하루의 길이입니다.
+
+config.property.server.yearlength=1년의 길이
+config.property.server.yearlength.tooltip=하루 단위로 나타낸 1년의 길이입니다.
+
+config.property.server.yearoffset=연 단위 오프셋
+config.property.server.yearoffset.tooltip=월드 시작 시각의 연도를 나타냅니다.
+
+config.property.server.dayoffset=하루 단위 오프셋
+config.property.server.dayoffset.tooltip=월드 시작 시각이 1년 중 며칠째인지를 나타냅니다.
+
+config.property.server.tickoffset=Tick 단위 오프셋
+config.property.server.tickoffset.tooltip=월드 시작 시각이 하루 중 몇틱(Tick)째인지를 나타냅니다.
+
+config.property.server.lattitudeoverworld=오버월드의 위도
+config.property.server.lattitudeoverworld.tooltip=도 단위로 나타낸 오버월드의 위도입니다.
+
+config.property.server.longitudeoverworld=오버월드의 경도
+config.property.server.longitudeoverworld.tooltip=도 단위로 나타낸 오버월드의 경도로 동경이 +, 서경이 -입니다.
+
+config.property.server.lattitudeender=엔더의 위도
+config.property.server.lattitudeender.tooltip=도 단위로 나타낸 엔더의 위도입니다.
+
+config.property.server.longitudeender=엔더의 경도
+config.property.server.longitudeender.tooltip=도 단위로 나타낸 엔더의 경도로 동경이 +, 서경이 -입니다.

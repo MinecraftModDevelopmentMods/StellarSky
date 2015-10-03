@@ -24,7 +24,8 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.*;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version, dependencies="required-after:sciapi")
+@Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version,
+	dependencies="required-after:sciapi", guiFactory="stellarium.cfggui.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";
