@@ -83,7 +83,12 @@ public class StellarTickHandler {
         if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
         {
         	WorldInfo info = world.getWorldInfo();
-            info.setWorldTime((long) (info.getWorldTime() + dayLength - tickOffset));
+        	long worldTime = info.getWorldTime();
+        	double modifiedWorldTime = worldTime - worldTime % dayLength - tickOffset;
+        	while(modifiedWorldTime < worldTime)
+        		modifiedWorldTime += dayLength;
+        	
+            info.setWorldTime((long) modifiedWorldTime);
         }
 
         Iterator iterator = world.playerEntities.iterator();
