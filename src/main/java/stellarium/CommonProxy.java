@@ -46,7 +46,7 @@ public class CommonProxy implements IProxy {
 	public void setupConfig() {
         Property serverEnabled=config.get(serverConfigCategory, "Server_Enabled", true);
         serverEnabled.comment="Enables Server-Side Sky change.";
-        manager.serverEnabled=serverEnabled.getBoolean(true);
+        manager.serverEnabled=serverEnabled.getBoolean();
         
         Property day=config.get(serverConfigCategory, "Day_Length", 24000.0);
         day.comment="Length of a day, in a tick.";

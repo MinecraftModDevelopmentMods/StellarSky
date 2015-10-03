@@ -26,13 +26,13 @@ public class StellarClientHook {
 			int day = (int)Math.floor(date - yr * StellarSky.getManager().year);
 			int tick = (int)Math.floor((date - yr * StellarSky.getManager().year - day)*StellarSky.getManager().day);
 			
-			int second = tick / 20;
-			int minute = second / 60;
-			second %= 60;
+			int minute = (int)Math.floor(tick / StellarSky.getManager().minuteLength);
+			int hour = minute / StellarSky.getManager().anHourToMinute;
+			minute %= StellarSky.getManager().anHourToMinute;
 			
-			int totalSecond = (int)Math.floor(StellarSky.getManager().day / 20.0);
-			int totalMinute = totalSecond / 60;
-			totalSecond %= 60;
+			int totalminute = (int)Math.floor(StellarSky.getManager().day / StellarSky.getManager().minuteLength);
+			int totalhour = totalminute / StellarSky.getManager().anHourToMinute;
+			totalminute %= StellarSky.getManager().anHourToMinute;
 			
 			int yOffset = 0;
 			
@@ -41,7 +41,7 @@ public class StellarClientHook {
 			
 			if(viewMode == 2)
 				this.drawString(fontRenderer, "hud.text.tick", 5, 10*(yOffset++)+5, tick, StellarSky.getManager().day);
-			else this.drawString(fontRenderer, "hud.text.time", 5, 10*(yOffset++)+5, minute, second, totalMinute, totalSecond);
+			else this.drawString(fontRenderer, "hud.text.time", 5, 10*(yOffset++)+5, hour, minute, totalhour, totalminute);
 		}
 	}
 	

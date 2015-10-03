@@ -53,17 +53,25 @@ public class ClientProxy extends CommonProxy implements IProxy {
         Mag_Limit.comment="Limit of magnitude can be seen on naked eye.\n" +
         		"If you want to increase FPS, you can set this property a bit little (e.g. 0.3)\n" +
         		"and FPS will be exponentially improved";
-        manager.Mag_Limit=(float)Mag_Limit.getDouble(5.0);
+        manager.Mag_Limit=(float)Mag_Limit.getDouble();
 
         Property turb=config.get(clientConfigCategory, "Twinkling(Turbulance)", 0.3);
         turb.comment="Degree of the twinkling effect of star.\n"
         		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect";
-        manager.Turb=(float)turb.getDouble(0.3);
+        manager.Turb=(float)turb.getDouble();
         
         Property Moon_Frac=config.get(clientConfigCategory, "Moon_Fragments_Number", 16);
         Moon_Frac.comment="Moon is drawn with fragments\n" +
-        		"Less fragments will increase FPS, but the moon become more defective\n";
-        manager.ImgFrac=Moon_Frac.getInt(16);
+        		"Less fragments will increase FPS, but the moon become more defective";
+        manager.ImgFrac=Moon_Frac.getInt();
+        
+        Property minuteLength = config.get(clientConfigCategory, "Minute_Length", 20.0);
+        minuteLength.comment = "Length of minute in tick.";
+        manager.minuteLength = minuteLength.getDouble();
+        
+        Property hourToMinute = config.get(clientConfigCategory, "Hour_Length", 60);
+        hourToMinute.comment = "Length of hour in minute.";
+        manager.anHourToMinute = hourToMinute.getInt();
    	}
 	
 	@Override

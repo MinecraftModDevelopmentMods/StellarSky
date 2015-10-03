@@ -34,6 +34,8 @@ public class StellarManager {
 	public float Mag_Limit;
 	public int ImgFrac;
 	public float Turb;
+	public double minuteLength;
+	public int anHourToMinute;
 	
 	//Common Config
 	public boolean serverEnabled;
@@ -45,7 +47,7 @@ public class StellarManager {
 	
 	
 	//View Mode
-	public int viewMode = 0;
+	private int viewMode = 0;
 	
 	public StellarManager(Side pside){
 		this.side = pside;
