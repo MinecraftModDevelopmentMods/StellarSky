@@ -44,6 +44,8 @@ public class CommonProxy implements IProxy {
 
 	
 	public void setupConfig() {
+		config.setCategoryComment(serverConfigCategory, "Configurations for server modifications.");
+		
         Property serverEnabled=config.get(serverConfigCategory, "Server_Enabled", true);
         serverEnabled.comment="Enables Server-Side Sky change.";
         manager.serverEnabled=serverEnabled.getBoolean();

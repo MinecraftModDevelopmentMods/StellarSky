@@ -48,6 +48,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	@Override
 	public void setupConfig() {
         super.setupConfig();
+        
+        config.setCategoryComment(clientConfigCategory, "Configurations for client modifications.\n"
+        		+ "Most of them are for rendering/view.");
 		
         Property Mag_Limit=config.get(clientConfigCategory, "Mag_Limit", 5.0);
         Mag_Limit.comment="Limit of magnitude can be seen on naked eye.\n" +
