@@ -4,6 +4,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class StellarClientHook {
@@ -36,16 +37,25 @@ public class StellarClientHook {
 			
 			int yOffset = 0;
 			
-			this.drawString(fontRenderer, "hud.text.year", 5, 10*(yOffset++)+5, yr);
-			this.drawString(fontRenderer, "hud.text.day", 5, 10*(yOffset++)+5, day, StellarSky.getManager().year);
+			this.drawString(fontRenderer, "hud.text.year", 5, 10*(yOffset++)+5,
+					String.format("%d", yr));
+			this.drawString(fontRenderer, "hud.text.day", 5, 10*(yOffset++)+5,
+					String.format("%-7d", day),
+					String.format("%.2f", StellarSky.getManager().year));
 			
 			if(viewMode == 2)
-				this.drawString(fontRenderer, "hud.text.tick", 5, 10*(yOffset++)+5, tick, StellarSky.getManager().day);
-			else this.drawString(fontRenderer, "hud.text.time", 5, 10*(yOffset++)+5, hour, minute, totalhour, totalminute);
+				this.drawString(fontRenderer, "hud.text.tick", 5, 10*(yOffset++)+5,
+						String.format("%-6d", tick),
+						String.format("%.2f", StellarSky.getManager().day));
+			else this.drawString(fontRenderer, "hud.text.time", 5, 10*(yOffset++)+5,
+					String.format("%3d", hour), 
+					String.format("%02d", minute),
+					String.format("%3d", totalhour),
+					String.format("%02d", totalminute));
 		}
 	}
 	
-	private void drawString(FontRenderer fontRenderer, String str, int x, int y, Object... obj) {
-		fontRenderer.drawString(I18n.format(str, obj), x, y, 0xff888888);
+	private void drawString(FontRenderer fontRenderer, String str, int x, int y, String... obj) {
+		fontRenderer.drawString(I18n.format(str, (Object[])obj), x, y, 0xff888888);
 	}
 }

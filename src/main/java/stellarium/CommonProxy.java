@@ -107,7 +107,20 @@ public class CommonProxy implements IProxy {
        	longitudeEnder.setRequiresMcRestart(true);
        	longitudeEnder.setLanguageKey("config.property.server.longitudeender");
        	manager.longitudeEnder = longitudeEnder.getDouble();
-  	}
+       	
+       	Property moonSize = config.get(serverConfigCategory, "Moon_Size", 1.0);
+       	moonSize.comment = "Size of moon. (Default size is 1.0)";
+       	moonSize.setRequiresMcRestart(true);
+       	moonSize.setLanguageKey("config.property.server.moonsize");
+       	manager.moonSizeMultiplier = moonSize.getDouble();
+       	
+       	Property moonBrightness = config.get(serverConfigCategory, "Moon_Brightness", 1.0);
+       	moonBrightness.comment = "Brightness of moon. (Default brightness is 1.0)";
+       	moonBrightness.setRequiresMcRestart(true);
+       	moonBrightness.setLanguageKey("config.property.server.moonbrightness");
+       	manager.moonBrightnessMultiplier = moonBrightness.getDouble();
+       	
+	}
 
 	@Override
 	public World getDefWorld() {

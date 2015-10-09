@@ -4,10 +4,10 @@ key.stellarsky=Stellar Sky
 key.stellarsky.viewmod.description=시각 표시 모드 바꾸기
 
 //HUD Texts
-hud.text.year=제 %d년
-hud.text.day=#%4d일 (/%.2f)
-hud.text.tick=#%4d틱 (/%.2f)
-hud.text.time=%3d분 %02d초(/%d:%02d)
+hud.text.year=제 %1$s년
+hud.text.day=#%1$s일 (/%2$s)
+hud.text.tick=#%1$s틱 (/%2$s)
+hud.text.time=%1$s분 %2$s초(/%3$s:%4$s)
 
 
 //Client Configs
@@ -63,3 +63,9 @@ config.property.server.lattitudeender.tooltip=도 단위로 나타낸 엔더의 
 
 config.property.server.longitudeender=엔더의 경도
 config.property.server.longitudeender.tooltip=도 단위로 나타낸 엔더의 경도로 동경이 +, 서경이 -입니다.
+
+config.property.server.moonsize=달의 크기
+config.property.server.moonsize.tooltip=달의 크기를 나타냅니다. (기본값은 1.0입니다)
+
+config.property.server.moonbrightness=Brightness of Moon
+config.property.server.moonbrightness.tooltip=달의 밝기를 나타냅니다. (기본값은 1.0입니다)

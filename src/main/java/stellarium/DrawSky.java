@@ -277,7 +277,6 @@ public class DrawSky extends IRenderHandler {
             		moonvec[longc][latc].set(ExtinctionRefraction.Refraction(ref, true));
             		
             		 if(VecMath.getZ(moonvec[longc][latc])<0.0f) moonilum[longc][latc]=0.0f;
-
             	}
             }
 

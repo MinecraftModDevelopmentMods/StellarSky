@@ -4,10 +4,10 @@ key.stellarsky=Stellar Sky
 key.stellarsky.viewmod.description=Change Time Info Text
 
 //HUD Texts
-hud.text.year=Year %d
-hud.text.day=Day  #%-7d (/%.2f)
-hud.text.tick=Tick  #%-6d (/%.2f)
-hud.text.time=Time %3d:%02d    (/%d:%02d)
+hud.text.year=Year %1$s
+hud.text.day=Day  #%1$s (/%2$s)
+hud.text.tick=Tick  #%1$s (/%2$s)
+hud.text.time=Time %1$s:%2$s   (/%3$s:%4$s)
 
 
 //Client Configs
@@ -64,3 +64,9 @@ config.property.server.lattitudeender.tooltip=Lattitude on Ender, in Degrees.
 
 config.property.server.longitudeender=Longitude on Ender
 config.property.server.longitudeender.tooltip=Longitude on Ender, in Degrees. (East is +)
+
+config.property.server.moonsize=Size of Moon
+config.property.server.moonsize.tooltip=Size of moon. (Default size is 1.0)
+
+config.property.server.moonbrightness=Brightness of Moon
+config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brightness is 1.0)

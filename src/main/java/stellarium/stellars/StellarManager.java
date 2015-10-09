@@ -44,8 +44,8 @@ public class StellarManager {
 	public double tickOffset;
 	public double lattitudeOverworld, lattitudeEnder;
 	public double longitudeOverworld, longitudeEnder;
-	
-	
+	public double moonSizeMultiplier, moonBrightnessMultiplier;
+		
 	//View Mode
 	private int viewMode = 0;
 	
@@ -92,7 +92,7 @@ public class StellarManager {
 		Earth.AddSatellite(Moon);
 		Earth.Radius.set(4.2634e-5);
 		Earth.Mass=3.002458398e-6;
-		Moon.Radius.set(4e-5);
+		Moon.Radius.set(4e-5 * this.moonSizeMultiplier);
 		
 		//Initialization
 		//-Earth
@@ -111,7 +111,7 @@ public class StellarManager {
 		
 		//-Moon
 		System.out.println("[Stellarium]: "+"Initializing Moon...");
-		Moon.Albedo=0.12;
+		Moon.Albedo=0.12 * this.moonBrightnessMultiplier;
 		Moon.a0=0.00257184;
 		Moon.e0=0.0549006;
 		Moon.I0=5.14;
