@@ -41,20 +41,21 @@ public class StellarSky {
         
         public StellarEventHook eventHook = new StellarEventHook();
         public StellarTickHandler tickHandler = new StellarTickHandler();
+        public StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
         
         public static StellarManager getManager() { return proxy.manager; }
         
         @EventHandler
-        public void preInit(FMLPreInitializationEvent event) throws IOException{
-        	
+        public void preInit(FMLPreInitializationEvent event) {
         	proxy.preInit(event);
         	
     		MinecraftForge.EVENT_BUS.register(eventHook);
     		FMLCommonHandler.instance().bus().register(tickHandler);
+    		FMLCommonHandler.instance().bus().register(fmlEventHook);
         }
         
         @EventHandler
-        public void load(FMLInitializationEvent event) {
+        public void load(FMLInitializationEvent event) throws IOException {
         	proxy.load(event);
         }
         

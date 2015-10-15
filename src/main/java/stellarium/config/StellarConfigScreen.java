@@ -1,4 +1,4 @@
-package stellarium.cfggui;
+package stellarium.config;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class StellarConfigScreen extends GuiConfig {
 	}
 	
 	private static List<IConfigElement> getConfigElement() {
-		Configuration config = StellarSky.proxy.config;
+		Configuration config = StellarSky.proxy.getConfig();
 		
 		List<IConfigElement> retList = Lists.newArrayList();
 		for(String category : config.getCategoryNames())

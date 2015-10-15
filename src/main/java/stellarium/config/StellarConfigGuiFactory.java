@@ -1,4 +1,4 @@
-package stellarium.cfggui;
+package stellarium.config;
 
 import java.util.Set;
 

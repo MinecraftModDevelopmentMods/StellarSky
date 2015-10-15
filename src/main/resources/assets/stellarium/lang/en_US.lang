@@ -70,3 +70,6 @@ config.property.server.moonsize.tooltip=Size of moon. (Default size is 1.0)
 
 config.property.server.moonbrightness=Brightness of Moon
 config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brightness is 1.0)
+
+config.property.server.wakeangle=Solar azimuth for wake
+config.property.server.wakeangle.expl=Solar azimuth(height) angle to wake up. (in degrees)

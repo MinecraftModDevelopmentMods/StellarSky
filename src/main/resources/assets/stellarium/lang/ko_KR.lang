@@ -67,5 +67,8 @@ config.property.server.longitudeender.tooltip=도 단위로 나타낸 엔더의 
 config.property.server.moonsize=달의 크기
 config.property.server.moonsize.tooltip=달의 크기를 나타냅니다. (기본값은 1.0입니다)
 
-config.property.server.moonbrightness=Brightness of Moon
+config.property.server.moonbrightness=달의 밝기
 config.property.server.moonbrightness.tooltip=달의 밝기를 나타냅니다. (기본값은 1.0입니다)
+
+config.property.server.wakeangle=기상시 태양의 고도
+config.property.server.wakeangle.expl=일어날 때 태양이 위치할 고도를 나타냅니다. 도 단위로 나타내어집니다.
