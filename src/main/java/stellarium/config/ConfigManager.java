@@ -11,7 +11,7 @@ public class ConfigManager {
 	private Configuration config;
 	private Map<String, IConfigHandler> handlerMap = Maps.newHashMap();
 	
-	public void setConfigInstance(Configuration config) {
+	public ConfigManager(Configuration config) {
 		this.config = config;
 	}
 	

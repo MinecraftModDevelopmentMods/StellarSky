@@ -1,5 +1,7 @@
 package stellarium.sleepwake;
 
+import net.minecraft.world.World;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import sciapi.api.value.IValRef;
@@ -11,29 +13,39 @@ import stellarium.util.math.VecMath;
 
 public class LightWakeHandler implements IWakeHandler {
 
-	private double wakeAngle;
+	private double sinWakeAngle;
 	
 	@Override
-	public int getWakeTime(int sleepTime) {
-		// TODO Auto-generated method stub
-		return 0;
+	public long getWakeTime(World world, long sleepTime) {
+		double tickOffset = StellarSky.getManager().tickOffset;
+		double dayLength = StellarSky.getManager().day;
+		double longitudeEffect = StellarSky.getManager().longitudeOverworld / 360.0;
+		double wakeTimeFromNoon = this.wakeHourAngle() / (2.0 * Math.PI) * dayLength;
+    	double modifiedWorldTime = sleepTime - sleepTime % dayLength
+    			- dayLength * (longitudeEffect - 0.5) - tickOffset - wakeTimeFromNoon;
+    	while(modifiedWorldTime < sleepTime)
+    		modifiedWorldTime += dayLength;
+		return (long) modifiedWorldTime;
 	}
 
 	@Override
-	public boolean canSleep(boolean isDay, int sleepTime) {
-		return isDay;
+	public boolean canSleep(World world, int sleepTime) {
+		return !world.isDaytime() && Spmath.fmod(world.getCelestialAngle(1.0f) - 0.75f, 1.0f) > 0.5f;
 	}
 
 	@Override
 	public void setupConfig(Configuration config, String category) {
-		//Property lightWakeEnabled = config.get(category, key, defaultValue);
-		
-		// TODO Auto-generated method stub
 		Property wakeAngle = config.get(category, "Sun_Height_for_Wake", 10.0);
 		wakeAngle.comment = "Solar azimuth(height) angle to wake up. (in degrees)";
 		wakeAngle.setRequiresMcRestart(true);
 		wakeAngle.setLanguageKey("config.property.server.wakeangle");
-		this.wakeAngle = Spmath.Radians(wakeAngle.getDouble());
+	}
+	
+
+	@Override
+	public void loadFromConfig(Configuration config, String category) {
+		ConfigCategory cfgCategory = config.getCategory(category);
+		this.sinWakeAngle = Spmath.sind(cfgCategory.get("Sun_Height_for_Wake").getDouble());
 	}
 	
 	private double wakeHourAngle() {
@@ -49,7 +61,7 @@ public class LightWakeHandler implements IWakeHandler {
 	}
 	
 	private double wakeHourAngle(double dec, double lat) {
-		return Math.acos((Math.sin(this.wakeAngle) - Math.sin(dec) * Math.sin(lat)) / (Math.cos(dec) * Math.cos(lat)));
+		return Math.acos((this.sinWakeAngle - Math.sin(dec) * Math.sin(lat)) / (Math.cos(dec) * Math.cos(lat)));
 	}
 
 }

@@ -71,5 +71,14 @@ config.property.server.moonsize.tooltip=Size of moon. (Default size is 1.0)
 config.property.server.moonbrightness=Brightness of Moon
 config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brightness is 1.0)
 
+config.property.server.wakemode=Wake Mode
+config.property.server.wakemode.expl=You can choose first or last available wake time among wake properties.
+
+config.property.server.enablewake=Wake Property Enabled
+config.property.server.enablewake.expl=Enable this wake property.
+
 config.property.server.wakeangle=Solar azimuth for wake
 config.property.server.wakeangle.expl=Solar azimuth(height) angle to wake up. (in degrees)
+
+config.property.server.waketime=Wake Time from midnight
+config.property.server.waketime.expl=Wake-up time from midnight. (in tick)

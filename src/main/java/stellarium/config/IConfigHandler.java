@@ -6,7 +6,7 @@ public interface IConfigHandler {
 	
 	/**
 	 * Sets up configuration.
-	 * (Don't save configuration here)
+	 * (Don't call {@link Configuration#save()} here)
 	 * @param config the configuration instance
 	 * @param category the category to set up
 	 * */
@@ -14,7 +14,7 @@ public interface IConfigHandler {
 	
 	/**
 	 * Loads from configuration.
-	 * (Don't load configuration here)
+	 * (Don't call {@link Configuration#load()} here)
 	 * @param config the configuration instance
 	 * @param category the category to load
 	 * */

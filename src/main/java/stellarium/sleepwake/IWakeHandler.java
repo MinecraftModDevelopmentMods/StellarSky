@@ -1,29 +1,24 @@
 package stellarium.sleepwake;
 
-import net.minecraftforge.common.config.Configuration;
-import stellarium.stellars.StellarManager;
+import net.minecraft.world.World;
+import stellarium.config.IConfigHandler;
 
-public interface IWakeHandler {
+public interface IWakeHandler extends IConfigHandler {
 	
 	/**
 	 * Gets wake time for specific sleep time.
+	 * @param world the world to control wake and sleep
 	 * @param sleepTime specified sleep time in tick
 	 * @return wake time in tick
 	 * */
-	public int getWakeTime(int sleepTime);
+	public long getWakeTime(World world, long sleepTime);
 	
 	/**
 	 * Determine if it is able to sleep on specific time.
-	 * @param isDay flag for daytime
+	 * @param world the world to control wake and sleep
 	 * @param sleepTime specified sleep time in tick
 	 * @return flag to determine possibility of sleep
 	 * */
-	public boolean canSleep(boolean isDay, int sleepTime);
+	public boolean canSleep(World world, int sleepTime);
 	
-	/**
-	 * Sets up handler using configuration.
-	 * @param config the specified configuration
-	 * @param category the specified category
-	 * */
-	public void setupConfig(Configuration config, String category);
 }

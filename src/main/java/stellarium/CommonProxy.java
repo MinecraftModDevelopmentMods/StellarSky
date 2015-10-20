@@ -45,7 +45,7 @@ public class CommonProxy implements IProxy {
 	
 	public void setupConfigManager(File file) {
 		config = new Configuration(file);
-        cfgManager = new ConfigManager();
+        cfgManager = new ConfigManager(config);
         
         cfgManager.register(serverConfigCategory, new IConfigHandler() {
         	Property serverEnabled;
@@ -140,6 +140,7 @@ public class CommonProxy implements IProxy {
 		       	moonBrightness.setRequiresMcRestart(true);
 		       	moonBrightness.setLanguageKey("config.property.server.moonbrightness");
 		        propNameList.add(moonBrightness.getName());
+		        config.setCategoryPropertyOrder(category, propNameList);
 			}
 
 			@Override
