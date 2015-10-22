@@ -9,13 +9,13 @@ import stellarium.util.math.Spmath;
 
 public class AlarmWakeHandler implements IWakeHandler {
 	
-	private static final double DEFAULT_START_FROM_MIDNIGHT = 5000.0;
+	private static final int DEFAULT_OFFSET = 1000;
 	//Wake time from midnight
 	private int wakeTime;
 
 	@Override
 	public void setupConfig(Configuration config, String category) {
-		Property pWakeTime = config.get(category, "Wake_Time_from_midnight", 10.0);
+		Property pWakeTime = config.get(category, "Wake_Time_from_midnight", 6000);
 		pWakeTime.comment = "Wake-up time from midnight, in tick.";
 		pWakeTime.setRequiresMcRestart(true);
 		pWakeTime.setLanguageKey("config.property.server.waketime");
@@ -33,18 +33,19 @@ public class AlarmWakeHandler implements IWakeHandler {
 		double dayLength = StellarSky.getManager().day;
 		double longitudeEffect = StellarSky.getManager().longitudeOverworld / 360.0;
     	double modifiedWorldTime = sleepTime - sleepTime % dayLength
-    			- dayLength * longitudeEffect - tickOffset + this.wakeTime;
+    			- dayLength * longitudeEffect - tickOffset - DEFAULT_OFFSET + this.wakeTime;
     	while(modifiedWorldTime < sleepTime)
     		modifiedWorldTime += dayLength;
 		return (long) modifiedWorldTime;
 	}
 
 	@Override
-	public boolean canSleep(World world, int sleepTime) {
+	public boolean canSleep(World world, long sleepTime) {
 		double tickOffset = StellarSky.getManager().tickOffset;
 		double dayLength = StellarSky.getManager().day;
 		double longitudeEffect = StellarSky.getManager().longitudeOverworld / 360.0;
-    	double worldTimeOffset = sleepTime % dayLength + dayLength * longitudeEffect + tickOffset;
+    	double worldTimeOffset = sleepTime % dayLength + dayLength * longitudeEffect + tickOffset
+    			- DEFAULT_OFFSET;
     	worldTimeOffset = worldTimeOffset % dayLength;
     	
     	return !world.isDaytime() && worldTimeOffset > 0.5;

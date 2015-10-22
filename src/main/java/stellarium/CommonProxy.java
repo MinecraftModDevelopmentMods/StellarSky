@@ -15,6 +15,9 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.config.ConfigManager;
 import stellarium.config.IConfigHandler;
+import stellarium.sleepwake.AlarmWakeHandler;
+import stellarium.sleepwake.LightWakeHandler;
+import stellarium.sleepwake.SleepWakeManager;
 import stellarium.stellars.StellarManager;
 
 public class CommonProxy implements IProxy {
@@ -22,8 +25,10 @@ public class CommonProxy implements IProxy {
 	protected StellarManager manager;
 	protected Configuration config;
 	protected ConfigManager cfgManager;
+	public SleepWakeManager wakeManager = new SleepWakeManager();
 	
 	private static final String serverConfigCategory = "serverconfig";
+	private static final String serverConfigWakeCategory = "serverconfig.wake";
 	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
@@ -160,6 +165,10 @@ public class CommonProxy implements IProxy {
 			}
         	
         });
+        
+        cfgManager.register(serverConfigWakeCategory, wakeManager);
+        wakeManager.register("wakeByBright", new LightWakeHandler(), true);
+        wakeManager.register("wakeByAlarm", new AlarmWakeHandler(), false);
 	}
 	
 	public ConfigManager getCfgManager() {

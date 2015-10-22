@@ -84,11 +84,7 @@ public class StellarTickHandler {
         {
         	WorldInfo info = world.getWorldInfo();
         	long worldTime = info.getWorldTime();
-        	double modifiedWorldTime = worldTime - worldTime % dayLength - tickOffset;
-        	while(modifiedWorldTime < worldTime)
-        		modifiedWorldTime += dayLength;
-        	
-            info.setWorldTime((long) modifiedWorldTime);
+            info.setWorldTime(StellarSky.proxy.wakeManager.getWakeTime(world, worldTime));
         }
 
         Iterator iterator = world.playerEntities.iterator();

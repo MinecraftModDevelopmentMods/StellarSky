@@ -13,6 +13,7 @@ import stellarium.util.math.VecMath;
 
 public class LightWakeHandler implements IWakeHandler {
 
+	private static final int DEFAULT_OFFSET = 1000;
 	private double sinWakeAngle;
 	
 	@Override
@@ -22,14 +23,14 @@ public class LightWakeHandler implements IWakeHandler {
 		double longitudeEffect = StellarSky.getManager().longitudeOverworld / 360.0;
 		double wakeTimeFromNoon = this.wakeHourAngle() / (2.0 * Math.PI) * dayLength;
     	double modifiedWorldTime = sleepTime - sleepTime % dayLength
-    			- dayLength * (longitudeEffect - 0.5) - tickOffset - wakeTimeFromNoon;
+    			- dayLength * (longitudeEffect - 0.5) - tickOffset - wakeTimeFromNoon - DEFAULT_OFFSET;
     	while(modifiedWorldTime < sleepTime)
     		modifiedWorldTime += dayLength;
 		return (long) modifiedWorldTime;
 	}
 
 	@Override
-	public boolean canSleep(World world, int sleepTime) {
+	public boolean canSleep(World world, long sleepTime) {
 		return !world.isDaytime() && Spmath.fmod(world.getCelestialAngle(1.0f) - 0.75f, 1.0f) > 0.5f;
 	}
 

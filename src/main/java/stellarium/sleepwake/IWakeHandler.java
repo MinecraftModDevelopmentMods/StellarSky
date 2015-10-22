@@ -19,6 +19,6 @@ public interface IWakeHandler extends IConfigHandler {
 	 * @param sleepTime specified sleep time in tick
 	 * @return flag to determine possibility of sleep
 	 * */
-	public boolean canSleep(World world, int sleepTime);
+	public boolean canSleep(World world, long sleepTime);
 	
 }
