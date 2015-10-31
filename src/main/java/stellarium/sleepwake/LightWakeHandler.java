@@ -31,7 +31,7 @@ public class LightWakeHandler implements IWakeHandler {
 
 	@Override
 	public boolean canSleep(World world, long sleepTime) {
-		return !world.isDaytime() && Spmath.fmod(world.getCelestialAngle(1.0f) - 0.75f, 1.0f) > 0.5f;
+		return !world.isDaytime();
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class LightWakeHandler implements IWakeHandler {
 		SpCoord coord = new SpCoord();
 		coord.setWithVec(pvec);
 		
-		return this.wakeHourAngle(coord.y, radLatitude);
+		return this.wakeHourAngle(Spmath.Radians(coord.y), radLatitude);
 	}
 	
 	private double wakeHourAngle(double dec, double lat) {

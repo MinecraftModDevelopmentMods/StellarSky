@@ -66,7 +66,7 @@ public class StellarWorldProvider extends WorldProvider {
     	
     	sun.onUsed();
     	
-    	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,2*Math.PI));
+    	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,1.0));
     }
 
 	@Override
