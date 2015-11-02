@@ -72,7 +72,7 @@ config.property.server.moonbrightness=Brightness of Moon
 config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brightness is 1.0)
 
 config.property.server.wakemode=Wake Mode
-config.property.server.wakemode.expl=You can choose first or last available wake time among wake properties.
+config.property.server.wakemode.expl=You can choose earliest or latest available wake time among these wake properties.
 
 config.property.server.enablewake=Wake Property Enabled
 config.property.server.enablewake.expl=Enable this wake property.

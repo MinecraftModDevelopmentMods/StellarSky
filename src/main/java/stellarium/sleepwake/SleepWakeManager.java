@@ -21,9 +21,10 @@ public class SleepWakeManager implements IConfigHandler {
 	
 	@Override
 	public void setupConfig(Configuration config, String category) {
-		Property mode = config.get(category, "Wake_Mode", "last")
-				.setValidValues(new String[]{"first", "last"});
-		mode.comment = "You can choose first or last available wake time among wake properties";
+		Property mode = config.get(category, "Wake_Mode", "latest")
+				.setValidValues(new String[]{"earliest", "latest"});
+		mode.comment = "You can choose earliest or latest available wake time"
+				+ "among these wake properties";
 		mode.setRequiresMcRestart(true);
 		mode.setLanguageKey("config.property.server.wakemode");
 		
