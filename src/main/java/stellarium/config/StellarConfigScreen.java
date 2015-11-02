@@ -22,7 +22,8 @@ public class StellarConfigScreen extends GuiConfig {
 		
 		List<IConfigElement> retList = Lists.newArrayList();
 		for(String category : config.getCategoryNames())
-			retList.add(new ConfigElement(config.getCategory(category)));
+			if(!category.contains(Configuration.CATEGORY_SPLITTER))
+				retList.add(new ConfigElement(config.getCategory(category)));
 		return retList;
 	}
 
