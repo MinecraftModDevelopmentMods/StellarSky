@@ -60,6 +60,10 @@ public class StellarEventHook {
 	
 	@SubscribeEvent
 	public void onSleepInBed(PlayerSleepInBedEvent event) {
+		if(!StellarSky.proxy.wakeManager.isEnabled()) {
+			return;
+		}
+		
 		if(event.result == null || event.result == EnumStatus.OK || event.result == EnumStatus.NOT_POSSIBLE_NOW)
 		{
 			World world = event.entityPlayer.worldObj;
