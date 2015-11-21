@@ -77,7 +77,7 @@ public class StellarTickHandler {
 		double dayLength = StellarSky.getManager().day;
 		double tickOffset = StellarSky.getManager().tickOffset;
 		
-		if(!StellarSky.getManager().serverEnabled)
+		if(!StellarSky.getManager().serverEnabled || !StellarSky.proxy.wakeManager.isEnabled())
 			dayLength = 24000.0;
 		
         if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
