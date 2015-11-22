@@ -45,7 +45,9 @@ public class StellarTickHandler {
 	@SubscribeEvent
 	public void tickStart(TickEvent.WorldTickEvent e) {
 		if(e.phase == Phase.START){
-			if(e.world != null) {
+			if(e.world != null &&
+					StellarSky.getManager().serverEnabled &&
+					StellarSky.proxy.wakeManager.isEnabled()) {
 				WorldServer world = (WorldServer) e.world;
 				
 				world.updateAllPlayersSleepingFlag();
@@ -76,9 +78,6 @@ public class StellarTickHandler {
 	private void tryWakePlayers(WorldServer world) {
 		double dayLength = StellarSky.getManager().day;
 		double tickOffset = StellarSky.getManager().tickOffset;
-		
-		if(!StellarSky.getManager().serverEnabled || !StellarSky.proxy.wakeManager.isEnabled())
-			dayLength = 24000.0;
 		
         if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
         {
