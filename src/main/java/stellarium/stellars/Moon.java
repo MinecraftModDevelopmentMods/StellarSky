@@ -127,7 +127,7 @@ public class Moon extends Satellite {
 	
 	//Phase of the Moon(Update Needed)
 	public double GetPhase(){
-		return (1-Spmath.getD(BOp.div(VecMath.dot(EcRPos, EcRPosG), BOp.mult(VecMath.size(EcRPos), VecMath.size(EcRPosG)))))/2;
+		return (Math.PI-Math.acos(Spmath.getD(BOp.div(VecMath.dot(EcRPos, EcRPosG), BOp.mult(VecMath.size(EcRPos), VecMath.size(EcRPosG))))))/Math.PI;
 	}
 	
 	//Time phase for moon

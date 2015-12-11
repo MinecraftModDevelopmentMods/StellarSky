@@ -296,7 +296,7 @@ public class DrawSky extends IRenderHandler {
         	difm.set(VecMath.mult(sizem, difm));
         	difm2.set(VecMath.mult(sizem, difm2));
         	
-        	float alpha=Optics.GetAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.Mag-2.5*Math.log10(difactor * 0.1),bglight);
+        	float alpha=Optics.GetAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.Mag-2.5*Math.log10(difactor),bglight);
         	
             GL11.glColor4d(1.0, 1.0, 1.0, f4*alpha);
             
