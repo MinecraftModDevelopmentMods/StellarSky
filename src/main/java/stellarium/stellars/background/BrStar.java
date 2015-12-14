@@ -67,7 +67,7 @@ public class BrStar extends Star {
 
 	@Override
 	public void update() {
-		if(Mag>StellarSky.getManager().Mag_Limit) this.unable=true;
+		if(Mag>StellarSky.getManager().mag_Limit) this.unable=true;
 		appPos.set(GetAtmPosf());
 		float Airmass=(float) ExtinctionRefraction.airmass(appPos, true);
     	App_Mag= (Mag+Airmass*ExtinctionRefraction.ext_coeff_Vf);
@@ -138,7 +138,7 @@ public class BrStar extends Star {
 				(float)Spmath.btoi(star_value, 103, 1)
 				+Spmath.btoi(star_value, 105, 2)*0.01f);
 		
-		if(Mag>StellarSky.getManager().Mag_Limit-ExtinctionRefraction.ext_coeff_Vf)
+		if(Mag>StellarSky.getManager().mag_Limit-ExtinctionRefraction.ext_coeff_Vf)
 			unable=true;
 		
 		B_V=Spmath.sgnize(star_value[109],

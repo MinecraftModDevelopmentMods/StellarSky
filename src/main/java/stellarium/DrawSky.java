@@ -223,7 +223,7 @@ public class DrawSky extends IRenderHandler {
  
             EVector pos = new EVector(3);
             pos.set(StellarSky.getManager().Sun.getPosition());
-            double size=StellarSky.getManager().Sun.Radius/Spmath.getD(VecMath.size(pos))*99.0*20;
+            double size=StellarSky.getManager().Sun.radius/Spmath.getD(VecMath.size(pos))*99.0*20;
             pos.set(VecMath.normalize(pos));
         	dif.set(VOp.normalize(CrossUtil.cross((IEVector)pos, (IEVector)new EVector(0.0,0.0,1.0))));
         	dif2.set((IValRef)CrossUtil.cross((IEVector)dif, (IEVector)pos));
@@ -253,7 +253,7 @@ public class DrawSky extends IRenderHandler {
         	
         	sizem *= (98.0*5.0);
             
-            int latn=StellarSky.getManager().ImgFrac, longn=2*StellarSky.getManager().ImgFrac;
+            int latn=StellarSky.getManager().imgFrac, longn=2*StellarSky.getManager().imgFrac;
             EVector moonvec[][];
             float moonilum[][];
             moonvec=new EVector[longn][latn+1];
@@ -421,10 +421,10 @@ public class DrawSky extends IRenderHandler {
             	float Mag=star.App_Mag;
             	float B_V=star.App_B_V;
             	
-            	if(Mag > StellarSky.getManager().Mag_Limit)
+            	if(Mag > StellarSky.getManager().mag_Limit)
             		continue;
             	
-            	float Turb = StellarSky.getManager().Turb *(float) random.nextGaussian();
+            	float Turb = StellarSky.getManager().turb *(float) random.nextGaussian();
             	Mag+=Turb;
             	
             	if(VecMath.getZ(pos)<0) continue;
@@ -468,7 +468,7 @@ public class DrawSky extends IRenderHandler {
 		
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		
-		if(Mag > StellarSky.getManager().Mag_Limit) return;
+		if(Mag > StellarSky.getManager().mag_Limit) return;
 		if(VecMath.getZ(pos)<0) return;
 		
 		float size=0.6f;

@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarium.config.EnumViewMode;
 import stellarium.config.IConfigHandler;
 import stellarium.stellars.StellarManager;
 
@@ -49,7 +50,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		super.setupConfigManager(file);
 		cfgManager.register(clientConfigCategory, new IConfigHandler() {
 			
-			Property Mag_Limit, turb, Moon_Frac, minuteLength, hourToMinute, viewMode;
+			Property mag_Limit, turb, moon_Frac, minuteLength, hourToMinute, viewMode;
 			
 			@Override
 			public void setupConfig(Configuration config, String category) {
@@ -58,12 +59,12 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        config.setCategoryLanguageKey(category, "config.category.client");
 		        config.setCategoryRequiresMcRestart(category, false);
 				
-		        Mag_Limit=config.get(category, "Mag_Limit", 5.0);
-		        Mag_Limit.comment="Limit of magnitude can be seen on naked eye.\n" +
+		        mag_Limit=config.get(category, "Mag_Limit", 5.0);
+		        mag_Limit.comment="Limit of magnitude can be seen on naked eye.\n" +
 		        		"If you want to increase FPS, you can set this property a bit little (e.g. 0.3)\n" +
 		        		"and FPS will be exponentially improved";
-		        Mag_Limit.setRequiresMcRestart(false);
-		        Mag_Limit.setLanguageKey("config.property.client.maglimit");
+		        mag_Limit.setRequiresMcRestart(false);
+		        mag_Limit.setLanguageKey("config.property.client.maglimit");
 
 		        turb=config.get(category, "Twinkling(Turbulance)", 0.3);
 		        turb.comment="Degree of the twinkling effect of star.\n"
@@ -71,11 +72,11 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        turb.setRequiresMcRestart(false);
 		        turb.setLanguageKey("config.property.client.turbulance");
 		        
-		        Moon_Frac=config.get(category, "Moon_Fragments_Number", 16);
-		        Moon_Frac.comment="Moon is drawn with fragments\n" +
+		        moon_Frac=config.get(category, "Moon_Fragments_Number", 16);
+		        moon_Frac.comment="Moon is drawn with fragments\n" +
 		        		"Less fragments will increase FPS, but the moon become more defective";
-		        Moon_Frac.setRequiresMcRestart(false);
-		        Moon_Frac.setLanguageKey("config.property.client.moonfrac");
+		        moon_Frac.setRequiresMcRestart(false);
+		        moon_Frac.setLanguageKey("config.property.client.moonfrac");
 		        
 		        minuteLength = config.get(category, "Minute_Length", 20.0);
 		        minuteLength.comment = "Length of minute in tick. (The minute & hour is displayed on HUD as HH:MM format)";
@@ -88,38 +89,31 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        hourToMinute.setLanguageKey("config.property.client.hourlength");
 		        
 		        viewMode = config.get(category, "Mode_HUD_Time_View", "empty")
-		        		.setValidValues(new String[]{"hhmm", "empty", "tick"});
+		        		.setValidValues(EnumViewMode.names);
 		        viewMode.comment = "Mode for HUD time view.\n"
 		        		+ " 3 modes available: empty, hhmm, tick.\n"
 		        		+ "Can also be changed in-game using key.";
 		        viewMode.setRequiresMcRestart(false);
 		        viewMode.setLanguageKey("config.property.client.modeview");
 		        
-		        viewMode.setValue(viewMode.getValidValues()[manager.getViewMode()]);
+		        viewMode.setValue(manager.getViewMode().getName());
 		        
 		        
-		        List<String> propNameList = Arrays.asList(Mag_Limit.getName(),
-		        		Moon_Frac.getName(), turb.getName(), viewMode.getName(),
+		        List<String> propNameList = Arrays.asList(mag_Limit.getName(),
+		        		moon_Frac.getName(), turb.getName(), viewMode.getName(),
 		        		minuteLength.getName(), hourToMinute.getName());
 		        config.setCategoryPropertyOrder(category, propNameList);
 			}
 
 			@Override
 			public void loadFromConfig(Configuration config, String category) {
-		        manager.Mag_Limit=(float)Mag_Limit.getDouble();
-		        manager.Turb=(float)turb.getDouble();
-		        manager.ImgFrac=Moon_Frac.getInt();
+		        manager.mag_Limit=(float)mag_Limit.getDouble();
+		        manager.turb=(float)turb.getDouble();
+		        manager.imgFrac=moon_Frac.getInt();
 		        manager.minuteLength = minuteLength.getDouble();
 		        manager.anHourToMinute = hourToMinute.getInt();
 		        
-		        switch(viewMode.getString()) {
-		        case "hhmm":
-		        	manager.setViewMode(0);
-		        case "empty":
-			        manager.setViewMode(1);
-		        case "tick":
-			        manager.setViewMode(2);
-		        }
+		        manager.setViewMode(EnumViewMode.getModeForName(viewMode.getString()));
 			}
 			
 		});

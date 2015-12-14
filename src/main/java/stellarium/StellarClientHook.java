@@ -4,16 +4,16 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import stellarium.config.EnumViewMode;
 
 public class StellarClientHook {
 		
 	@SubscribeEvent
 	public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
 		if(event.type == RenderGameOverlayEvent.ElementType.ALL) {
-			int viewMode = StellarSky.getManager().getViewMode();
-			if(viewMode == 1)
+			EnumViewMode viewMode = StellarSky.getManager().getViewMode();
+			if(!viewMode.showOnHUD())
 				return;
 			
 			FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
@@ -43,7 +43,7 @@ public class StellarClientHook {
 					String.format("%-7d", day),
 					String.format("%.2f", StellarSky.getManager().year));
 			
-			if(viewMode == 2)
+			if(viewMode.showTick())
 				this.drawString(fontRenderer, "hud.text.tick", 5, 10*(yOffset++)+5,
 						String.format("%-6d", tick),
 						String.format("%.2f", StellarSky.getManager().day));

@@ -9,6 +9,9 @@ import stellarium.util.math.VecMath;
 
 public class Sun extends StellarObj{
 
+	public double radius;
+	public double mass;
+
 	//Update Sun
 	@Override
 	public void update() {

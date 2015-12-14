@@ -1,12 +1,10 @@
 package stellarium.stellars;
 
 import java.io.IOException;
-import java.security.Timestamp;
-import java.sql.Time;
 
 import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import stellarium.StellarSky;
+import stellarium.config.EnumViewMode;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
@@ -32,9 +30,9 @@ public class StellarManager {
 	private Side side;
 
 	//Client-Side Config
-	public float Mag_Limit;
-	public int ImgFrac;
-	public float Turb;
+	public float mag_Limit;
+	public int imgFrac;
+	public float turb;
 	public double minuteLength;
 	public int anHourToMinute;
 	
@@ -48,7 +46,7 @@ public class StellarManager {
 	public double moonSizeMultiplier, moonBrightnessMultiplier;
 		
 	//View Mode
-	private int viewMode = 0;
+	private EnumViewMode viewMode = EnumViewMode.EMPTY;
 	
 	public StellarManager(Side pside){
 		this.side = pside;
@@ -63,15 +61,15 @@ public class StellarManager {
 	}
 	
 	public void incrementViewMode() {
-		this.viewMode = (this.viewMode + 1) % 3;
+		this.viewMode = viewMode.nextMode();
 		StellarSky.proxy.getCfgManager().syncFromFields();
 	}
 	
-	public int getViewMode() {
+	public EnumViewMode getViewMode() {
 		return this.viewMode;
 	}
 	
-	public void setViewMode(int mode) {
+	public void setViewMode(EnumViewMode mode) {
 		this.viewMode = mode;
 	}
 	
@@ -88,8 +86,8 @@ public class StellarManager {
 		System.out.println("[Stellarium]: "+"Initializing Solar System...");
 		///Sun
 		System.out.println("[Stellarium]: "+"Initializing Sun...");
-		Sun.Radius=0.00465469;
-		Sun.Mass=1.0;
+		Sun.radius=0.00465469;
+		Sun.mass=1.0;
 		Sun.initialize();
 		
 		///Earth System
