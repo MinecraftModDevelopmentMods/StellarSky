@@ -40,7 +40,7 @@ public class CommonProxy implements IProxy {
 	@Override
 	public void load(FMLInitializationEvent event) throws IOException {
         cfgManager.syncFromFile();
-		manager.Initialize();
+		manager.initialize();
 	}
 
 	@Override

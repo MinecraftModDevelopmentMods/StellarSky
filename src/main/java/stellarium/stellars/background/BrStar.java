@@ -62,21 +62,21 @@ public class BrStar extends Star {
 	}
 	
 	public IValRef<EVector> GetAtmPosf(){
-		return ExtinctionRefraction.Refraction(GetPositionf(), true);
+		return ExtinctionRefraction.refraction(GetPositionf(), true);
 	}
 
 	@Override
-	public void Update() {
+	public void update() {
 		if(Mag>StellarSky.getManager().Mag_Limit) this.unable=true;
-		AppPos.set(GetAtmPosf());
-		float Airmass=(float) ExtinctionRefraction.Airmass(AppPos, true);
+		appPos.set(GetAtmPosf());
+		float Airmass=(float) ExtinctionRefraction.airmass(appPos, true);
     	App_Mag= (Mag+Airmass*ExtinctionRefraction.ext_coeff_Vf);
     	App_B_V= (B_V+Airmass*ExtinctionRefraction.ext_coeff_B_Vf);
 	}
 	
 	
 	//Load Stars
-	public static final void InitializeAll() throws IOException{
+	public static final void initializeAll() throws IOException{
 		//stars
 		stars=new BrStar[NumStar];
 		
@@ -110,7 +110,7 @@ public class BrStar extends Star {
 	    		k++;
 	    	}
 	    	j++;
-	    	stars[i].Initialize();
+	    	stars[i].initialize();
 	    }
 	    str=null;
 	    
@@ -121,11 +121,11 @@ public class BrStar extends Star {
 	public static void UpdateAll(){
 		int i;
 		for(i=0; i<NumStar; i++)
-			if(!stars[i].unable) stars[i].Update();
+			if(!stars[i].unable) stars[i].update();
 	}
 	
 	//Initialization in each star
-	public void Initialize(){
+	public void initialize(){
 		float RA, Dec;
 		
 		if(star_value[103]==' '){

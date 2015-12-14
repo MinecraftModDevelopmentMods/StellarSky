@@ -37,7 +37,7 @@ public class StellarTickHandler {
 			World world = StellarSky.proxy.getDefWorld();
 			
 			if(world != null)
-				StellarSky.getManager().Update(world.getWorldTime(),
+				StellarSky.getManager().update(world.getWorldTime(),
 						world.provider.isSurfaceWorld());
 		}
 	}
@@ -69,7 +69,7 @@ public class StellarTickHandler {
 			
 			if(e.world != null)
 			{
-				StellarSky.getManager().Update(e.world.getWorldTime(),
+				StellarSky.getManager().update(e.world.getWorldTime(),
 						e.world.provider.isSurfaceWorld());
 			}
 		}

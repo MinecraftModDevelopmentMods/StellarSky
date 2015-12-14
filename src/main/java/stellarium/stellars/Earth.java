@@ -11,15 +11,15 @@ public class Earth extends Planet {
 	
 	//Get Ecliptic Position EVectortor from Sun
 	
-	public IValRef<EVector> GetEcRPos(double yr) {
+	public IValRef<EVector> getEcRPos(double yr) {
 		this.satellites.get(0).EcRPosE.set(((Moon)this.satellites.get(0)).GetEcRPosE(yr));
-		return VecMath.sub(super.GetEcRPos(yr), VecMath.mult(MvsE, this.satellites.get(0).EcRPosE));
+		return VecMath.sub(super.getEcRPos(yr), VecMath.mult(MvsE, this.satellites.get(0).EcRPosE));
 	}
 	
 	//Update Earth(Have to be first)
-	public void Update(){
-		EcRPos.set(GetEcRPos(Transforms.yr));
-		this.satellites.get(0).Update();
+	public void update(){
+		EcRPos.set(getEcRPos(Transforms.yr));
+		this.satellites.get(0).update();
 	}
 	
 }

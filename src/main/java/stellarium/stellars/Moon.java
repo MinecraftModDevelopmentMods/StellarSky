@@ -38,7 +38,7 @@ public class Moon extends Satellite {
 	Rotate ri = new Rotate('X'), rom = new Rotate('Z'), rw = new Rotate('Z');
 
 	
-	public void Initialize(){
+	public void initialize(){
 		Pole=new EVector(0.0, 0.0, 1.0);
 		ri.setRAngle(-Spmath.Radians(I0));
 		rom.setRAngle(-Spmath.Radians(Omega0));
@@ -62,34 +62,35 @@ public class Moon extends Satellite {
 		w=w0+wd*yr;
 		Omega=Omega0+Omegad*yr;
 		M0=M0_0;
-		mean_mot=360.0*Math.sqrt(Parplanet.Mass/a)/a;
+		mean_mot=360.0*Math.sqrt(parPlanet.mass/a)/a;
 	}
 
 	
 	//Update Moon(Use After Earth is Updated)
-	public void Update(){
+	public void update(){
 		double yr=Transforms.yr;
 		
 		EcRPosE.set(GetEcRPosE(yr));
-		EcRPos.set(VecMath.add(Parplanet.GetEcRPos(yr),EcRPosE));
+		EcRPos.set(VecMath.add(parPlanet.getEcRPos(yr),EcRPosE));
 		EcRPosG.set(VecMath.sub(EcRPosE,Transforms.Zen));
 		
-		AppPos.set(GetAtmPos());
+		appPos.set(getAtmPos());
 		/*App_Mag=Mag+ExtinctionRefraction.Airmass(AppPos.z, true)*ExtinctionRefraction.ext_coeff_V;*/
-		this.UpdateMagnitude();
-		this.UpdateBrightness();
+		this.updateMagnitude();
 	}
 	
-	//Update magnitude
-	public void UpdateMagnitude(){
+	//Update magnitude and brightness
+	public void updateMagnitude(){
 		double dist=Spmath.getD(VecMath.size(EcRPosG));
 		double distS=Spmath.getD(VecMath.size(EcRPos));
 		double distE=Spmath.getD(VecMath.size(StellarSky.getManager().Earth.EcRPos));
-		double LvsSun=this.Radius.asDouble()*this.Radius.asDouble()*this.GetPhase()*distE*distE*Albedo*1.4/(dist*dist*distS*distS);
-		this.Mag=-26.74-2.5*Math.log10(LvsSun);
+		double LvsSun=this.radius.asDouble()*this.radius.asDouble()*this.getPhase()*distE*distE*albedo*1.4/(dist*dist*distS*distS);
+		this.mag=-26.74-2.5*Math.log10(LvsSun);
+		
+		this.brightness = distE*distE*this.albedo/(distS*distS)*10;
 	}
 	
-	public IValRef<EVector> GetPosition(){
+	public IValRef<EVector> getPosition(){
 		IValRef pvec=Transforms.ZTEctoNEc.transform((IValRef)EcRPosG);
 		pvec=Transforms.EctoEq.transform(pvec);
 		pvec=Transforms.NEqtoREq.transform(pvec);
@@ -98,41 +99,33 @@ public class Moon extends Satellite {
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)
-	public synchronized IValRef<EVector> PosLocalM(double longitude, double lattitude, double yr){
+	public synchronized IValRef<EVector> posLocalM(double longitude, double lattitude, double yr){
 		float longp=(float)Spmath.Radians(longitude+mean_mot*yr);
 		float lat=(float)Spmath.Radians(lattitude);
-		return VecMath.mult((IValRef)Radius, VecMath.add(VecMath.add(VecMath.mult(Spmath.sinf(lat), Pole), VecMath.mult(Spmath.cosf(lat)*Spmath.cosf(longp), PrMer0)), VecMath.mult(Spmath.cosf(lat)*Spmath.sinf(longp), East)));
+		return VecMath.mult((IValRef)radius, VecMath.add(VecMath.add(VecMath.mult(Spmath.sinf(lat), Pole), VecMath.mult(Spmath.cosf(lat)*Spmath.cosf(longp), PrMer0)), VecMath.mult(Spmath.cosf(lat)*Spmath.sinf(longp), East)));
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Ground (Update Needed)
 	//Parameter: PosLocalM Result
-	public synchronized IValRef<EVector> PosLocalG(IValRef<EVector> p){
+	public synchronized IValRef<EVector> posLocalG(IValRef<EVector> p){
 		return VecMath.add(EcRPosG, p);
-	}
-	
-	//Brightness for Parts (After Magnitude is Updated)
-	public void UpdateBrightness(){
-		brightness=(Math.pow(10.0, (-16-Mag)/2.5));
-		brightness/=this.GetPhase();
-		double Angsize= Spmath.getD(BOp.div((IValRef)Radius, VecMath.size(EcRPosG)));
-		brightness/=(Angsize*Angsize*3e+3);
 	}
 	
 	
 	//Illumination of Moon's Local Region (Update Needed)
 	//Parameter: PosLocalM Result
-	public double Illumination(EVector p){
+	public double illumination(EVector p){
 		return -Spmath.getD(BOp.div(VecMath.dot(EcRPos, p), BOp.mult(VecMath.size(EcRPos), VecMath.size(p))))*brightness;
 	}
 	
 	//Phase of the Moon(Update Needed)
-	public double GetPhase(){
+	public double getPhase(){
 		return (Math.PI-Math.acos(Spmath.getD(BOp.div(VecMath.dot(EcRPos, EcRPosG), BOp.mult(VecMath.size(EcRPos), VecMath.size(EcRPosG))))))/Math.PI;
 	}
 	
 	//Time phase for moon
-	public double Phase_Time(){
-		double k=Math.signum(Spmath.getD(VOp.dot(CrossUtil.cross((IValRef)EcRPosG, (IValRef)EcRPos), (IValRef)Pole)))*GetPhase();
+	public double phase_Time(){
+		double k=Math.signum(Spmath.getD(VOp.dot(CrossUtil.cross((IValRef)EcRPosG, (IValRef)EcRPos), (IValRef)Pole)))*getPhase();
 		if(k<0) k=k+2;
 		return k/2;
 	}

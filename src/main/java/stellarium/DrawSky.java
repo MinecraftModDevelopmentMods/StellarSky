@@ -222,7 +222,7 @@ public class DrawSky extends IRenderHandler {
             f10 = 30.0F;
  
             EVector pos = new EVector(3);
-            pos.set(StellarSky.getManager().Sun.GetPosition());
+            pos.set(StellarSky.getManager().Sun.getPosition());
             double size=StellarSky.getManager().Sun.Radius/Spmath.getD(VecMath.size(pos))*99.0*20;
             pos.set(VecMath.normalize(pos));
         	dif.set(VOp.normalize(CrossUtil.cross((IEVector)pos, (IEVector)new EVector(0.0,0.0,1.0))));
@@ -245,8 +245,8 @@ public class DrawSky extends IRenderHandler {
             //Rendering Moon
             EVector posm = new EVector(3);
             
-            posm.set(ExtinctionRefraction.Refraction(StellarSky.getManager().Moon.GetPosition(), true));
-            double sizem=StellarSky.getManager().Moon.Radius.asDouble()/Spmath.getD(VecMath.size(posm));
+            posm.set(ExtinctionRefraction.refraction(StellarSky.getManager().Moon.getPosition(), true));
+            double sizem=StellarSky.getManager().Moon.radius.asDouble()/Spmath.getD(VecMath.size(posm));
         	
             double difactor = 0.8 / 180.0 * Math.PI / sizem;
         	difactor = difactor * difactor / Math.PI;
@@ -263,9 +263,9 @@ public class DrawSky extends IRenderHandler {
             int latc, longc;
             for(longc=0; longc<longn; longc++){
             	for(latc=0; latc<=latn; latc++){
-            		Buf.set(StellarSky.getManager().Moon.PosLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0, Transforms.yr));
-            		moonilum[longc][latc]=(float) (StellarSky.getManager().Moon.Illumination(Buf) * difactor * 1.5);
-            		Buf.set(StellarSky.getManager().Moon.PosLocalG(Buf));
+            		Buf.set(StellarSky.getManager().Moon.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0, Transforms.yr));
+            		moonilum[longc][latc]=(float) (StellarSky.getManager().Moon.illumination(Buf) * difactor * 1.5);
+            		Buf.set(StellarSky.getManager().Moon.posLocalG(Buf));
             		Buf.set(VecMath.mult(50000.0, Buf));
             		Buff.set(VecMath.getX(Buf),VecMath.getY(Buf),VecMath.getZ(Buf));
             		IValRef ref=Transforms.ZTEctoNEc.transform((IEVector)Buff);
@@ -274,7 +274,7 @@ public class DrawSky extends IRenderHandler {
             		ref=Transforms.REqtoHor.transform(ref);
             		
             		moonvec[longc][latc] = new EVector(3);
-            		moonvec[longc][latc].set(ExtinctionRefraction.Refraction(ref, true));
+            		moonvec[longc][latc].set(ExtinctionRefraction.refraction(ref, true));
             		
             		 if(VecMath.getZ(moonvec[longc][latc])<0.0f) moonilum[longc][latc]=0.0f;
             	}
@@ -296,7 +296,7 @@ public class DrawSky extends IRenderHandler {
         	difm.set(VecMath.mult(sizem, difm));
         	difm2.set(VecMath.mult(sizem, difm2));
         	
-        	float alpha=Optics.GetAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.Mag-2.5*Math.log10(difactor),bglight);
+        	float alpha=Optics.getAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.mag-2.5*Math.log10(difactor),bglight);
         	
             GL11.glColor4d(1.0, 1.0, 1.0, f4*alpha);
             
@@ -417,7 +417,7 @@ public class DrawSky extends IRenderHandler {
             	
             	BrStar star=BrStar.stars[i];
             	
-            	pos.set(VecMath.normalize(star.AppPos));
+            	pos.set(VecMath.normalize(star.appPos));
             	float Mag=star.App_Mag;
             	float B_V=star.App_B_V;
             	
@@ -430,7 +430,7 @@ public class DrawSky extends IRenderHandler {
             	if(VecMath.getZ(pos)<0) continue;
             	
             	float size=0.5f;
-            	float alpha=Optics.GetAlphaFromMagnitude(Mag, bglight);
+            	float alpha=Optics.getAlphaFromMagnitude(Mag, bglight);
             	
             	dif.set(CrossUtil.cross(pos, new EVector(0.0,0.0,1.0)));
             	if(Spmath.getD(VecMath.size2(dif)) < 0.01)
@@ -442,7 +442,7 @@ public class DrawSky extends IRenderHandler {
             	dif.set(VecMath.mult(size, dif));
             	dif2.set(VecMath.mult(size, dif2));
             	
-            	Color c=Color.GetColor(B_V);
+            	Color c=Color.getColor(B_V);
             	
             	tessellator1.setColorRGBA(c.r, c.g, c.b, (int)(weathereff*alpha*255.0));
             	tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
@@ -461,7 +461,7 @@ public class DrawSky extends IRenderHandler {
 	EVector difm2 = new EVector(3);
 	
 	public void drawStellarObj(float bglight, float weathereff, StellarObj object) {
-		this.drawStellarObj(bglight, weathereff, object.AppPos, object.App_Mag);
+		this.drawStellarObj(bglight, weathereff, object.appPos, object.appMag);
 	}
 
 	public void drawStellarObj(float bglight, float weathereff, EVector pos, double Mag) {
@@ -472,7 +472,7 @@ public class DrawSky extends IRenderHandler {
 		if(VecMath.getZ(pos)<0) return;
 		
 		float size=0.6f;
-    	float alpha=Optics.GetAlphaFromMagnitude(Mag, bglight);
+    	float alpha=Optics.getAlphaFromMagnitude(Mag, bglight);
 		
 		pos.set(VecMath.normalize(pos));
 		

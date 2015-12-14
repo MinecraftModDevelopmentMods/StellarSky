@@ -22,7 +22,7 @@ public class Transforms {
 	
 	
 	//Set Transforms' time and world (stime:tick)
-	public static void Update(double stime, double longitude, boolean IsOverWorld){
+	public static void update(double stime, double longitude, boolean IsOverWorld){
 		yr = stime / StellarSky.getManager().day / StellarSky.getManager().year;
 		
 		Rot = 2 * Math.PI / StellarSky.getManager().day * (1 + 1 / StellarSky.getManager().year);
@@ -50,7 +50,7 @@ public class Transforms {
 		ZenD.set(REqtoNEq.transform(ZenD));
 		ZenD.set(EqtoEc.transform(ZenD));
 		ZenD.set(NEctoZTEc.transform(ZenD));
-		Zen.set(VOp.mult(StellarSky.getManager().Earth.Radius, ZenD));
+		Zen.set(VOp.mult(StellarSky.getManager().Earth.radius, ZenD));
 	}
 	
 	

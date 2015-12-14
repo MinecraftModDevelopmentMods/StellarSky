@@ -36,7 +36,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public void load(FMLInitializationEvent event) throws IOException {
 		super.load(event);
 		
-		manager.InitializeStars();
+		manager.initializeStars();
 	}
 
 	@Override
