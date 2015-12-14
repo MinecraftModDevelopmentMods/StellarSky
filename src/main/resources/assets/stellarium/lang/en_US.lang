@@ -29,6 +29,9 @@ config.property.client.minutelength.tooltip=Length of minute in tick. (The minut
 config.property.client.hourlength=Length of Hour
 config.property.client.hourlength.tooltip=Length of hour in minute. (The minute & hour is displayed on HUD as HH:MM format)
 
+config.property.client.modeview=Mode for HUD time view
+config.property.client.modeview.tooltip=Mode for HUD time view. 3 modes available: empty, hhmm, tick. Can also be changed in-game using key.
+
 
 
 //Server Configs

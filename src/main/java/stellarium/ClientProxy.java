@@ -49,7 +49,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		super.setupConfigManager(file);
 		cfgManager.register(clientConfigCategory, new IConfigHandler() {
 			
-			Property Mag_Limit, turb, Moon_Frac, minuteLength, hourToMinute;
+			Property Mag_Limit, turb, Moon_Frac, minuteLength, hourToMinute, viewMode;
 			
 			@Override
 			public void setupConfig(Configuration config, String category) {
@@ -87,9 +87,20 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        hourToMinute.setRequiresMcRestart(false);
 		        hourToMinute.setLanguageKey("config.property.client.hourlength");
 		        
+		        viewMode = config.get(category, "Mode_HUD_Time_View", "empty")
+		        		.setValidValues(new String[]{"hhmm", "empty", "tick"});
+		        viewMode.comment = "Mode for HUD time view.\n"
+		        		+ " 3 modes available: empty, hhmm, tick.\n"
+		        		+ "Can also be changed in-game using key.";
+		        viewMode.setRequiresMcRestart(false);
+		        viewMode.setLanguageKey("config.property.client.modeview");
+		        
+		        viewMode.setValue(viewMode.getValidValues()[manager.getViewMode()]);
+		        
+		        
 		        List<String> propNameList = Arrays.asList(Mag_Limit.getName(),
-		        		Moon_Frac.getName(), turb.getName(), minuteLength.getName(),
-		        		hourToMinute.getName());
+		        		Moon_Frac.getName(), turb.getName(), viewMode.getName(),
+		        		minuteLength.getName(), hourToMinute.getName());
 		        config.setCategoryPropertyOrder(category, propNameList);
 			}
 
@@ -100,6 +111,15 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        manager.ImgFrac=Moon_Frac.getInt();
 		        manager.minuteLength = minuteLength.getDouble();
 		        manager.anHourToMinute = hourToMinute.getInt();
+		        
+		        switch(viewMode.getString()) {
+		        case "hhmm":
+		        	manager.setViewMode(0);
+		        case "empty":
+			        manager.setViewMode(1);
+		        case "tick":
+			        manager.setViewMode(2);
+		        }
 			}
 			
 		});

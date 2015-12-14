@@ -6,6 +6,7 @@ import java.sql.Time;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import stellarium.StellarSky;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
@@ -63,10 +64,15 @@ public class StellarManager {
 	
 	public void incrementViewMode() {
 		this.viewMode = (this.viewMode + 1) % 3;
+		StellarSky.proxy.getCfgManager().syncFromFields();
 	}
 	
 	public int getViewMode() {
 		return this.viewMode;
+	}
+	
+	public void setViewMode(int mode) {
+		this.viewMode = mode;
 	}
 	
 	//Initialization Fuction

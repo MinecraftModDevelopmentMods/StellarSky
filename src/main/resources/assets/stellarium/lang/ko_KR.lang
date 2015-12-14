@@ -29,6 +29,10 @@ config.property.client.minutelength.tooltip=Tick 단위로 나타낸 1분의 길
 config.property.client.hourlength=1시간의 길이
 config.property.client.hourlength.tooltip=Tick 단위로 나타낸 1시간의 길이입니다. 현재 시간은 시간:분의 형식으로 HUD에 보여질 것입니다.
 
+config.property.client.modeview=HUD 시간 표시 모드
+config.property.client.modeview.tooltip=HUD에 시간이 어떻게 표시될지를 결정합니다. 'empty'(HUD 없음), 'hhmm'(시간:분), 'tick'(틱 표시) 중에 고르실 수 있습니다. 플레이 중에도 지정된 키를 눌러 바꿀 수 있습니다.
+
+
 
 //Server Configs
 config.category.server=서버(일반[Common]) 컨피그
