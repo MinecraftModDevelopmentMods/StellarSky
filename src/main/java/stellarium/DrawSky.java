@@ -423,8 +423,8 @@ public class DrawSky extends IRenderHandler {
 				if(Mag > StellarSky.getManager().mag_Limit)
 					continue;
 
-				float Turb = StellarSky.getManager().turb *(float) random.nextGaussian();
-				Mag+=Turb;
+//				float Turb = StellarSky.getManager().turb *(float) random.nextGaussian();
+//				Mag+=Turb;
 
 				if(VecMath.getZ(pos)<0) continue;
 
