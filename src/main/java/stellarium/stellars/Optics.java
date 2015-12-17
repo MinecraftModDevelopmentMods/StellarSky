@@ -19,11 +19,11 @@ public class Optics {
 
 		BrightnessContrast = 1.75f;
 		//BrightnessContrast needs to be added to the user config and set to StellarSky.getManager().brightnesscontrast
-		MagContrast = (float) ((float) ((Math.pow(2.512, (1/(BrightnessContrast * MagCompression))))));
 		MagOffset = 5.0f;
 		// MagOffset needs to be changed to whatever the maximum Magnitude of Venus is 
 		MagLimit = StellarSky.getManager().mag_Limit;
 		MagCompression = (float) 6.5f/MagLimit;
+		MagContrast = (float) ((float) ((Math.pow(2.512, (1/(BrightnessContrast * MagCompression))))));
 
 		Random randomno = new Random();
 		float NewTurb = StellarSky.getManager().turb * (5.0f * (float) randomno.nextFloat());
@@ -39,11 +39,11 @@ public class Optics {
 	public static float getAlphaFromMagnitude(double Mag, float bglight) {
 
 		BrightnessContrast = 1.75f;
-		MagContrast = (float) ((float) ((Math.pow(2.512, (1/(BrightnessContrast * MagCompression))))));
 		MagOffset = 5.0f;
 		MagLimit = StellarSky.getManager().mag_Limit;
 		MagCompression = (float) 6.5f/MagLimit;
 		MagCompressed = (float) ((Mag * MagCompression));
+		MagContrast = (float) ((float) ((Math.pow(2.512, (1/(BrightnessContrast * MagCompression))))));
 				
 		return (float) ((Math.pow(MagContrast, MagCompressed * -1.0f)) / (Math.pow(MagContrast, MagOffset * ((Math.pow(Math.log(bglight + 1.0f), MagOffset) / (Math.pow(Math.log(2.1333334f + 1.0f), MagOffset)))))) - (bglight / 2.1333334f)) ;
 		
