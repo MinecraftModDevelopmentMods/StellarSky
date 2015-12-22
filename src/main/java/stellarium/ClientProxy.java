@@ -17,11 +17,13 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.config.EnumViewMode;
 import stellarium.config.IConfigHandler;
+import stellarium.stellars.Optics;
 import stellarium.stellars.StellarManager;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
 	private static final String clientConfigCategory = "clientconfig";
+	private static final String clientConfigOpticsCategory = "clientconfig.optics";
 	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
@@ -66,7 +68,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        mag_Limit.setRequiresMcRestart(false);
 		        mag_Limit.setLanguageKey("config.property.client.maglimit");
 
-		        turb=config.get(category, "Twinkling(Turbulance)", 0.3);
+		        turb=config.get(category, "Twinkling(Turbulance)", 1.0);
 		        turb.comment="Degree of the twinkling effect of star.\n"
 		        		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect";
 		        turb.setRequiresMcRestart(false);
@@ -117,6 +119,8 @@ public class ClientProxy extends CommonProxy implements IProxy {
 			}
 			
 		});
+		
+		cfgManager.register(clientConfigOpticsCategory, Optics.instance);
 	}
 	
 	@Override

@@ -429,7 +429,7 @@ public class DrawSky extends IRenderHandler {
 				if(VecMath.getZ(pos)<0) continue;
 
 				float size=0.5f;
-				float alpha=Optics.getAlphaFromMagnitude(Mag, bglight);
+				float alpha=Optics.getAlphaFromMagnitudeSparkling(Mag, bglight);
 
 				dif.set(CrossUtil.cross(pos, new EVector(0.0,0.0,1.0)));
 				if(Spmath.getD(VecMath.size2(dif)) < 0.01)

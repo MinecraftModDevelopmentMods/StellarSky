@@ -32,6 +32,8 @@ config.property.client.hourlength.tooltip=Tick 단위로 나타낸 1시간의 �
 config.property.client.modeview=HUD 시간 표시 모드
 config.property.client.modeview.tooltip=HUD에 시간이 어떻게 표시될지를 결정합니다. 'empty'(HUD 없음), 'hhmm'(시간:분), 'tick'(틱 표시) 중에 고르실 수 있습니다. 플레이 중에도 지정된 키를 눌러 바꿀 수 있습니다.
 
+config.property.client.brcontrast=밝기 대조
+config.property.client.brcontrast.tooltip=이 속성은 밝은 별들과 어두운 별들 사이의 밝기 차이를 결정하며, 값이 클수록 밝기 차이가 작게 됩니다. 실제 세계는 1.0값을 갖지만, 기본값은 멋진 효과를 위해 1.75로 설정되어 있습니다.
 
 
 //Server Configs

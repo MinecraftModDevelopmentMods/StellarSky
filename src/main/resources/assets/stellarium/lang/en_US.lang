@@ -32,6 +32,8 @@ config.property.client.hourlength.tooltip=Length of hour in minute. (The minute 
 config.property.client.modeview=Mode for HUD time view
 config.property.client.modeview.tooltip=Mode for HUD time view. 3 modes available: empty, hhmm, tick. Can also be changed in-game using key.
 
+config.property.client.brcontrast=Brightness Contrast
+config.property.client.brcontrast.tooltip=Brightness Contrast determines the contrast between bright stars and faint stars. The bigger the value, the less difference between bright stars and faint stars. For real world, 1.0 is right. Though default value is 1.75 for visual effect.
 
 
 //Server Configs

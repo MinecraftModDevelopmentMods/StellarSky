@@ -2,51 +2,61 @@ package stellarium.stellars;
 
 import java.util.Random;
 
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import stellarium.StellarSky;
+import stellarium.config.IConfigHandler;
 
-public class Optics {
+public class Optics implements IConfigHandler {
 	
-	static float MagContrast;
-	static float MagOffset;
-	static float BrightnessContrast;
-	static float MagLimit;
-	static float MagCompression;
-	static float MagCompressed;
-	static float MagTurb;
+	// MagOffset needs to be changed to whatever the maximum Magnitude of Venus is 
+	private static final float magOffset = 5.0f;
+	private static final float magCompressionBase = 6.5f;
 	
+	private Property brightnessContrastProperty;
 	
-	public static float getAlphaFromMagnitude(float Mag, float bglight){
+	//BrightnessContrast needs to be added to the user config and set to StellarSky.getManager().brightnesscontrast
+	private double brightnessContrast = 1.75;
+	private float magCompression;
+	private float magContrast;
+	
+	private static Random randomTurbulance = new Random(3L);
+	
+	public static final Optics instance = new Optics();
+	
+	@Override
+	public void setupConfig(Configuration config, String category) {
+		brightnessContrastProperty = config.get(category, "Brightness_Contrast", 1.75);
+		brightnessContrastProperty.comment = "Brightness Contrast determines the contrast"
+				+ "between bright stars and faint stars."
+				+ "The bigger the value, the less difference between bright stars and faint stars."
+				+ "For real world, 1.0 is right. Though default value is 1.75 for visual effect.";
+		brightnessContrastProperty.setRequiresMcRestart(false);
+		brightnessContrastProperty.setLanguageKey("config.property.client.brcontrast");
+	}
 
-		BrightnessContrast = 1.75f;
-		//BrightnessContrast needs to be added to the user config and set to StellarSky.getManager().brightnesscontrast
-		MagContrast = (float) ((float) ((Math.pow(2.512, (1/(BrightnessContrast * MagCompression))))));
-		MagOffset = 5.0f;
-		// MagOffset needs to be changed to whatever the maximum Magnitude of Venus is 
-		MagLimit = StellarSky.getManager().mag_Limit;
-		MagCompression = (float) 6.5f/MagLimit;
-
-		Random randomno = new Random();
-		float NewTurb = StellarSky.getManager().turb * (5.0f * (float) randomno.nextFloat());
-
-		MagTurb = (float) ((NewTurb / (Mag + 3.46f)));	
-		MagCompressed = (float) ((Mag * MagCompression) + MagTurb);
-		
-		return (float) ((Math.pow(MagContrast, MagCompressed * -1.0f)) / (Math.pow(MagContrast, MagOffset * ((Math.pow(Math.log(bglight + 1.0f), MagOffset) / (Math.pow(Math.log(2.1333334f + 1.0f), MagOffset)))))) - (bglight / 2.1333334f)) ;
-		
-		
+	@Override
+	public void loadFromConfig(Configuration config, String category) {
+		this.brightnessContrast = brightnessContrastProperty.getDouble();
+		this.magCompression = magCompressionBase / StellarSky.getManager().mag_Limit;
+		this.magContrast = (float) Math.pow(2.512, (1.0/(brightnessContrast * magCompression)));
+	}
+	
+	public static float getAlphaFromMagnitudeSparkling(float Mag, float bglight){
+		double turb = StellarSky.getManager().turb * randomTurbulance.nextGaussian();
+		return getAlpha(Mag * instance.magCompression + turb, bglight);
 	}
 
 	public static float getAlphaFromMagnitude(double Mag, float bglight) {
-
-		BrightnessContrast = 1.75f;
-		MagContrast = (float) ((float) ((Math.pow(2.512, (1/(BrightnessContrast * MagCompression))))));
-		MagOffset = 5.0f;
-		MagLimit = StellarSky.getManager().mag_Limit;
-		MagCompression = (float) 6.5f/MagLimit;
-		MagCompressed = (float) ((Mag * MagCompression));
-				
-		return (float) ((Math.pow(MagContrast, MagCompressed * -1.0f)) / (Math.pow(MagContrast, MagOffset * ((Math.pow(Math.log(bglight + 1.0f), MagOffset) / (Math.pow(Math.log(2.1333334f + 1.0f), MagOffset)))))) - (bglight / 2.1333334f)) ;
-		
+		return getAlpha(Mag * instance.magCompression, bglight);
+	}
+	
+	public static final double constantBgDiv = Math.log(2.1333334f + 1.0f);
+	
+	private static float getAlpha(double magCompressed, float bglight) {
+		return (float) ((Math.pow(instance.magContrast,
+				- magCompressed - magOffset * ((Math.pow(Math.log(bglight + 1.0f)/constantBgDiv, magOffset)))))
+				- (bglight / 2.1333334f));
 	}
 	
 }
