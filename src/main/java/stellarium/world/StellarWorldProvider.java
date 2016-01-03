@@ -53,7 +53,7 @@ public class StellarWorldProvider extends WorldProvider {
     	if(StellarSky.getManager().Earth.EcRPos == null)
     		StellarSky.getManager().update(par1+par3, isSurfaceWorld());
     	
-    	IValRef<EVector> sun = EVectorSet.ins(3).getSTemp();
+    	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
     	
     	sun.set(StellarSky.getManager().Sun.getPosition());
     	sun.set(ExtinctionRefraction.refraction(sun, true));
@@ -63,8 +63,6 @@ public class StellarWorldProvider extends WorldProvider {
     	
     	if(VecMath.getCoord(sun, 0).asDouble()<0) h=Math.PI-h;
     	if(VecMath.getCoord(sun, 0).asDouble()>0 && h<0) h=h+2*Math.PI;
-    	
-    	sun.onUsed();
     	
     	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,1.0));
     }

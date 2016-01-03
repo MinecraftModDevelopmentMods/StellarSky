@@ -16,7 +16,7 @@ public class Optics implements IConfigHandler {
 	private Property brightnessContrastProperty;
 	
 	//BrightnessContrast needs to be added to the user config and set to StellarSky.getManager().brightnesscontrast
-	private double brightnessContrast = 1.75;
+	private double brightnessContrast = 1.5;
 	private float magCompression;
 	private float magContrast;
 	
@@ -44,7 +44,7 @@ public class Optics implements IConfigHandler {
 	
 	public static float getAlphaFromMagnitudeSparkling(float Mag, float bglight){
 		double turb = StellarSky.getManager().turb * randomTurbulance.nextGaussian();
-		return getAlpha(Mag * instance.magCompression + turb, bglight);
+		return getAlpha(Mag * instance.magCompression + turb * instance.brightnessContrast, bglight);
 	}
 
 	public static float getAlphaFromMagnitude(double Mag, float bglight) {

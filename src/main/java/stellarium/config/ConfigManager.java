@@ -1,35 +1,38 @@
 package stellarium.config;
 
+import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
+import org.apache.commons.lang3.tuple.Pair;
+
+import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.config.Configuration;
 
 public class ConfigManager {
 	
 	private Configuration config;
-	private Map<String, IConfigHandler> handlerMap = Maps.newHashMap();
+	private List<Pair<String, IConfigHandler>> handlerMap = Lists.newArrayList();
 	
 	public ConfigManager(Configuration config) {
 		this.config = config;
 	}
 	
 	public void register(String category, IConfigHandler cfgHandler) {
-		handlerMap.put(category, cfgHandler);
+		handlerMap.add(Pair.of(category, cfgHandler));
 	}
 	
 	public void onSyncConfig(boolean loadFromFile, boolean isLoadPhase) {
 		if(loadFromFile)
 			config.load();
 		
-		for(Map.Entry<String, IConfigHandler> entry : handlerMap.entrySet()) {
+		for(Pair<String, IConfigHandler> entry : handlerMap) {
 			entry.getValue().setupConfig(config, entry.getKey());
 		}
 		
 		if(isLoadPhase)
 		{
-			for(Map.Entry<String, IConfigHandler> entry : handlerMap.entrySet()) {
+			for(Pair<String, IConfigHandler> entry : handlerMap) {
 				entry.getValue().loadFromConfig(config, entry.getKey());
 			}
 		}

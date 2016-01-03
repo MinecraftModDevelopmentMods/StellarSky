@@ -56,7 +56,7 @@ public class Rotate extends ERotate {
 
 	@Override
 	public <V extends IEVector> IValRef<V> transform(IValRef<V> v) {
-		STempRef<V> ret = v.getParentSet().getSTemp();
+		V ret = v.getParentSet().getNew();
 		
 		switch(sig){
 		case 'X':
@@ -81,8 +81,6 @@ public class Rotate extends ERotate {
 					BOp.mult(VOp.getCoord(v, 1), (IValRef)c)));
 			break;
 		}
-		
-		v.onUsed();
 		
 		return ret;
 	}
