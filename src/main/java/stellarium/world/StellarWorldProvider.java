@@ -51,12 +51,12 @@ public class StellarWorldProvider extends WorldProvider {
     public float calculateCelestialAngle(long par1, float par3)
     {
     	if(StellarSky.getManager().Earth.EcRPos == null)
-    		StellarSky.getManager().Update(par1+par3, isSurfaceWorld());
+    		StellarSky.getManager().update(par1+par3, isSurfaceWorld());
     	
     	IValRef<EVector> sun = EVectorSet.ins(3).getSTemp();
     	
-    	sun.set(StellarSky.getManager().Sun.GetPosition());
-    	sun.set(ExtinctionRefraction.Refraction(sun, true));
+    	sun.set(StellarSky.getManager().Sun.getPosition());
+    	sun.set(ExtinctionRefraction.refraction(sun, true));
     	sun.set(VecMath.normalize(sun));
     	
     	double h=Math.asin(VecMath.getZ(sun));
@@ -66,15 +66,15 @@ public class StellarWorldProvider extends WorldProvider {
     	
     	sun.onUsed();
     	
-    	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,2*Math.PI));
+    	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,1.0));
     }
 
 	@Override
     public int getMoonPhase(long par1)
     {
     	if(StellarSky.getManager().Earth.EcRPos==null)
-    		StellarSky.getManager().Update(par1, isSurfaceWorld());
-    	return (int)(StellarSky.getManager().Moon.Phase_Time()*8);
+    		StellarSky.getManager().update(par1, isSurfaceWorld());
+    	return (int)(StellarSky.getManager().Moon.phase_Time()*8);
     }
 
     /**

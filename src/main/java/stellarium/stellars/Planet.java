@@ -24,22 +24,19 @@ public class Planet extends SolarObj{
 	double b, c, s, f;
 	
 	//Planet's Pole(Ecliptic Coord)
-	EVector Pole;
+	EVector pole;
 	
 	//Planet's Prime Meridian at first
-	EVector PrMer0;
+	EVector prMer0;
 	
 	//Planet's East from Prime Meridian
-	EVector East;
+	EVector east;
 	
 	//Rotating angular velocity
-	double Rot;
+	double rot;
 	
 	//Mass of Planet
-	double Mass;
-	
-	//Albedo of Planet
-	double Albedo;
+	double mass;
 	
 	//Satellites
 	ArrayList<Satellite> satellites=new ArrayList(1);
@@ -51,7 +48,7 @@ public class Planet extends SolarObj{
 	
 	@Override
 	//Calculate Planet's Ecliptic EVectortor from Sun
-	public IValRef<EVector> GetEcRPos(double yr) {
+	public IValRef<EVector> getEcRPos(double yr) {
 		double cen=yr/100.0;
 		double a=a0+ad*cen,
 				e=e0+ed*cen,
@@ -70,54 +67,54 @@ public class Planet extends SolarObj{
 	}
 	
 	//Ecliptic Position of Planet's Local Region from Moon Center (Update Needed)
-	public IValRef<EVector> PosLocalP(double longitude, double lattitude, double time){
-		double longp=Spmath.Radians(longitude+Rot*time);
+	public IValRef<EVector> posLocalP(double longitude, double lattitude, double time){
+		double longp=Spmath.Radians(longitude+rot*time);
 		double lat=Spmath.Radians(lattitude);
-		return VOp.mult(Radius, BOp.add(BOp.add(VecMath.mult(Math.sin(lat), Pole), VecMath.mult(Math.cos(lat)*Math.cos(longp), PrMer0)), VecMath.mult(Math.cos(lat)*Math.sin(longp), East)));
+		return VOp.mult(radius, BOp.add(BOp.add(VecMath.mult(Math.sin(lat), pole), VecMath.mult(Math.cos(lat)*Math.cos(longp), prMer0)), VecMath.mult(Math.cos(lat)*Math.sin(longp), east)));
 	}
 	
 	//Ecliptic Position of Planet's Local Region from Earth (Update Needed)
-	public IValRef<EVector> PosLocalE(double longitude, double lattitude, double time){
-		return VecMath.add(EcRPosE, PosLocalP(longitude, lattitude, time));
+	public IValRef<EVector> posLocalE(double longitude, double lattitude, double time){
+		return VecMath.add(EcRPosE, posLocalP(longitude, lattitude, time));
 	}
 	
 	//Update magnitude
-	public void UpdateMagnitude(){
+	public void updateMagnitude(){
 		double dist=Spmath.getD(VecMath.size(EcRPosE));
 		double distS=Spmath.getD(VecMath.size(EcRPos));
 		double distE=Spmath.getD(VecMath.size(StellarSky.getManager().Earth.EcRPos));
-		double LvsSun=this.Radius.asDouble()*this.Radius.asDouble()*this.GetPhase()*distE*distE*Albedo*1.4/(dist*dist*distS*distS);
-		this.Mag=-26.74-2.5*Math.log10(LvsSun);
+		double LvsSun=this.radius.asDouble()*this.radius.asDouble()*this.getPhase()*distE*distE*albedo*1.4/(dist*dist*distS*distS);
+		this.mag=-26.74-2.5*Math.log10(LvsSun);
 	}
 	
 
 
 	//Update Planet
 	@Override
-	public void Update() {
-		EcRPos.set(GetEcRPos(Transforms.yr));
+	public void update() {
+		EcRPos.set(getEcRPos(Transforms.yr));
 		EcRPosE.set(VecMath.sub(this.EcRPos, StellarSky.getManager().Earth.EcRPos));
 		
 		for(int i=0; i<satellites.size(); i++)
-			satellites.get(i).Update();
+			satellites.get(i).update();
 		
-		this.UpdateMagnitude();
+		this.updateMagnitude();
 		
-		AppPos.set(GetAtmPos());
-		App_Mag=Mag+ExtinctionRefraction.Airmass(AppPos, true)*ExtinctionRefraction.ext_coeff_V;
+		appPos.set(getAtmPos());
+		appMag=mag+ExtinctionRefraction.airmass(appPos, true)*ExtinctionRefraction.ext_coeff_V;
 	}
 	
-	public void AddSatellite(Satellite sat){
-		sat.Parplanet=this;
+	public void addSatellite(Satellite sat){
+		sat.parPlanet=this;
 		satellites.add(sat);
 	}
 
 
 	@Override
-	public void Initialize() {
+	public void initialize() {
 //		East=EVector.Cross(Pole, PrMer0);
 		for(int i=0; i<satellites.size(); i++)
-			satellites.get(i).Initialize();
+			satellites.get(i).initialize();
 	}
 
 }

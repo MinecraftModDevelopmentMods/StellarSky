@@ -9,9 +9,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public interface IProxy {
 	
-	public void preInit(FMLPreInitializationEvent event) throws IOException;
+	public void preInit(FMLPreInitializationEvent event);
 	
-    public void load(FMLInitializationEvent event);
+    public void load(FMLInitializationEvent event) throws IOException;
 
     public void postInit(FMLPostInitializationEvent event);
     
