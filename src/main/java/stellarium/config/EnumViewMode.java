@@ -14,6 +14,8 @@ public enum EnumViewMode {
 	
 	EnumViewMode(String name, boolean showOnHUD, boolean showTick) {
 		this.name = name;
+		this.showOnHUD = showOnHUD;
+		this.showTick = showTick;
 	}
 	
 	public String getName() {

@@ -41,7 +41,7 @@ public class StellarManager {
 	public double day, year;
 	public int yearOffset, dayOffset;
 	public double tickOffset;
-	public double lattitudeOverworld, lattitudeEnder;
+	public double latitudeOverworld, latitudeEnder;
 	public double longitudeOverworld, longitudeEnder;
 	public double moonSizeMultiplier, moonBrightnessMultiplier;
 		
