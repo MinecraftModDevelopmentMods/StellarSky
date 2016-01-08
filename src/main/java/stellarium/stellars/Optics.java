@@ -48,7 +48,7 @@ public class Optics implements IConfigHandler {
 	}
 
 	public static float getAlphaFromMagnitude(double Mag, float bglight) {
-		return getAlpha(Mag * instance.magCompression, bglight);
+		return getAlpha(Mag, bglight);
 	}
 	
 	public static final double constantBgDiv = Math.log(2.1333334f + 1.0f);
