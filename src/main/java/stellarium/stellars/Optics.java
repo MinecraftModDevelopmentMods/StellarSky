@@ -10,7 +10,7 @@ import stellarium.config.IConfigHandler;
 public class Optics implements IConfigHandler {
 	
 	// MagOffset needs to be changed to whatever the maximum Magnitude of Venus is 
-	private static final float magOffset = 5.25f;
+	private static final float magOffset = 5.50f;
 	private static final float magCompressionBase = 6.50f;
 	
 	private Property brightnessContrastProperty;
@@ -49,7 +49,6 @@ public class Optics implements IConfigHandler {
 
 	public static float getAlphaFromMagnitude(double Mag, float bglight) {
 		return getAlpha(Mag * instance.magCompression, bglight);
-//		return getAlpha(0, bglight);
 	}
 	
 	public static final double constantBgDiv = Math.log(2.1333334f + 1.0f);
