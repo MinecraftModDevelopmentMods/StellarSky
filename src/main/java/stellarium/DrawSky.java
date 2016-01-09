@@ -295,7 +295,7 @@ public class DrawSky extends IRenderHandler {
 				difm.set(VecMath.mult(sizem, difm));
 				difm2.set(VecMath.mult(sizem, difm2));
 
-				float alpha=Optics.getAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.mag-2.5*Math.log10(difactor),bglight);
+				float alpha=(float) (Optics.getAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.mag-2.5*Math.log10(difactor),bglight) * (StellarSky.getManager().Moon.getPhase()));
 
 				GL11.glColor4d(1.0, 1.0, 1.0, f4*alpha);
 
@@ -321,11 +321,12 @@ public class DrawSky extends IRenderHandler {
 					double longdd=(double)longcd/(double)longn;
 					double latdd=1.0-(double)(latc+1)/(double)latn;
 
-					tessellator1.setColorRGBA_F(1.0f, 1.0f, 1.0f, (f4*moonilum[longc][latc]-0.15f*bglight)*2.0f);
+					float lightlevel = (0.875f*(bglight/2.1333334f));
+					tessellator1.setColorRGBA_F(1.0f - lightlevel, 1.0f - lightlevel, 1.0f - lightlevel, ((f4*moonilum[longc][latc]-0.015f*bglight)*2.0f)); 
 					tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), Spmath.fmod(longd+0.5, 1.0), latd);
-					tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc]), Spmath.fmod(longdd+0.5,1.0), latd);
+					tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc]), Spmath.fmod(longdd+0.5, 1.0), latd);
 					tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1]), Spmath.fmod(longdd+0.5, 1.0), latdd);
-					tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1]), Spmath.fmod(longd+0.5,1.0), latdd);
+					tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1]), Spmath.fmod(longd+0.5, 1.0), latdd);
 				}
 			}
 
