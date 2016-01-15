@@ -296,7 +296,7 @@ public class DrawSky extends IRenderHandler {
 				difm2.set(VecMath.mult(sizem, difm2));
 
 				float alpha=(float) (Optics.getAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.mag-2.5*Math.log10(difactor),bglight) * (StellarSky.getManager().Moon.getPhase()));
-
+				System.out.println((StellarSky.getManager().Moon.getPhase()) + " : " + StellarSky.getManager().Moon.phase_Time() + " : " + StellarSky.getManager().Moon.phase_Time()*8);
 				GL11.glColor4d(1.0, 1.0, 1.0, f4*alpha);
 
 				tessellator1.startDrawingQuads();
