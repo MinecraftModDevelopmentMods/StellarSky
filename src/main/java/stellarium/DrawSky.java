@@ -5,26 +5,32 @@ import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.client.*;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
+import net.minecraftforge.client.IRenderHandler;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.CrossUtil;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
-import sciapi.api.value.numerics.DFloatSet;
 import sciapi.api.value.util.VOp;
-import stellarium.stellars.*;
+import stellarium.stellars.Color;
+import stellarium.stellars.ExtinctionRefraction;
+import stellarium.stellars.Optics;
+import stellarium.stellars.StellarObj;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
+import stellarium.world.StellarWorldProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -295,8 +301,8 @@ public class DrawSky extends IRenderHandler {
 				difm.set(VecMath.mult(sizem, difm));
 				difm2.set(VecMath.mult(sizem, difm2));
 
-				float alpha=(float) (Optics.getAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.mag-2.5*Math.log10(difactor),bglight) * (StellarSky.getManager().Moon.getPhase()));
-				System.out.println((StellarSky.getManager().Moon.getPhase()) + " : " + StellarSky.getManager().Moon.phase_Time() + " : " + StellarSky.getManager().Moon.phase_Time()*8);
+				float alpha=(float) (Optics.getAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.mag-2.5*Math.log10(difactor),bglight) / (StellarSky.getManager().Moon.getPhase()));		
+				
 				GL11.glColor4d(1.0, 1.0, 1.0, f4*alpha);
 
 				tessellator1.startDrawingQuads();
@@ -351,6 +357,7 @@ public class DrawSky extends IRenderHandler {
 			GL11.glColor3f(0.0F, 0.0F, 0.0F);
 			double d0 = mc.thePlayer.getPosition(par1).yCoord - world.getHorizon();
 
+			
 			if (d0 < 0.0D)
 			{
 				f8 = 1.0F;
