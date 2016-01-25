@@ -10,6 +10,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.common.*;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarium.compat.CompatManager;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarWorldProvider;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -25,7 +26,7 @@ import cpw.mods.fml.common.registry.*;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version,
-	dependencies="required-after:sciapi", guiFactory="stellarium.config.StellarConfigGuiFactory")
+	dependencies="required-after:sciapi;load-after:CalendarAPI", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";
@@ -52,16 +53,22 @@ public class StellarSky {
     		MinecraftForge.EVENT_BUS.register(eventHook);
     		FMLCommonHandler.instance().bus().register(tickHandler);
     		FMLCommonHandler.instance().bus().register(fmlEventHook);
+    		
+    		CompatManager.getInstance().onPreInit();
         }
         
         @EventHandler
         public void load(FMLInitializationEvent event) throws IOException {
         	proxy.load(event);
+        	
+    		CompatManager.getInstance().onInit();
         }
         
         @EventHandler
         public void postInit(FMLPostInitializationEvent event) {
         	proxy.postInit(event);
+        	
+    		CompatManager.getInstance().onPostInit();
         }
         
 }
