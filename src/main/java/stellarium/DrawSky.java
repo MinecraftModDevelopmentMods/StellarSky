@@ -198,13 +198,15 @@ public class DrawSky extends IRenderHandler {
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 			GL11.glPushMatrix();
-			f4 = 1.0F - world.getRainStrength(par1);
+//			f4 = 1.0F - world.getRainStrength(par1);
+			f4 = (1.0F - world.getRainStrength(par1));
+//			System.out.println(world.getRainStrength(par1));
 			f7 = 0.0F;
 			f8 = 0.0F;
 			f9 = 0.0F;
 
 			float bglight=f1+f2+f3;
-
+//			System.out.println("B: " + (f1+f2+f3) + "   A: " + bglight);
 
 			GL11.glTranslatef(f7, f8, f9); //e,z,s
 			GL11.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); //e,n,z
@@ -304,6 +306,7 @@ public class DrawSky extends IRenderHandler {
 				float alpha=(float) (Optics.getAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.mag-2.5*Math.log10(difactor),bglight) / (StellarSky.getManager().Moon.getPhase()));		
 				
 				GL11.glColor4d(1.0, 1.0, 1.0, f4*alpha);
+//				GL11.glColor4d(1.0, 1.0, 1.0, alpha);
 
 				tessellator1.startDrawingQuads();
 				tessellator1.addVertexWithUV(VecMath.getX(posm)+VecMath.getX(difm), VecMath.getY(posm)+VecMath.getY(difm), VecMath.getZ(posm)+VecMath.getZ(difm),0.0,0.0);
@@ -329,6 +332,7 @@ public class DrawSky extends IRenderHandler {
 
 					float lightlevel = (0.875f*(bglight/2.1333334f));
 					tessellator1.setColorRGBA_F(1.0f - lightlevel, 1.0f - lightlevel, 1.0f - lightlevel, ((f4*moonilum[longc][latc]-0.015f*bglight)*2.0f)); 
+//					tessellator1.setColorRGBA_F(1.0f - lightlevel, 1.0f - lightlevel, 1.0f - lightlevel, ((moonilum[longc][latc]-0.015f*bglight)*2.0f)); 
 					tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), Spmath.fmod(longd+0.5, 1.0), latd);
 					tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc]), Spmath.fmod(longdd+0.5, 1.0), latd);
 					tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1]), Spmath.fmod(longdd+0.5, 1.0), latdd);
@@ -345,7 +349,8 @@ public class DrawSky extends IRenderHandler {
 			}
 
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			float f18 = world.getStarBrightness(par1) * f4;
+//			float f18 = world.getStarBrightness(par1) * f4;
+			float f18 = world.getStarBrightness(par1);
 
 
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -431,13 +436,10 @@ public class DrawSky extends IRenderHandler {
 				if(Mag > StellarSky.getManager().mag_Limit)
 					continue;
 
-//				float Turb = StellarSky.getManager().turb *(float) random.nextGaussian();
-//				Mag+=Turb;
-
 				if(VecMath.getZ(pos)<0) continue;
 
 				float size=0.5f;
-				float alpha=Optics.getAlphaFromMagnitudeSparkling(Mag, bglight);
+				float alpha=Optics.getAlphaFromMagnitudeSparkling(Mag, bglight) - (((1-weathereff)/1)*20f);
 
 				dif.set(CrossUtil.cross(pos, new EVector(0.0,0.0,1.0)));
 				if(Spmath.getD(VecMath.size2(dif)) < 0.01)
@@ -451,7 +453,8 @@ public class DrawSky extends IRenderHandler {
 
 				Color c=Color.getColor(B_V);
 
-				tessellator1.setColorRGBA(c.r, c.g, c.b, (int)(weathereff*alpha*255.0));
+//				tessellator1.setColorRGBA(c.r, c.g, c.b, (int)(weathereff*alpha*255.0));
+				tessellator1.setColorRGBA(c.r, c.g, c.b, (int)(alpha*255.0));
 				tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
 				tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2),1.0,0.0);
 				tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif),1.0,1.0);
@@ -479,7 +482,10 @@ public class DrawSky extends IRenderHandler {
 		if(VecMath.getZ(pos)<0) return;
 
 		float size=0.6f;
-		float alpha=Optics.getAlphaFromMagnitude(Mag, bglight);
+		float alpha=Optics.getAlphaFromMagnitude(Mag, bglight) - (((1-weathereff)/1)*20f);
+//		float alpha=Optics.getAlphaFromMagnitude(Mag, bglight);
+//		float changed = alpha - (((1-weathereff)/1)*4.46f);
+//		System.out.println("W: " + weathereff + " - A: " + alpha + " - C: " + (((1-weathereff)/1)*4.46f));
 
 		pos.set(VecMath.normalize(pos));
 
@@ -495,7 +501,8 @@ public class DrawSky extends IRenderHandler {
 
 		tessellator1.startDrawingQuads();
 
-		tessellator1.setColorRGBA_F(1.0f, 1.0f, 1.0f, weathereff*alpha);
+//		tessellator1.setColorRGBA_F(1.0f, 1.0f, 1.0f, weathereff*alpha);
+		tessellator1.setColorRGBA_F(1.0f, 1.0f, 1.0f, alpha);
 
 		tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(difm), VecMath.getY(pos)+VecMath.getY(difm), VecMath.getZ(pos)+VecMath.getZ(difm),0.0,0.0);
 		tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(difm2), VecMath.getY(pos)+VecMath.getY(difm2), VecMath.getZ(pos)+VecMath.getZ(difm2),1.0,0.0);
