@@ -27,8 +27,8 @@ public class Transforms {
 		
 		Rot = 2 * Math.PI / StellarSky.getManager().day * (1 + 1 / StellarSky.getManager().year);
 		
-		double lat = Spmath.Radians(StellarSky.getManager().lattitudeOverworld);
-		double lat2 = Spmath.Radians(StellarSky.getManager().lattitudeEnder);
+		double lat = Spmath.Radians(StellarSky.getManager().latitudeOverworld);
+		double lat2 = Spmath.Radians(StellarSky.getManager().latitudeEnder);
 		longitude = Spmath.Radians(longitude);
 		
 		ZTEctoNEc.setRAngle(-Prec*stime);
