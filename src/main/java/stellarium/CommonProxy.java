@@ -110,8 +110,8 @@ public class CommonProxy implements IProxy {
 		       	tickOffset.setLanguageKey("config.property.server.tickoffset");
 		        propNameList.add(tickOffset.getName());
 
-		       	latitudeOverworld = config.get(category, "latitude_Overworld", 37.5);
-		       	latitudeOverworld.comment = "latitude on Overworld, in Degrees.";
+		       	latitudeOverworld = config.get(category, "Latitude_Overworld", 37.5);
+		       	latitudeOverworld.comment = "Latitude on Overworld, in Degrees.";
 		       	latitudeOverworld.setRequiresMcRestart(true);
 		       	latitudeOverworld.setLanguageKey("config.property.server.latitudeoverworld");
 		        propNameList.add(latitudeOverworld.getName());
@@ -122,8 +122,8 @@ public class CommonProxy implements IProxy {
 		       	longitudeOverworld.setLanguageKey("config.property.server.longitudeoverworld");
 		        propNameList.add(longitudeOverworld.getName());
 
-		       	latitudeEnder = config.get(category, "latitude_Ender", -52.5);
-		       	latitudeEnder.comment = "latitude on Ender, in Degrees.";
+		       	latitudeEnder = config.get(category, "Latitude_Ender", -52.5);
+		       	latitudeEnder.comment = "Latitude on Ender, in Degrees.";
 		       	latitudeEnder.setRequiresMcRestart(true);
 		       	latitudeEnder.setLanguageKey("config.property.server.latitudeender");
 		        propNameList.add(latitudeEnder.getName());
