@@ -48,6 +48,10 @@ public class StellarManager {
 	//View Mode
 	private EnumViewMode viewMode = EnumViewMode.EMPTY;
 	
+	//Checks
+	private boolean setup = false;
+	private long timeOfManager;
+	
 	public StellarManager(Side pside){
 		this.side = pside;
 	}
@@ -300,9 +304,18 @@ public class StellarManager {
 		return currentTick + (yearOffset * year + dayOffset) * day + tickOffset;
 	}
 	
+	public boolean isSetupComplete() {
+		return this.setup;
+	}
+	
+	public long getCurrentUpdatedTime() {
+		return this.timeOfManager;
+	}
+	
 	//Update Objects
 	public final void update(double time, boolean isOverWorld){
 		double longitude = isOverWorld? longitudeOverworld : longitudeEnder;
+		this.timeOfManager = (long) Math.floor(time);
 		time = this.getSkyTime(time);
 		
         long cur = System.currentTimeMillis();
