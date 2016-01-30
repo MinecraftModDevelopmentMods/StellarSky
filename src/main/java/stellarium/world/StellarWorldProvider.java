@@ -48,8 +48,8 @@ public class StellarWorldProvider extends WorldProvider {
 	}
 
 	@Override
-    public float calculateCelestialAngle(long par1, float par3)
-    {
+    public float calculateCelestialAngle(long par1, float par3) {
+		// TODO fix this mess
     	if(StellarSky.getManager().Earth.EcRPos == null)
     		StellarSky.getManager().update(par1+par3, isSurfaceWorld());
     	
@@ -66,14 +66,27 @@ public class StellarWorldProvider extends WorldProvider {
     	
     	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,1.0));
     }
+	
+	@Override
+	public float getSunBrightnessFactor(float par1) {
+		return parProvider.getSunBrightnessFactor(par1);
+	}
 
 	@Override
-    public int getMoonPhase(long par1)
-    {
+    public int getMoonPhase(long par1) {
+		// TODO fix this mess
     	if(StellarSky.getManager().Earth.EcRPos==null)
     		StellarSky.getManager().update(par1, isSurfaceWorld());
     	return (int)(StellarSky.getManager().Moon.phase_Time()*8);
     }
+	
+	@Override
+	public float getCurrentMoonPhaseFactor() {
+		// TODO fix this mess
+    	if(StellarSky.getManager().Earth.EcRPos==null)
+    		return parProvider.getCurrentMoonPhaseFactor();
+		return (float) StellarSky.getManager().Moon.getPhase();
+	}
 
     /**
      * Returns a new chunk provider which generates chunks for this world
