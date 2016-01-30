@@ -59,9 +59,9 @@ public class CommonProxy implements IProxy {
         	Property yearOffset;
         	Property dayOffset;
         	Property tickOffset;
-        	Property lattitudeOverworld;
+        	Property latitudeOverworld;
         	Property longitudeOverworld;
-        	Property lattitudeEnder;
+        	Property latitudeEnder;
         	Property longitudeEnder;
         	Property moonSize;
         	Property moonBrightness;
@@ -110,11 +110,11 @@ public class CommonProxy implements IProxy {
 		       	tickOffset.setLanguageKey("config.property.server.tickoffset");
 		        propNameList.add(tickOffset.getName());
 
-		       	lattitudeOverworld = config.get(category, "Lattitude_Overworld", 37.5);
-		       	lattitudeOverworld.comment = "Lattitude on Overworld, in Degrees.";
-		       	lattitudeOverworld.setRequiresMcRestart(true);
-		       	lattitudeOverworld.setLanguageKey("config.property.server.lattitudeoverworld");
-		        propNameList.add(lattitudeOverworld.getName());
+		       	latitudeOverworld = config.get(category, "Latitude_Overworld", 37.5);
+		       	latitudeOverworld.comment = "Latitude on Overworld, in Degrees.";
+		       	latitudeOverworld.setRequiresMcRestart(true);
+		       	latitudeOverworld.setLanguageKey("config.property.server.latitudeoverworld");
+		        propNameList.add(latitudeOverworld.getName());
 
 		       	longitudeOverworld = config.get(category, "Longitude_Overworld", 0.0);
 		       	longitudeOverworld.comment = "Longitude on Overworld, in Degrees. (East is +)";
@@ -122,11 +122,11 @@ public class CommonProxy implements IProxy {
 		       	longitudeOverworld.setLanguageKey("config.property.server.longitudeoverworld");
 		        propNameList.add(longitudeOverworld.getName());
 
-		       	lattitudeEnder = config.get(category, "Lattitude_Ender", -52.5);
-		       	lattitudeEnder.comment = "Lattitude on Ender, in Degrees.";
-		       	lattitudeEnder.setRequiresMcRestart(true);
-		       	lattitudeEnder.setLanguageKey("config.property.server.lattitudeender");
-		        propNameList.add(lattitudeEnder.getName());
+		       	latitudeEnder = config.get(category, "Latitude_Ender", -52.5);
+		       	latitudeEnder.comment = "Latitude on Ender, in Degrees.";
+		       	latitudeEnder.setRequiresMcRestart(true);
+		       	latitudeEnder.setLanguageKey("config.property.server.latitudeender");
+		        propNameList.add(latitudeEnder.getName());
 
 		       	longitudeEnder = config.get(category, "Longitude_Ender", 180.0);
 		       	longitudeEnder.comment = "Longitude on Ender, in Degrees. (East is +)";
@@ -156,9 +156,9 @@ public class CommonProxy implements IProxy {
 		       	manager.yearOffset = yearOffset.getInt();
 		       	manager.dayOffset = dayOffset.getInt();
 		       	manager.tickOffset = tickOffset.getDouble();
-		       	manager.lattitudeOverworld = lattitudeOverworld.getDouble();
+		       	manager.latitudeOverworld = latitudeOverworld.getDouble();
 		       	manager.longitudeOverworld = longitudeOverworld.getDouble();
-		       	manager.lattitudeEnder = lattitudeEnder.getDouble();
+		       	manager.latitudeEnder = latitudeEnder.getDouble();
 		       	manager.longitudeEnder = longitudeEnder.getDouble();
 		       	manager.moonSizeMultiplier = moonSize.getDouble();
 		       	manager.moonBrightnessMultiplier = moonBrightness.getDouble();
