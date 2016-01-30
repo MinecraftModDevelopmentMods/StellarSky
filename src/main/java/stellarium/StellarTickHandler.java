@@ -37,7 +37,7 @@ public class StellarTickHandler {
 			World world = StellarSky.proxy.getDefWorld();
 			
 			if(world != null)
-				StellarSky.getManager().Update(world.getWorldTime(),
+				StellarSky.getManager().update(world.getWorldTime(),
 						world.provider.isSurfaceWorld());
 		}
 	}
@@ -45,7 +45,9 @@ public class StellarTickHandler {
 	@SubscribeEvent
 	public void tickStart(TickEvent.WorldTickEvent e) {
 		if(e.phase == Phase.START){
-			if(e.world != null) {
+			if(e.world != null &&
+					StellarSky.getManager().serverEnabled &&
+					StellarSky.proxy.wakeManager.isEnabled()) {
 				WorldServer world = (WorldServer) e.world;
 				
 				world.updateAllPlayersSleepingFlag();
@@ -61,13 +63,13 @@ public class StellarTickHandler {
 				}
 			}
 			
-			if(!(StellarSky.getManager().side == Side.SERVER
+			if(!(StellarSky.getManager().getSide() == Side.SERVER
 					&& StellarSky.getManager().serverEnabled))
 				return;
 			
 			if(e.world != null)
 			{
-				StellarSky.getManager().Update(e.world.getWorldTime(),
+				StellarSky.getManager().update(e.world.getWorldTime(),
 						e.world.provider.isSurfaceWorld());
 			}
 		}
@@ -75,15 +77,13 @@ public class StellarTickHandler {
 
 	private void tryWakePlayers(WorldServer world) {
 		double dayLength = StellarSky.getManager().day;
-		
-		if(!StellarSky.getManager().serverEnabled)
-			dayLength = 24000.0;
+		double tickOffset = StellarSky.getManager().tickOffset;
 		
         if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
         {
         	WorldInfo info = world.getWorldInfo();
-            double i = info.getWorldTime() + dayLength;
-            info.setWorldTime((long) (i - i % dayLength));
+        	long worldTime = info.getWorldTime();
+            info.setWorldTime(StellarSky.proxy.wakeManager.getWakeTime(world, worldTime));
         }
 
         Iterator iterator = world.playerEntities.iterator();

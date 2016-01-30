@@ -17,7 +17,7 @@ public class SpCoordf {
 	
 	//Get Vector from SpCoord
 	public IValRef<EVector> getVec(){
-		STempRef<EVector> ret = EVectorSet.ins(3).getSTemp();
+		EVector ret = EVectorSet.ins(3).getNew();
 		
 		ret.getVal().getCoord(0).set(Spmath.cosd(y)*Spmath.cosd(x));
 		ret.getVal().getCoord(1).set(Spmath.cosd(y)*Spmath.sind(x));
@@ -31,7 +31,5 @@ public class SpCoordf {
 	public void setWithVec(IValRef<EVector> vec){
 		x = (float) Spmath.Degrees(Math.atan2(vec.getVal().getCoord(1).asFloat(), vec.getVal().getCoord(0).asFloat()));
 		y = (float) Spmath.Degrees(Math.asin(vec.getVal().getCoord(2).asFloat()));
-		
-		vec.onUsed();
 	}
 }

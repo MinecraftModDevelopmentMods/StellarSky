@@ -1,53 +1,80 @@
 package stellarium.stellars;
 
 import java.io.IOException;
-import java.security.Timestamp;
-import java.sql.Time;
 
 import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import stellarium.StellarSky;
+import stellarium.config.EnumViewMode;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
 
 public class StellarManager {
-		
+	
+	public final double AU=1.496e+8;
+
 	public Sun Sun=new Sun();
 	public Earth Earth=new Earth();
 	public Moon Moon=new Moon();
-	public Planet Mercury=new Planet();
-	public Planet Venus=new Planet();
-	public Planet Mars=new Planet();
-	public Planet Jupiter=new Planet();
-	public Planet Saturn=new Planet();
-	public Planet Uranus=new Planet();
-	public Planet Neptune=new Planet();
 	
+	private Planet Mercury=new Planet();
+	private Planet Venus=new Planet();
+	private Planet Mars=new Planet();
+	private Planet Jupiter=new Planet();
+	private Planet Saturn=new Planet();
+	private Planet Uranus=new Planet();
+	private Planet Neptune=new Planet();
 	
-	public final double AU=1.496e+8;
-	
-	public final int frac=4;
-	
-	
-	public Side side;
-	
-	
-	public float Mag_Limit;
-	
-	public int ImgFrac;
-	
-	public float Turb;
+	public Planet[] planets = {Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune};
+		
+	private Side side;
 
+	//Client-Side Config
+	public float mag_Limit;
+	public int imgFrac;
+	public float turb;
+	public double minuteLength;
+	public int anHourToMinute;
+	
+	//Common Config
 	public boolean serverEnabled;
-
 	public double day, year;
+	public int yearOffset, dayOffset;
+	public double tickOffset;
+	public double latitudeOverworld, latitudeEnder;
+	public double longitudeOverworld, longitudeEnder;
+	public double moonSizeMultiplier, moonBrightnessMultiplier;
+		
+	//View Mode
+	private EnumViewMode viewMode = EnumViewMode.EMPTY;
 	
 	public StellarManager(Side pside){
-		side = pside;
+		this.side = pside;
+	}
+	
+	public Side getSide() {
+		return this.side;
+	}
+	
+	public Planet[] getPlanets() {
+		return this.planets;
+	}
+	
+	public void incrementViewMode() {
+		this.viewMode = viewMode.nextMode();
+		StellarSky.proxy.getCfgManager().syncFromFields();
+	}
+	
+	public EnumViewMode getViewMode() {
+		return this.viewMode;
+	}
+	
+	public void setViewMode(EnumViewMode mode) {
+		this.viewMode = mode;
 	}
 	
 	//Initialization Fuction
-	public void Initialize(){
+	public void initialize(){
 		
 		System.out.println("[Stellarium]: "+"Initialization Starting...");
 		System.out.println("[Stellarium]: "+"Initializing Math class...");
@@ -59,17 +86,17 @@ public class StellarManager {
 		System.out.println("[Stellarium]: "+"Initializing Solar System...");
 		///Sun
 		System.out.println("[Stellarium]: "+"Initializing Sun...");
-		Sun.Radius=0.00465469;
-		Sun.Mass=1.0;
-		Sun.Initialize();
+		Sun.radius=0.00465469;
+		Sun.mass=1.0;
+		Sun.initialize();
 		
 		///Earth System
 		//Declaration
 		System.out.println("[Stellarium]: "+"Initializing Earth...");
-		Earth.AddSatellite(Moon);
-		Earth.Radius.set(4.2634e-5);
-		Earth.Mass=3.002458398e-6;
-		Moon.Radius.set(4e-5);
+		Earth.addSatellite(Moon);
+		Earth.radius.set(4.2634e-5);
+		Earth.mass=3.002458398e-6;
+		Moon.radius.set(4e-5 * this.moonSizeMultiplier);
 		
 		//Initialization
 		//-Earth
@@ -88,7 +115,7 @@ public class StellarManager {
 		
 		//-Moon
 		System.out.println("[Stellarium]: "+"Initializing Moon...");
-		Moon.Albedo=0.12;
+		Moon.albedo=0.12 * this.moonBrightnessMultiplier;
 		Moon.a0=0.00257184;
 		Moon.e0=0.0549006;
 		Moon.I0=5.14;
@@ -99,14 +126,14 @@ public class StellarManager {
 		Moon.Omegad=-19.355;
 		
 		//Earth Initialize
-		Earth.Initialize();
+		Earth.initialize();
 		
 		///Planets
 		//Mercury
 		System.out.println("[Stellarium]: "+"Initializing Mercury...");
-		Mercury.Albedo=0.119;
-		Mercury.Radius.set(1.630815508e-5);
-		Mercury.Mass=1.660147806e-7;
+		Mercury.albedo=0.119;
+		Mercury.radius.set(1.630815508e-5);
+		Mercury.mass=1.660147806e-7;
 		Mercury.a0=0.38709843;
 		Mercury.e0=0.20563661;
 		Mercury.I0=7.00559432;
@@ -120,13 +147,13 @@ public class StellarManager {
 		Mercury.wbard=0.15940013;
 		Mercury.Omegad=-0.12214182;
 		
-		Mercury.Initialize();
+		Mercury.initialize();
 		
 		//Venus
 		System.out.println("[Stellarium]: "+"Initizlizing Venus...");
-		Venus.Albedo=0.90;
-		Venus.Radius.set(4.0453208556e-5);
-		Venus.Mass=2.447589362e-6;
+		Venus.albedo=0.90;
+		Venus.radius.set(4.0453208556e-5);
+		Venus.mass=2.447589362e-6;
 		Venus.a0=0.72332102;
 		Venus.e0=0.00676399;
 		Venus.I0=3.39777545;
@@ -140,13 +167,13 @@ public class StellarManager {
 		Venus.wbard=0.05679648;
 		Venus.Omegad=-0.27274174;
 		
-		Venus.Initialize();
+		Venus.initialize();
 		
 		//Mars
 		System.out.println("[Stellarium]: "+"Initializing Mars...");
-		Mars.Albedo=0.25;
-		Mars.Radius.set(2.26604278e-5);
-		Mars.Mass=3.22683626e-7;
+		Mars.albedo=0.25;
+		Mars.radius.set(2.26604278e-5);
+		Mars.mass=3.22683626e-7;
 		Mars.a0=1.52371243;
 		Mars.e0=0.09336511;
 		Mars.I0=1.85181869;
@@ -160,13 +187,13 @@ public class StellarManager {
 		Mars.wbard=0.45223625;
 		Mars.Omegad=-0.26852431;
 		
-		Mars.Initialize();
+		Mars.initialize();
 		
 		//Jupiter
 		System.out.println("[Stellarium]: "+"Initializing Jupiter...");
-		Jupiter.Albedo=0.343;
-		Jupiter.Radius.set(4.673195187e-4);
-		Jupiter.Mass=9.54502036e-4;
+		Jupiter.albedo=0.343;
+		Jupiter.radius.set(4.673195187e-4);
+		Jupiter.mass=9.54502036e-4;
 		Jupiter.a0=5.20248019;
 		Jupiter.e0=0.0485359;
 		Jupiter.I0=1.29861416;
@@ -184,13 +211,13 @@ public class StellarManager {
 		Jupiter.s=-0.35635438;
 		Jupiter.f=38.35125;
 		
-		Jupiter.Initialize();
+		Jupiter.initialize();
 		
 		//Saturn
 		System.out.println("[Stellarium]: "+"Initializing Saturn...");
-		Saturn.Albedo=0.342;
-		Saturn.Radius.set(3.83128342e-4);
-		Saturn.Mass=2.8578754e-4;
+		Saturn.albedo=0.342;
+		Saturn.radius.set(3.83128342e-4);
+		Saturn.mass=2.8578754e-4;
 		Saturn.a0=9.54149883;
 		Saturn.e0=0.05550825;
 		Saturn.I0=2.49424102;
@@ -208,13 +235,13 @@ public class StellarManager {
 		Saturn.s=0.87320147;
 		Saturn.f=38.35125;
 		
-		Saturn.Initialize();
+		Saturn.initialize();
 		
 		//Uranus
 		System.out.println("[Stellarium]: "+"Initializing Uranus...");
-		Uranus.Albedo=0.300;
-		Uranus.Radius.set(1.68890374e-4);
-		Uranus.Mass=4.3642853557e-5;
+		Uranus.albedo=0.300;
+		Uranus.radius.set(1.68890374e-4);
+		Uranus.mass=4.3642853557e-5;
 		Uranus.a0=19.1897948;
 		Uranus.e0=0.0468574;
 		Uranus.I0=0.77298127;
@@ -232,13 +259,13 @@ public class StellarManager {
 		Uranus.s=0.17689245;
 		Uranus.f=7.67025;
 		
-		Uranus.Initialize();
+		Uranus.initialize();
 		
 		//Neptune
 		System.out.println("[Stellarium]: "+"Initializing Neptune...");
-		Neptune.Albedo=0.290;
-		Neptune.Radius.set(1.641209893e-4);
-		Neptune.Mass=5.14956513e-5;
+		Neptune.albedo=0.290;
+		Neptune.radius.set(1.641209893e-4);
+		Neptune.mass=5.14956513e-5;
 		Neptune.a0=30.06952752;
 		Neptune.e0=0.00895439;
 		Neptune.I0=1.7700552;
@@ -256,43 +283,42 @@ public class StellarManager {
 		Neptune.s=-0.10162547;
 		Neptune.f=7.67025;
 		
-		Neptune.Initialize();
+		Neptune.initialize();
 		
 		System.out.println("[Stellarium]: "+"Solar System Initialized!");
 
 	}
 	
-	public final void InitializeStars() throws IOException{
+	public final void initializeStars() throws IOException{
 		///Stars
 		System.out.println("[Stellarium]: "+"Initializing Stars...");
-    	BrStar.InitializeAll();
+    	BrStar.initializeAll();
     	System.out.println("[Stellarium]: "+"Stars Initialized!");
 	}
 	
+	public double getSkyTime(double currentTick) {
+		return currentTick + (yearOffset * year + dayOffset) * day + tickOffset;
+	}
+	
 	//Update Objects
-	public final void Update(double time, boolean IsOverWorld){
-		time=time+5000.0;
+	public final void update(double time, boolean isOverWorld){
+		double longitude = isOverWorld? longitudeOverworld : longitudeEnder;
+		time = this.getSkyTime(time);
 		
         long cur = System.currentTimeMillis();
 		
 		//Must be first
-		Transforms.Update(time, IsOverWorld);
+		Transforms.update(time, longitude, isOverWorld);
 		
 		//Must be second
-		Earth.Update();
+		Earth.update();
 		
-		Mercury.Update();
-		Venus.Update();
-		Mars.Update();
-		Jupiter.Update();
-		Saturn.Update();
-		Uranus.Update();
-		Neptune.Update();
+		for(StellarObj obj : this.planets)
+			obj.update();
 		
 		if(side == Side.CLIENT && BrStar.IsInitialized)
 			BrStar.UpdateAll();
 		
         //System.out.println(System.currentTimeMillis() - cur);
-
 	}
 }

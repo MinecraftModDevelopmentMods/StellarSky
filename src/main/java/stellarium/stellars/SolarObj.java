@@ -16,12 +16,12 @@ public abstract class SolarObj extends StellarObj {
 	EVector EcRPosE = new EVector(3);
 	
 	//Albedo
-	public double Albedo;
+	public double albedo;
 
-	public DDouble Radius = new DDouble();
+	public DDouble radius = new DDouble();
 	
 	//Position from Sun
-	abstract public IValRef<EVector> GetEcRPos(double time);
+	abstract public IValRef<EVector> getEcRPos(double time);
 	
 	//Direction from Earth (Use this after both Earth and Object is Updated) (Do not use this on Earth)
 	public IValRef<EVector> GetEcDir(){
@@ -29,7 +29,7 @@ public abstract class SolarObj extends StellarObj {
 	}
 
 	//Get Direction EVectortor of Object
-	public synchronized IValRef<EVector> GetPosition(){
+	public synchronized IValRef<EVector> getPosition(){
 		IValRef pEVector = Transforms.ZTEctoNEc.transform((IEVector)EcRPosE);
 		pEVector=Transforms.EctoEq.transform(pEVector);
 		pEVector=Transforms.NEqtoREq.transform(pEVector);
@@ -39,30 +39,30 @@ public abstract class SolarObj extends StellarObj {
 	
 	//Update SolarObj
 	@Override
-	public void Update(){
-		EcRPos.set(GetEcRPos(Transforms.yr));
+	public void update(){
+		EcRPos.set(getEcRPos(Transforms.yr));
 		EcRPosE.set(VecMath.sub(this.EcRPos, StellarSky.getManager().Earth.EcRPos));
-		super.Update();
+		super.update();
 		
-		this.UpdateMagnitude();
+		this.updateMagnitude();
 	}
 	
 	//Update magnitude
-	public void UpdateMagnitude(){
+	public void updateMagnitude(){
 		double dist=Spmath.getD(VecMath.size(EcRPosE));
 		double distS=Spmath.getD(VecMath.size(EcRPos));
 		double distE=Spmath.getD(VecMath.size(StellarSky.getManager().Earth.EcRPos));
-		double LvsSun=this.Radius.asDouble()*this.Radius.asDouble()*this.GetPhase()*distE*distE*Albedo*1.4/(dist*dist*distS*distS);
-		this.Mag=-26.74-2.5*Math.log10(LvsSun);
+		double LvsSun=this.radius.asDouble()*this.radius.asDouble()*this.getPhase()*distE*distE*albedo*1.4/(dist*dist*distS*distS);
+		this.mag=-26.74-2.5*Math.log10(LvsSun);
 	}
 	
 	//Phase of the Object(Update Needed)
-	public double GetPhase(){
+	public double getPhase(){
 		return (1+Spmath.getD((BOp.div(VecMath.dot(EcRPos, EcRPosE),BOp.mult(VecMath.size(EcRPos),VecMath.size(EcRPosE))))))/2;
 	}
 
 	@Override
-	public void Initialize(){
+	public void initialize(){
 		
 	}
 }

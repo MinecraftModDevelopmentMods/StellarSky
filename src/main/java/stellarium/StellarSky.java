@@ -24,12 +24,13 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.*;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version, dependencies="required-after:sciapi")
+@Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version,
+	dependencies="required-after:sciapi", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";
 		public static final String name = "Stellar Sky";
-		public static final String version = "0.1.10";
+		public static final String version = "0.1.19.3";
 
         // The instance of Stellarium
         @Instance(StellarSky.modid)
@@ -40,21 +41,21 @@ public class StellarSky {
         
         public StellarEventHook eventHook = new StellarEventHook();
         public StellarTickHandler tickHandler = new StellarTickHandler();
+        public StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
         
         public static StellarManager getManager() { return proxy.manager; }
         
         @EventHandler
-        public void preInit(FMLPreInitializationEvent event) throws IOException{
-        	
+        public void preInit(FMLPreInitializationEvent event) {
         	proxy.preInit(event);
         	
     		MinecraftForge.EVENT_BUS.register(eventHook);
     		FMLCommonHandler.instance().bus().register(tickHandler);
-    		
+    		FMLCommonHandler.instance().bus().register(fmlEventHook);
         }
         
         @EventHandler
-        public void load(FMLInitializationEvent event) {
+        public void load(FMLInitializationEvent event) throws IOException {
         	proxy.load(event);
         }
         

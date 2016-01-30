@@ -20,7 +20,7 @@ public class ExtinctionRefraction {
 	public static final float ext_coeff_B_Vf=0.1f;
 
 	//Calculate Airmass
-	static double Airmass(double cosZ, boolean IsApparent)
+	static double airmass(double cosZ, boolean IsApparent)
 	{
 		cosZ=Math.abs(cosZ);
 		
@@ -41,12 +41,12 @@ public class ExtinctionRefraction {
 	}
 	
 	//Get Extinction magnitude(in V band) of EVectortor(its size must be 1)
-	public static double Airmass(IValRef<EVector> vec, boolean IsApparent){
-		return Airmass(vec.getVal().getCoord(2).asDouble(), IsApparent);
+	public static double airmass(IValRef<EVector> vec, boolean IsApparent){
+		return airmass(vec.getVal().getCoord(2).asDouble(), IsApparent);
 	}
 	
 	//Calculate Airmass
-	static float Airmass(float cosZ, boolean IsApparent)
+	static float airmass(float cosZ, boolean IsApparent)
 	{
 		cosZ=Math.abs(cosZ);
 		
@@ -67,7 +67,7 @@ public class ExtinctionRefraction {
 	}
 	
 	//Get Refraction-applied Vector(IsApplying=true) or Refraction-disapplied Vector(IsApplying=false)
-	public static IValRef<EVector> Refraction(IValRef<EVector> vec, boolean IsApplying){
+	public static IValRef<EVector> refraction(IValRef<EVector> vec, boolean IsApplying){
 				
 		double R;
 		SpCoord sp = new SpCoord();

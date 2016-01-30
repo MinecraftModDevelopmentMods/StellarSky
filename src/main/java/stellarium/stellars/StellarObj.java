@@ -12,27 +12,27 @@ public abstract class StellarObj {
 	public EVector EcRPos = new EVector(3);
 	
 	//Object's Apparent Position
-	public EVector AppPos = new EVector(3);
+	public EVector appPos = new EVector(3);
 	
 	//Magnitude of Object(Except Atmosphere)
-	public double Mag;
+	public double mag;
 	
 	//Object's Apparent Magnitude
-	public double App_Mag;
+	public double appMag;
 	
 	//Initialize the Object
-	abstract public void Initialize();
+	abstract public void initialize();
 	
 	//Update the Object
-	public void Update(){
-		AppPos.set(GetAtmPos());
-		App_Mag=Mag+ExtinctionRefraction.Airmass(VecMath.getCoord(AppPos, 2).asDouble(), true)*ExtinctionRefraction.ext_coeff_V;
+	public void update(){
+		appPos.set(getAtmPos());
+		appMag=mag+ExtinctionRefraction.airmass(VecMath.getCoord(appPos, 2).asDouble(), true)*ExtinctionRefraction.ext_coeff_V;
 	}
 	
 	//Get EVectortor of Object from Earth
-	abstract public IValRef<EVector> GetPosition();
+	abstract public IValRef<EVector> getPosition();
 	
-	public IValRef<EVector> GetAtmPos(){
-		return ExtinctionRefraction.Refraction(GetPosition(), true);
+	public IValRef<EVector> getAtmPos(){
+		return ExtinctionRefraction.refraction(getPosition(), true);
 	}
 }

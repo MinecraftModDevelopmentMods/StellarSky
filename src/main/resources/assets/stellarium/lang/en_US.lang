@@ -1,0 +1,89 @@
+﻿
+//Keys
+key.stellarsky=Stellar Sky
+key.stellarsky.viewmod.description=Change Time Info Text
+
+//HUD Texts
+hud.text.year=Year %1$s
+hud.text.day=Day  #%1$s (/%2$s)
+hud.text.tick=Tick  #%1$s (/%2$s)
+hud.text.time=Time %1$s:%2$s   (/%3$s:%4$s)
+
+
+//Client Configs
+config.category.client=Client Configurations
+config.category.client.tooltip=Configurations for client modifications. Most of them are for rendering/view.
+
+config.property.client.maglimit=Limit Magnitude
+config.property.client.maglimit.tooltip=Limit of magnitude can be seen on naked eye. If you want to increase FPS, you can set this property a bit little (e.g. 0.3) and FPS will be exponentially improved.
+
+config.property.client.turbulance=Twinkling(Turbulance)
+config.property.client.turbulance.tooltip=Degree of the twinkling effect of star. It determines the turbulance of atmosphere, which actually cause the twinkling effect.
+
+config.property.client.moonfrac=Number of Moon fragment
+config.property.client.moonfrac.tooltip=Moon is drawn with fragments. Less fragments will increase FPS, but the moon become more defective.
+
+config.property.client.minutelength=Length of Minute
+config.property.client.minutelength.tooltip=Length of minute in tick. (The minute & hour is displayed on HUD as HH:MM format)
+
+config.property.client.hourlength=Length of Hour
+config.property.client.hourlength.tooltip=Length of hour in minute. (The minute & hour is displayed on HUD as HH:MM format)
+
+config.property.client.modeview=Mode for HUD time view
+config.property.client.modeview.tooltip=Mode for HUD time view. 3 modes available: empty, hhmm, tick. Can also be changed in-game using key.
+
+config.property.client.brcontrast=Brightness Contrast
+config.property.client.brcontrast.tooltip=Brightness Contrast determines the contrast between bright stars and faint stars. The bigger the value, the less difference between bright stars and faint stars. For real world, 1.0 is right. Though default value is 1.75 for visual effect.
+
+
+//Server Configs
+config.category.server=Server(Common) Configurations
+config.category.server.tooltip=Configurations for server modifications.
+
+config.property.server.serverenabled=Server Enabled
+config.property.server.serverenabled.tooltip=Enables Server-Side Sky change.
+
+config.property.server.daylength=Day Length
+config.property.server.daylength.tooltip=Length of a day, in a tick.
+
+config.property.server.yearlength=Year Length
+config.property.server.yearlength.tooltip=Length of a year, in a day.
+
+config.property.server.yearoffset=Year Offset
+config.property.server.yearoffset.tooltip=Year offset on world starting time. (Offsets are added together)
+
+config.property.server.dayoffset=Day Offset
+config.property.server.dayoffset.tooltip=Day offset on world starting time. (Offsets are added together)
+
+config.property.server.tickoffset=Tick Offset
+config.property.server.tickoffset.tooltip=Tick offset on world starting time. (Offsets are added together)
+
+config.property.server.lattitudeoverworld=Lattitude on Overworld
+config.property.server.lattitudeoverworld.tooltip=Lattitude on Overworld, in Degrees.
+
+config.property.server.longitudeoverworld=Longitude on Overworld
+config.property.server.longitudeoverworld.tooltip=Longitude on Overworld, in Degrees. (East is +)
+
+config.property.server.lattitudeender=Lattitude on Ender
+config.property.server.lattitudeender.tooltip=Lattitude on Ender, in Degrees.
+
+config.property.server.longitudeender=Longitude on Ender
+config.property.server.longitudeender.tooltip=Longitude on Ender, in Degrees. (East is +)
+
+config.property.server.moonsize=Size of Moon
+config.property.server.moonsize.tooltip=Size of moon. (Default size is 1.0)
+
+config.property.server.moonbrightness=Brightness of Moon
+config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brightness is 1.0)
+
+config.property.server.wakemode=Wake Mode
+config.property.server.wakemode.expl=You can choose earliest or latest available wake time among these wake properties.
+
+config.property.server.enablewake=Wake Property Enabled
+config.property.server.enablewake.expl=Enable this wake property.
+
+config.property.server.wakeangle=Solar azimuth for wake
+config.property.server.wakeangle.expl=Solar azimuth(height) angle to wake up. (in degrees)
+
+config.property.server.waketime=Wake Time from midnight
+config.property.server.waketime.expl=Wake-up time from midnight. (in tick)

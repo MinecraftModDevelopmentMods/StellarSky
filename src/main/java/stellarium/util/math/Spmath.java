@@ -164,7 +164,6 @@ public class Spmath {
 	
 	
 	public static final double getD(IValRef<IReal> val){
-		val.onUsed();
 		return val.getVal().asDouble();
 	}
 	

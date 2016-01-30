@@ -19,6 +19,7 @@ local.properties
 gradle/
 build/
 eclipse/
+run/
 CREDITS-fml.txt
 forge-*.txt
 LICENSE-fml.txt
@@ -229,3 +230,6 @@ pip-log.txt
 *.iml
 *.ipr
 *.iws
+gradlew
+
+gradlew.bat
