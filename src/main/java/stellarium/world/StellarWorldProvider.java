@@ -34,6 +34,7 @@ import net.minecraftforge.common.DimensionManager;
 public class StellarWorldProvider extends WorldProvider {
 	
 	private WorldProvider parProvider;
+    public static final float[] moonPhaseFactors = new float[] {1.0F, 0.75F, 0.5F, 0.25F, 0.0F, 0.25F, 0.5F, 0.75F};
 	
 	public StellarWorldProvider(WorldProvider provider) {
 		this.parProvider = provider;
@@ -71,6 +72,8 @@ public class StellarWorldProvider extends WorldProvider {
 		return parProvider.getSunBrightnessFactor(par1);
 	}
 
+
+	
 	@Override
     public int getMoonPhase(long par1) {
     	if(StellarSky.getManager().getCurrentUpdatedTime() != par1)

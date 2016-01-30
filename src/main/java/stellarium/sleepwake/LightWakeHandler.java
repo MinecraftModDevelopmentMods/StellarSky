@@ -50,7 +50,7 @@ public class LightWakeHandler implements IWakeHandler {
 	}
 	
 	private double wakeHourAngle() {
-		double radLatitude = Spmath.Radians(StellarSky.getManager().lattitudeOverworld);
+		double radLatitude = Spmath.Radians(StellarSky.getManager().latitudeOverworld);
 		
 		IValRef pvec=(IValRef)VecMath.mult(-1.0, StellarSky.getManager().Earth.EcRPos);
 		pvec = Transforms.ZTEctoNEc.transform(pvec);
