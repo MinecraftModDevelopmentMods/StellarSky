@@ -125,7 +125,9 @@ public class Moon extends Satellite {
 	
 	//Time phase for moon
 	public double phase_Time(){
-		double k=Math.signum(Spmath.getD(VOp.dot(CrossUtil.cross((IValRef)EcRPosG, (IValRef)EcRPos), (IValRef)Pole)))*getPhase();
+		
+		double k=Math.signum(Spmath.getD(VOp.dot(CrossUtil.cross((IValRef)EcRPosG, (IValRef)EcRPos), (IValRef)Pole)))
+				*(1.0 - getPhase());
 		if(k<0) k=k+2;
 		return k/2;
 	}

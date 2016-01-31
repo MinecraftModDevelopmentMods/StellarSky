@@ -49,7 +49,7 @@ public class StellarWorldProvider extends WorldProvider {
 
 	@Override
     public float calculateCelestialAngle(long par1, float par3) {
-    	if(StellarSky.getManager().getCurrentUpdatedTime() != par1)
+    	if(StellarSky.getManager().isSetupComplete())
     		StellarSky.getManager().update(par1+par3, isSurfaceWorld());
     	
     	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
@@ -73,7 +73,7 @@ public class StellarWorldProvider extends WorldProvider {
 
 	@Override
     public int getMoonPhase(long par1) {
-    	if(StellarSky.getManager().getCurrentUpdatedTime() != par1)
+    	if(StellarSky.getManager().isSetupComplete())
     		StellarSky.getManager().update(par1, isSurfaceWorld());
     	return (int)(StellarSky.getManager().Moon.phase_Time()*8);
     }
