@@ -99,9 +99,9 @@ public class Moon extends Satellite {
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)
-	public synchronized IValRef<EVector> posLocalM(double longitude, double lattitude, double yr){
+	public synchronized IValRef<EVector> posLocalM(double longitude, double latitude, double yr){
 		float longp=(float)Spmath.Radians(longitude+mean_mot*yr);
-		float lat=(float)Spmath.Radians(lattitude);
+		float lat=(float)Spmath.Radians(latitude);
 		return VecMath.mult((IValRef)radius, VecMath.add(VecMath.add(VecMath.mult(Spmath.sinf(lat), Pole), VecMath.mult(Spmath.cosf(lat)*Spmath.cosf(longp), PrMer0)), VecMath.mult(Spmath.cosf(lat)*Spmath.sinf(longp), East)));
 	}
 	

@@ -20,7 +20,7 @@ public class StellarClientHook {
 
 			double currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
 			double time = StellarSky.getManager().getSkyTime(currentTick);
-			double date = currentTick / StellarSky.getManager().day + StellarSky.getManager().lattitudeOverworld / 180.0;
+			double date = currentTick / StellarSky.getManager().day + StellarSky.getManager().latitudeOverworld / 180.0;
 			double year = date / StellarSky.getManager().year;
 			
 			int yr = (int)Math.floor(year);
