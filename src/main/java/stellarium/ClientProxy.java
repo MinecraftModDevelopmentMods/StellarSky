@@ -68,7 +68,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        mag_Limit.setRequiresMcRestart(false);
 		        mag_Limit.setLanguageKey("config.property.client.maglimit");
 
-		        turb=config.get(category, "Twinkling(Turbulance)", 0.2);
+		        turb=config.get(category, "Twinkling(Turbulance)", 0.7);
 		        turb.comment="Degree of the twinkling effect of star.\n"
 		        		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect";
 		        turb.setRequiresMcRestart(false);
