@@ -61,17 +61,19 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        config.setCategoryLanguageKey(category, "config.category.client");
 		        config.setCategoryRequiresMcRestart(category, false);
 				
-		        mag_Limit=config.get(category, "Mag_Limit", 6.5);
+		        mag_Limit=config.get(category, "Mag_Limit", 4.0);
 		        mag_Limit.comment="Limit of magnitude can be seen on naked eye.\n" +
-		        		"If you want to increase FPS, you can set this property a bit lower (e.g. 0.3)\n" +
-		        		"and FPS will be exponentially improved";
+		        		"If you want to increase FPS, lower the Mag_Limit.\n" +
+		        		"(Realistic = 6.5, Default = 4.0)\n" +
+		        		"The lower you set it, the fewer stars you will see\n" +
+		        		"but the better FPS you will get";
 		        mag_Limit.setRequiresMcRestart(false);
 		        mag_Limit.setLanguageKey("config.property.client.maglimit");
 
-		        turb=config.get(category, "Twinkling(Turbulance)", 4.0);
+		        turb=config.get(category, "Twinkling(Turbulance)", 1.0);
 		        turb.comment="Degree of the twinkling effect of star.\n"
 		        		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect. "
-        				+ "The greater the value, the more the stars will twinkle. Default is 4.0. To disable set to 0.0";
+        				+ "The greater the value, the more the stars will twinkle. Default is 1.0. To disable set to 0.0";
 		        turb.setRequiresMcRestart(false);
 		        turb.setLanguageKey("config.property.client.turbulance");
 		        
@@ -111,7 +113,8 @@ public class ClientProxy extends CommonProxy implements IProxy {
 			@Override
 			public void loadFromConfig(Configuration config, String category) {
 		        manager.mag_Limit=(float)mag_Limit.getDouble();
-		        manager.turb=(float)turb.getDouble();
+		        //Scaling
+		        manager.turb=(float)turb.getDouble() * 4.0f;
 		        manager.imgFrac=moon_Frac.getInt();
 		        manager.minuteLength = minuteLength.getDouble();
 		        manager.anHourToMinute = hourToMinute.getInt();
