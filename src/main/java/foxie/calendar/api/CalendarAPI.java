@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CalendarAPI {
@@ -126,5 +127,14 @@ public class CalendarAPI {
     */
    public static ICalendarProvider getCalendarInstance() {
       return getCalendarInstance(0);
+   }
+
+   /**
+    * @param provider  Calendar to look up descriptors for
+    * @param tolerance time tolerance of the request
+    * @return list of descriptors
+    */
+   public static List<DayTimeDescriptor> getDayTimeDescriptors(ICalendarProvider provider, int tolerance) {
+      return provider.getDayTimeDescriptors(tolerance);
    }
 }

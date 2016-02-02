@@ -1,5 +1,8 @@
 package stellarium.compat.calendarapi;
 
+import java.util.List;
+
+import foxie.calendar.api.DayTimeDescriptor;
 import foxie.calendar.api.ICalendarProvider;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
@@ -19,12 +22,20 @@ public class StellarCalendarProvider implements ICalendarProvider {
 
 	@Override
 	public int getDaysInYear() {
-		return (int) (StellarSky.getManager().year / StellarSky.getManager().day);
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double getDaysInYear(int year) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
 	public int getTicksPerYear() {
-		return (int) StellarSky.getManager().year;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
@@ -220,6 +231,12 @@ public class StellarCalendarProvider implements ICalendarProvider {
 	}
 
 	@Override
+	public double getDaysInMonth(int month, int year) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
 	public ICalendarProvider create(World world) {
 		// TODO Auto-generated method stub
 		return null;
@@ -258,7 +275,13 @@ public class StellarCalendarProvider implements ICalendarProvider {
 	@Override
 	public void apply(World world) {
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public List<DayTimeDescriptor> getDayTimeDescriptors(int tolerance) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
