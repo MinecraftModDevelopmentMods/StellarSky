@@ -1,7 +1,5 @@
 package foxie.calendar.api;
 
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 
@@ -11,7 +9,6 @@ import java.util.Map;
 
 public class CalendarAPI {
    public static final String MODNAME = "Calendar API";
-   public static final String VERSION = "1.0";
 
    private static Map<Integer, ISeasonProvider>   seasonProviders;
    private static Map<Integer, ICalendarProvider> calendarProviders;
@@ -48,8 +45,8 @@ public class CalendarAPI {
     */
    public static void registerSeasonProvider(int dimensionId, ISeasonProvider provider) {
       if (seasonProviders.get(dimensionId) != null) {
-         FMLLog.info("[" + MODNAME + "] Season provider already registered! Replacing on request then by mod " +
-                 Loader.instance().activeModContainer().getModId());
+         MCVersionHelper.log("[" + MODNAME + "] Season provider already registered! Replacing on request then by mod " +
+                 MCVersionHelper.getCurrentModId());
       }
 
       seasonProviders.put(dimensionId, provider);
@@ -63,8 +60,8 @@ public class CalendarAPI {
     */
    public static void registerCalendarProvider(int dimensionId, ICalendarProvider provider) {
       if (calendarProviders.get(dimensionId) != null) {
-         FMLLog.info("[" + MODNAME + "] Calendar provider already registered for dimension " + dimensionId +
-                 "! Replacing on request then by mod " + Loader.instance().activeModContainer().getModId());
+         MCVersionHelper.log("[" + MODNAME + "] Calendar provider already registered for dimension " + dimensionId +
+                 "! Replacing on request then by mod " + MCVersionHelper.getCurrentModId());
       }
 
       calendarProviders.put(dimensionId, provider);
@@ -91,8 +88,8 @@ public class CalendarAPI {
     * @return calendar
     */
    public static ICalendarProvider getCalendarInstance(World world) {
-      if (calendarProviders.containsKey(world.provider.dimensionId))
-         return calendarProviders.get(world.provider.dimensionId).create(world);
+      if (calendarProviders.containsKey(MCVersionHelper.getDimensionId(world)))
+         return calendarProviders.get(MCVersionHelper.getDimensionId(world)).create(world);
 
       return calendarProviders.get(0).create(world);
    }
@@ -104,8 +101,8 @@ public class CalendarAPI {
     * @return calendar
     */
    public static ICalendarProvider getCalendarInstance(WorldProvider provider) {
-      if (calendarProviders.containsKey(provider.dimensionId))
-         return calendarProviders.get(provider.dimensionId).create(provider);
+      if (calendarProviders.containsKey(MCVersionHelper.getDimensionId(provider)))
+         return calendarProviders.get(MCVersionHelper.getDimensionId(provider)).create(provider);
 
       return calendarProviders.get(0).create(provider);
    }

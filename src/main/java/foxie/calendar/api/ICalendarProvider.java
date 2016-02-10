@@ -11,7 +11,7 @@ public interface ICalendarProvider {
     *
     * @return days in a year
     */
-   int getDaysInYear();
+   double getDaysInYear();
 
    /**
     * Year sensitive version of getDaysInYear which can work with leap years etc
@@ -19,14 +19,16 @@ public interface ICalendarProvider {
     * @param year year
     * @return days in a year
     */
-   double getDaysInYear(int year);
+   int getDaysInYear(int year);
 
    /**
     * Gets total sum of ticks that happen in a year
     *
     * @return ticks in a year
     */
-   int getTicksPerYear();
+   long getTicksPerYear(int year);
+
+   double getTicksPerYear();
 
    /**
     * Gets current UNSCALED world time (in ticks)
@@ -142,9 +144,9 @@ public interface ICalendarProvider {
 
    ICalendarProvider addYears(int years);
 
-   int getDaysInMonth(int month);
+   double getDaysInMonth(int month);
 
-   double getDaysInMonth(int month, int year);
+   int getDaysInMonth(int month, int year);
 
    /*
     * These are used to create a new instance of these calendars

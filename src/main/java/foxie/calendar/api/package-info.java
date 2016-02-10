@@ -1,4 +1,4 @@
-@API(apiVersion = "1.1", owner = "CalendarAPI", provides = "CalendarAPI|API")
+@API(apiVersion = "1.2", owner = "CalendarAPI", provides = "CalendarAPI|API")
 
 package foxie.calendar.api;
 

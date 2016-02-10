@@ -7,13 +7,21 @@ import foxie.calendar.api.ICalendarProvider;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import stellarium.StellarSky;
+import stellarium.stellars.StellarManager;
 
 public class StellarCalendarProvider implements ICalendarProvider {
 	
 	private long currentTick;
+	private StellarManager manager;
+	private double skyTick;
+	private int day, year;
 	
 	public StellarCalendarProvider(long currentTick) {
 		this.currentTick = currentTick;
+		this.manager = StellarSky.getManager();
+		this.skyTick = (long) manager.getSkyTime(currentTick);
+		this.day = (int) Math.floor(this.skyTick / manager.day);
+		this.year = (int) Math.floor(this.day / manager.year);
 	}
 
 	public StellarCalendarProvider() {
@@ -21,33 +29,34 @@ public class StellarCalendarProvider implements ICalendarProvider {
 	}
 
 	@Override
-	public int getDaysInYear() {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getDaysInYear() {
+		return manager.year;
 	}
 
 	@Override
-	public double getDaysInYear(int year) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getDaysInYear(int year) {
+		return (int) (Math.floor(manager.year*(year+1)) - Math.floor(manager.year*year));
 	}
 
 	@Override
-	public int getTicksPerYear() {
-		// TODO Auto-generated method stub
-		return 0;
+	public long getTicksPerYear(int year) {
+		return (int) (Math.floor(manager.year*manager.day*(year+1))
+				- Math.floor(manager.year*manager.day*year));
+	}
+
+	@Override
+	public double getTicksPerYear() {
+		return manager.year * manager.day;
 	}
 
 	@Override
 	public long getTime() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.currentTick;
 	}
 
 	@Override
 	public int getDay() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.day;
 	}
 
 	@Override
@@ -225,13 +234,13 @@ public class StellarCalendarProvider implements ICalendarProvider {
 	}
 
 	@Override
-	public int getDaysInMonth(int month) {
+	public double getDaysInMonth(int month) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public double getDaysInMonth(int month, int year) {
+	public int getDaysInMonth(int month, int year) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -274,8 +283,7 @@ public class StellarCalendarProvider implements ICalendarProvider {
 
 	@Override
 	public void apply(World world) {
-		// TODO Auto-generated method stub
-		
+		world.setWorldTime(this.currentTick);
 	}
 
 	@Override
