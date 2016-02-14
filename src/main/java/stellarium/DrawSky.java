@@ -22,6 +22,7 @@ import sciapi.api.value.euclidian.CrossUtil;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
+import stellarium.client.ClientSettings;
 import stellarium.stellars.Color;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
@@ -41,6 +42,7 @@ public class DrawSky extends IRenderHandler {
 	private Minecraft mc;
 	private Random random;
 	private Tessellator tessellator1=Tessellator.instance;
+	private ClientSettings settings;
 
 	private static final ResourceLocation locationEndSkyPng = new ResourceLocation("textures/environment/end_sky.png");
 	private static final ResourceLocation locationSunPng = new ResourceLocation("stellarium", "stellar/halo.png");
@@ -52,7 +54,8 @@ public class DrawSky extends IRenderHandler {
 	/*private boolean IsMid, IsCalcd;*/
 
 	public DrawSky(){
-		random = new Random(System.currentTimeMillis());
+		this.random = new Random(System.currentTimeMillis());
+		this.settings = StellarSky.proxy.getClientSettings();
 	}
 
 	@Override
@@ -221,10 +224,9 @@ public class DrawSky extends IRenderHandler {
 
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, f4);
 
-
 			//Rendering Sun
 			f10 = 30.0F;
-
+			
 			EVector pos = new EVector(3);
 			pos.set(StellarSky.getManager().Sun.getPosition());
 			double size=StellarSky.getManager().Sun.radius/Spmath.getD(VecMath.size(pos))*99.0*20;
@@ -257,7 +259,7 @@ public class DrawSky extends IRenderHandler {
 
 			sizem *= (98.0*5.0);
 
-			int latn=StellarSky.getManager().imgFrac, longn=2*StellarSky.getManager().imgFrac;
+			int latn = settings.imgFrac, longn=2*settings.imgFrac;
 			EVector moonvec[][];
 			float moonilum[][];
 			moonvec=new EVector[longn][latn+1];
@@ -427,7 +429,7 @@ public class DrawSky extends IRenderHandler {
 				float Mag=star.App_Mag;
 				float B_V=star.App_B_V;
 
-				if(Mag > StellarSky.getManager().mag_Limit)
+				if(Mag > settings.mag_Limit)
 					continue;
 
 				if(VecMath.getZ(pos)<0) continue;
@@ -471,7 +473,7 @@ public class DrawSky extends IRenderHandler {
 
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
-		if(Mag > StellarSky.getManager().mag_Limit) return;
+		if(Mag > settings.mag_Limit) return;
 		if(VecMath.getZ(pos)<0) return;
 
 		float size=0.6f;

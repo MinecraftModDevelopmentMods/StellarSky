@@ -43,19 +43,19 @@ public class Moon extends Satellite {
 		ri.setRAngle(-Spmath.Radians(I0));
 		rom.setRAngle(-Spmath.Radians(Omega0));
 		Pole.set((IValRef)rom.transform(ri.transform((IEVector)Pole)));
-		PrMer0.set(VecMath.normalize(VecMath.mult(-1.0, this.GetEcRPosE(0.0))));
+		PrMer0.set(VecMath.normalize(VecMath.mult(-1.0, this.getEcRPosE(0.0))));
 		East.set((IValRef)CrossUtil.cross((IEVector)Pole, (IEVector)PrMer0));
 	}
 	
 	//Get Ecliptic Position Vector from Earth
-	public IValRef<EVector> GetEcRPosE(double yr){
-		UpdateOrbE(yr);
+	public IValRef<EVector> getEcRPosE(double yr){
+		updateOrbE(yr);
 		double M=M0+mean_mot*yr;
 		return Spmath.GetOrbVec(a, e, ri.setRAngle(-Spmath.Radians(I)), rw.setRAngle(-Spmath.Radians(w)), rom.setRAngle(-Spmath.Radians(Omega)), M);
 	}
 	
 	//Update Orbital Elements in time
-	public void UpdateOrbE(double yr){
+	public void updateOrbE(double yr){
 		a=a0;
 		e=e0;
 		I=I0;
@@ -70,7 +70,7 @@ public class Moon extends Satellite {
 	public void update(){
 		double yr=Transforms.yr;
 		
-		EcRPosE.set(GetEcRPosE(yr));
+		EcRPosE.set(getEcRPosE(yr));
 		EcRPos.set(VecMath.add(parPlanet.getEcRPos(yr),EcRPosE));
 		EcRPosG.set(VecMath.sub(EcRPosE,Transforms.Zen));
 		
