@@ -15,6 +15,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarium.client.ClientSettings;
+import stellarium.client.StellarClientHook;
+import stellarium.client.StellarKeyHook;
 import stellarium.config.EnumViewMode;
 import stellarium.config.IConfigHandler;
 import stellarium.stellars.Optics;
@@ -24,6 +27,12 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	
 	private static final String clientConfigCategory = "clientconfig";
 	private static final String clientConfigOpticsCategory = "clientconfig.optics";
+	
+	private ClientSettings settings = new ClientSettings();
+	
+	public ClientSettings getClientSettings() {
+		return this.settings;
+	}
 	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
@@ -67,7 +76,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        		"(Realistic = 6.5, Default = 4.0)\n" +
 		        		"The lower you set it, the fewer stars you will see\n" +
 		        		"but the better FPS you will get";
-		        mag_Limit.setRequiresMcRestart(false);
+		        mag_Limit.setRequiresMcRestart(true);
 		        mag_Limit.setLanguageKey("config.property.client.maglimit");
 
 		        turb=config.get(category, "Twinkling(Turbulance)", 1.0);
@@ -101,7 +110,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        viewMode.setRequiresMcRestart(false);
 		        viewMode.setLanguageKey("config.property.client.modeview");
 		        
-		        viewMode.setValue(manager.getViewMode().getName());
+		        viewMode.setValue(settings.getViewMode().getName());
 		        
 		        
 		        List<String> propNameList = Arrays.asList(mag_Limit.getName(),
@@ -112,14 +121,14 @@ public class ClientProxy extends CommonProxy implements IProxy {
 
 			@Override
 			public void loadFromConfig(Configuration config, String category) {
-		        manager.mag_Limit=(float)mag_Limit.getDouble();
+				settings.mag_Limit=(float)mag_Limit.getDouble();
 		        //Scaling
-		        manager.turb=(float)turb.getDouble() * 4.0f;
-		        manager.imgFrac=moon_Frac.getInt();
-		        manager.minuteLength = minuteLength.getDouble();
-		        manager.anHourToMinute = hourToMinute.getInt();
+				settings.turb=(float)turb.getDouble() * 4.0f;
+		        settings.imgFrac=moon_Frac.getInt();
+		        settings.minuteLength = minuteLength.getDouble();
+		        settings.anHourToMinute = hourToMinute.getInt();
 		        
-		        manager.setViewMode(EnumViewMode.getModeForName(viewMode.getString()));
+		        settings.setViewMode(EnumViewMode.getModeForName(viewMode.getString()));
 			}
 			
 		});

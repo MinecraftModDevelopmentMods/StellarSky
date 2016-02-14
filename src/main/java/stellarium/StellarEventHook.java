@@ -52,6 +52,8 @@ public class StellarEventHook {
 		if(!e.world.isRemote)
 			return;
 		
+		StellarSky.getManager().initializePlanet();
+		
 		if(e.world.provider.dimensionId == 0 || e.world.provider.dimensionId == -1)
 		{
 			e.world.provider.setSkyRenderer(new DrawSky());

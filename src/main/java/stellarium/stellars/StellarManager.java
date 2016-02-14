@@ -26,17 +26,9 @@ public class StellarManager {
 	private Planet Neptune=new Planet();
 	
 	public Planet[] planets = {Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune};
-		
-	private Side side;
-
-	//Client-Side Config
-	public float mag_Limit;
-	public int imgFrac;
-	public float turb;
-	public double minuteLength;
-	public int anHourToMinute;
 	
-	//Common Config
+	private Side side;
+	
 	public boolean serverEnabled;
 	public double day, year;
 	public int yearOffset, dayOffset;
@@ -44,9 +36,6 @@ public class StellarManager {
 	public double latitudeOverworld, latitudeEnder;
 	public double longitudeOverworld, longitudeEnder;
 	public double moonSizeMultiplier, moonBrightnessMultiplier;
-		
-	//View Mode
-	private EnumViewMode viewMode = EnumViewMode.EMPTY;
 	
 	//Checks
 	private boolean setup = false;
@@ -64,28 +53,15 @@ public class StellarManager {
 		return this.planets;
 	}
 	
-	public void incrementViewMode() {
-		this.viewMode = viewMode.nextMode();
-		StellarSky.proxy.getCfgManager().syncFromFields();
-	}
-	
-	public EnumViewMode getViewMode() {
-		return this.viewMode;
-	}
-	
-	public void setViewMode(EnumViewMode mode) {
-		this.viewMode = mode;
-	}
-	
-	//Initialization Fuction
-	public void initialize(){
-		
-		System.out.println("[Stellarium]: "+"Initialization Starting...");
+	public void initialize() {
 		System.out.println("[Stellarium]: "+"Initializing Math class...");
 		//Initializing Spmath
 		Spmath.Initialize();
 		System.out.println("[Stellarium]: "+"Math Class Initialized!");
-		
+	}
+	
+	//Initialization Fuction
+	public void initializePlanet(){
 		////Solar System
 		System.out.println("[Stellarium]: "+"Initializing Solar System...");
 		///Sun

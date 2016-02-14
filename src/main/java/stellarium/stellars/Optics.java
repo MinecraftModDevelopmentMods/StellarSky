@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.StellarSky;
+import stellarium.client.ClientSettings;
 import stellarium.config.IConfigHandler;
 
 public class Optics implements IConfigHandler {
@@ -23,6 +24,7 @@ public class Optics implements IConfigHandler {
 	private static Random randomTurbulance = new Random(3L);
 	
 	public static final Optics instance = new Optics();
+	public static ClientSettings settings;
 	
 	@Override
 	public void setupConfig(Configuration config, String category) {
@@ -33,17 +35,19 @@ public class Optics implements IConfigHandler {
 				+ "Real world (minimum) = 1.0. Default = 2.0 for visual effect.";
 		brightnessContrastProperty.setRequiresMcRestart(false);
 		brightnessContrastProperty.setLanguageKey("config.property.client.brcontrast");
+		
+		settings = StellarSky.proxy.getClientSettings();
 	}
 
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
 		this.brightnessContrast = brightnessContrastProperty.getDouble();
-		this.magCompression = magCompressionBase / StellarSky.getManager().mag_Limit;
+		this.magCompression = magCompressionBase / settings.mag_Limit;
 		this.magContrast = (float) Math.pow(2.512, (1.0/(brightnessContrast * magCompression)));
 	}
 	
 	public static float getAlphaFromMagnitudeSparkling(float Mag, float bglight){
-		double turb = randomTurbulance.nextGaussian() * ((StellarSky.getManager().turb) / (Mag + 4.46f));
+		double turb = randomTurbulance.nextGaussian() * ((settings.turb) / (Mag + 4.46f));
 		return getAlpha(((Mag + 1.46f) * instance.magCompression) + turb, bglight);
 	}
 

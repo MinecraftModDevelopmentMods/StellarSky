@@ -1,10 +1,11 @@
-package stellarium;
+package stellarium.client;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import stellarium.StellarSky;
 import stellarium.config.EnumViewMode;
 
 public class StellarClientHook {
@@ -12,7 +13,8 @@ public class StellarClientHook {
 	@SubscribeEvent
 	public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
 		if(event.type == RenderGameOverlayEvent.ElementType.ALL) {
-			EnumViewMode viewMode = StellarSky.getManager().getViewMode();
+			ClientSettings setting = StellarSky.proxy.getClientSettings();
+			EnumViewMode viewMode = setting.getViewMode();
 			if(!viewMode.showOnHUD())
 				return;
 			
@@ -27,13 +29,13 @@ public class StellarClientHook {
 			int day = (int)Math.floor(date - yr * StellarSky.getManager().year);
 			int tick = (int)Math.floor((date - yr * StellarSky.getManager().year - day)*StellarSky.getManager().day);
 			
-			int minute = (int)Math.floor(tick / StellarSky.getManager().minuteLength);
-			int hour = minute / StellarSky.getManager().anHourToMinute;
-			minute %= StellarSky.getManager().anHourToMinute;
+			int minute = (int)Math.floor(tick / setting.minuteLength);
+			int hour = minute / setting.anHourToMinute;
+			minute %= setting.anHourToMinute;
 			
-			int totalminute = (int)Math.floor(StellarSky.getManager().day / StellarSky.getManager().minuteLength);
-			int totalhour = totalminute / StellarSky.getManager().anHourToMinute;
-			totalminute %= StellarSky.getManager().anHourToMinute;
+			int totalminute = (int)Math.floor(StellarSky.getManager().day / setting.minuteLength);
+			int totalhour = totalminute / setting.anHourToMinute;
+			totalminute %= setting.anHourToMinute;
 			
 			int yOffset = 0;
 			
