@@ -2,9 +2,7 @@ package stellarium.stellars;
 
 import java.io.IOException;
 
-import cpw.mods.fml.relauncher.Side;
-import stellarium.StellarSky;
-import stellarium.config.EnumViewMode;
+import net.minecraftforge.fml.relauncher.Side;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;

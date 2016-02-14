@@ -1,10 +1,9 @@
 package stellarium.util.math;
 
+import net.minecraft.util.MathHelper;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.numerics.IReal;
-import net.minecraft.util.MathHelper;
 
 public class Spmath {
 	

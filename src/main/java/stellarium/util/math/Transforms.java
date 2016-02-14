@@ -1,13 +1,9 @@
 package stellarium.util.math;
 
-import sciapi.api.value.IValRef;
-import sciapi.api.value.STempRef;
 import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.EVectorSet;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
-import stellarium.stellars.StellarManager;
 
 public class Transforms {
 	

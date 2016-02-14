@@ -1,21 +1,14 @@
 package stellarium.stellars.background;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import net.minecraft.client.Minecraft;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import stellarium.StellarSky;
 import stellarium.stellars.ExtinctionRefraction;
-import stellarium.stellars.StellarManager;
 import stellarium.util.math.SpCoordf;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;

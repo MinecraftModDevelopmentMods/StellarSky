@@ -2,7 +2,6 @@ package stellarium.stellars;
 
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.EVectorSet;
 import stellarium.util.math.VecMath;
 
 

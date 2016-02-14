@@ -1,6 +1,5 @@
 package stellarium.util.math;
 
-import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.CrossUtil;
 import sciapi.api.value.euclidian.ERotate;
 import sciapi.api.value.euclidian.EVectorSet;

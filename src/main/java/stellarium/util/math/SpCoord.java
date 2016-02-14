@@ -1,7 +1,6 @@
 package stellarium.util.math;
 
 import sciapi.api.value.IValRef;
-import sciapi.api.value.STempRef;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.EVectorSet;
 

@@ -3,35 +3,23 @@ package stellarium;
 import java.io.IOException;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraft.item.Item;
-import net.minecraft.world.WorldProvider;
-import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.common.*;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import stellarium.compat.CompatManager;
 import stellarium.stellars.StellarManager;
-import stellarium.world.StellarWorldProvider;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLModDisabledEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.*;
-import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version,
-	dependencies="required-after:sciapi@[1.1.0.0,1.2.0.0);after:CalendarAPI@[1.1,2.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
+@Mod(modid=StellarSky.modid, version=StellarSky.version,
+	dependencies="required-after:sciapi@[1.2.0.0,1.3.0.0);after:CalendarAPI@[1.1,2.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";
-		public static final String name = "Stellar Sky";
-		public static final String version = "0.1.20";
+		public static final String version = "@VERSION@";
 
         // The instance of Stellarium
         @Instance(StellarSky.modid)

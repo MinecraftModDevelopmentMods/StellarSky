@@ -4,8 +4,6 @@ import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.CrossUtil;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
-import sciapi.api.value.numerics.DDouble;
-import sciapi.api.value.numerics.IReal;
 import sciapi.api.value.util.BOp;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;

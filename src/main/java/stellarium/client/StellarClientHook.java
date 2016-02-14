@@ -1,10 +1,10 @@
 package stellarium.client;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stellarium.StellarSky;
 import stellarium.config.EnumViewMode;
 
@@ -18,7 +18,7 @@ public class StellarClientHook {
 			if(!viewMode.showOnHUD())
 				return;
 			
-			FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+			FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
 
 			double currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
 			double time = StellarSky.getManager().getSkyTime(currentTick);

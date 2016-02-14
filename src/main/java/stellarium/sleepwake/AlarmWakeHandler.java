@@ -5,7 +5,6 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.StellarSky;
-import stellarium.util.math.Spmath;
 
 public class AlarmWakeHandler implements IWakeHandler {
 	
