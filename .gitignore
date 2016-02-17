@@ -16,7 +16,6 @@ local.properties
 .settings/
 .loadpath
 .gradle/
-gradle/
 build/
 build.gradle
 run/
