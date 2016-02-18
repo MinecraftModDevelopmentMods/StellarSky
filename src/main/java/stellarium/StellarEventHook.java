@@ -11,6 +11,7 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
@@ -40,7 +41,7 @@ public class StellarEventHook {
 	{
 		if(StellarSky.getManager().serverEnabled && e.world.provider.getDimensionId() == 0) {
 			try {
-				providerField.set(e.world, new StellarWorldProvider(e.world.provider));
+				providerField.set(e.world, new StellarWorldProvider(e.world, e.world.provider));
 			} catch (Exception exc) {
 				Throwables.propagate(exc);
 			}
@@ -63,129 +64,10 @@ public class StellarEventHook {
 			return;
 		}
 
-		if(event.result == null || event.result == EnumStatus.OK || event.result == EnumStatus.NOT_POSSIBLE_NOW);
-		
-        if (!this.worldObj.isRemote)
-        {
-            if (this.isPlayerSleeping() || !this.isEntityAlive())
-            {
-                return EntityPlayer.EnumStatus.OTHER_PROBLEM;
-            }
-
-            if (!this.worldObj.provider.isSurfaceWorld())
-            {
-                return EntityPlayer.EnumStatus.NOT_POSSIBLE_HERE;
-            }
-
-            if (this.worldObj.isDaytime())
-            {
-                return EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW;
-            }
-
-            if (Math.abs(this.posX - (double)bedLocation.getX()) > 3.0D || Math.abs(this.posY - (double)bedLocation.getY()) > 2.0D || Math.abs(this.posZ - (double)bedLocation.getZ()) > 3.0D)
-            {
-                return EntityPlayer.EnumStatus.TOO_FAR_AWAY;
-            }
-
-            double d0 = 8.0D;
-            double d1 = 5.0D;
-            List<EntityMob> list = this.worldObj.<EntityMob>getEntitiesWithinAABB(EntityMob.class, new AxisAlignedBB((double)bedLocation.getX() - d0, (double)bedLocation.getY() - d1, (double)bedLocation.getZ() - d0, (double)bedLocation.getX() + d0, (double)bedLocation.getY() + d1, (double)bedLocation.getZ() + d0));
-
-            if (!list.isEmpty())
-            {
-                return EntityPlayer.EnumStatus.NOT_SAFE;
-            }
-        }
-
-        if (this.isRiding())
-        {
-            this.mountEntity((Entity)null);
-        }
-
-        this.setSize(0.2F, 0.2F);
-
-        if (this.worldObj.isBlockLoaded(bedLocation) && worldObj.getBlockState(bedLocation).getBlock().isBed(worldObj, bedLocation, this))
-        {
-            EnumFacing enumfacing = this.worldObj.getBlockState(bedLocation).getBlock().getBedDirection(worldObj, bedLocation);
-            float f = 0.5F;
-            float f1 = 0.5F;
-
-            switch (enumfacing)
-            {
-                case SOUTH:
-                    f1 = 0.9F;
-                    break;
-                case NORTH:
-                    f1 = 0.1F;
-                    break;
-                case WEST:
-                    f = 0.1F;
-                    break;
-                case EAST:
-                    f = 0.9F;
-            }
-
-            this.func_175139_a(enumfacing);
-            this.setPosition((double)((float)bedLocation.getX() + f), (double)((float)bedLocation.getY() + 0.6875F), (double)((float)bedLocation.getZ() + f1));
-        }
-        else
-        {
-            this.setPosition((double)((float)bedLocation.getX() + 0.5F), (double)((float)bedLocation.getY() + 0.6875F), (double)((float)bedLocation.getZ() + 0.5F));
-        }
-
-        this.sleeping = true;
-        this.sleepTimer = 0;
-        this.playerLocation = bedLocation;
-        this.motionX = this.motionZ = this.motionY = 0.0D;
-
-        if (!this.worldObj.isRemote)
-        {
-            this.worldObj.updateAllPlayersSleepingFlag();
-        }
-
-        return EntityPlayer.EnumStatus.OK;
-		
-        /*
-		if(event.result == null || event.result == EnumStatus.OK || event.result == EnumStatus.NOT_POSSIBLE_NOW)
-		{
-			World world = event.entityPlayer.worldObj;
-			EntityPlayer player = event.entityPlayer;
-
-			if(world.isRemote)
-				return;
-			
-            if (player.isPlayerSleeping() || !player.isEntityAlive())
-            {
-                event.result = EnumStatus.OTHER_PROBLEM;
-            }
-
-            if (!world.provider.isSurfaceWorld())
-            {
-            	event.result = EnumStatus.NOT_POSSIBLE_HERE;
-            }
-
-            if (!StellarSky.proxy.wakeManager.canSkipTime(world, world.getWorldTime()))
-            {
-                event.result = EnumStatus.NOT_POSSIBLE_NOW;
-            }
-
-            if (Math.abs(player.posX - (double)event.x) > 3.0D || Math.abs(player.posY - (double)event.y) > 2.0D || Math.abs(player.posZ - (double)event.z) > 3.0D)
-            {
-                event.result = EnumStatus.TOO_FAR_AWAY;
-            }
-
-            double d0 = 8.0D;
-            double d1 = 5.0D;
-            List list = world.getEntitiesWithinAABB(EntityMob.class, AxisAlignedBB.getBoundingBox((double)event.x - d0, (double)event.y - d1, (double)event.z - d0, (double)event.x + d0, (double)event.y + d1, (double)event.z + d0));
-
-            if (!list.isEmpty())
-            {
-                event.result = EnumStatus.NOT_SAFE;
-            }
-			
-            if(event.result == EnumStatus.OK)
-            	world.updateAllPlayersSleepingFlag();
-		}*/
+		if(event.result == null || event.result == EnumStatus.OK || event.result == EnumStatus.NOT_POSSIBLE_NOW) {
+			World worldObj = event.entityPlayer.worldObj;
+			if (!StellarSky.proxy.wakeManager.canSkipTime(worldObj, worldObj.getWorldTime()))
+				event.result = EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW;
+		}
 	}
-	
 }

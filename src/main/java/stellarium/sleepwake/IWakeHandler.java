@@ -15,6 +15,7 @@ public interface IWakeHandler extends IConfigHandler {
 	
 	/**
 	 * Determine if it is able to sleep on specific time.
+	 * NOTE: Players cannot sleep on daytime even if canSleep gives true.
 	 * @param world the world to control wake and sleep
 	 * @param sleepTime specified sleep time in tick
 	 * @return flag to determine possibility of sleep

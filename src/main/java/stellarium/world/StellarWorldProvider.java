@@ -3,9 +3,13 @@ package stellarium.world;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.WorldChunkManager;
+import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,16 +26,9 @@ public class StellarWorldProvider extends WorldProvider {
 	
 	private WorldProvider parProvider;
 	
-	public StellarWorldProvider(WorldProvider provider) {
+	public StellarWorldProvider(World world, WorldProvider provider) {
 		this.parProvider = provider;
-		this.worldObj = provider.worldObj;
-		this.field_82913_c = provider.field_82913_c;
-		this.terrainType = provider.terrainType;
-		this.worldChunkMgr = provider.worldChunkMgr;
-		this.isHellWorld = provider.isHellWorld;
-		this.hasNoSky = provider.hasNoSky;
-		this.lightBrightnessTable = provider.lightBrightnessTable;
-		this.dimensionId = provider.dimensionId;
+		this.worldObj = world;
 	}
 
 	@Override
@@ -149,9 +146,9 @@ public class StellarWorldProvider extends WorldProvider {
      * Gets the hard-coded portal location to use when entering this dimension.
      */
     @Override
-    public ChunkCoordinates getEntrancePortalLocation()
+    public BlockPos getSpawnCoordinate()
     {
-        return parProvider.getEntrancePortalLocation();
+        return parProvider.getSpawnCoordinate();
     }
 
     @Override
@@ -159,18 +156,7 @@ public class StellarWorldProvider extends WorldProvider {
     {
         return parProvider.getAverageGroundLevel();
     }
-
-    /**
-     * returns true if this dimension is supposed to display void particles and pull in the far plane based on the
-     * user's Y offset.
-     */
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean getWorldHasVoidParticles()
-    {
-        return parProvider.getWorldHasVoidParticles();
-    }
-
+    
     /**
      * Returns a double value representing the Y value relative to the top of the map at which void fog is at its
      * maximum. The default factor of 0.03125 relative to 256, for example, means the void fog will be at its maximum at
@@ -200,6 +186,52 @@ public class StellarWorldProvider extends WorldProvider {
     public String getDimensionName() {
     	return parProvider.getDimensionName();
     }
+    
+    @Override
+    public String getInternalNameSuffix() {
+    	return parProvider.getInternalNameSuffix();
+    }
+    
+    @Override
+    public WorldChunkManager getWorldChunkManager()
+    {
+        return parProvider.getWorldChunkManager();
+    }
+    
+    @Override
+    public boolean doesWaterVaporize()
+    {
+        return parProvider.doesWaterVaporize();
+    }
+    
+    @Override
+    public boolean getHasNoSky()
+    {
+        return parProvider.getHasNoSky();
+    }
+    
+    @Override
+    public float[] getLightBrightnessTable()
+    {
+        return parProvider.getLightBrightnessTable();
+    }
+    
+    /**
+     * Gets the dimension of the provider
+     */
+    @Override
+    public int getDimensionId()
+    {
+        return parProvider.getDimensionId();
+    }
+    
+    @Override
+    public WorldBorder getWorldBorder()
+    {
+        return parProvider.getWorldBorder();
+    }
+    
+    /*======================================= Forge Start =========================================*/
     
     /**
      * Sets the providers current dimension ID, used in default getSaveFolder()
@@ -259,7 +291,7 @@ public class StellarWorldProvider extends WorldProvider {
     }
 
     @Override
-    public ChunkCoordinates getRandomizedSpawnPoint()
+    public BlockPos getRandomizedSpawnPoint()
     {
         return parProvider.getRandomizedSpawnPoint();
     }
@@ -294,9 +326,9 @@ public class StellarWorldProvider extends WorldProvider {
     /*======================================= Start Moved From World =========================================*/
     
     @Override
-    public BiomeGenBase getBiomeGenForCoords(int x, int z)
+    public BiomeGenBase getBiomeGenForCoords(BlockPos pos)
     {
-        return parProvider.getBiomeGenForCoords(x, z);
+        return parProvider.getBiomeGenForCoords(pos);
     }
 
     @Override
@@ -345,15 +377,15 @@ public class StellarWorldProvider extends WorldProvider {
     }
 
     @Override
-    public boolean canBlockFreeze(int x, int y, int z, boolean byWater)
+    public boolean canBlockFreeze(BlockPos pos, boolean byWater)
     {
-        return parProvider.canBlockFreeze(x, y, z, byWater);
+        return parProvider.canBlockFreeze(pos, byWater);
     }
 
     @Override
-    public boolean canSnowAt(int x, int y, int z, boolean checkLight)
+    public boolean canSnowAt(BlockPos pos, boolean checkLight)
     {
-        return parProvider.canSnowAt(x, y, z, checkLight);
+        return parProvider.canSnowAt(pos, checkLight);
     }
 
     @Override
@@ -375,27 +407,27 @@ public class StellarWorldProvider extends WorldProvider {
     }
 
     @Override
-    public ChunkCoordinates getSpawnPoint()
+    public BlockPos getSpawnPoint()
     {
         return parProvider.getSpawnPoint();
     }
 
     @Override
-    public void setSpawnPoint(int x, int y, int z)
+    public void setSpawnPoint(BlockPos pos)
     {
-    	parProvider.setSpawnPoint(x, y, z);
+    	parProvider.setSpawnPoint(pos);
     }
 
     @Override
-    public boolean canMineBlock(EntityPlayer player, int x, int y, int z)
+    public boolean canMineBlock(EntityPlayer player, BlockPos pos)
     {
-    	return parProvider.canMineBlock(player, x, y, z);
+    	return parProvider.canMineBlock(player, pos);
     }
 
     @Override
-    public boolean isBlockHighHumidity(int x, int y, int z)
+    public boolean isBlockHighHumidity(BlockPos pos)
     {
-        return parProvider.isBlockHighHumidity(x, y, z);
+        return parProvider.isBlockHighHumidity(pos);
     }
 
     @Override
@@ -433,5 +465,4 @@ public class StellarWorldProvider extends WorldProvider {
     {
     	return parProvider.canDoRainSnowIce(chunk);
     }
-
 }
