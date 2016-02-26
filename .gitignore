@@ -16,6 +16,7 @@ local.properties
 .settings/
 .loadpath
 .gradle/
+gradle/
 eclipse/.recommenders
 build/
 build.gradle
