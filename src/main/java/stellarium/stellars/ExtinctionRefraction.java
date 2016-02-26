@@ -3,9 +3,7 @@ package stellarium.stellars;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.util.math.SpCoord;
-import stellarium.util.math.SpCoordf;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 //Will be corrected
