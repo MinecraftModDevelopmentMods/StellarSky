@@ -39,6 +39,8 @@ public class StellarEventHook {
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e)
 	{
+		StellarSky.getManager().initializePlanet();
+		
 		if(StellarSky.getManager().serverEnabled && e.world.provider.getDimensionId() == 0) {
 			try {
 				providerField.set(e.world, new StellarWorldProvider(e.world, e.world.provider));
@@ -49,9 +51,7 @@ public class StellarEventHook {
 
 		if(!e.world.isRemote)
 			return;
-		
-		StellarSky.getManager().initializePlanet();
-		
+				
 		if(e.world.provider.getDimensionId() == 0 || e.world.provider.getDimensionId() == -1)
 		{
 			e.world.provider.setSkyRenderer(new DrawSky());

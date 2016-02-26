@@ -56,6 +56,9 @@ public class Transforms {
 	//Vector from Earth center to Ground
 	public static EVector Zen = new EVector(3);
 	
+	//Pole vector
+	public static EVector pole = new EVector(3);
+	
 	
 	//Equatorial to Ecliptic
 	public static final Rotate EqtoEc = new Rotate('X').setRAngle(-e); 

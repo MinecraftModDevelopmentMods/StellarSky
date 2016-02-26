@@ -39,8 +39,8 @@ public class StellarSky {
         	proxy.preInit(event);
         	
     		MinecraftForge.EVENT_BUS.register(eventHook);
-    		FMLCommonHandler.instance().bus().register(tickHandler);
-    		FMLCommonHandler.instance().bus().register(fmlEventHook);
+    		MinecraftForge.EVENT_BUS.register(tickHandler);
+    		MinecraftForge.EVENT_BUS.register(fmlEventHook);
     		
     		CompatManager.getInstance().onPreInit();
         }

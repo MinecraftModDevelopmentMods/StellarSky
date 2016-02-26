@@ -290,6 +290,7 @@ public class StellarManager {
 	public final void update(double time, boolean isOverWorld){
 		double longitude = isOverWorld? longitudeOverworld : longitudeEnder;
 		this.timeOfManager = (long) Math.floor(time);
+		this.setup = true;
 		time = this.getSkyTime(time);
 		
         long cur = System.currentTimeMillis();

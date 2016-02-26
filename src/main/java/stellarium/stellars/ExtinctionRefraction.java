@@ -70,7 +70,7 @@ public class ExtinctionRefraction {
 		double R;
 		SpCoord sp = new SpCoord();
 		sp.setWithVec(VecMath.normalize(vec));
-				
+		
  		if(IsApplying)
 		{
 			//Saemundsson (1986)
