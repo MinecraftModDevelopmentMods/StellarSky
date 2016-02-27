@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import stellarium.client.SkyRenderer;
 import stellarium.world.StellarWorldProvider;
 
 public class StellarEventHook {
@@ -56,7 +57,7 @@ public class StellarEventHook {
 		
 		if(e.world.provider.dimensionId == 0 || e.world.provider.dimensionId == -1)
 		{
-			e.world.provider.setSkyRenderer(new DrawSky());
+			e.world.provider.setSkyRenderer(new SkyRenderer());
 		}
 	}
 	
