@@ -1,11 +1,5 @@
 package stellarium.api;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
-import stellarium.StellarSky;
-
 public class StellarSkyAPI {
 	
 	public ISkyProvider skyProvider;
