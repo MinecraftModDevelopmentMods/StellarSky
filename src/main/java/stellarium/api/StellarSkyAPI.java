@@ -8,6 +8,7 @@ import stellarium.StellarSky;
 
 public class StellarSkyAPI {
 	
+	public ISkyProvider skyProvider;
 	public IHourProvider hourProvider;
 	
 	private static StellarSkyAPI INSTANCE = new StellarSkyAPI();
@@ -24,12 +25,20 @@ public class StellarSkyAPI {
 	public static IHourProvider getCurrentHourProvider() {
 		return INSTANCE.hourProvider;
 	}
-	
+		
 	/**
 	 * Gets Sky Provider. Effective on both side.
 	 * */
 	public static ISkyProvider getSkyProvider() {
-		return StellarSky.getManager();
+		return INSTANCE.skyProvider;
+	}
+	
+	/**
+	 * Internal method, do not use this!
+	 * */
+	@Deprecated
+	public static void setSkyProvider(ISkyProvider provider) {
+		INSTANCE.skyProvider = provider;
 	}
 	
 }

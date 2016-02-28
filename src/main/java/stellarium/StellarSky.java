@@ -47,7 +47,7 @@ public class StellarSky {
         public static StellarManager getManager() { return proxy.manager; }
         
         @EventHandler
-        public void preInit(FMLPreInitializationEvent event) {
+        public void preInit(FMLPreInitializationEvent event) {        	
         	proxy.preInit(event);
         	
     		MinecraftForge.EVENT_BUS.register(eventHook);

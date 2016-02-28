@@ -5,6 +5,7 @@ import java.io.IOException;
 import cpw.mods.fml.relauncher.Side;
 import stellarium.StellarSky;
 import stellarium.api.ISkyProvider;
+import stellarium.api.StellarSkyAPI;
 import stellarium.config.EnumViewMode;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
@@ -44,6 +45,7 @@ public class StellarManager implements ISkyProvider {
 	
 	public StellarManager(Side pside){
 		this.side = pside;
+		StellarSkyAPI.setSkyProvider(this);
 	}
 	
 	public Side getSide() {
