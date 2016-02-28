@@ -21,6 +21,7 @@ import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
 import stellarium.stellars.StellarObj;
 import stellarium.stellars.background.BrStar;
+import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
@@ -31,6 +32,7 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 	private static final ResourceLocation locationMoonPng = new ResourceLocation("stellarium", "stellar/lune.png");
 	private static final ResourceLocation locationStarPng = new ResourceLocation("stellarium", "stellar/star.png");
 	private static final ResourceLocation locationhalolunePng = new ResourceLocation("stellarium", "stellar/haloLune.png");
+	private static final ResourceLocation locationMilkywayPng = new ResourceLocation("stellarium", "stellar/milkyway.png");
 
 	private EVector dif = new EVector(3);
 	private EVector dif2 = new EVector(3);
@@ -171,7 +173,7 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 				int longcd=(longc+1)%longn;
 				double longd=(double)longc/(double)longn;
 				double latd=1.0-(double)latc/(double)latn;
-				double longdd=(double)longcd/(double)longn;
+				double longdd=(double)(longc+1)/(double)longn;
 				double latdd=1.0-(double)(latc+1)/(double)latn;
 
 				float lightlevel = (0.875f*(bglight/2.1333334f));
@@ -185,7 +187,49 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 
 		tessellator1.draw();
 		//Moon
+		
+		//Rendering galaxy
+		latn = settings.imgFrac;
+		longn=2*settings.imgFrac;
+		moonvec=new EVector[longn][latn+1];
+		
+		for(longc=0; longc<longn; longc++){
+			for(latc=0; latc<=latn; latc++){
+				Buf.set(new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec());
+				Buf.set(VecMath.mult(50.0, Buf));
+				IValRef ref=Transforms.EqtoEc.transform(Buf);
+				ref=Transforms.ZTEctoNEc.transform(ref);
+				ref=Transforms.EctoEq.transform(ref);
+				ref=Transforms.NEqtoREq.transform(ref);
+				ref=Transforms.REqtoHor.transform(ref);
 
+				moonvec[longc][latc] = new EVector(3);
+				moonvec[longc][latc].set(ExtinctionRefraction.refraction(ref, true));
+			}
+		}
+		
+		renderEngine.bindTexture(locationMilkywayPng);
+		tessellator1.startDrawingQuads();
+		for(longc=0; longc<longn; longc++){
+			for(latc=0; latc<latn; latc++){
+				int longcd=(longc+1)%longn;
+				double longd=1.0-(double)longc/(double)longn;
+				double latd=1.0-(double)latc/(double)latn;
+				double longdd=1.0-(double)(longc+1)/(double)longn;
+				double latdd=1.0-(double)(latc+1)/(double)latn;
+
+				float lightlevel = (0.875f*(bglight/2.1333334f));
+				tessellator1.setColorRGBA_F(1.0f - lightlevel, 1.0f - lightlevel, 1.0f - lightlevel, 0.2f);
+				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), longd, latd);
+				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1]), longd, latdd);
+				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1]), longdd, latdd);
+				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc]), longdd, latd);
+			}
+		}
+		tessellator1.draw();
+		//galaxy
+
+		//Rendering stellar objects
 		renderEngine.bindTexture(locationStarPng);
 		for(StellarObj object : StellarSky.getManager().getPlanets()) {
 			this.drawStellarObj(bglight, f4, object);
