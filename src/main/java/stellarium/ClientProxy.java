@@ -61,7 +61,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		super.setupConfigManager(file);
 		cfgManager.register(clientConfigCategory, new IConfigHandler() {
 			
-			Property mag_Limit, turb, moon_Frac, minuteLength, hourToMinute, viewMode;
+			Property mag_Limit, turb, moon_Frac, milkyway_Frac, milkyway_Brightness, minuteLength, hourToMinute, viewMode;
 			
 			@Override
 			public void setupConfig(Configuration config, String category) {
@@ -78,6 +78,12 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        		"but the better FPS you will get";
 		        mag_Limit.setRequiresMcRestart(true);
 		        mag_Limit.setLanguageKey("config.property.client.maglimit");
+		        
+		        milkyway_Brightness=config.get(category, "Milkyway_Brightness", 2.0);
+		        milkyway_Brightness.comment="Brightness of milky way.\n"
+		        		+ "For real world it should be 1.0 or lower, but default is set to 2.0 for visual effect.";
+		        milkyway_Brightness.setRequiresMcRestart(false);
+		        milkyway_Brightness.setLanguageKey("config.property.client.milkywaybrightness");
 
 		        turb=config.get(category, "Twinkling(Turbulance)", 1.0);
 		        turb.comment="Degree of the twinkling effect of star.\n"
@@ -91,6 +97,12 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        		"Less fragments will increase FPS, but the moon will become more defective";
 		        moon_Frac.setRequiresMcRestart(false);
 		        moon_Frac.setLanguageKey("config.property.client.moonfrac");
+		        
+		        milkyway_Frac=config.get(category, "Milkyway_Fragments_Number", 32);
+		        milkyway_Frac.comment="Milky way is drawn with fragments\n" +
+		        		"Less fragments will increase FPS, but the milky way will become more defective";
+		        milkyway_Frac.setRequiresMcRestart(false);
+		        milkyway_Frac.setLanguageKey("config.property.client.milkywayfrac");
 		        
 		        minuteLength = config.get(category, "Minute_Length", 16.666);
 		        minuteLength.comment = "Number of ticks in a minute. (The minute & hour is displayed on HUD as HH:MM format)";
@@ -114,7 +126,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        
 		        
 		        List<String> propNameList = Arrays.asList(mag_Limit.getName(),
-		        		moon_Frac.getName(), turb.getName(), viewMode.getName(),
+		        		moon_Frac.getName(), milkyway_Frac.getName(),
+		        		turb.getName(), milkyway_Brightness.getName(),
+		        		viewMode.getName(),
 		        		minuteLength.getName(), hourToMinute.getName());
 		        config.setCategoryPropertyOrder(category, propNameList);
 			}
@@ -124,7 +138,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
 				settings.mag_Limit=(float)mag_Limit.getDouble();
 		        //Scaling
 				settings.turb=(float)turb.getDouble() * 4.0f;
+				settings.milkywayBrightness = (float) milkyway_Brightness.getDouble();
 		        settings.imgFrac=moon_Frac.getInt();
+		        settings.imgFracMilkyway = milkyway_Frac.getInt();
 		        settings.minuteLength = minuteLength.getDouble();
 		        settings.anHourToMinute = hourToMinute.getInt();
 		        

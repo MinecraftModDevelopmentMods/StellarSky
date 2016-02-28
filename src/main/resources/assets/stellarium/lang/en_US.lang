@@ -17,11 +17,17 @@ config.category.client.tooltip=Configurations for client modifications. Most of 
 config.property.client.maglimit=Limit Magnitude
 config.property.client.maglimit.tooltip=Limit of magnitude can be seen on naked eye. If you want to increase FPS, lower the Mag_Limit. (Realistic = 6.5, Default = 4.0) The lower you set it, the fewer stars you will see, but the better FPS you will get.
 
+config.property.client.milkywaybrightness=Brightness of Milky way
+config.property.client.milkywaybrightness.tooltip=Brightness of milky way. For real world it should be 1.0 or lower, but default is set to 2.0 for visual effect.
+
 config.property.client.turbulance=Twinkling(Turbulance)
 config.property.client.turbulance.tooltip=Degree of the twinkling effect of star. It determines the turbulance of atmosphere, which actually cause the twinkling effect. The greater the value, the more the stars will twinkle.
 
 config.property.client.moonfrac=Number of Moon fragment
 config.property.client.moonfrac.tooltip=Moon is drawn with fragments. Less fragments will increase FPS, but the moon become more defective.
+
+config.property.client.milkywayfrac=Number of Milky way fragment
+config.property.client.milkywayfrac.tooltip=Milky way is drawn with fragments. Less fragments will increase FPS, but the milky way become more defective.
 
 config.property.client.minutelength=Length of Minute
 config.property.client.minutelength.tooltip=Number of ticks in a minute. (The minute & hour is displayed on HUD as HH:MM format)

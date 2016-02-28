@@ -6,7 +6,8 @@ import stellarium.config.EnumViewMode;
 public class ClientSettings {
 
 	public float mag_Limit;
-	public int imgFrac;
+	public float milkywayBrightness;
+	public int imgFrac, imgFracMilkyway;
 	public float turb;
 	public double minuteLength;
 	public int anHourToMinute;
