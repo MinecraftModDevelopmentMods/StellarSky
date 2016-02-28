@@ -4,12 +4,14 @@ import java.io.IOException;
 
 import cpw.mods.fml.relauncher.Side;
 import stellarium.StellarSky;
+import stellarium.api.ISkyProvider;
+import stellarium.api.StellarSkyAPI;
 import stellarium.config.EnumViewMode;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
 
-public class StellarManager {
+public class StellarManager implements ISkyProvider {
 	
 	public final double AU=1.496e+8;
 
@@ -26,30 +28,24 @@ public class StellarManager {
 	private Planet Neptune=new Planet();
 	
 	public Planet[] planets = {Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune};
-		
-	private Side side;
-
-	//Client-Side Config
-	public float mag_Limit;
-	public int imgFrac;
-	public float turb;
-	public double minuteLength;
-	public int anHourToMinute;
 	
-	//Common Config
+	private Side side;
+	
 	public boolean serverEnabled;
 	public double day, year;
 	public int yearOffset, dayOffset;
 	public double tickOffset;
-	public double lattitudeOverworld, lattitudeEnder;
+	public double latitudeOverworld, latitudeEnder;
 	public double longitudeOverworld, longitudeEnder;
 	public double moonSizeMultiplier, moonBrightnessMultiplier;
-		
-	//View Mode
-	private EnumViewMode viewMode = EnumViewMode.EMPTY;
+	
+	//Checks
+	private boolean setup = false;
+	private long timeOfManager;
 	
 	public StellarManager(Side pside){
 		this.side = pside;
+		StellarSkyAPI.setSkyProvider(this);
 	}
 	
 	public Side getSide() {
@@ -60,28 +56,15 @@ public class StellarManager {
 		return this.planets;
 	}
 	
-	public void incrementViewMode() {
-		this.viewMode = viewMode.nextMode();
-		StellarSky.proxy.getCfgManager().syncFromFields();
-	}
-	
-	public EnumViewMode getViewMode() {
-		return this.viewMode;
-	}
-	
-	public void setViewMode(EnumViewMode mode) {
-		this.viewMode = mode;
-	}
-	
-	//Initialization Fuction
-	public void initialize(){
-		
-		System.out.println("[Stellarium]: "+"Initialization Starting...");
+	public void initialize() {
 		System.out.println("[Stellarium]: "+"Initializing Math class...");
 		//Initializing Spmath
 		Spmath.Initialize();
 		System.out.println("[Stellarium]: "+"Math Class Initialized!");
-		
+	}
+	
+	//Initialization Fuction
+	public void initializePlanet(){
 		////Solar System
 		System.out.println("[Stellarium]: "+"Initializing Solar System...");
 		///Sun
@@ -300,9 +283,18 @@ public class StellarManager {
 		return currentTick + (yearOffset * year + dayOffset) * day + tickOffset;
 	}
 	
+	public boolean isSetupComplete() {
+		return this.setup;
+	}
+	
+	public long getCurrentUpdatedTime() {
+		return this.timeOfManager;
+	}
+	
 	//Update Objects
 	public final void update(double time, boolean isOverWorld){
 		double longitude = isOverWorld? longitudeOverworld : longitudeEnder;
+		this.timeOfManager = (long) Math.floor(time);
 		time = this.getSkyTime(time);
 		
         long cur = System.currentTimeMillis();
@@ -320,5 +312,32 @@ public class StellarManager {
 			BrStar.UpdateAll();
 		
         //System.out.println(System.currentTimeMillis() - cur);
+	}
+
+	
+	@Override
+	public double getDayLength() {
+		return this.day;
+	}
+
+	@Override
+	public double getLunarMonthLength() {
+		double period = Moon.getPeriod();
+		return period / (1.0 - period) * this.year;
+	}
+
+	@Override
+	public double getYearLength() {
+		return this.year;
+	}
+
+	@Override
+	public double getDaytimeOffset() {
+		return Spmath.fmod(this.tickOffset / this.day, 1.0) + this.longitudeOverworld + 0.5;
+	}
+
+	@Override
+	public double getYearlyOffset() {
+		return Spmath.fmod((this.tickOffset / this.day + this.dayOffset) / this.year, 1.0);
 	}
 }

@@ -1,4 +1,4 @@
-package stellarium;
+package stellarium.client;
 
 import org.lwjgl.input.Keyboard;
 
@@ -6,6 +6,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraft.client.settings.KeyBinding;
+import stellarium.StellarSky;
 
 public class StellarKeyHook {
 	
@@ -18,7 +19,7 @@ public class StellarKeyHook {
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
 		if(modeKey.isPressed()) {
-			StellarSky.getManager().incrementViewMode();
+			StellarSky.proxy.getClientSettings().incrementViewMode();
 		}
 	}
 

@@ -43,19 +43,19 @@ public class Moon extends Satellite {
 		ri.setRAngle(-Spmath.Radians(I0));
 		rom.setRAngle(-Spmath.Radians(Omega0));
 		Pole.set((IValRef)rom.transform(ri.transform((IEVector)Pole)));
-		PrMer0.set(VecMath.normalize(VecMath.mult(-1.0, this.GetEcRPosE(0.0))));
+		PrMer0.set(VecMath.normalize(VecMath.mult(-1.0, this.getEcRPosE(0.0))));
 		East.set((IValRef)CrossUtil.cross((IEVector)Pole, (IEVector)PrMer0));
 	}
 	
 	//Get Ecliptic Position Vector from Earth
-	public IValRef<EVector> GetEcRPosE(double yr){
-		UpdateOrbE(yr);
+	public IValRef<EVector> getEcRPosE(double yr){
+		updateOrbE(yr);
 		double M=M0+mean_mot*yr;
 		return Spmath.GetOrbVec(a, e, ri.setRAngle(-Spmath.Radians(I)), rw.setRAngle(-Spmath.Radians(w)), rom.setRAngle(-Spmath.Radians(Omega)), M);
 	}
 	
 	//Update Orbital Elements in time
-	public void UpdateOrbE(double yr){
+	public void updateOrbE(double yr){
 		a=a0;
 		e=e0;
 		I=I0;
@@ -70,7 +70,7 @@ public class Moon extends Satellite {
 	public void update(){
 		double yr=Transforms.yr;
 		
-		EcRPosE.set(GetEcRPosE(yr));
+		EcRPosE.set(getEcRPosE(yr));
 		EcRPos.set(VecMath.add(parPlanet.getEcRPos(yr),EcRPosE));
 		EcRPosG.set(VecMath.sub(EcRPosE,Transforms.Zen));
 		
@@ -99,9 +99,9 @@ public class Moon extends Satellite {
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)
-	public synchronized IValRef<EVector> posLocalM(double longitude, double lattitude, double yr){
+	public synchronized IValRef<EVector> posLocalM(double longitude, double latitude, double yr){
 		float longp=(float)Spmath.Radians(longitude+mean_mot*yr);
-		float lat=(float)Spmath.Radians(lattitude);
+		float lat=(float)Spmath.Radians(latitude);
 		return VecMath.mult((IValRef)radius, VecMath.add(VecMath.add(VecMath.mult(Spmath.sinf(lat), Pole), VecMath.mult(Spmath.cosf(lat)*Spmath.cosf(longp), PrMer0)), VecMath.mult(Spmath.cosf(lat)*Spmath.sinf(longp), East)));
 	}
 	
@@ -125,8 +125,14 @@ public class Moon extends Satellite {
 	
 	//Time phase for moon
 	public double phase_Time(){
-		double k=Math.signum(Spmath.getD(VOp.dot(CrossUtil.cross((IValRef)EcRPosG, (IValRef)EcRPos), (IValRef)Pole)))*getPhase();
+		
+		double k=Math.signum(Spmath.getD(VOp.dot(CrossUtil.cross((IValRef)EcRPosG, (IValRef)EcRPos), (IValRef)Pole)))
+				*(1.0 - getPhase());
 		if(k<0) k=k+2;
 		return k/2;
+	}
+
+	public double getPeriod() {
+		return this.a * Math.sqrt(this.a / parPlanet.mass);
 	}
 }

@@ -1,22 +1,15 @@
 package stellarium.stellars.background;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import net.minecraft.client.Minecraft;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import stellarium.StellarSky;
 import stellarium.stellars.ExtinctionRefraction;
-import stellarium.stellars.StellarManager;
-import stellarium.util.math.SpCoordf;
+import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
 
@@ -67,7 +60,7 @@ public class BrStar extends Star {
 
 	@Override
 	public void update() {
-		if(Mag>StellarSky.getManager().mag_Limit) this.unable=true;
+		if(Mag>StellarSky.proxy.getClientSettings().mag_Limit) this.unable=true;
 		appPos.set(GetAtmPosf());
 		float Airmass=(float) ExtinctionRefraction.airmass(appPos, true);
     	App_Mag= (Mag+Airmass*ExtinctionRefraction.ext_coeff_Vf);
@@ -138,7 +131,7 @@ public class BrStar extends Star {
 				(float)Spmath.btoi(star_value, 103, 1)
 				+Spmath.btoi(star_value, 105, 2)*0.01f);
 		
-		if(Mag>StellarSky.getManager().mag_Limit-ExtinctionRefraction.ext_coeff_Vf)
+		if(this.Mag > StellarSky.proxy.getClientSettings().mag_Limit-ExtinctionRefraction.ext_coeff_Vf)
 			unable=true;
 		
 		B_V=Spmath.sgnize(star_value[109],
@@ -156,7 +149,7 @@ public class BrStar extends Star {
 				+Spmath.btoi(star_value, 86, 2)/60.0f
 				+Spmath.btoi(star_value, 88, 2)/3600.0f);
 		
-		EcRPos.set((IValRef)Transforms.EqtoEc.transform((IValRef)new SpCoordf(RA, Dec).getVec()));
+		EcRPos.set((IValRef)Transforms.EqtoEc.transform((IValRef)new SpCoord(RA, Dec).getVec()));
 		
 		star_value=null;
 	}

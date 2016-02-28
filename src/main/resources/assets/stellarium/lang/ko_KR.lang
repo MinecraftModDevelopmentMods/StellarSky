@@ -15,7 +15,10 @@ config.category.client=클라이언트 컨피그
 config.category.client.tooltip=클라이언트 수정 관련 컨피그로서, 대부분 시각적인 효과에 관련되어 있습니다.
 
 config.property.client.maglimit=한계등급
-config.property.client.maglimit.tooltip=맨눈으로 볼 수 있는 등급의 한계입니다. FPS를 좋게 하기 위해 0.3만큼 작게 설정하시는 것만으로도 FPS가 기하급수적으로 좋아질 것입니다.
+config.property.client.maglimit.tooltip=맨눈으로 볼 수 있는 등급의 한계입니다. FPS를 증가시키고 싶으면, 한계등급을 낮추세요. 실제로는 6.5, 기본값은 4.0이며, 더 작게 세팅할수록 더 적은 별이 보이지만 FPS는 기하급수적으로 좋아집니다!
+
+config.property.client.milkywaybrightness=은하수의 밝기
+config.property.client.milkywaybrightness.tooltip=은하수의 밝기로서, 실제 세계에서는 1.0이거나 더 작지만 기본값은 멋진 효과를 위해 1.75로 설정되어 있습니다.
 
 config.property.client.turbulance=별의 반짝임(대기 교란)
 config.property.client.turbulance.tooltip=별의 반짝임 효과의 정도를 나타내며, 별의 반짝임을 일으키는 대기의 교란이 얼마나 심할 것인가를 결정합니다.
@@ -23,15 +26,20 @@ config.property.client.turbulance.tooltip=별의 반짝임 효과의 정도를 �
 config.property.client.moonfrac=달의 조각 개수
 config.property.client.moonfrac.tooltip=달은 여러 조각으로 나뉘어 그려지게 됩니다. 조각 개수를 줄임으로서 FPS를 증가시킬 수 있지만, 그렇게 하면 달은 불완전하게 보일 것입니다.
 
+config.property.client.milkywayfrac=은하수의 조각 개수
+config.property.client.milkywayfrac.tooltip=은하수는 여러 조각으로 나뉘어 그려지게 됩니다. 조각 개수를 줄임으로서 FPS를 증가시킬 수 있지만, 그렇게 하면 은하수는 불완전하게 보일 것입니다.
+
 config.property.client.minutelength=1분의 길이
-config.property.client.minutelength.tooltip=Tick 단위로 나타낸 1분의 길이입니다. 현재 시간은 시간:분의 형식으로 HUD에 보여질 것입니다.
+config.property.client.minutelength.tooltip=1분이 몇틱(Tick)인지를 결정합니다. 현재 시간은 시간:분의 형식으로 HUD에 보여질 것입니다.
 
 config.property.client.hourlength=1시간의 길이
-config.property.client.hourlength.tooltip=Tick 단위로 나타낸 1시간의 길이입니다. 현재 시간은 시간:분의 형식으로 HUD에 보여질 것입니다.
+config.property.client.hourlength.tooltip=1시간이 몇분인지를 결정합니다. 현재 시간은 시간:분의 형식으로 HUD에 보여질 것입니다.
 
 config.property.client.modeview=HUD 시간 표시 모드
 config.property.client.modeview.tooltip=HUD에 시간이 어떻게 표시될지를 결정합니다. 'empty'(HUD 없음), 'hhmm'(시간:분), 'tick'(틱 표시) 중에 고르실 수 있습니다. 플레이 중에도 지정된 키를 눌러 바꿀 수 있습니다.
 
+config.property.client.brcontrast=밝기 대조
+config.property.client.brcontrast.tooltip=이 속성은 밝은 별들과 어두운 별들 사이의 밝기 차이를 결정하며, 값이 클수록 밝기 차이가 작게 됩니다. 실제 세계는 1.0값을 갖지만, 기본값은 멋진 효과를 위해 1.75로 설정되어 있습니다.
 
 
 //Server Configs
@@ -56,14 +64,14 @@ config.property.server.dayoffset.tooltip=월드 시작 시각이 1년 중 며칠
 config.property.server.tickoffset=Tick 단위 오프셋
 config.property.server.tickoffset.tooltip=월드 시작 시각이 하루 중 몇틱(Tick)째인지를 나타냅니다.
 
-config.property.server.lattitudeoverworld=오버월드의 위도
-config.property.server.lattitudeoverworld.tooltip=도 단위로 나타낸 오버월드의 위도입니다.
+config.property.server.latitudeoverworld=오버월드의 위도
+config.property.server.latitudeoverworld.tooltip=도 단위로 나타낸 오버월드의 위도입니다.
 
 config.property.server.longitudeoverworld=오버월드의 경도
 config.property.server.longitudeoverworld.tooltip=도 단위로 나타낸 오버월드의 경도로 동경이 +, 서경이 -입니다.
 
-config.property.server.lattitudeender=엔더의 위도
-config.property.server.lattitudeender.tooltip=도 단위로 나타낸 엔더의 위도입니다.
+config.property.server.latitudeender=엔더의 위도
+config.property.server.latitudeender.tooltip=도 단위로 나타낸 엔더의 위도입니다.
 
 config.property.server.longitudeender=엔더의 경도
 config.property.server.longitudeender.tooltip=도 단위로 나타낸 엔더의 경도로 동경이 +, 서경이 -입니다.

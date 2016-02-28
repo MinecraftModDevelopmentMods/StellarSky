@@ -10,6 +10,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.common.*;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarium.api.StellarSkyAPI;
+import stellarium.compat.CompatManager;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarWorldProvider;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -24,13 +26,12 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.*;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version,
-	dependencies="required-after:sciapi", guiFactory="stellarium.config.StellarConfigGuiFactory")
+@Mod(modid=StellarSky.modid, version=StellarSky.version,
+	dependencies="required-after:sciapi@[1.1.0.0,1.2.0.0);after:CalendarAPI@[1.1,2.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";
-		public static final String name = "Stellar Sky";
-		public static final String version = "0.1.17";
+		public static final String version = "0.1.22b";
 
         // The instance of Stellarium
         @Instance(StellarSky.modid)
@@ -46,22 +47,28 @@ public class StellarSky {
         public static StellarManager getManager() { return proxy.manager; }
         
         @EventHandler
-        public void preInit(FMLPreInitializationEvent event) {
+        public void preInit(FMLPreInitializationEvent event) {        	
         	proxy.preInit(event);
         	
     		MinecraftForge.EVENT_BUS.register(eventHook);
     		FMLCommonHandler.instance().bus().register(tickHandler);
     		FMLCommonHandler.instance().bus().register(fmlEventHook);
+    		    		
+    		CompatManager.getInstance().onPreInit();
         }
         
         @EventHandler
         public void load(FMLInitializationEvent event) throws IOException {
         	proxy.load(event);
+        	
+    		CompatManager.getInstance().onInit();
         }
         
         @EventHandler
         public void postInit(FMLPostInitializationEvent event) {
         	proxy.postInit(event);
+        	
+    		CompatManager.getInstance().onPostInit();
         }
         
 }

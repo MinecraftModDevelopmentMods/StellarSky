@@ -48,12 +48,11 @@ public class StellarWorldProvider extends WorldProvider {
 	}
 
 	@Override
-    public float calculateCelestialAngle(long par1, float par3)
-    {
-    	if(StellarSky.getManager().Earth.EcRPos == null)
+    public float calculateCelestialAngle(long par1, float par3) {
+    	if(StellarSky.getManager().isSetupComplete())
     		StellarSky.getManager().update(par1+par3, isSurfaceWorld());
     	
-    	IValRef<EVector> sun = EVectorSet.ins(3).getSTemp();
+    	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
     	
     	sun.set(StellarSky.getManager().Sun.getPosition());
     	sun.set(ExtinctionRefraction.refraction(sun, true));
@@ -64,18 +63,27 @@ public class StellarWorldProvider extends WorldProvider {
     	if(VecMath.getCoord(sun, 0).asDouble()<0) h=Math.PI-h;
     	if(VecMath.getCoord(sun, 0).asDouble()>0 && h<0) h=h+2*Math.PI;
     	
-    	sun.onUsed();
-    	
     	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,1.0));
     }
+	
+	@Override
+	public float getSunBrightnessFactor(float par1) {
+		return parProvider.getSunBrightnessFactor(par1);
+	}
 
 	@Override
-    public int getMoonPhase(long par1)
-    {
-    	if(StellarSky.getManager().Earth.EcRPos==null)
+    public int getMoonPhase(long par1) {
+    	if(StellarSky.getManager().isSetupComplete())
     		StellarSky.getManager().update(par1, isSurfaceWorld());
     	return (int)(StellarSky.getManager().Moon.phase_Time()*8);
     }
+	
+	@Override
+	public float getCurrentMoonPhaseFactor() {
+    	if(StellarSky.getManager().isSetupComplete())
+    		return parProvider.getCurrentMoonPhaseFactor();
+		return (float) StellarSky.getManager().Moon.getPhase();
+	}
 
     /**
      * Returns a new chunk provider which generates chunks for this world

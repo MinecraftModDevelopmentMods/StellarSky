@@ -15,13 +15,26 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarium.api.StellarSkyAPI;
+import stellarium.client.ClientSettings;
+import stellarium.client.DefaultHourProvider;
+import stellarium.client.StellarClientHook;
+import stellarium.client.StellarKeyHook;
 import stellarium.config.EnumViewMode;
 import stellarium.config.IConfigHandler;
+import stellarium.stellars.Optics;
 import stellarium.stellars.StellarManager;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
 	private static final String clientConfigCategory = "clientconfig";
+	private static final String clientConfigOpticsCategory = "clientconfig.optics";
+	
+	private ClientSettings settings = new ClientSettings();
+	
+	public ClientSettings getClientSettings() {
+		return this.settings;
+	}
 	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
@@ -31,6 +44,8 @@ public class ClientProxy extends CommonProxy implements IProxy {
         
 		MinecraftForge.EVENT_BUS.register(new StellarClientHook());
 		FMLCommonHandler.instance().bus().register(new StellarKeyHook());
+		
+		StellarSkyAPI.registerHourProvider(new DefaultHourProvider(this.settings));
 	}
 
 	@Override
@@ -50,7 +65,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		super.setupConfigManager(file);
 		cfgManager.register(clientConfigCategory, new IConfigHandler() {
 			
-			Property mag_Limit, turb, moon_Frac, minuteLength, hourToMinute, viewMode;
+			Property mag_Limit, turb, moon_Frac, milkyway_Frac, milkyway_Brightness, minuteLength, hourToMinute, viewMode;
 			
 			@Override
 			public void setupConfig(Configuration config, String category) {
@@ -59,32 +74,47 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        config.setCategoryLanguageKey(category, "config.category.client");
 		        config.setCategoryRequiresMcRestart(category, false);
 				
-		        mag_Limit=config.get(category, "Mag_Limit", 5.0);
+		        mag_Limit=config.get(category, "Mag_Limit", 4.0);
 		        mag_Limit.comment="Limit of magnitude can be seen on naked eye.\n" +
-		        		"If you want to increase FPS, you can set this property a bit little (e.g. 0.3)\n" +
-		        		"and FPS will be exponentially improved";
-		        mag_Limit.setRequiresMcRestart(false);
+		        		"If you want to increase FPS, lower the Mag_Limit.\n" +
+		        		"(Realistic = 6.5, Default = 4.0)\n" +
+		        		"The lower you set it, the fewer stars you will see\n" +
+		        		"but the better FPS you will get";
+		        mag_Limit.setRequiresMcRestart(true);
 		        mag_Limit.setLanguageKey("config.property.client.maglimit");
+		        
+		        milkyway_Brightness=config.get(category, "Milkyway_Brightness", 2.0);
+		        milkyway_Brightness.comment="Brightness of milky way.\n"
+		        		+ "For real world it should be 1.0 or lower, but default is set to 2.0 for visual effect.";
+		        milkyway_Brightness.setRequiresMcRestart(false);
+		        milkyway_Brightness.setLanguageKey("config.property.client.milkywaybrightness");
 
-		        turb=config.get(category, "Twinkling(Turbulance)", 0.3);
+		        turb=config.get(category, "Twinkling(Turbulance)", 1.0);
 		        turb.comment="Degree of the twinkling effect of star.\n"
-		        		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect";
+		        		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect. "
+        				+ "The greater the value, the more the stars will twinkle. Default is 1.0. To disable set to 0.0";
 		        turb.setRequiresMcRestart(false);
 		        turb.setLanguageKey("config.property.client.turbulance");
 		        
 		        moon_Frac=config.get(category, "Moon_Fragments_Number", 16);
 		        moon_Frac.comment="Moon is drawn with fragments\n" +
-		        		"Less fragments will increase FPS, but the moon become more defective";
+		        		"Less fragments will increase FPS, but the moon will become more defective";
 		        moon_Frac.setRequiresMcRestart(false);
 		        moon_Frac.setLanguageKey("config.property.client.moonfrac");
 		        
-		        minuteLength = config.get(category, "Minute_Length", 20.0);
-		        minuteLength.comment = "Length of minute in tick. (The minute & hour is displayed on HUD as HH:MM format)";
+		        milkyway_Frac=config.get(category, "Milkyway_Fragments_Number", 32);
+		        milkyway_Frac.comment="Milky way is drawn with fragments\n" +
+		        		"Less fragments will increase FPS, but the milky way will become more defective";
+		        milkyway_Frac.setRequiresMcRestart(false);
+		        milkyway_Frac.setLanguageKey("config.property.client.milkywayfrac");
+		        
+		        minuteLength = config.get(category, "Minute_Length", 16.666);
+		        minuteLength.comment = "Number of ticks in a minute. (The minute & hour is displayed on HUD as HH:MM format)";
 		        minuteLength.setRequiresMcRestart(false);
 		        minuteLength.setLanguageKey("config.property.client.minutelength");
 		        
 		        hourToMinute = config.get(category, "Hour_Length", 60);
-		        hourToMinute.comment = "Length of hour in minute. (The minute & hour is displayed on HUD as HH:MM format)";
+		        hourToMinute.comment = "Number of minutes in an hour. (The minute & hour is displayed on HUD as HH:MM format)";
 		        hourToMinute.setRequiresMcRestart(false);
 		        hourToMinute.setLanguageKey("config.property.client.hourlength");
 		        
@@ -96,27 +126,34 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        viewMode.setRequiresMcRestart(false);
 		        viewMode.setLanguageKey("config.property.client.modeview");
 		        
-		        viewMode.setValue(manager.getViewMode().getName());
+		        viewMode.setValue(settings.getViewMode().getName());
 		        
 		        
 		        List<String> propNameList = Arrays.asList(mag_Limit.getName(),
-		        		moon_Frac.getName(), turb.getName(), viewMode.getName(),
+		        		moon_Frac.getName(), milkyway_Frac.getName(),
+		        		turb.getName(), milkyway_Brightness.getName(),
+		        		viewMode.getName(),
 		        		minuteLength.getName(), hourToMinute.getName());
 		        config.setCategoryPropertyOrder(category, propNameList);
 			}
 
 			@Override
 			public void loadFromConfig(Configuration config, String category) {
-		        manager.mag_Limit=(float)mag_Limit.getDouble();
-		        manager.turb=(float)turb.getDouble();
-		        manager.imgFrac=moon_Frac.getInt();
-		        manager.minuteLength = minuteLength.getDouble();
-		        manager.anHourToMinute = hourToMinute.getInt();
+				settings.mag_Limit=(float)mag_Limit.getDouble();
+		        //Scaling
+				settings.turb=(float)turb.getDouble() * 4.0f;
+				settings.milkywayBrightness = (float) milkyway_Brightness.getDouble();
+		        settings.imgFrac=moon_Frac.getInt();
+		        settings.imgFracMilkyway = milkyway_Frac.getInt();
+		        settings.minuteLength = minuteLength.getDouble();
+		        settings.anHourToMinute = hourToMinute.getInt();
 		        
-		        manager.setViewMode(EnumViewMode.getModeForName(viewMode.getString()));
+		        settings.setViewMode(EnumViewMode.getModeForName(viewMode.getString()));
 			}
 			
 		});
+		
+		cfgManager.register(clientConfigOpticsCategory, Optics.instance);
 	}
 	
 	@Override
