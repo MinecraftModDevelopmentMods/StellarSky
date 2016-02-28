@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import cpw.mods.fml.common.Loader;
-import stellarium.compat.calendarapi.ModuleCalendarAPI;
 
 public class CompatManager {
 	
@@ -23,7 +22,7 @@ public class CompatManager {
 	private List<CompatModuleDelegate> loadedModules = Lists.newArrayList();
 	
 	public CompatManager() {
-		this.addCompatibility("CalendarAPI", new ModuleCalendarAPI());
+		//this.addCompatibility("CalendarAPI", new ModuleCalendarAPI());
 	}
 	
 	public void addCompatibility(String modid, ICompatModule module) {
