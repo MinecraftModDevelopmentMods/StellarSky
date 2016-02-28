@@ -6,6 +6,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import stellarium.StellarSky;
+import stellarium.api.IHourProvider;
+import stellarium.api.StellarSkyAPI;
 import stellarium.config.EnumViewMode;
 
 public class StellarClientHook {
@@ -29,13 +31,13 @@ public class StellarClientHook {
 			int day = (int)Math.floor(date - yr * StellarSky.getManager().year);
 			int tick = (int)Math.floor((date - yr * StellarSky.getManager().year - day)*StellarSky.getManager().day);
 			
-			int minute = (int)Math.floor(tick / setting.minuteLength);
-			int hour = minute / setting.anHourToMinute;
-			minute %= setting.anHourToMinute;
+			IHourProvider provider = StellarSkyAPI.getCurrentHourProvider();
 			
-			int totalminute = (int)Math.floor(StellarSky.getManager().day / setting.minuteLength);
-			int totalhour = totalminute / setting.anHourToMinute;
-			totalminute %= setting.anHourToMinute;
+			int hour = provider.getCurrentHour(StellarSky.getManager().day, tick);
+			int minute = provider.getCurrentMinute(StellarSky.getManager().day, tick, hour);
+			
+			int totalhour = provider.getTotalHour(StellarSky.getManager().day);
+			int totalminute = provider.getTotalMinute(StellarSky.getManager().day, totalhour);
 			
 			int yOffset = 0;
 			

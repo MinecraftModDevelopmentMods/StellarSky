@@ -10,6 +10,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.common.*;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarium.api.StellarSkyAPI;
 import stellarium.compat.CompatManager;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarWorldProvider;
@@ -52,7 +53,7 @@ public class StellarSky {
     		MinecraftForge.EVENT_BUS.register(eventHook);
     		FMLCommonHandler.instance().bus().register(tickHandler);
     		FMLCommonHandler.instance().bus().register(fmlEventHook);
-    		
+    		    		
     		CompatManager.getInstance().onPreInit();
         }
         

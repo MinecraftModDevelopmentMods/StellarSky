@@ -15,7 +15,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
+import stellarium.client.DefaultHourProvider;
 import stellarium.client.StellarClientHook;
 import stellarium.client.StellarKeyHook;
 import stellarium.config.EnumViewMode;
@@ -42,6 +44,8 @@ public class ClientProxy extends CommonProxy implements IProxy {
         
 		MinecraftForge.EVENT_BUS.register(new StellarClientHook());
 		FMLCommonHandler.instance().bus().register(new StellarKeyHook());
+		
+		StellarSkyAPI.registerHourProvider(new DefaultHourProvider(this.settings));
 	}
 
 	@Override

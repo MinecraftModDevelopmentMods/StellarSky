@@ -4,12 +4,13 @@ import java.io.IOException;
 
 import cpw.mods.fml.relauncher.Side;
 import stellarium.StellarSky;
+import stellarium.api.ISkyProvider;
 import stellarium.config.EnumViewMode;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
 
-public class StellarManager {
+public class StellarManager implements ISkyProvider {
 	
 	public final double AU=1.496e+8;
 
@@ -309,5 +310,32 @@ public class StellarManager {
 			BrStar.UpdateAll();
 		
         //System.out.println(System.currentTimeMillis() - cur);
+	}
+
+	
+	@Override
+	public double getDayLength() {
+		return this.day;
+	}
+
+	@Override
+	public double getLunarMonthLength() {
+		double period = Moon.getPeriod();
+		return period / (1.0 - period) * this.year;
+	}
+
+	@Override
+	public double getYearLength() {
+		return this.year;
+	}
+
+	@Override
+	public double getDaytimeOffset() {
+		return Spmath.fmod(this.tickOffset / this.day, 1.0) + this.longitudeOverworld + 0.5;
+	}
+
+	@Override
+	public double getYearlyOffset() {
+		return Spmath.fmod((this.tickOffset / this.day + this.dayOffset) / this.year, 1.0);
 	}
 }

@@ -131,4 +131,8 @@ public class Moon extends Satellite {
 		if(k<0) k=k+2;
 		return k/2;
 	}
+
+	public double getPeriod() {
+		return this.a * Math.sqrt(this.a / parPlanet.mass);
+	}
 }
