@@ -110,10 +110,11 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 		sizem *= (98.0*5.0);
 
 		int latn = settings.imgFrac, longn=2*settings.imgFrac;
-		EVector moonvec[][];
+		EVector moonvec[][], moonnormal[][];
 		float moonilum[][];
 		moonvec=new EVector[longn][latn+1];
 		moonilum=new float[longn][latn+1];
+		moonnormal=new EVector[longn][latn+1];
 		EVector Buf = new EVector(3);
 		EVector Buff = new EVector(3);
 		int latc, longc;
@@ -121,6 +122,7 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 			for(latc=0; latc<=latn; latc++){
 				Buf.set(StellarSky.getManager().Moon.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0, Transforms.yr));
 				moonilum[longc][latc]=(float) (StellarSky.getManager().Moon.illumination(Buf) * difactor * 1.5);
+				moonnormal[longc][latc] = new EVector(3).set(Buf);
 				Buf.set(StellarSky.getManager().Moon.posLocalG(Buf));
 				Buf.set(VecMath.mult(50000.0, Buf));
 				Buff.set(VecMath.getX(Buf),VecMath.getY(Buf),VecMath.getZ(Buf));
@@ -178,9 +180,17 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 
 				float lightlevel = (0.875f*(bglight/2.1333334f));
 				tessellator1.setColorRGBA_F(1.0f - lightlevel, 1.0f - lightlevel, 1.0f - lightlevel, ((f4*moonilum[longc][latc]-0.015f*bglight)*2.0f));
+				
+				tessellator1.setNormal((float)VecMath.getX(moonnormal[longc][latc]), (float)VecMath.getY(moonnormal[longc][latc]), (float)VecMath.getZ(moonnormal[longc][latc]));
 				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), Spmath.fmod(longd+0.5, 1.0), latd);
+				
+				tessellator1.setNormal((float)VecMath.getX(moonnormal[longcd][latc]), (float)VecMath.getY(moonnormal[longcd][latc]), (float)VecMath.getZ(moonnormal[longcd][latc]));
 				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc]), Spmath.fmod(longdd+0.5, 1.0), latd);
+				
+				tessellator1.setNormal((float)VecMath.getX(moonnormal[longcd][latc+1]), (float)VecMath.getY(moonnormal[longcd][latc+1]), (float)VecMath.getZ(moonnormal[longcd][latc+1]));
 				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1]), Spmath.fmod(longdd+0.5, 1.0), latdd);
+				
+				tessellator1.setNormal((float)VecMath.getX(moonnormal[longc][latc+1]), (float)VecMath.getY(moonnormal[longc][latc+1]), (float)VecMath.getZ(moonnormal[longc][latc+1]));
 				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1]), Spmath.fmod(longd+0.5, 1.0), latdd);
 			}
 		}
