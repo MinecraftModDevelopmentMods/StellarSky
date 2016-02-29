@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.Side;
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";
-		public static final String version = "0.1.22b";
+		public static final String version = "0.1.23";
 
         // The instance of Stellarium
         @Instance(StellarSky.modid)
