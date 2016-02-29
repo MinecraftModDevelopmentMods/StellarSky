@@ -2,7 +2,12 @@ package stellarium.stellars;
 
 import java.io.IOException;
 
+import org.lwjgl.util.vector.Vector3f;
+
 import cpw.mods.fml.relauncher.Side;
+import sciapi.api.value.IValRef;
+import sciapi.api.value.euclidian.EVector;
+import sciapi.api.value.euclidian.EVectorSet;
 import stellarium.StellarSky;
 import stellarium.api.ISkyProvider;
 import stellarium.api.StellarSkyAPI;
@@ -10,6 +15,7 @@ import stellarium.config.EnumViewMode;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
+import stellarium.util.math.VecMath;
 
 public class StellarManager implements ISkyProvider {
 	
@@ -339,5 +345,29 @@ public class StellarManager implements ISkyProvider {
 	@Override
 	public double getYearlyOffset() {
 		return Spmath.fmod((this.tickOffset / this.day + this.dayOffset) / this.year, 1.0);
+	}
+
+	@Override
+	public Vector3f getCurrentSunPosition() {
+    	EVector sun = EVectorSet.ins(3).getNew();
+    	
+    	sun.set(StellarSky.getManager().Sun.getAtmPos());
+    	sun.set(VecMath.normalize(sun));
+    	
+    	return new Vector3f(sun.getCoord(0).asFloat(),
+    			sun.getCoord(1).asFloat(),
+    			sun.getCoord(2).asFloat());
+	}
+
+	@Override
+	public Vector3f getCurrentMoonPosition() {
+    	EVector moon = EVectorSet.ins(3).getNew();
+    	
+    	moon.set(StellarSky.getManager().Moon.getAtmPos());
+    	moon.set(VecMath.normalize(moon));
+    	
+    	return new Vector3f(moon.getCoord(0).asFloat(),
+    			moon.getCoord(1).asFloat(),
+    			moon.getCoord(2).asFloat());
 	}
 }

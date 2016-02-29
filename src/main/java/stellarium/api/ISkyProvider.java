@@ -1,5 +1,7 @@
 package stellarium.api;
 
+import org.lwjgl.util.vector.Vector3f;
+
 /**
  * Interface provided by stellar sky api.
  * Do not implement this!
@@ -42,5 +44,15 @@ public interface ISkyProvider {
 	 * 0.75 is middle of winter.
 	 * */
 	public double getYearlyOffset();
+	
+	/**
+	 * Current position of sun.
+	 * */
+	public Vector3f getCurrentSunPosition();
+	
+	/**
+	 * Current position of moon.
+	 * */
+	public Vector3f getCurrentMoonPosition();
 
 }

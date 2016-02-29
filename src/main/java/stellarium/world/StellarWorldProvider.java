@@ -54,8 +54,7 @@ public class StellarWorldProvider extends WorldProvider {
     	
     	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
     	
-    	sun.set(StellarSky.getManager().Sun.getPosition());
-    	sun.set(ExtinctionRefraction.refraction(sun, true));
+    	sun.set(StellarSky.getManager().Sun.getAtmPos());
     	sun.set(VecMath.normalize(sun));
     	
     	double h=Math.asin(VecMath.getZ(sun));
