@@ -220,6 +220,10 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 		
 		renderEngine.bindTexture(locationMilkywayPng);
 		tessellator1.startDrawingQuads();
+		
+		float Mag = 3.5f;
+		float alpha=Optics.getAlphaForGalaxy(Mag, bglight) - (((1-f4)/1)*20f);
+		
 		for(longc=0; longc<longn; longc++){
 			for(latc=0; latc<latn; latc++){
 				int longcd=(longc+1)%longn;
@@ -228,8 +232,7 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 				double longdd=1.0-(double)(longc+1)/(double)longn;
 				double latdd=1.0-(double)(latc+1)/(double)latn;
 
-				float lightlevel = (0.875f*(bglight/2.1333334f));
-				tessellator1.setColorRGBA_F(1.0f - lightlevel, 1.0f - lightlevel, 1.0f - lightlevel, settings.milkywayBrightness * (0.1f- 1.5f*bglight));
+				tessellator1.setColorRGBA_F(1.0f, 1.0f, 1.0f, settings.milkywayBrightness * alpha);
 				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), longd, latd);
 				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1]), longd, latdd);
 				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1]), longdd, latdd);
