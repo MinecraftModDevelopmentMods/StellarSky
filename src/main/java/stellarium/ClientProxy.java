@@ -83,9 +83,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        mag_Limit.setRequiresMcRestart(true);
 		        mag_Limit.setLanguageKey("config.property.client.maglimit");
 		        
-		        milkyway_Brightness=config.get(category, "Milkyway_Brightness", 2.0);
+		        milkyway_Brightness=config.get(category, "Milkyway_Brightness", 1.5);
 		        milkyway_Brightness.comment="Brightness of milky way.\n"
-		        		+ "For real world it should be 1.0 or lower, but default is set to 2.0 for visual effect.";
+		        		+ "For real world it should be 1.0 or lower, but default is set to 1.5 for visual effect.";
 		        milkyway_Brightness.setRequiresMcRestart(false);
 		        milkyway_Brightness.setLanguageKey("config.property.client.milkywaybrightness");
 
