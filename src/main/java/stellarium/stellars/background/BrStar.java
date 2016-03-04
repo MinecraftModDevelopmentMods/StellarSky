@@ -47,11 +47,7 @@ public class BrStar extends Star {
 	 * world is false in Overworld, and true in Ender
 	*/
 	public IValRef<EVector> GetPositionf(){
-		IValRef pvec=Transforms.ZTEctoNEc.transform((IEVector)EcRPos);
-		pvec=Transforms.EctoEq.transform(pvec);
-		pvec=Transforms.NEqtoREq.transform(pvec);
-		pvec=Transforms.REqtoHor.transform(pvec);
-		return pvec;
+		return Transforms.projection.transform(this.EcRPos);
 	}
 	
 	public IValRef<EVector> GetAtmPosf(){

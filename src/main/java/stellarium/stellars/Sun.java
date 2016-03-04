@@ -23,12 +23,7 @@ public class Sun extends StellarObj{
 	public synchronized IValRef<EVector> getPosition() {
 		IValRef pvec=(IValRef)VecMath.mult(-1.0, StellarSky.getManager().Earth.EcRPos);
 		
-		pvec=Transforms.ZTEctoNEc.transform(pvec);
-		pvec=Transforms.EctoEq.transform(pvec);
-		pvec=Transforms.NEqtoREq.transform(pvec);
-		pvec=Transforms.REqtoHor.transform(pvec);
-		
-		return pvec;
+		return Transforms.projection.transform(pvec);
 	}
 
 	@Override

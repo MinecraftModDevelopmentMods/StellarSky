@@ -315,6 +315,8 @@ public class StellarManager implements ISkyProvider {
 		for(StellarObj obj : this.planets)
 			obj.update();
 		
+		Sun.update();
+		
 		if(side == Side.CLIENT && BrStar.IsInitialized)
 			BrStar.UpdateAll();
 		

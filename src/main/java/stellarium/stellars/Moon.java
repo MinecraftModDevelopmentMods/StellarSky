@@ -91,11 +91,7 @@ public class Moon extends Satellite {
 	}
 	
 	public IValRef<EVector> getPosition(){
-		IValRef pvec=Transforms.ZTEctoNEc.transform((IValRef)EcRPosG);
-		pvec=Transforms.EctoEq.transform(pvec);
-		pvec=Transforms.NEqtoREq.transform(pvec);
-		pvec=Transforms.REqtoHor.transform(pvec);
-		return pvec;
+		return Transforms.projection.transform(this.EcRPosG);
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)

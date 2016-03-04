@@ -51,11 +51,8 @@ public class StellarWorldProvider extends WorldProvider {
     public float calculateCelestialAngle(long par1, float par3) {
     	if(StellarSky.getManager().isSetupComplete())
     		StellarSky.getManager().update(par1+par3, isSurfaceWorld());
-    	
-    	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
-    	
-    	sun.set(StellarSky.getManager().Sun.getAtmPos());
-    	sun.set(VecMath.normalize(sun));
+    	    	
+    	IValRef sun = VecMath.normalize(StellarSky.getManager().Sun.appPos);
     	
     	double h=Math.asin(VecMath.getZ(sun));
     	

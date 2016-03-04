@@ -29,7 +29,7 @@ public abstract class StellarObj {
 		appMag=mag+ExtinctionRefraction.airmass(VecMath.getCoord(appPos, 2).asDouble(), true)*ExtinctionRefraction.ext_coeff_V;
 	}
 	
-	//Get EVectortor of Object from Earth
+	//Get EVector of Object from Earth
 	abstract public IValRef<EVector> getPosition();
 	
 	public IValRef<EVector> getAtmPos(){

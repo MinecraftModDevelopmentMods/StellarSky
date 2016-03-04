@@ -1,13 +1,11 @@
 package stellarium.util.math;
 
 import sciapi.api.value.IValRef;
-import sciapi.api.value.STempRef;
+import sciapi.api.value.euclidian.EProjection;
 import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.EVectorSet;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
-import stellarium.stellars.StellarManager;
 
 public class Transforms {
 	
@@ -45,12 +43,26 @@ public class Transforms {
 			HortoREq.setRAngle(Math.PI*0.5-lat2);
 		}
 		
+		EVector East = new EVector(1.0, 0.0, 0.0);
+		East.set(getInvTransformed(East));
+		
+		EVector North = new EVector(0.0, 1.0, 0.0);
+		North.set(getInvTransformed(North));
+		
 		ZenD = new EVector(0.0,0.0,1.0);
-		ZenD.set(HortoREq.transform(ZenD));
-		ZenD.set(REqtoNEq.transform(ZenD));
-		ZenD.set(EqtoEc.transform(ZenD));
-		ZenD.set(NEctoZTEc.transform(ZenD));
+		ZenD.set(getInvTransformed(ZenD));
+
+		projection = new EProjection(East, North, ZenD);
+		
 		Zen.set(VOp.mult(StellarSky.getManager().Earth.radius, ZenD));
+	}
+	
+	private static IValRef getInvTransformed(IValRef vec) {
+		IValRef ref = HortoREq.transform(vec);
+		ref.set(REqtoNEq.transform(ref));
+		ref.set(EqtoEc.transform(ref));
+		ref.set(NEctoZTEc.transform(ref));
+		return ref;
 	}
 	
 	
@@ -88,4 +100,6 @@ public class Transforms {
 	//Horizontal to Rotating Equatorial
 	public static Rotate HortoREq = new Rotate('X');
 	
+	public static EProjection projection;
+
 }
