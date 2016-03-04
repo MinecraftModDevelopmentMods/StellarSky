@@ -13,6 +13,7 @@ import stellarium.api.ISkyProvider;
 import stellarium.api.StellarSkyAPI;
 import stellarium.config.EnumViewMode;
 import stellarium.stellars.background.BrStar;
+import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
@@ -369,5 +370,31 @@ public class StellarManager implements ISkyProvider {
     	return new Vector3f(moon.getCoord(0).asFloat(),
     			moon.getCoord(1).asFloat(),
     			moon.getCoord(2).asFloat());
+	}
+
+	@Override
+	public double getHighestSunHeightAngle() {
+		IValRef pvec=(IValRef)VecMath.mult(-1.0, StellarSky.getManager().Earth.EcRPos);
+		
+		pvec=Transforms.ZTEctoNEc.transform(pvec);
+		pvec=Transforms.EctoEq.transform(pvec);
+		
+		SpCoord crd = new SpCoord();
+		crd.setWithVec(pvec);
+		
+		return 90.0 - Math.abs(this.latitudeOverworld - crd.y);
+	}
+
+	@Override
+	public double getHighestMoonHeightAngle() {
+		IValRef vector = new EVector(3).set(Moon.EcRPos);
+		
+		vector = Transforms.ZTEctoNEc.transform(vector);
+		vector = Transforms.EctoEq.transform(vector);
+		
+		SpCoord crd = new SpCoord();
+		crd.setWithVec(vector);
+		
+		return 90.0 - Math.abs(this.latitudeOverworld - crd.y);
 	}
 }

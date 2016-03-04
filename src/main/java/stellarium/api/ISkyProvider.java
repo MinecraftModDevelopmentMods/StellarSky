@@ -46,6 +46,19 @@ public interface ISkyProvider {
 	public double getYearlyOffset();
 	
 	/**
+	 * Gets height angle when sun is on highest today.
+	 * Useful for checking highest time.
+	 * Also can be used for seasons.
+	 * */
+	public double getHighestSunHeightAngle();
+	
+	/**
+	 * Gets height angle when moon is on highest today.
+	 * Useful for checking highest time.
+	 * */
+	public double getHighestMoonHeightAngle();
+	
+	/**
 	 * Current position of sun.
 	 * */
 	public Vector3f getCurrentSunPosition();
