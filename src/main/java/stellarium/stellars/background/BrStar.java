@@ -56,6 +56,7 @@ public class BrStar extends Star {
 
 	@Override
 	public void update() {
+		//Too many objects are created here
 		if(Mag>StellarSky.proxy.getClientSettings().mag_Limit) this.unable=true;
 		appPos.set(GetAtmPosf());
 		float Airmass=(float) ExtinctionRefraction.airmass(appPos, true);
