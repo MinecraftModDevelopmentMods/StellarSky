@@ -36,6 +36,18 @@ public interface ISkyProvider {
 	public double getDaytimeOffset();
 	
 	/**
+	 * Current time offset during a day. <p>
+	 * Should be in range [0.0, 1.0) <p>
+	 * Normally,
+	 * 0.0 is sunrise time.
+	 * 0.25 is midday.
+	 * 0.5 is sunset time.
+	 * 0.75 is midnight.
+	 * @param tick the tick to get daytime offset.
+	 * */
+	public double getDaytimeOffset(long tick);
+	
+	/**
 	 * Current time offset during a year. <p>
 	 * Should be in range [0.0, 1.0) <p>
 	 * 0.0 is middle of spring,
@@ -44,6 +56,17 @@ public interface ISkyProvider {
 	 * 0.75 is middle of winter.
 	 * */
 	public double getYearlyOffset();
+	
+	/**
+	 * Current time offset during a year. <p>
+	 * Should be in range [0.0, 1.0) <p>
+	 * 0.0 is middle of spring,
+	 * 0.25 is middle of summer,
+	 * 0.5 is middle of autumn,
+	 * 0.75 is middle of winter.
+	 * @param tick the tick to get year offset.
+	 * */
+	public double getYearlyOffset(long tick);
 	
 	/**
 	 * Gets height angle when sun is on highest today.

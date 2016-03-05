@@ -342,12 +342,22 @@ public class StellarManager implements ISkyProvider {
 
 	@Override
 	public double getDaytimeOffset() {
-		return Spmath.fmod(this.tickOffset / this.day, 1.0) + this.longitudeOverworld + 0.5;
+		return Spmath.fmod((this.timeOfManager + this.tickOffset) / this.day, 1.0) + this.longitudeOverworld + 0.5;
+	}
+	
+	@Override
+	public double getDaytimeOffset(long tick) {
+		return Spmath.fmod((tick + this.tickOffset) / this.day, 1.0) + this.longitudeOverworld + 0.5;
 	}
 
 	@Override
 	public double getYearlyOffset() {
-		return Spmath.fmod((this.tickOffset / this.day + this.dayOffset) / this.year, 1.0);
+		return Spmath.fmod(((this.timeOfManager + this.tickOffset) / this.day + this.dayOffset) / this.year, 1.0);
+	}
+	
+	@Override
+	public double getYearlyOffset(long tick) {
+		return Spmath.fmod(((tick + this.tickOffset) / this.day + this.dayOffset) / this.year, 1.0);
 	}
 
 	@Override
