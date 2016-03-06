@@ -9,7 +9,6 @@ import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
 import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class Planet extends SolarObj{
@@ -92,7 +91,7 @@ public class Planet extends SolarObj{
 	//Update Planet
 	@Override
 	public void update() {
-		EcRPos.set(getEcRPos(Transforms.yr));
+		EcRPos.set(getEcRPos(StellarTransforms.yr));
 		EcRPosE.set(VecMath.sub(this.EcRPos, StellarSky.getManager().Earth.EcRPos));
 		
 		for(int i=0; i<satellites.size(); i++)

@@ -27,9 +27,9 @@ import stellarium.stellars.Color;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
 import stellarium.stellars.StellarObj;
+import stellarium.stellars.StellarTransforms;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class SkyRenderer extends IRenderHandler {

@@ -9,9 +9,9 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import stellarium.StellarSky;
 import stellarium.stellars.ExtinctionRefraction;
+import stellarium.stellars.StellarTransforms;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 
 public class BrStar extends Star {
 	
@@ -47,7 +47,7 @@ public class BrStar extends Star {
 	 * world is false in Overworld, and true in Ender
 	*/
 	public IValRef<EVector> GetPositionf(){
-		return Transforms.projection.transform(this.EcRPos);
+		return StellarTransforms.projection.transform(this.EcRPos);
 	}
 	
 	public IValRef<EVector> GetAtmPosf(){
@@ -146,7 +146,7 @@ public class BrStar extends Star {
 				+Spmath.btoi(star_value, 86, 2)/60.0f
 				+Spmath.btoi(star_value, 88, 2)/3600.0f);
 		
-		EcRPos.set((IValRef)Transforms.EqtoEc.transform((IValRef)new SpCoord(RA, Dec).getVec()));
+		EcRPos.set((IValRef)StellarTransforms.EqtoEc.transform((IValRef)new SpCoord(RA, Dec).getVec()));
 		
 		star_value=null;
 	}

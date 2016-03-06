@@ -11,7 +11,6 @@ import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
 import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class Moon extends Satellite {
@@ -68,11 +67,11 @@ public class Moon extends Satellite {
 	
 	//Update Moon(Use After Earth is Updated)
 	public void update(){
-		double yr=Transforms.yr;
+		double yr=StellarTransforms.yr;
 		
 		EcRPosE.set(getEcRPosE(yr));
 		EcRPos.set(VecMath.add(parPlanet.getEcRPos(yr),EcRPosE));
-		EcRPosG.set(VecMath.sub(EcRPosE,Transforms.Zen));
+		EcRPosG.set(VecMath.sub(EcRPosE,StellarTransforms.Zen));
 		
 		appPos.set(getAtmPos());
 		/*App_Mag=Mag+ExtinctionRefraction.Airmass(AppPos.z, true)*ExtinctionRefraction.ext_coeff_V;*/
@@ -91,7 +90,7 @@ public class Moon extends Satellite {
 	}
 	
 	public IValRef<EVector> getPosition(){
-		return Transforms.projection.transform(this.EcRPosG);
+		return StellarTransforms.projection.transform(this.EcRPosG);
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)

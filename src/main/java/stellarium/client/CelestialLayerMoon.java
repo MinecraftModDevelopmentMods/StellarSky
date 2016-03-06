@@ -13,8 +13,8 @@ import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
+import stellarium.stellars.StellarTransforms;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class CelestialLayerMoon implements ICelestialLayer {
@@ -53,16 +53,16 @@ public class CelestialLayerMoon implements ICelestialLayer {
 		int latc, longc;
 		for(longc=0; longc<longn; longc++){
 			for(latc=0; latc<=latn; latc++){
-				Buf.set(StellarSky.getManager().Moon.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0, Transforms.yr));
+				Buf.set(StellarSky.getManager().Moon.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0, StellarTransforms.yr));
 				moonilum[longc][latc]=(float) (StellarSky.getManager().Moon.illumination(Buf) * difactor * 1.5);
 				moonnormal[longc][latc] = new EVector(3).set(Buf);
 				Buf.set(StellarSky.getManager().Moon.posLocalG(Buf));
 				Buf.set(VecMath.mult(50000.0, Buf));
 				Buff.set(VecMath.getX(Buf),VecMath.getY(Buf),VecMath.getZ(Buf));
-				IValRef ref=Transforms.ZTEctoNEc.transform((IEVector)Buff);
-				ref=Transforms.EctoEq.transform(ref);
-				ref=Transforms.NEqtoREq.transform(ref);
-				ref=Transforms.REqtoHor.transform(ref);
+				IValRef ref=StellarTransforms.ZTEctoNEc.transform((IEVector)Buff);
+				ref=StellarTransforms.EctoEq.transform(ref);
+				ref=StellarTransforms.NEqtoREq.transform(ref);
+				ref=StellarTransforms.REqtoHor.transform(ref);
 
 				moonvec[longc][latc] = new EVector(3);
 				moonvec[longc][latc].set(ExtinctionRefraction.refraction(ref, true));

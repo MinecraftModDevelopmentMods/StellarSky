@@ -7,8 +7,8 @@ import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
+import stellarium.stellars.StellarTransforms;
 import stellarium.util.math.SpCoord;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class CelestialLayerMilkyway implements ICelestialLayer {
@@ -34,8 +34,8 @@ public class CelestialLayerMilkyway implements ICelestialLayer {
 			for(int latc=0; latc<=latn; latc++){
 				Buf.set(new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec());
 				Buf.set(VecMath.mult(50.0, Buf));
-				IValRef ref=Transforms.EqtoEc.transform(Buf);
-				ref=Transforms.projection.transform(ref);
+				IValRef ref=StellarTransforms.EqtoEc.transform(Buf);
+				ref=StellarTransforms.projection.transform(ref);
 
 				moonvec[longc][latc] = new EVector(3);
 				moonvec[longc][latc].set(ExtinctionRefraction.refraction(ref, true));

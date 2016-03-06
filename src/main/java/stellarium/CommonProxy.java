@@ -135,13 +135,13 @@ public class CommonProxy implements IProxy {
 		       	longitudeEnder.setRequiresWorldRestart(true);
 		       	longitudeEnder.setLanguageKey("config.property.server.longitudeender");
 		        propNameList.add(longitudeEnder.getName());
-
+		        
 		       	moonSize = config.get(category, "Moon_Size", 1.0);
 		       	moonSize.comment = "Size of moon. (Default size is 1.0)";
 		       	moonSize.setRequiresWorldRestart(true);
 		       	moonSize.setLanguageKey("config.property.server.moonsize");
 		        propNameList.add(moonSize.getName());
-
+		        
 		       	moonBrightness = config.get(category, "Moon_Brightness", 1.0);
 		       	moonBrightness.comment = "Brightness of moon. (Default brightness is 1.0)";
 		       	moonBrightness.setRequiresWorldRestart(true);

@@ -10,7 +10,7 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.StellarObj;
-import stellarium.util.math.Transforms;
+import stellarium.stellars.StellarTransforms;
 
 public abstract class Star extends StellarObj{
 	
@@ -37,10 +37,10 @@ public abstract class Star extends StellarObj{
 	 * world is false in Overworld, and true in Ender
 	*/
 	public IValRef<EVector> getPosition(){
-		IValRef pvec=Transforms.ZTEctoNEc.transform((IEVector)EcRPos);
-		pvec=Transforms.EctoEq.transform(pvec);
-		pvec=Transforms.NEqtoREq.transform(pvec);
-		pvec=Transforms.REqtoHor.transform(pvec);
+		IValRef pvec=StellarTransforms.ZTEctoNEc.transform((IEVector)EcRPos);
+		pvec=StellarTransforms.EctoEq.transform(pvec);
+		pvec=StellarTransforms.NEqtoREq.transform(pvec);
+		pvec=StellarTransforms.REqtoHor.transform(pvec);
 		return pvec;
 	}
 

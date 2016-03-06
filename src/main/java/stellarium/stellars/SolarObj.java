@@ -7,7 +7,6 @@ import sciapi.api.value.numerics.DDouble;
 import sciapi.api.value.util.BOp;
 import stellarium.StellarSky;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public abstract class SolarObj extends StellarObj {
@@ -30,17 +29,17 @@ public abstract class SolarObj extends StellarObj {
 
 	//Get Direction EVectortor of Object
 	public synchronized IValRef<EVector> getPosition(){
-		IValRef pEVector = Transforms.ZTEctoNEc.transform((IEVector)EcRPosE);
-		pEVector=Transforms.EctoEq.transform(pEVector);
-		pEVector=Transforms.NEqtoREq.transform(pEVector);
-		pEVector=Transforms.REqtoHor.transform(pEVector);
+		IValRef pEVector = StellarTransforms.ZTEctoNEc.transform((IEVector)EcRPosE);
+		pEVector=StellarTransforms.EctoEq.transform(pEVector);
+		pEVector=StellarTransforms.NEqtoREq.transform(pEVector);
+		pEVector=StellarTransforms.REqtoHor.transform(pEVector);
 		return pEVector;
 	}
 	
 	//Update SolarObj
 	@Override
 	public void update(){
-		EcRPos.set(getEcRPos(Transforms.yr));
+		EcRPos.set(getEcRPos(StellarTransforms.yr));
 		EcRPosE.set(VecMath.sub(this.EcRPos, StellarSky.getManager().Earth.EcRPos));
 		super.update();
 		

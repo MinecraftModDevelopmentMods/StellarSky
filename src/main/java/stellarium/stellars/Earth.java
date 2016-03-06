@@ -2,7 +2,6 @@ package stellarium.stellars;
 
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class Earth extends Planet {
@@ -18,7 +17,7 @@ public class Earth extends Planet {
 	
 	//Update Earth(Have to be first)
 	public void update(){
-		EcRPos.set(getEcRPos(Transforms.yr));
+		EcRPos.set(getEcRPos(StellarTransforms.yr));
 		this.satellites.get(0).update();
 	}
 	

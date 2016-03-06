@@ -4,7 +4,6 @@ import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.StellarSky;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class Sun extends StellarObj{
@@ -23,7 +22,7 @@ public class Sun extends StellarObj{
 	public synchronized IValRef<EVector> getPosition() {
 		IValRef pvec=(IValRef)VecMath.mult(-1.0, StellarSky.getManager().Earth.EcRPos);
 		
-		return Transforms.projection.transform(pvec);
+		return StellarTransforms.projection.transform(pvec);
 	}
 
 	@Override

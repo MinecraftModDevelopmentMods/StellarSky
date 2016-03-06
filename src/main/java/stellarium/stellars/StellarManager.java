@@ -15,7 +15,6 @@ import stellarium.config.EnumViewMode;
 import stellarium.stellars.background.BrStar;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class StellarManager implements ISkyProvider {
@@ -307,7 +306,7 @@ public class StellarManager implements ISkyProvider {
         long cur = System.currentTimeMillis();
 		
 		//Must be first
-		Transforms.update(time, longitude, isOverWorld);
+		StellarTransforms.update(time, longitude, isOverWorld);
 		
 		//Must be second
 		Earth.update();
@@ -388,8 +387,8 @@ public class StellarManager implements ISkyProvider {
 	public double getHighestSunHeightAngle() {
 		IValRef pvec=(IValRef)VecMath.mult(-1.0, StellarSky.getManager().Earth.EcRPos);
 		
-		pvec=Transforms.ZTEctoNEc.transform(pvec);
-		pvec=Transforms.EctoEq.transform(pvec);
+		pvec=StellarTransforms.ZTEctoNEc.transform(pvec);
+		pvec=StellarTransforms.EctoEq.transform(pvec);
 		
 		SpCoord crd = new SpCoord();
 		crd.setWithVec(pvec);
@@ -401,8 +400,8 @@ public class StellarManager implements ISkyProvider {
 	public double getHighestMoonHeightAngle() {
 		IValRef vector = new EVector(3).set(Moon.EcRPos);
 		
-		vector = Transforms.ZTEctoNEc.transform(vector);
-		vector = Transforms.EctoEq.transform(vector);
+		vector = StellarTransforms.ZTEctoNEc.transform(vector);
+		vector = StellarTransforms.EctoEq.transform(vector);
 		
 		SpCoord crd = new SpCoord();
 		crd.setWithVec(vector);
