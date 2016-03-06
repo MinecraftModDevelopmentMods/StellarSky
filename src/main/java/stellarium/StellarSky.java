@@ -2,29 +2,17 @@ package stellarium;
 
 import java.io.IOException;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraft.item.Item;
-import net.minecraft.world.WorldProvider;
-import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.common.*;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import stellarium.api.StellarSkyAPI;
-import stellarium.compat.CompatManager;
-import stellarium.stellars.StellarManager;
-import stellarium.world.StellarWorldProvider;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLModDisabledEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.*;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.common.MinecraftForge;
+import stellarium.compat.CompatManager;
+import stellarium.sync.StellarNetworkManager;
 
 @Mod(modid=StellarSky.modid, version=StellarSky.version,
 	dependencies="required-after:sciapi@[1.1.0.0,1.2.0.0);after:CalendarAPI@[1.1,2.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
@@ -40,12 +28,10 @@ public class StellarSky {
         @SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
         public static CommonProxy proxy;
         
-        public StellarEventHook eventHook = new StellarEventHook();
-        public StellarTickHandler tickHandler = new StellarTickHandler();
-        public StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
-        
-        public static StellarManager getManager() { return proxy.manager; }
-        
+        private StellarEventHook eventHook = new StellarEventHook();
+        private StellarTickHandler tickHandler = new StellarTickHandler();
+        private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
+                
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) {        	
         	proxy.preInit(event);
@@ -53,7 +39,9 @@ public class StellarSky {
     		MinecraftForge.EVENT_BUS.register(eventHook);
     		FMLCommonHandler.instance().bus().register(tickHandler);
     		FMLCommonHandler.instance().bus().register(fmlEventHook);
-    		    		
+    		
+    		FMLCommonHandler.instance().bus().register(new StellarNetworkManager());
+    		
     		CompatManager.getInstance().onPreInit();
         }
         

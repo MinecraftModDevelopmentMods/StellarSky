@@ -1,4 +1,4 @@
-package stellarium.client;
+package stellarium.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;

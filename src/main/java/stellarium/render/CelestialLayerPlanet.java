@@ -1,4 +1,4 @@
-package stellarium.client;
+package stellarium.render;
 
 import org.lwjgl.opengl.GL11;
 
@@ -9,8 +9,9 @@ import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.CrossUtil;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
-import stellarium.StellarSky;
+import stellarium.client.ClientSettings;
 import stellarium.stellars.Optics;
+import stellarium.stellars.StellarManager;
 import stellarium.stellars.StellarObj;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
@@ -29,10 +30,10 @@ public class CelestialLayerPlanet implements ICelestialLayer {
 	}
 	
 	@Override
-	public void render(Minecraft mc, float bglight, float weathereff, double time) {
+	public void render(Minecraft mc, StellarManager manager, float bglight, float weathereff, double time) {
 		mc.renderEngine.bindTexture(locationStarPng);
 		
-		for(StellarObj object : StellarSky.getManager().getPlanets()) {
+		for(StellarObj object : manager.getPlanets()) {
 			this.drawStellarObj(bglight, weathereff, object);
 		}
 	}

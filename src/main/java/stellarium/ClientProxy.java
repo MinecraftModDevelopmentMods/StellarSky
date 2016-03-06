@@ -18,41 +18,42 @@ import net.minecraftforge.common.config.Property;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.DefaultHourProvider;
-import stellarium.client.StellarClientHook;
 import stellarium.client.StellarKeyHook;
 import stellarium.config.EnumViewMode;
 import stellarium.config.IConfigHandler;
+import stellarium.render.StellarSkyHUD;
 import stellarium.stellars.Optics;
 import stellarium.stellars.StellarManager;
+import stellarium.stellars.background.BrStar;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
 	private static final String clientConfigCategory = "clientconfig";
 	private static final String clientConfigOpticsCategory = "clientconfig.optics";
 	
-	private ClientSettings settings = new ClientSettings();
+	private ClientSettings clientSettings = new ClientSettings();
 	
 	public ClientSettings getClientSettings() {
-		return this.settings;
+		return this.clientSettings;
 	}
 	
 	@Override
-	public void preInit(FMLPreInitializationEvent event) {
-		manager = new StellarManager(Side.CLIENT);
-		
+	public void preInit(FMLPreInitializationEvent event) {		
         this.setupConfigManager(event.getSuggestedConfigurationFile());
         
-		MinecraftForge.EVENT_BUS.register(new StellarClientHook());
+		MinecraftForge.EVENT_BUS.register(new StellarSkyHUD());
 		FMLCommonHandler.instance().bus().register(new StellarKeyHook());
 		
-		StellarSkyAPI.registerHourProvider(new DefaultHourProvider(this.settings));
+		StellarSkyAPI.registerHourProvider(new DefaultHourProvider(this.clientSettings));
 	}
 
 	@Override
 	public void load(FMLInitializationEvent event) throws IOException {
 		super.load(event);
 		
-		manager.initializeStars();
+		System.out.println("[Stellarium]: "+"Initializing Stars...");
+    	BrStar.initializeAll();
+    	System.out.println("[Stellarium]: "+"Stars Initialized!");
 	}
 
 	@Override
@@ -63,96 +64,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	@Override
 	public void setupConfigManager(File file) {
 		super.setupConfigManager(file);
-		cfgManager.register(clientConfigCategory, new IConfigHandler() {
-			
-			Property mag_Limit, turb, moon_Frac, milkyway_Frac, milkyway_Brightness, minuteLength, hourToMinute, viewMode;
-			
-			@Override
-			public void setupConfig(Configuration config, String category) {
-		        config.setCategoryComment(category, "Configurations for client modifications.\n"
-		        		+ "Most of them are for rendering/view.");
-		        config.setCategoryLanguageKey(category, "config.category.client");
-		        config.setCategoryRequiresMcRestart(category, false);
-				
-		        mag_Limit=config.get(category, "Mag_Limit", 4.0);
-		        mag_Limit.comment="Limit of magnitude can be seen on naked eye.\n" +
-		        		"If you want to increase FPS, lower the Mag_Limit.\n" +
-		        		"(Realistic = 6.5, Default = 4.0)\n" +
-		        		"The lower you set it, the fewer stars you will see\n" +
-		        		"but the better FPS you will get";
-		        mag_Limit.setRequiresMcRestart(true);
-		        mag_Limit.setLanguageKey("config.property.client.maglimit");
-		        
-		        milkyway_Brightness=config.get(category, "Milkyway_Brightness", 1.5);
-		        milkyway_Brightness.comment="Brightness of milky way.\n"
-		        		+ "For real world it should be 1.0 or lower, but default is set to 1.5 for visual effect.";
-		        milkyway_Brightness.setRequiresMcRestart(false);
-		        milkyway_Brightness.setLanguageKey("config.property.client.milkywaybrightness");
-
-		        turb=config.get(category, "Twinkling(Turbulance)", 1.0);
-		        turb.comment="Degree of the twinkling effect of star.\n"
-		        		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect. "
-        				+ "The greater the value, the more the stars will twinkle. Default is 1.0. To disable set to 0.0";
-		        turb.setRequiresMcRestart(false);
-		        turb.setLanguageKey("config.property.client.turbulance");
-		        
-		        moon_Frac=config.get(category, "Moon_Fragments_Number", 16);
-		        moon_Frac.comment="Moon is drawn with fragments\n" +
-		        		"Less fragments will increase FPS, but the moon will become more defective";
-		        moon_Frac.setRequiresMcRestart(false);
-		        moon_Frac.setLanguageKey("config.property.client.moonfrac");
-		        
-		        milkyway_Frac=config.get(category, "Milkyway_Fragments_Number", 32);
-		        milkyway_Frac.comment="Milky way is drawn with fragments\n" +
-		        		"Less fragments will increase FPS, but the milky way will become more defective";
-		        milkyway_Frac.setRequiresMcRestart(false);
-		        milkyway_Frac.setLanguageKey("config.property.client.milkywayfrac");
-		        
-		        minuteLength = config.get(category, "Minute_Length", 16.666);
-		        minuteLength.comment = "Number of ticks in a minute. (The minute & hour is displayed on HUD as HH:MM format)";
-		        minuteLength.setRequiresMcRestart(false);
-		        minuteLength.setLanguageKey("config.property.client.minutelength");
-		        
-		        hourToMinute = config.get(category, "Hour_Length", 60);
-		        hourToMinute.comment = "Number of minutes in an hour. (The minute & hour is displayed on HUD as HH:MM format)";
-		        hourToMinute.setRequiresMcRestart(false);
-		        hourToMinute.setLanguageKey("config.property.client.hourlength");
-		        
-		        viewMode = config.get(category, "Mode_HUD_Time_View", "empty")
-		        		.setValidValues(EnumViewMode.names);
-		        viewMode.comment = "Mode for HUD time view.\n"
-		        		+ " 3 modes available: empty, hhmm, tick.\n"
-		        		+ "Can also be changed in-game using key.";
-		        viewMode.setRequiresMcRestart(false);
-		        viewMode.setLanguageKey("config.property.client.modeview");
-		        
-		        viewMode.setValue(settings.getViewMode().getName());
-		        
-		        
-		        List<String> propNameList = Arrays.asList(mag_Limit.getName(),
-		        		moon_Frac.getName(), milkyway_Frac.getName(),
-		        		turb.getName(), milkyway_Brightness.getName(),
-		        		viewMode.getName(),
-		        		minuteLength.getName(), hourToMinute.getName());
-		        config.setCategoryPropertyOrder(category, propNameList);
-			}
-
-			@Override
-			public void loadFromConfig(Configuration config, String category) {
-				settings.mag_Limit=(float)mag_Limit.getDouble();
-		        //Scaling
-				settings.turb=(float)turb.getDouble() * 4.0f;
-				settings.milkywayBrightness = (float) milkyway_Brightness.getDouble();
-		        settings.imgFrac=moon_Frac.getInt();
-		        settings.imgFracMilkyway = milkyway_Frac.getInt();
-		        settings.minuteLength = minuteLength.getDouble();
-		        settings.anHourToMinute = hourToMinute.getInt();
-		        
-		        settings.setViewMode(EnumViewMode.getModeForName(viewMode.getString()));
-			}
-			
-		});
-		
+		cfgManager.register(clientConfigCategory, this.clientSettings);
 		cfgManager.register(clientConfigOpticsCategory, Optics.instance);
 	}
 	

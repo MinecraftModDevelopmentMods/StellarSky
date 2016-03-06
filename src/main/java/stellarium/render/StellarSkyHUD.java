@@ -1,4 +1,4 @@
-package stellarium.client;
+package stellarium.render;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
@@ -8,9 +8,10 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import stellarium.StellarSky;
 import stellarium.api.IHourProvider;
 import stellarium.api.StellarSkyAPI;
+import stellarium.client.ClientSettings;
 import stellarium.config.EnumViewMode;
 
-public class StellarClientHook {
+public class StellarSkyHUD {
 		
 	@SubscribeEvent
 	public void renderGameOverlay(RenderGameOverlayEvent.Post event) {

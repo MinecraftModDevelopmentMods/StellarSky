@@ -1,23 +1,20 @@
-package stellarium.client;
+package stellarium.render;
 
 import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.CrossUtil;
 import sciapi.api.value.euclidian.EVector;
-import stellarium.StellarSky;
+import stellarium.client.ClientSettings;
 import stellarium.stellars.Color;
 import stellarium.stellars.Optics;
+import stellarium.stellars.StellarManager;
 import stellarium.stellars.background.BrStar;
-import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 
@@ -37,7 +34,7 @@ public class CelestialLayerStar implements ICelestialLayer {
 	}
 
 	@Override
-	public void render(Minecraft mc, float bglight, float weathereff, double time) {
+	public void render(Minecraft mc, StellarManager manager, float bglight, float weathereff, double time) {
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);

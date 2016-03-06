@@ -6,6 +6,7 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
+import stellarium.common.CommonSettings;
 import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
 
@@ -20,15 +21,22 @@ public class StellarTransforms {
 
 	public double yr;
 	
+	private StellarManager manager;
+	private CommonSettings settings;
+
+	public void setup(StellarManager manager) {
+		this.manager = manager;
+		this.settings = manager.getSettings();
+	}
 	
 	//Set Transforms' time and world (stime:tick)
 	public void update(double stime, double longitude, boolean IsOverWorld){
-		yr = stime / StellarSky.getManager().day / StellarSky.getManager().year;
+		this.yr = stime / settings.day / settings.year;
 		
-		Rot = 2 * Math.PI / StellarSky.getManager().day * (1 + 1 / StellarSky.getManager().year);
+		this.Rot = 2 * Math.PI / settings.day * (1 + 1 / settings.year);
 		
-		double lat = Spmath.Radians(StellarSky.getManager().latitudeOverworld);
-		double lat2 = Spmath.Radians(StellarSky.getManager().latitudeEnder);
+		double lat = Spmath.Radians(settings.latitudeOverworld);
+		double lat2 = Spmath.Radians(settings.latitudeEnder);
 		longitude = Spmath.Radians(longitude);
 		
 		ZTEctoNEc.setRAngle(-Prec*stime);
@@ -56,7 +64,7 @@ public class StellarTransforms {
 
 		projection = new EProjection(East, North, ZenD);
 		
-		Zen.set(VOp.mult(StellarSky.getManager().Earth.radius, ZenD));
+		Zen.set(VOp.mult(manager.Earth.radius, ZenD));
 	}
 	
 	private IValRef getInvTransformed(IValRef vec) {

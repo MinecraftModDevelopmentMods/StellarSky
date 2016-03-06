@@ -1,4 +1,4 @@
-package stellarium.client;
+package stellarium.render;
 
 import org.lwjgl.opengl.GL11;
 

@@ -1,4 +1,4 @@
-package stellarium.client;
+package stellarium.render;
 
 import java.util.List;
 import java.util.Random;
@@ -19,9 +19,11 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
+import stellarium.client.ClientSettings;
 import stellarium.stellars.Color;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
+import stellarium.stellars.StellarManager;
 import stellarium.stellars.StellarObj;
 import stellarium.stellars.StellarTransforms;
 import stellarium.stellars.background.BrStar;
@@ -71,11 +73,13 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 
 		double time=(double)world.getWorldTime()+partialTicks;
 		
-		if(!StellarSky.getManager().isSetupComplete())
-			StellarSky.getManager().update(time, true);
+		StellarManager manager = StellarManager.getManager(world);
+		
+		if(!manager.isSetupComplete())
+			manager.update(time, true);
 		
 		for(ICelestialLayer layer : this.layers)
-			layer.render(mc, bglight, weathereff, time);
+			layer.render(mc, manager, bglight, weathereff, time);
 
 
 		GL11.glDisable(GL11.GL_TEXTURE_2D);

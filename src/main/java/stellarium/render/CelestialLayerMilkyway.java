@@ -1,12 +1,14 @@
-package stellarium.client;
+package stellarium.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
+import stellarium.client.ClientSettings;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
+import stellarium.stellars.StellarManager;
 import stellarium.stellars.StellarTransforms;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.VecMath;
@@ -29,13 +31,13 @@ public class CelestialLayerMilkyway implements ICelestialLayer {
 	}
 	
 	@Override
-	public void render(Minecraft mc, float bglight, float weathereff, double time) {		
+	public void render(Minecraft mc, StellarManager manager, float bglight, float weathereff, double time) {		
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				Buf.set(new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec());
 				Buf.set(VecMath.mult(50.0, Buf));
-				IValRef ref=StellarTransforms.EqtoEc.transform(Buf);
-				ref=StellarTransforms.projection.transform(ref);
+				IValRef ref = manager.transforms.EqtoEc.transform(Buf);
+				ref = manager.transforms.projection.transform(ref);
 
 				moonvec[longc][latc] = new EVector(3);
 				moonvec[longc][latc].set(ExtinctionRefraction.refraction(ref, true));

@@ -1,4 +1,4 @@
-package stellarium.client;
+package stellarium.render;
 
 import org.lwjgl.opengl.GL11;
 
@@ -11,8 +11,10 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
+import stellarium.client.ClientSettings;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
+import stellarium.stellars.StellarManager;
 import stellarium.stellars.StellarTransforms;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
@@ -40,10 +42,10 @@ public class CelestialLayerMoon implements ICelestialLayer {
 	}
 	
 	@Override
-	public void render(Minecraft mc, float bglight, float weathereff, double time) {
+	public void render(Minecraft mc, StellarManager manager, float bglight, float weathereff, double time) {
 		
-		posm.set(ExtinctionRefraction.refraction(StellarSky.getManager().Moon.getPosition(), true));
-		double sizem=StellarSky.getManager().Moon.radius.asDouble()/Spmath.getD(VecMath.size(posm));
+		posm.set(ExtinctionRefraction.refraction(manager.Moon.getPosition(), true));
+		double sizem=manager.Moon.radius.asDouble()/Spmath.getD(VecMath.size(posm));
 
 		double difactor = 0.8 / 180.0 * Math.PI / sizem;
 		difactor = difactor * difactor / Math.PI;
@@ -53,16 +55,13 @@ public class CelestialLayerMoon implements ICelestialLayer {
 		int latc, longc;
 		for(longc=0; longc<longn; longc++){
 			for(latc=0; latc<=latn; latc++){
-				Buf.set(StellarSky.getManager().Moon.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0, StellarTransforms.yr));
-				moonilum[longc][latc]=(float) (StellarSky.getManager().Moon.illumination(Buf) * difactor * 1.5);
+				Buf.set(manager.Moon.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0,
+						manager.transforms.yr));
+				moonilum[longc][latc]=(float) (manager.Moon.illumination(Buf) * difactor * 1.5);
 				moonnormal[longc][latc] = new EVector(3).set(Buf);
-				Buf.set(StellarSky.getManager().Moon.posLocalG(Buf));
+				Buf.set(manager.Moon.posLocalG(Buf));
 				Buf.set(VecMath.mult(50000.0, Buf));
-				Buff.set(VecMath.getX(Buf),VecMath.getY(Buf),VecMath.getZ(Buf));
-				IValRef ref=StellarTransforms.ZTEctoNEc.transform((IEVector)Buff);
-				ref=StellarTransforms.EctoEq.transform(ref);
-				ref=StellarTransforms.NEqtoREq.transform(ref);
-				ref=StellarTransforms.REqtoHor.transform(ref);
+				IValRef ref=manager.transforms.projection.transform(Buf);
 
 				moonvec[longc][latc] = new EVector(3);
 				moonvec[longc][latc].set(ExtinctionRefraction.refraction(ref, true));
@@ -85,7 +84,7 @@ public class CelestialLayerMoon implements ICelestialLayer {
 			difm.set(VecMath.mult(sizem, difm));
 			difm2.set(VecMath.mult(sizem, difm2));
 
-			float alpha=(float) (Optics.getAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.mag-2.5*Math.log10(difactor),bglight) / (StellarSky.getManager().Moon.getPhase()));		
+			float alpha=(float) (Optics.getAlphaFromMagnitude(-17.0-manager.Moon.mag-2.5*Math.log10(difactor),bglight) / (manager.Moon.getPhase()));		
 			
 			GL11.glColor4d(1.0, 1.0, 1.0, weathereff*alpha);
 

@@ -10,7 +10,6 @@ public class StellarWorldData extends WorldSavedData {
 	public StellarWorldData() {
 		super(ID);
 	}
-
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		// TODO Auto-generated method stub

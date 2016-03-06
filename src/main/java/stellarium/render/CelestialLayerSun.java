@@ -1,4 +1,4 @@
-package stellarium.client;
+package stellarium.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -9,6 +9,8 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
+import stellarium.client.ClientSettings;
+import stellarium.stellars.StellarManager;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 
@@ -22,9 +24,9 @@ public class CelestialLayerSun implements ICelestialLayer {
 	public void init(ClientSettings settings) { }
 	
 	@Override
-	public void render(Minecraft mc, float bglight, float weathereff, double time) {
-		pos.set(StellarSky.getManager().Sun.appPos);
-		double size=StellarSky.getManager().Sun.radius/Spmath.getD(VecMath.size(pos))*99.0*20;
+	public void render(Minecraft mc, StellarManager manager, float bglight, float weathereff, double time) {
+		pos.set(manager.Sun.appPos);
+		double size=manager.Sun.radius/Spmath.getD(VecMath.size(pos))*99.0*20;
 		pos.set(VecMath.normalize(pos));
 		dif.set(VOp.normalize(CrossUtil.cross((IEVector)pos, (IEVector)new EVector(0.0,0.0,1.0))));
 		dif2.set((IValRef)CrossUtil.cross((IEVector)dif, (IEVector)pos));
