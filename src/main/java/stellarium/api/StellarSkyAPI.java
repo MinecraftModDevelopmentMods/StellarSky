@@ -2,7 +2,7 @@ package stellarium.api;
 
 public class StellarSkyAPI {
 	
-	public ISkyProvider skyProvider;
+	public ISkyProviderGetter skyProviderGetter;
 	public IHourProvider hourProvider;
 	
 	private static StellarSkyAPI INSTANCE = new StellarSkyAPI();
@@ -21,18 +21,20 @@ public class StellarSkyAPI {
 	}
 		
 	/**
-	 * Gets Sky Provider. Effective on both side.
+	 * Gets Sky Provider. Effective on both side.<p>
+	 * NOTE: This do no work when world is not open.
 	 * */
 	public static ISkyProvider getSkyProvider() {
-		return INSTANCE.skyProvider;
+		return INSTANCE.skyProviderGetter.getSkyProvider();
 	}
 	
 	/**
 	 * Internal method, do not use this!
+	 * Will be removed in the next version.
 	 * */
 	@Deprecated
-	public static void setSkyProvider(ISkyProvider provider) {
-		INSTANCE.skyProvider = provider;
+	public static void setSkyProviderGetter(ISkyProviderGetter providerGetter) {
+		INSTANCE.skyProviderGetter = providerGetter;
 	}
 	
 }

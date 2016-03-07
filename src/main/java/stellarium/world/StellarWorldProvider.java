@@ -34,8 +34,9 @@ import net.minecraftforge.common.DimensionManager;
 public class StellarWorldProvider extends WorldProvider {
 	
 	private WorldProvider parProvider;
+	private StellarManager manager;
 	
-	public StellarWorldProvider(WorldProvider provider) {
+	public StellarWorldProvider(WorldProvider provider, StellarManager manager) {
 		this.parProvider = provider;
 		this.worldObj = provider.worldObj;
 		this.field_82913_c = provider.field_82913_c;
@@ -45,14 +46,15 @@ public class StellarWorldProvider extends WorldProvider {
 		this.hasNoSky = provider.hasNoSky;
 		this.lightBrightnessTable = provider.lightBrightnessTable;
 		this.dimensionId = provider.dimensionId;
+		this.manager = manager;
 	}
 
 	@Override
     public float calculateCelestialAngle(long par1, float par3) {
-    	if(StellarSky.getManager().isSetupComplete())
-    		StellarSky.getManager().update(par1+par3, isSurfaceWorld());
-    	    	
-    	IValRef sun = VecMath.normalize(StellarSky.getManager().Sun.appPos);
+    	if(!manager.isSetupComplete())
+    		manager.update(par1+par3, isSurfaceWorld());
+    	
+    	IValRef sun = VecMath.normalize(manager.Sun.appPos);
     	
     	double h=Math.asin(VecMath.getZ(sun));
     	
@@ -69,16 +71,16 @@ public class StellarWorldProvider extends WorldProvider {
 
 	@Override
     public int getMoonPhase(long par1) {
-    	if(StellarSky.getManager().isSetupComplete())
-    		StellarSky.getManager().update(par1, isSurfaceWorld());
-    	return (int)(StellarSky.getManager().Moon.phase_Time()*8);
+    	if(!manager.isSetupComplete())
+    		manager.update(par1, isSurfaceWorld());
+    	return (int)(manager.Moon.phase_Time()*8);
     }
 	
 	@Override
 	public float getCurrentMoonPhaseFactor() {
-    	if(StellarSky.getManager().isSetupComplete())
+    	if(manager.isSetupComplete())
     		return parProvider.getCurrentMoonPhaseFactor();
-		return (float) StellarSky.getManager().Moon.getPhase();
+		return (float) manager.Moon.getPhase();
 	}
 
     /**

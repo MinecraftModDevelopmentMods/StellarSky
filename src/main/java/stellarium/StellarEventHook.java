@@ -39,14 +39,15 @@ public class StellarEventHook {
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e)
 	{
-		StellarManager manager = StellarManager.loadOrCreateManager(e.world);
-		manager.setRemote(e.world.isRemote);
-	
-		if(!e.world.isRemote)
-			setupManager(e.world, manager);
-
-		if(!e.world.isRemote)
-			return;
+		if(e.world.provider.dimensionId == 0) {
+			StellarManager manager = StellarManager.loadOrCreateManager(e.world);
+			manager.setRemote(e.world.isRemote);
+		
+			if(!e.world.isRemote) {
+				setupManager(e.world, manager);
+				return;
+			}
+		}
 		
 		if(e.world.provider.dimensionId == 0 || e.world.provider.dimensionId == -1)
 			e.world.provider.setSkyRenderer(new SkyRenderer());
@@ -55,13 +56,16 @@ public class StellarEventHook {
 	public static void setupManager(World world, StellarManager manager) {
 		manager.initialize();
 		
-		if(manager.getSettings().serverEnabled && world.provider.dimensionId == 0) {
+		if(manager.getSettings().serverEnabled) {
 			try {
-				providerField.set(world, new StellarWorldProvider(world.provider));
+				providerField.set(world, new StellarWorldProvider(world.provider, manager));
 			} catch (Exception exc) {
 				Throwables.propagate(exc);
 			}
 		}
+		
+		if(world.isRemote && world.provider.dimensionId == 0 || world.provider.dimensionId == -1)
+			world.provider.setSkyRenderer(new SkyRenderer());
 	}
 	
 	@SubscribeEvent

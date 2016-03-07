@@ -20,14 +20,14 @@ public class Sun extends StellarObj{
 	//Get Direction Vector of Sun from Earth
 	@Override
 	public synchronized IValRef<EVector> getPosition() {
-		IValRef pvec=(IValRef)VecMath.mult(-1.0, StellarSky.getManager().Earth.EcRPos);
+		IValRef pvec=(IValRef)VecMath.mult(-1.0, getManager().Earth.EcRPos);
 		
-		return StellarTransforms.projection.transform(pvec);
+		return getManager().transforms.projection.transform(pvec);
 	}
 
 	@Override
-	public void initialize() {
-		
+	public void initialize(StellarManager manager) {
+		super.initialize(manager);
 	}
 
 }

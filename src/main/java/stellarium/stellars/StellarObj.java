@@ -2,7 +2,6 @@ package stellarium.stellars;
 
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.EVectorSet;
 import stellarium.util.math.VecMath;
 
 
@@ -20,8 +19,16 @@ public abstract class StellarObj {
 	//Object's Apparent Magnitude
 	public double appMag;
 	
+	private StellarManager manager;
+	
 	//Initialize the Object
-	abstract public void initialize();
+	public void initialize(StellarManager manager) {
+		this.manager = manager;
+	}
+	
+	public StellarManager getManager() {
+		return this.manager;
+	}
 	
 	//Update the Object
 	public void update(){

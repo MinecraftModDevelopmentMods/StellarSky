@@ -143,13 +143,33 @@ public class CommonSettings implements IConfigHandler {
 
 	
 	public void readFromNBT(NBTTagCompound compound) {
-		// TODO Auto-generated method stub
-		
+		this.serverEnabled = compound.getBoolean("serverEnabled");
+		this.day = compound.getDouble("day");
+        this.year = compound.getDouble("year");
+       	this.yearOffset = compound.getInteger("yearOffset");
+       	this.dayOffset = compound.getInteger("dayOffset");
+       	this.tickOffset = compound.getDouble("tickOffset");
+       	this.latitudeOverworld = compound.getDouble("lattitudeOverworld");
+       	this.longitudeOverworld = compound.getDouble("longitudeOverworld");
+       	this.latitudeEnder = compound.getDouble("lattitudeEnder");
+       	this.longitudeEnder = compound.getDouble("longitudeEnder");
+       	this.moonSizeMultiplier = compound.getDouble("moonSize");
+       	this.moonBrightnessMultiplier = compound.getDouble("moonBrightness");
 	}
 
 	
 	public void writeToNBT(NBTTagCompound compound) {
-		// TODO Auto-generated method stub
-		
+		compound.setBoolean("serverEnabled", this.serverEnabled);
+		compound.setDouble("day", this.day);
+        compound.setDouble("year", this.year);
+       	compound.setInteger("yearOffset", this.yearOffset);
+       	compound.setInteger("dayOffset", this.dayOffset);
+       	compound.setDouble("tickOffset", this.tickOffset);
+       	compound.setDouble("lattitudeOverworld", this.latitudeOverworld);
+       	compound.setDouble("longitudeOverworld", this.longitudeOverworld);
+       	compound.setDouble("lattitudeEnder", this.latitudeEnder);
+       	compound.setDouble("longitudeEnder", this.longitudeEnder);
+       	compound.setDouble("moonSize", this.moonSizeMultiplier);
+       	compound.setDouble("moonBrightness", this.moonBrightnessMultiplier);
 	}
 }

@@ -18,6 +18,8 @@ public class StellarNetworkManager {
 		
 		wrapper.registerMessage(MessageSyncCommon.MessageSyncCommonHandler.class,
 				MessageSyncCommon.class, 0, Side.CLIENT);
+		wrapper.registerMessage(MessageLock.MessageLockHandler.class,
+				MessageLock.class, 1, Side.SERVER);
 	}
 	
 	@SubscribeEvent
@@ -27,6 +29,10 @@ public class StellarNetworkManager {
 		manager.writeToNBT(compound);
 		
 		wrapper.sendTo(new MessageSyncCommon(compound), (EntityPlayerMP)event.player);
+	}
+	
+	public void onTryLock() {
+		wrapper.sendToServer(new MessageLock());
 	}
 	
 

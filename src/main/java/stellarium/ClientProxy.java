@@ -21,7 +21,7 @@ import stellarium.client.DefaultHourProvider;
 import stellarium.client.StellarKeyHook;
 import stellarium.config.EnumViewMode;
 import stellarium.config.IConfigHandler;
-import stellarium.render.StellarSkyHUD;
+import stellarium.render.StellarSkyClientRender;
 import stellarium.stellars.Optics;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.background.BrStar;
@@ -41,7 +41,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public void preInit(FMLPreInitializationEvent event) {		
         this.setupConfigManager(event.getSuggestedConfigurationFile());
         
-		MinecraftForge.EVENT_BUS.register(new StellarSkyHUD());
+		MinecraftForge.EVENT_BUS.register(new StellarSkyClientRender());
 		FMLCommonHandler.instance().bus().register(new StellarKeyHook());
 		
 		StellarSkyAPI.registerHourProvider(new DefaultHourProvider(this.clientSettings));

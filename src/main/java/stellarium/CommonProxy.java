@@ -7,6 +7,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 import stellarium.client.ClientSettings;
@@ -65,7 +66,7 @@ public class CommonProxy implements IProxy {
 	
 	@Override
 	public World getDefWorld() {
-		return null;
+		return MinecraftServer.getServer().getEntityWorld();
 	}
 	
 	@Override

@@ -45,7 +45,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 	private CommonSettings settings;
 	private boolean locked = false;
 	
-	public StellarTransforms transforms;
+	public StellarTransforms transforms = new StellarTransforms();
 	
 	private boolean isRemote;
 	
@@ -58,8 +58,13 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		
 		if(!(data instanceof StellarManager))
 		{
-			data = new StellarManager();
-			world.mapStorage.setData(ID, data);
+			StellarManager manager = new StellarManager();
+			world.mapStorage.setData(ID, manager);
+			
+			if(!world.isRemote)
+				manager.loadSettingsFromConfig();
+			
+			data = manager;
 		}
 				
 		return (StellarManager) data;
@@ -68,7 +73,6 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 	public static StellarManager getManager(World world) {
 		return getManager(world.mapStorage);
 	}
-	
 
 	public static StellarManager getManager(MapStorage mapStorage) {
 		WorldSavedData data = mapStorage.loadData(StellarManager.class, ID);
@@ -97,6 +101,15 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		return this.isRemote;
 	}
 	
+	public boolean isLocked() {
+		return this.locked;
+	}
+	
+	public void lock() {
+		this.locked = true;
+		this.markDirty();
+	}
+	
 	public CommonSettings getSettings() {
 		return this.settings;
 	}
@@ -104,7 +117,12 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 	//This is called on client only.
 	public void readSettings(NBTTagCompound compound) {
 		this.settings = new CommonSettings();
-		settings.readFromNBT(compound);
+		this.readFromNBT(compound);
+	}
+	
+	private void loadSettingsFromConfig() {
+		this.settings = new CommonSettings(StellarSky.proxy.commonSettings);
+		this.markDirty();
 	}
 	
 	@Override
@@ -115,8 +133,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 			this.settings = new CommonSettings();
 			settings.readFromNBT(compound);
 		} else {
-			this.settings = new CommonSettings(StellarSky.proxy.commonSettings);
-			this.markDirty();
+			this.loadSettingsFromConfig();
 		}
 	}
 
@@ -142,7 +159,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		System.out.println("[Stellarium]: "+"Initializing Sun...");
 		Sun.radius=0.00465469;
 		Sun.mass=1.0;
-		Sun.initialize();
+		Sun.initialize(this);
 		
 		///Earth System
 		//Declaration
@@ -180,7 +197,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		Moon.Omegad=-19.355;
 		
 		//Earth Initialize
-		Earth.initialize();
+		Earth.initialize(this);
 		
 		///Planets
 		//Mercury
@@ -201,7 +218,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		Mercury.wbard=0.15940013;
 		Mercury.Omegad=-0.12214182;
 		
-		Mercury.initialize();
+		Mercury.initialize(this);
 		
 		//Venus
 		System.out.println("[Stellarium]: "+"Initizlizing Venus...");
@@ -221,7 +238,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		Venus.wbard=0.05679648;
 		Venus.Omegad=-0.27274174;
 		
-		Venus.initialize();
+		Venus.initialize(this);
 		
 		//Mars
 		System.out.println("[Stellarium]: "+"Initializing Mars...");
@@ -241,7 +258,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		Mars.wbard=0.45223625;
 		Mars.Omegad=-0.26852431;
 		
-		Mars.initialize();
+		Mars.initialize(this);
 		
 		//Jupiter
 		System.out.println("[Stellarium]: "+"Initializing Jupiter...");
@@ -265,7 +282,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		Jupiter.s=-0.35635438;
 		Jupiter.f=38.35125;
 		
-		Jupiter.initialize();
+		Jupiter.initialize(this);
 		
 		//Saturn
 		System.out.println("[Stellarium]: "+"Initializing Saturn...");
@@ -289,7 +306,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		Saturn.s=0.87320147;
 		Saturn.f=38.35125;
 		
-		Saturn.initialize();
+		Saturn.initialize(this);
 		
 		//Uranus
 		System.out.println("[Stellarium]: "+"Initializing Uranus...");
@@ -313,7 +330,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		Uranus.s=0.17689245;
 		Uranus.f=7.67025;
 		
-		Uranus.initialize();
+		Uranus.initialize(this);
 		
 		//Neptune
 		System.out.println("[Stellarium]: "+"Initializing Neptune...");
@@ -337,10 +354,12 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		Neptune.s=-0.10162547;
 		Neptune.f=7.67025;
 		
-		Neptune.initialize();
+		Neptune.initialize(this);
 		
 		System.out.println("[Stellarium]: "+"Solar System Initialized!");
 
+		if(this.isRemote && BrStar.IsInitialized)
+			BrStar.initializeAll(this);
 	}
 	
 	public double getSkyTime(double currentTick) {
@@ -377,6 +396,8 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		
 		if(this.isRemote && BrStar.IsInitialized)
 			BrStar.UpdateAll();
+		
+		this.setup = true;
 	}
 	
 	

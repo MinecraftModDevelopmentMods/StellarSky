@@ -5,7 +5,7 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.StellarSky;
-import stellarium.util.math.Spmath;
+import stellarium.stellars.StellarManager;
 
 public class AlarmWakeHandler implements IWakeHandler {
 	
@@ -28,10 +28,10 @@ public class AlarmWakeHandler implements IWakeHandler {
 	}
 
 	@Override
-	public long getWakeTime(World world, long sleepTime) {
-		double tickOffset = StellarSky.getManager().tickOffset;
-		double dayLength = StellarSky.getManager().day;
-		double longitudeEffect = StellarSky.getManager().longitudeOverworld / 360.0;
+	public long getWakeTime(World world, StellarManager manager, long sleepTime) {
+		double tickOffset = manager.getSettings().tickOffset;
+		double dayLength = manager.getSettings().day;
+		double longitudeEffect = manager.getSettings().longitudeOverworld / 360.0;
     	double modifiedWorldTime = sleepTime - sleepTime % dayLength
     			- dayLength * longitudeEffect - tickOffset - DEFAULT_OFFSET + this.wakeTime;
     	while(modifiedWorldTime < sleepTime)
@@ -40,10 +40,10 @@ public class AlarmWakeHandler implements IWakeHandler {
 	}
 
 	@Override
-	public boolean canSleep(World world, long sleepTime) {
-		double tickOffset = StellarSky.getManager().tickOffset;
-		double dayLength = StellarSky.getManager().day;
-		double longitudeEffect = StellarSky.getManager().longitudeOverworld / 360.0;
+	public boolean canSleep(World world, StellarManager manager, long sleepTime) {
+		double tickOffset = manager.getSettings().tickOffset;
+		double dayLength = manager.getSettings().day;
+		double longitudeEffect = manager.getSettings().longitudeOverworld / 360.0;
     	double worldTimeOffset = sleepTime % dayLength + dayLength * longitudeEffect + tickOffset
     			- DEFAULT_OFFSET;
     	worldTimeOffset = worldTimeOffset % dayLength;

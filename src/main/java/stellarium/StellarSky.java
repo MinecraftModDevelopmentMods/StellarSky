@@ -10,7 +10,10 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.MinecraftForge;
+import stellarium.api.StellarSkyAPI;
+import stellarium.command.CommandLock;
 import stellarium.compat.CompatManager;
 import stellarium.sync.StellarNetworkManager;
 
@@ -31,17 +34,23 @@ public class StellarSky {
         private StellarEventHook eventHook = new StellarEventHook();
         private StellarTickHandler tickHandler = new StellarTickHandler();
         private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
-                
+        private StellarNetworkManager networkManager = new StellarNetworkManager();
+        
+        public StellarNetworkManager getNetworkManager() {
+        	return this.networkManager;
+        }
+        
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) {        	
         	proxy.preInit(event);
         	
-    		MinecraftForge.EVENT_BUS.register(eventHook);
-    		FMLCommonHandler.instance().bus().register(tickHandler);
-    		FMLCommonHandler.instance().bus().register(fmlEventHook);
+    		MinecraftForge.EVENT_BUS.register(this.eventHook);
+    		FMLCommonHandler.instance().bus().register(this.tickHandler);
+    		FMLCommonHandler.instance().bus().register(this.fmlEventHook);
     		
-    		FMLCommonHandler.instance().bus().register(new StellarNetworkManager());
+    		FMLCommonHandler.instance().bus().register(this.networkManager);
     		
+    		StellarSkyAPI.setSkyProviderGetter(new SkyProviderGetter());
     		CompatManager.getInstance().onPreInit();
         }
         
@@ -59,4 +68,8 @@ public class StellarSky {
     		CompatManager.getInstance().onPostInit();
         }
         
+        @EventHandler
+        public void serverStarting(FMLServerStartingEvent event) {
+        	event.registerServerCommand(new CommandLock());
+        }
 }

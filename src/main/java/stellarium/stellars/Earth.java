@@ -17,7 +17,7 @@ public class Earth extends Planet {
 	
 	//Update Earth(Have to be first)
 	public void update(){
-		EcRPos.set(getEcRPos(StellarTransforms.yr));
+		EcRPos.set(getEcRPos(getManager().transforms.yr));
 		this.satellites.get(0).update();
 	}
 	

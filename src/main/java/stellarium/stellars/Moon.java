@@ -36,8 +36,9 @@ public class Moon extends Satellite {
 	
 	Rotate ri = new Rotate('X'), rom = new Rotate('Z'), rw = new Rotate('Z');
 
-	
-	public void initialize(){
+	@Override
+	public void initialize(StellarManager manager) {
+		super.initialize(manager);
 		Pole=new EVector(0.0, 0.0, 1.0);
 		ri.setRAngle(-Spmath.Radians(I0));
 		rom.setRAngle(-Spmath.Radians(Omega0));
@@ -67,11 +68,11 @@ public class Moon extends Satellite {
 	
 	//Update Moon(Use After Earth is Updated)
 	public void update(){
-		double yr=StellarTransforms.yr;
+		double yr=getManager().transforms.yr;
 		
 		EcRPosE.set(getEcRPosE(yr));
 		EcRPos.set(VecMath.add(parPlanet.getEcRPos(yr),EcRPosE));
-		EcRPosG.set(VecMath.sub(EcRPosE,StellarTransforms.Zen));
+		EcRPosG.set(VecMath.sub(EcRPosE,getManager().transforms.Zen));
 		
 		appPos.set(getAtmPos());
 		/*App_Mag=Mag+ExtinctionRefraction.Airmass(AppPos.z, true)*ExtinctionRefraction.ext_coeff_V;*/
@@ -82,7 +83,7 @@ public class Moon extends Satellite {
 	public void updateMagnitude(){
 		double dist=Spmath.getD(VecMath.size(EcRPosG));
 		double distS=Spmath.getD(VecMath.size(EcRPos));
-		double distE=Spmath.getD(VecMath.size(StellarSky.getManager().Earth.EcRPos));
+		double distE=Spmath.getD(VecMath.size(getManager().Earth.EcRPos));
 		double LvsSun=this.radius.asDouble()*this.radius.asDouble()*this.getPhase()*distE*distE*albedo*1.4/(dist*dist*distS*distS);
 		this.mag=-26.74-2.5*Math.log10(LvsSun);
 		
@@ -90,7 +91,7 @@ public class Moon extends Satellite {
 	}
 	
 	public IValRef<EVector> getPosition(){
-		return StellarTransforms.projection.transform(this.EcRPosG);
+		return getManager().transforms.projection.transform(this.EcRPosG);
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)

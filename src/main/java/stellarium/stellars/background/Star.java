@@ -37,10 +37,7 @@ public abstract class Star extends StellarObj{
 	 * world is false in Overworld, and true in Ender
 	*/
 	public IValRef<EVector> getPosition(){
-		IValRef pvec=StellarTransforms.ZTEctoNEc.transform((IEVector)EcRPos);
-		pvec=StellarTransforms.EctoEq.transform(pvec);
-		pvec=StellarTransforms.NEqtoREq.transform(pvec);
-		pvec=StellarTransforms.REqtoHor.transform(pvec);
+		IValRef pvec=getManager().transforms.projection.transform(EcRPos);
 		return pvec;
 	}
 
@@ -51,8 +48,6 @@ public abstract class Star extends StellarObj{
     	appMag=mag+Airmass*ExtinctionRefraction.ext_coeff_V;
     	app_B_V=B_V+Airmass*ExtinctionRefraction.ext_coeff_B_V;
 	}
-
-	@Override
-	abstract public void initialize();
 	
+	public abstract void initialize();
 }
