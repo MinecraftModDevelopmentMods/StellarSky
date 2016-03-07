@@ -93,3 +93,11 @@ config.property.server.wakeangle.expl=Solar azimuth(height) angle to wake up. (i
 
 config.property.server.waketime=Wake Time from midnight
 config.property.server.waketime.expl=Wake-up time from midnight. (in tick)
+
+
+//Commands
+stellarsky.command.lock.usage=/locksky
+
+
+//GUIs
+stellarsky.gui.lock=Lock Sky Settings (Are you sure?)

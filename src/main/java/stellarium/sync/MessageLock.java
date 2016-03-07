@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import stellarium.stellars.StellarManager;
 
+@Deprecated
 public class MessageLock implements IMessage {
 
 	@Override
@@ -22,7 +23,6 @@ public class MessageLock implements IMessage {
 		@Override
 		public IMessage onMessage(MessageLock message, MessageContext ctx) {
 			EntityPlayer player = ctx.getServerHandler().playerEntity;
-			
 			
 			return null;
 		}

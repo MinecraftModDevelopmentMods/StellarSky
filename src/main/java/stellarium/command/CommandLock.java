@@ -8,7 +8,7 @@ public class CommandLock extends CommandBase {
 
 	@Override
 	public String getCommandName() {
-		return "lock";
+		return "locksky";
 	}
 	
 	@Override

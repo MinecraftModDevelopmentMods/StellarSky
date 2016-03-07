@@ -42,12 +42,11 @@ public class StellarEventHook {
 		if(e.world.provider.dimensionId == 0) {
 			StellarManager manager = StellarManager.loadOrCreateManager(e.world);
 			manager.setRemote(e.world.isRemote);
-		
-			if(!e.world.isRemote) {
-				setupManager(e.world, manager);
-				return;
-			}
+			setupManager(e.world, manager);
 		}
+		
+		if(!e.world.isRemote)
+			return;
 		
 		if(e.world.provider.dimensionId == 0 || e.world.provider.dimensionId == -1)
 			e.world.provider.setSkyRenderer(new SkyRenderer());

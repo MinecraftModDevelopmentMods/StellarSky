@@ -61,8 +61,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 			StellarManager manager = new StellarManager();
 			world.mapStorage.setData(ID, manager);
 			
-			if(!world.isRemote)
-				manager.loadSettingsFromConfig();
+			manager.loadSettingsFromConfig();
 			
 			data = manager;
 		}
@@ -116,8 +115,10 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 	
 	//This is called on client only.
 	public void readSettings(NBTTagCompound compound) {
-		this.settings = new CommonSettings();
-		this.readFromNBT(compound);
+		if(compound.hasKey("locked")) {
+			this.locked = compound.getBoolean("locked");
+			settings.readFromNBT(compound);
+		}
 	}
 	
 	private void loadSettingsFromConfig() {

@@ -93,3 +93,11 @@ config.property.server.wakeangle.expl=일어날 때 태양이 위치할 고도�
 
 config.property.server.waketime=자정으로부터의 기상 시간
 config.property.server.waketime.expl=알람 형태의 기상 시간으로 자정으로부터의 시간(틱 단위)로 나타냅니다.
+
+
+//Commands
+stellarsky.command.lock.usage=/locksky
+
+
+//GUIs
+stellarsky.gui.lock=하늘 설정 잠그기 (바로 잠기니 숙고하세요)

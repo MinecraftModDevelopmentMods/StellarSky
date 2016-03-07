@@ -7,6 +7,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -89,8 +90,7 @@ public class StellarSkyClientRender {
 		{
 			if(event.button.id == 30)
 			{
-				StellarManager.getManager(StellarSky.proxy.getDefWorld()).lock();
-				StellarSky.instance.getNetworkManager().onTryLock();
+				Minecraft.getMinecraft().thePlayer.sendChatMessage("/locksky");
 				event.button.enabled = false;
 			}
 		}
