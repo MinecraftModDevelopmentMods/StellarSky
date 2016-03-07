@@ -31,6 +31,15 @@ public class StellarNetworkManager {
 		wrapper.sendTo(new MessageSyncCommon(compound), (EntityPlayerMP)event.player);
 	}
 	
+	@SubscribeEvent
+	public void onPlayerJoin(PlayerEvent.PlayerChangedDimensionEvent event) {
+		StellarManager manager = StellarManager.getManager(event.player.worldObj);
+		NBTTagCompound compound = new NBTTagCompound();
+		manager.writeToNBT(compound);
+		
+		wrapper.sendTo(new MessageSyncCommon(compound), (EntityPlayerMP)event.player);
+	}
+	
 	public void onTryLock() {
 		wrapper.sendToServer(new MessageLock());
 	}

@@ -68,6 +68,7 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 		GL11.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); //e,n,z
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, weathereff);
+		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
 

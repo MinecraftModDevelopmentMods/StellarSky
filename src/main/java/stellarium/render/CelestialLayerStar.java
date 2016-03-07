@@ -58,7 +58,7 @@ public class CelestialLayerStar implements ICelestialLayer {
 			if(Mag > settings.mag_Limit)
 				continue;
 
-			if(VecMath.getZ(pos)<0) continue;
+			if(mc.theWorld.provider.dimensionId == 0 && VecMath.getZ(pos)<0) continue;
 
 			float size=0.5f;
 			float alpha=Optics.getAlphaFromMagnitudeSparkling(Mag, bglight) - (((1-weathereff)/1)*20f);

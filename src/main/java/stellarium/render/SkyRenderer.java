@@ -108,13 +108,21 @@ public class SkyRenderer extends IRenderHandler {
 				GL11.glPopMatrix();
 			}
 
-			GL11.glDepthMask(true);
+			GL11.glDepthMask(false);
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
-			GL11.glEnable(GL11.GL_ALPHA_TEST);
+			//GL11.glEnable(GL11.GL_ALPHA_TEST);
 
 			double time=(double)world.getWorldTime()+partialTicks;
 
 			//this.renderStar(0.0f, 0.0f, time);
+			
+			for(ISkyRenderLayer layer : this.layers)
+				if(layer instanceof SkyLayerCelestial)
+					layer.render(partialTicks, world, mc);
+			
+			GL11.glDepthMask(true);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
 		}
 		else if (mc.theWorld.provider.isSurfaceWorld())
 		{
