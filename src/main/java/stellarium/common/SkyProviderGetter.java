@@ -1,5 +1,6 @@
-package stellarium;
+package stellarium.common;
 
+import stellarium.StellarSky;
 import stellarium.api.ISkyProvider;
 import stellarium.api.ISkyProviderGetter;
 import stellarium.stellars.StellarManager;
