@@ -2,6 +2,7 @@ package stellarium.stellars;
 
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
+import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.util.math.VecMath;
 
 
@@ -33,7 +34,7 @@ public abstract class StellarObj {
 	//Update the Object
 	public void update(){
 		appPos.set(getAtmPos());
-		appMag=mag+ExtinctionRefraction.airmass(VecMath.getCoord(appPos, 2).asDouble(), true)*ExtinctionRefraction.ext_coeff_V;
+		appMag=mag+ExtinctionRefraction.airmass(this.appPos, true)*ExtinctionRefraction.ext_coeff_V;
 	}
 	
 	//Get EVector of Object from Earth

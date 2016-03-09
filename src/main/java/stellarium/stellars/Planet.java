@@ -7,6 +7,7 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.util.BOp;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
+import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;

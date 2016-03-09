@@ -1,4 +1,4 @@
-package stellarium.stellars;
+package stellarium.stellars.util;
 
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
@@ -43,27 +43,6 @@ public class ExtinctionRefraction {
 		return airmass(vec.getVal().getCoord(2).asDouble(), IsApparent);
 	}
 	
-	//Calculate Airmass
-	static float airmass(float cosZ, boolean IsApparent)
-	{
-		cosZ=Math.abs(cosZ);
-		
-		float am;
-		if (IsApparent)
-		{
-			// Rozenberg (1966)
-			am= (1.0f/(cosZ+0.025f*(float)Math.exp(-11.0f*cosZ)));
-		}
-		else
-		{
-			//Young (1994)
-			float up=(1.002432f*cosZ+0.148386f)*cosZ+0.0096467f;
-			float down=((cosZ+0.149864f)*cosZ+0.0102963f)*cosZ+0.000303978f;
-			am=up/down;
-		}
-		return am;
-	}
-	
 	//Get Refraction-applied Vector(IsApplying=true) or Refraction-disapplied Vector(IsApplying=false)
 	public static IValRef<EVector> refraction(IValRef<EVector> vec, boolean IsApplying){
 				
@@ -71,7 +50,15 @@ public class ExtinctionRefraction {
 		SpCoord sp = new SpCoord();
 		sp.setWithVec(VecMath.normalize(vec));
 				
- 		if(IsApplying)
+		refraction(sp, IsApplying);
+ 		
+ 		return VecMath.mult(VecMath.size(vec), sp.getVec());
+	}
+	
+	public static void refraction(SpCoord sp, boolean isApplying) {
+		double R;
+		
+ 		if(isApplying)
 		{
 			//Saemundsson (1986)
  			R=1.02/Spmath.tand(sp.y+10.3/(sp.y+5.11));
@@ -83,7 +70,5 @@ public class ExtinctionRefraction {
 			R=1.0/Spmath.tand(sp.y+7.31/(sp.y+4.4));
 			sp.y-=R/60.0;
 		}
- 		
- 		return VecMath.mult(VecMath.size(vec), sp.getVec());
 	}
 }

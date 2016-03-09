@@ -7,9 +7,9 @@ import java.io.InputStream;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.StellarSky;
-import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.StellarTransforms;
+import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
 

@@ -12,10 +12,10 @@ import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
-import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.StellarTransforms;
+import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 

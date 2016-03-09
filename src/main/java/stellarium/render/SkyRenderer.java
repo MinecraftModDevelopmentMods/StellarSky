@@ -24,11 +24,11 @@ import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
 import stellarium.stellars.Color;
-import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.Optics;
 import stellarium.stellars.StellarObj;
 import stellarium.stellars.StellarTransforms;
 import stellarium.stellars.background.BrStar;
+import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 

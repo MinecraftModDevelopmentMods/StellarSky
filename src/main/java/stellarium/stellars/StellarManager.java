@@ -23,7 +23,7 @@ import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 
 public class StellarManager extends WorldSavedData implements ISkyProvider {
-	
+	//Render in Spherical Coordinate!
 	private static final String ID = "stellarskymanagerdata";
 	
 	public final double AU=1.496e+8;
