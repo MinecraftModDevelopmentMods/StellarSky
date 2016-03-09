@@ -10,6 +10,7 @@ import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.StellarTransforms;
 import stellarium.stellars.util.ExtinctionRefraction;
+import stellarium.util.math.Rotate;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
 
@@ -19,6 +20,10 @@ public class BrStar extends Star {
 	//constants
 	public static final int NumStar=9110;
 	public static final int Bufsize=198;
+	
+	//Zero-time axial tilt
+	public static final double e=0.4090926;
+	public static final Rotate EqtoEc = new Rotate('X').setRAngle(-e); 
 		
 	//Magnitude
 	public float Mag;
@@ -42,6 +47,7 @@ public class BrStar extends Star {
 	
 	//Initialization check
 	public static boolean IsInitialized=false;
+	
 	
 	/*
 	 * Get star's position
@@ -153,6 +159,7 @@ public class BrStar extends Star {
 				+Spmath.btoi(star_value, 86, 2)/60.0f
 				+Spmath.btoi(star_value, 88, 2)/3600.0f);
 		
+		EcRPos.set(EqtoEc.transform((IValRef)new SpCoord(RA, Dec).getVec()));
 		
 		star_value=null;
 	}
@@ -160,6 +167,5 @@ public class BrStar extends Star {
 	@Override
 	public void initialize(StellarManager manager) {
 		super.initialize(manager);
-		EcRPos.set((IValRef)manager.transforms.EqtoEc.transform((IValRef)new SpCoord(RA, Dec).getVec()));
 	}
 }

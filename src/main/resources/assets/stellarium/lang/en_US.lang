@@ -96,8 +96,9 @@ config.property.server.waketime.expl=Wake-up time from midnight. (in tick)
 
 
 //Commands
-stellarsky.command.lock.usage=/locksky
+stellarsky.command.lock.usage=/locksky [lock=true]
 
 
 //GUIs
-stellarsky.gui.lock=Lock Sky Settings (Are you sure?)
+stellarsky.gui.lock=Lock Sky Settings
+stellarsky.gui.unlock=Unlock Sky Settings

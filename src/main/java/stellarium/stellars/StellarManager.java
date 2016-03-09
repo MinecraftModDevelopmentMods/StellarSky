@@ -104,8 +104,8 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		return this.locked;
 	}
 	
-	public void lock() {
-		this.locked = true;
+	public void lock(boolean lock) {
+		this.locked = lock;
 		this.markDirty();
 	}
 	

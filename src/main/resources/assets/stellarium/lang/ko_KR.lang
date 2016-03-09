@@ -96,8 +96,9 @@ config.property.server.waketime.expl=알람 형태의 기상 시간으로 자정
 
 
 //Commands
-stellarsky.command.lock.usage=/locksky
+stellarsky.command.lock.usage=/locksky [잠금=true]
 
 
 //GUIs
 stellarsky.gui.lock=하늘 설정 잠그기 (바로 잠기니 숙고하세요)
+stellarsky.gui.unlock=하늘 설정 잠금 풀기 (바로 풀립니다)

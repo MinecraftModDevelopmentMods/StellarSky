@@ -1,4 +1,4 @@
-package stellarium.render;
+package stellarium.client;
 
 import cpw.mods.fml.client.GuiIngameModOptions;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -14,11 +14,10 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import stellarium.StellarSky;
 import stellarium.api.IHourProvider;
 import stellarium.api.StellarSkyAPI;
-import stellarium.client.ClientSettings;
 import stellarium.config.EnumViewMode;
 import stellarium.stellars.StellarManager;
 
-public class StellarSkyClientRender {
+public class StellarSkyClientHandler {
 		
 	@SubscribeEvent
 	public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
@@ -78,9 +77,10 @@ public class StellarSkyClientRender {
 	public void onInitGui(InitGuiEvent.Post event) {
 		if(event.gui instanceof GuiIngameModOptions)
 		{
-			GuiButton guibutton = new GuiButton(30, event.gui.width / 2 - 100, event.gui.height / 2 - 10, 200, 20, I18n.format("stellarsky.gui.lock"));
+			boolean locked = StellarManager.getManager(StellarSky.proxy.getDefWorld()).isLocked();
+			GuiButton guibutton = new GuiButton(30, event.gui.width / 2 - 100, event.gui.height / 2 - 10, 200, 20,
+					locked? I18n.format("stellarsky.gui.unlock") : I18n.format("stellarsky.gui.lock"));
 			event.buttonList.add(guibutton);
-			guibutton.enabled = !StellarManager.getManager(StellarSky.proxy.getDefWorld()).isLocked();
 		}
 	}
 	
@@ -90,8 +90,9 @@ public class StellarSkyClientRender {
 		{
 			if(event.button.id == 30)
 			{
-				Minecraft.getMinecraft().thePlayer.sendChatMessage("/locksky");
-				event.button.enabled = false;
+				boolean locked = StellarManager.getManager(StellarSky.proxy.getDefWorld()).isLocked();
+				Minecraft.getMinecraft().thePlayer.sendChatMessage(String.format("/locksky %s", !locked));
+				event.button.displayString = locked? I18n.format("stellarsky.gui.unlock") : I18n.format("stellarsky.gui.lock");
 			}
 		}
 	}

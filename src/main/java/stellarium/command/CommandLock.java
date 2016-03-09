@@ -24,8 +24,13 @@ public class CommandLock extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
+		boolean lock = true;
+		
+		if(args.length >= 1)
+			lock = this.parseBoolean(sender, args[0]);
+		
 		StellarManager manager = StellarManager.getManager(sender.getEntityWorld());
-		manager.lock();
+		manager.lock(lock);
 	}
 
 }
