@@ -9,6 +9,8 @@ public interface IStellarObjCollection {
 	
 	public void update(World world);
 	
+	public IStellarObj[] getObject();
+	
 	public IStellarObjRenderer getRendererFor(IStellarObj object);
 
 }

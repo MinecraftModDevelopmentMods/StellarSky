@@ -19,7 +19,7 @@ import stellarium.compat.CompatManager;
 import stellarium.sync.StellarNetworkManager;
 
 @Mod(modid=StellarSky.modid, version=StellarSky.version,
-	dependencies="required-after:sciapi@[1.1.0.0,1.2.0.0);after:CalendarAPI@[1.1,2.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
+	dependencies="required-after:sciapi@[1.1.0.0,1.2.0.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";

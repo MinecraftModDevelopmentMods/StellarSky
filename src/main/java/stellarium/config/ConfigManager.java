@@ -12,27 +12,27 @@ import net.minecraftforge.common.config.Configuration;
 public class ConfigManager {
 	
 	private Configuration config;
-	private List<Pair<String, IConfigHandler>> handlerMap = Lists.newArrayList();
+	private List<Pair<String, IConfigHandler>> handlerPairList = Lists.newArrayList();
 	
 	public ConfigManager(Configuration config) {
 		this.config = config;
 	}
 	
 	public void register(String category, IConfigHandler cfgHandler) {
-		handlerMap.add(Pair.of(category, cfgHandler));
+		handlerPairList.add(Pair.of(category, cfgHandler));
 	}
 	
 	public void onSyncConfig(boolean loadFromFile, boolean isLoadPhase) {
 		if(loadFromFile)
 			config.load();
 		
-		for(Pair<String, IConfigHandler> entry : handlerMap) {
+		for(Pair<String, IConfigHandler> entry : handlerPairList) {
 			entry.getValue().setupConfig(config, entry.getKey());
 		}
 		
 		if(isLoadPhase)
 		{
-			for(Pair<String, IConfigHandler> entry : handlerMap) {
+			for(Pair<String, IConfigHandler> entry : handlerPairList) {
 				entry.getValue().loadFromConfig(config, entry.getKey());
 			}
 		}

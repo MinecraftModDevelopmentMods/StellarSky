@@ -58,14 +58,14 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		
 		if(!(data instanceof StellarManager))
 		{
-			StellarManager manager = new StellarManager();
+			StellarManager manager = new StellarManager(ID);
 			world.mapStorage.setData(ID, manager);
 			
 			manager.loadSettingsFromConfig();
 			
 			data = manager;
 		}
-				
+		
 		return (StellarManager) data;
 	}
 	
@@ -86,10 +86,6 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 	
 	public StellarManager(String id){
 		super(id);
-	}
-	
-	public StellarManager() {
-		super(ID);
 	}
 	
 	public void setRemote(boolean isRemote) {
