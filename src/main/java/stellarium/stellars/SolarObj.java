@@ -22,6 +22,17 @@ public abstract class SolarObj extends StellarObj {
 	//Position from Sun
 	abstract public IValRef<EVector> getEcRPos(double time);
 	
+	private StellarManager manager;
+	
+	//Initialize the Object
+	public void initialize(StellarManager manager) {
+		this.manager = manager;
+	}
+	
+	public StellarManager getManager() {
+		return this.manager;
+	}
+	
 	//Direction from Earth (Use this after both Earth and Object is Updated) (Do not use this on Earth)
 	public IValRef<EVector> GetEcDir(){
 		return VecMath.normalize(EcRPosE);

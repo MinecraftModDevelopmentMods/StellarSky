@@ -20,17 +20,6 @@ public abstract class StellarObj {
 	//Object's Apparent Magnitude
 	public double appMag;
 	
-	private StellarManager manager;
-	
-	//Initialize the Object
-	public void initialize(StellarManager manager) {
-		this.manager = manager;
-	}
-	
-	public StellarManager getManager() {
-		return this.manager;
-	}
-	
 	//Update the Object
 	public void update(){
 		appPos.set(getAtmPos());

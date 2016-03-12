@@ -8,7 +8,7 @@ import stellarium.util.math.SpCoord;
 
 public interface IStellarViewpoint {
 	public void update(World world);
-	
+		
 	public EProjection getProjection(float partialTicks);
 	
 	public void applyAtmRefraction(SpCoord coord);

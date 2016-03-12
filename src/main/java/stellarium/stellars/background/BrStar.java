@@ -115,11 +115,6 @@ public class BrStar extends Star {
 	    System.out.println("[Stellarium]: "+"Bright Stars are Loaded!");
 	    IsInitialized=true;
 	}
-
-	public static void initializeAll(StellarManager manager) {
-	    for(BrStar star : stars)
-	    	star.initialize(manager);
-	}
 	
 	public static void UpdateAll(){
 		int i;
@@ -162,10 +157,5 @@ public class BrStar extends Star {
 		EcRPos.set(EqtoEc.transform((IValRef)new SpCoord(RA, Dec).getVec()));
 		
 		star_value=null;
-	}
-	
-	@Override
-	public void initialize(StellarManager manager) {
-		super.initialize(manager);
 	}
 }

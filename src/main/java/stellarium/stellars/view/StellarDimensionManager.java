@@ -7,29 +7,30 @@ import net.minecraft.world.storage.MapStorage;
 import stellarium.stellars.StellarManager;
 
 public class StellarDimensionManager extends WorldSavedData {
-		
+	
 	public static String ID = "stellarskydimensiondata";
 	
 	private StellarManager manager;
 	
 	private PerDimensionSettings settings;
 	private IStellarViewpoint viewpoint;
-	private StellarViewpointCache cache;
+	private int id;
 	
-	public static StellarDimensionManager loadOrCreate(World world) {
+	public static StellarDimensionManager loadOrCreate(World world, int id) {
 		WorldSavedData data = world.perWorldStorage.loadData(StellarDimensionManager.class, ID);
+		StellarDimensionManager dimManager;
 		
 		if(!(data instanceof StellarDimensionManager))
 		{
-			StellarDimensionManager dimManager = new StellarDimensionManager(ID);
+			dimManager = new StellarDimensionManager(ID);
 			world.mapStorage.setData(ID, dimManager);
 			
 			dimManager.loadSettingsFromConfig();
-			
-			data = dimManager;
-		}
-				
-		return (StellarDimensionManager) data;
+		} else dimManager = (StellarDimensionManager) data;
+		
+		dimManager.id = id;
+		
+		return dimManager;
 	}
 
 	public static StellarDimensionManager get(World world) {
