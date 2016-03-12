@@ -117,9 +117,8 @@ public class SkyRenderer extends IRenderHandler {
 					layer.render(partialTicks, world, mc);
 			
 			GL11.glDepthMask(true);
-			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			GL11.glEnable(GL11.GL_ALPHA_TEST);
-			GL11.glDisable(GL11.GL_FOG);
 		}
 		else if (mc.theWorld.provider.isSurfaceWorld())
 		{
