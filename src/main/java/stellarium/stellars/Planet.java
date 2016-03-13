@@ -101,7 +101,7 @@ public class Planet extends SolarObj{
 		this.updateMagnitude();
 		
 		appPos.set(getAtmPos());
-		appMag=mag+ExtinctionRefraction.airmass(appPos, true)*ExtinctionRefraction.ext_coeff_V;
+		appMag=mag+ExtinctionRefraction.airmass(appPos, true)*Optics.ext_coeff_V;
 	}
 	
 	public void addSatellite(Satellite sat){

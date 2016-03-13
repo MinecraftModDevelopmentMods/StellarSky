@@ -11,12 +11,6 @@ public class ExtinctionRefraction {
 	
 	static final double subhorizontal_airmass=30.0;
 	
-	public static final double ext_coeff_V=0.2;
-	public static final double ext_coeff_B_V=0.1;
-	
-	public static final float ext_coeff_Vf=0.2f;
-	public static final float ext_coeff_B_Vf=0.1f;
-
 	//Calculate Airmass
 	static double airmass(double cosZ, boolean IsApparent)
 	{

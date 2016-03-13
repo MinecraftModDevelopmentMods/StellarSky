@@ -10,6 +10,9 @@ import stellarium.config.IConfigHandler;
 
 public class Optics implements IConfigHandler {
 	
+	public static final double ext_coeff_B_V=0.1;
+	public static final double ext_coeff_V=0.2;
+	
 	// MagOffset needs to be changed to whatever the maximum Magnitude of Venus is 
 	private static final float magOffset = 5.50f;
 	private static final float magCompressionBase = 6.50f;

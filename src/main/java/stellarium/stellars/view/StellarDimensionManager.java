@@ -14,9 +14,8 @@ public class StellarDimensionManager extends WorldSavedData {
 	
 	private PerDimensionSettings settings;
 	private IStellarViewpoint viewpoint;
-	private int id;
 	
-	public static StellarDimensionManager loadOrCreate(World world, int id) {
+	public static StellarDimensionManager loadOrCreate(World world) {
 		WorldSavedData data = world.perWorldStorage.loadData(StellarDimensionManager.class, ID);
 		StellarDimensionManager dimManager;
 		
@@ -27,9 +26,7 @@ public class StellarDimensionManager extends WorldSavedData {
 			
 			dimManager.loadSettingsFromConfig();
 		} else dimManager = (StellarDimensionManager) data;
-		
-		dimManager.id = id;
-		
+				
 		return dimManager;
 	}
 

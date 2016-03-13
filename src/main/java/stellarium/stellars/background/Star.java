@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
+import stellarium.stellars.Optics;
 import stellarium.stellars.StellarObj;
 import stellarium.stellars.StellarTransforms;
 import stellarium.stellars.util.ExtinctionRefraction;
@@ -45,8 +46,8 @@ public abstract class Star extends StellarObj{
 	public void update() {
 		appPos.set(getAtmPos());
 		double Airmass=ExtinctionRefraction.airmass(appPos, true);
-    	appMag=mag+Airmass*ExtinctionRefraction.ext_coeff_V;
-    	app_B_V=B_V+Airmass*ExtinctionRefraction.ext_coeff_B_V;
+    	appMag=mag+Airmass*Optics.ext_coeff_V;
+    	app_B_V=B_V+Airmass*Optics.ext_coeff_B_V;
 	}
 	
 	public abstract void initialize();

@@ -23,7 +23,7 @@ public abstract class StellarObj {
 	//Update the Object
 	public void update(){
 		appPos.set(getAtmPos());
-		appMag=mag+ExtinctionRefraction.airmass(this.appPos, true)*ExtinctionRefraction.ext_coeff_V;
+		appMag=mag+ExtinctionRefraction.airmass(this.appPos, true)*Optics.ext_coeff_V;
 	}
 	
 	//Get EVector of Object from Earth
