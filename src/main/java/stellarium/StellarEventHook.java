@@ -63,7 +63,7 @@ public class StellarEventHook {
 			}
 		}
 		
-		if(world.isRemote && world.provider.dimensionId == 0 || world.provider.dimensionId == 1)
+		if(world.isRemote && (world.provider.dimensionId == 0 || world.provider.dimensionId == 1))
 			world.provider.setSkyRenderer(new SkyRenderer());
 	}
 	
