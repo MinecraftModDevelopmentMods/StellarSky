@@ -2,17 +2,11 @@ package stellarium;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.List;
 
 import com.google.common.base.Throwables;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -41,7 +35,7 @@ public class StellarEventHook {
 	{
 		StellarSky.getManager().initializePlanet();
 		
-		if(StellarSky.getManager().serverEnabled && e.world.provider.getDimensionId() == 0) {
+		if(StellarSky.getManager().serverEnabled && e.world.provider.getDimension() == 0) {
 			try {
 				providerField.set(e.world, new StellarWorldProvider(e.world, e.world.provider));
 			} catch (Exception exc) {
@@ -52,7 +46,7 @@ public class StellarEventHook {
 		if(!e.world.isRemote)
 			return;
 				
-		if(e.world.provider.getDimensionId() == 0 || e.world.provider.getDimensionId() == -1)
+		if(e.world.provider.getDimension() == 0 || e.world.provider.getDimension() == -1)
 		{
 			e.world.provider.setSkyRenderer(new DrawSky());
 		}

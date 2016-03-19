@@ -60,5 +60,9 @@ public class Optics implements IConfigHandler {
 	private static float getAlpha(double magCompressed, float bglight) {
 		return (float) ((Math.pow(instance.magContrast,	- magCompressed - magOffset * ((Math.pow(Math.log(bglight + 1.0f)/constantBgDiv, magOffset)))))	- (bglight / 2.1333334f));
 	}
+
+	public static float getAlphaForGalaxy(double Mag, float bglight) {
+		return getAlpha(((Mag + 1.46f) * instance.magCompression), bglight);
+	}
 	
 }
