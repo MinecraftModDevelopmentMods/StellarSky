@@ -319,7 +319,6 @@ public class DrawSky extends IRenderHandler {
             float weathereff = 1.0F - theWorld.getRainStrength(partialTicks);
 			float bglight=f+f1+f2;
 
-
 			GlStateManager.rotate(-90.0f, 1.0f, 0.0f, 0.0f); //e,n,z
 
 			GlStateManager.color(1.0F, 1.0F, 1.0F, weathereff);
@@ -448,19 +447,21 @@ public class DrawSky extends IRenderHandler {
 					ref = Transforms.EctoEq.transform(ref);
 					ref = Transforms.NEqtoREq.transform(ref);
 					ref = Transforms.REqtoHor.transform(ref);
+					ref = ExtinctionRefraction.refraction(ref, true);
 
 					moonvec[longc][latc] = new EVector(3);
 					moonvec[longc][latc].set(ExtinctionRefraction.refraction(ref, true));
 				}
 			}
-			
-			Tessellator tessellator1 = Tessellator.getInstance();
-			
+						
 			mc.renderEngine.bindTexture(locationMilkywayPng);
 			worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 			
 			float Mag = 3.5f;
 			float alpha=Optics.getAlphaForGalaxy(Mag, bglight) - (((1-weathereff)/1)*20f);
+			
+			GlStateManager.color(1.0f, 1.0f, 1.0f, alpha*2.0f);
+			GlStateManager.disableAlpha();
 			
 			for(longc=0; longc<longn; longc++){
 				for(latc=0; latc<latn; latc++){
@@ -470,10 +471,10 @@ public class DrawSky extends IRenderHandler {
 					double longdd=1.0-(double)(longc+1)/(double)longn;
 					double latdd=1.0-(double)(latc+1)/(double)latn;
 
-					worldrenderer.pos(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc])).tex(longd, latd).color(1.0f, 1.0f, 1.0f, alpha);
-					worldrenderer.pos(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1])).tex(longd, latdd).color(1.0f, 1.0f, 1.0f, alpha);
-					worldrenderer.pos(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1])).tex(longdd, latdd).color(1.0f, 1.0f, 1.0f, alpha);
-					worldrenderer.pos(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc])).tex(longdd, latd).color(1.0f, 1.0f, 1.0f, alpha);
+					worldrenderer.pos(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc])).tex(longd, latd).endVertex();
+					worldrenderer.pos(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1])).tex(longd, latdd).endVertex();
+					worldrenderer.pos(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1])).tex(longdd, latdd).endVertex();
+					worldrenderer.pos(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc])).tex(longdd, latd).endVertex();
 				}
 			}
 			tessellator1.draw();
