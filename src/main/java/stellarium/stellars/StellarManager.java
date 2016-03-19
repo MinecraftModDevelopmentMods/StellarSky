@@ -354,9 +354,6 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		Neptune.initialize(this);
 		
 		System.out.println("[Stellarium]: "+"Solar System Initialized!");
-
-		if(this.isRemote && BrStar.IsInitialized)
-			BrStar.initializeAll(this);
 	}
 	
 	public double getSkyTime(double currentTick) {

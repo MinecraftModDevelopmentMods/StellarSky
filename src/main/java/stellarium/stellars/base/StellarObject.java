@@ -28,6 +28,8 @@ public abstract class StellarObject {
 		return map.get(dimensionId);
 	}
 	
+	public abstract void update(double year);
+	
 	public abstract IPerDimensionCache createCache();
 	
 }

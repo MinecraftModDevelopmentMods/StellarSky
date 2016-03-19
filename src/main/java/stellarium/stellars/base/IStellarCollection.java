@@ -9,5 +9,7 @@ public interface IStellarCollection {
 	
 	public void initialize() throws IOException;
 	public List<? extends StellarObject> getObjects();
+	public boolean isUpdateNeeded();
+	public boolean isUpdateNeededForDimension();
 
 }
