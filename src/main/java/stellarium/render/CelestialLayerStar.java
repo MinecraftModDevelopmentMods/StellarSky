@@ -54,6 +54,7 @@ public class CelestialLayerStar implements ICelestialLayer {
 			pos.set(VecMath.normalize(star.appPos));
 			float Mag=star.App_Mag;
 			float B_V=star.App_B_V;
+			
 
 			if(Mag > settings.mag_Limit)
 				continue;
