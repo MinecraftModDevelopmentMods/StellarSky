@@ -5,13 +5,13 @@ import java.lang.reflect.Method;
 import java.util.EnumSet;
 import java.util.Iterator;
 
-import stellarium.stellars.StellarManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.WorldInfo;
+import stellarium.stellars.StellarManager;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -36,9 +36,11 @@ public class StellarTickHandler {
 		if(e.phase == Phase.START){
 			World world = StellarSky.proxy.getDefWorld();
 			
-			if(world != null)
-				StellarSky.getManager().Update(world.getWorldTime(),
-						world.provider.isSurfaceWorld());
+			if(world != null) {
+				StellarManager manager = StellarManager.getManager(world);
+				manager.update(world.getWorldTime(),
+							world.provider.isSurfaceWorld());
+			}
 		}
 	}
 		
@@ -46,44 +48,38 @@ public class StellarTickHandler {
 	public void tickStart(TickEvent.WorldTickEvent e) {
 		if(e.phase == Phase.START){
 			if(e.world != null) {
-				WorldServer world = (WorldServer) e.world;
+				StellarManager manager = StellarManager.getManager(e.world);
+				if(!manager.getSettings().serverEnabled)
+					return;
 				
-				world.updateAllPlayersSleepingFlag();
-		        if (world.areAllPlayersAsleep())
-		        	this.tryWakePlayers(world);
-				
-				try {
-					sleep.setBoolean(world, false);
-				} catch (IllegalArgumentException ex) {
-					ex.printStackTrace();
-				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
+				if(StellarSky.proxy.wakeManager.isEnabled()) {
+					WorldServer world = (WorldServer) e.world;
+
+					world.updateAllPlayersSleepingFlag();
+					if (world.areAllPlayersAsleep())
+						this.tryWakePlayers(world, manager);
+
+					try {
+						sleep.setBoolean(world, false);
+					} catch (IllegalArgumentException ex) {
+						ex.printStackTrace();
+					} catch (IllegalAccessException ex) {
+						ex.printStackTrace();
+					}
 				}
-			}
-			
-			if(!(StellarSky.getManager().side == Side.SERVER
-					&& StellarSky.getManager().serverEnabled))
-				return;
-			
-			if(e.world != null)
-			{
-				StellarSky.getManager().Update(e.world.getWorldTime(),
+				
+				manager.update(e.world.getWorldTime(),
 						e.world.provider.isSurfaceWorld());
 			}
 		}
 	}
 
-	private void tryWakePlayers(WorldServer world) {
-		double dayLength = StellarSky.getManager().day;
-		
-		if(!StellarSky.getManager().serverEnabled)
-			dayLength = 24000.0;
-		
+	private void tryWakePlayers(WorldServer world, StellarManager manager) {		
         if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
         {
         	WorldInfo info = world.getWorldInfo();
-            double i = info.getWorldTime() + dayLength;
-            info.setWorldTime((long) (i - i % dayLength));
+        	long worldTime = info.getWorldTime();
+            info.setWorldTime(StellarSky.proxy.wakeManager.getWakeTime(world, manager, worldTime));
         }
 
         Iterator iterator = world.playerEntities.iterator();

@@ -8,7 +8,7 @@ import stellarium.util.math.VecMath;
 
 public class Satellite extends SolarObj {
 	
-	Planet Parplanet;
+	Planet parPlanet;
 	
 	//Orbital Elements
 	double a, e, I, w, Omega, M0;
@@ -18,23 +18,24 @@ public class Satellite extends SolarObj {
 
 	//Get Satellite's Ecliptic Position of 
 	@Override
-	public IValRef<EVector> GetEcRPos(double time) {
+	public IValRef<EVector> getEcRPos(double time) {
 		double M=M0+mean_mot*time;
 		ri.setRAngle(-I);
 		rw.setRAngle(-w);
 		rom.setRAngle(-Omega);
-		return VecMath.add(Spmath.GetOrbVec(a, e, ri, rw, rom, M), Parplanet.EcRPos);
+		return VecMath.add(Spmath.GetOrbVec(a, e, ri, rw, rom, M), parPlanet.EcRPos);
 	}
 	
 	//Update Satellite
-	public void Update(){
-		super.Update();
+	public void update(){
+		super.update();
 	}
 	
 	
 	//Initialize
 	@Override
-	public void Initialize() {
-		mean_mot=Parplanet.Mass;
+	public void initialize(StellarManager manager) {
+		super.initialize(manager);
+		mean_mot=parPlanet.mass;
 	}
 }

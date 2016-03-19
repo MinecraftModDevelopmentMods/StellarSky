@@ -2,34 +2,28 @@ package stellarium;
 
 import java.io.IOException;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraft.item.Item;
-import net.minecraft.world.WorldProvider;
-import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.common.*;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import stellarium.stellars.StellarManager;
-import stellarium.world.StellarWorldProvider;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLModDisabledEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.*;
-import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.common.MinecraftForge;
+import stellarium.api.StellarSkyAPI;
+import stellarium.command.CommandLock;
+import stellarium.common.SkyProviderGetter;
+import stellarium.compat.CompatManager;
+import stellarium.sync.StellarNetworkManager;
 
-@Mod(modid=StellarSky.modid, name=StellarSky.name, version=StellarSky.version, dependencies="required-after:sciapi")
+@Mod(modid=StellarSky.modid, version=StellarSky.version,
+	dependencies="required-after:sciapi@[1.1.0.0,1.2.0.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";
-		public static final String name = "Stellar Sky";
-		public static final String version = "0.1.10";
+		public static final String version = "0.1.24";
 
         // The instance of Stellarium
         @Instance(StellarSky.modid)
@@ -38,29 +32,45 @@ public class StellarSky {
         @SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
         public static CommonProxy proxy;
         
-        public StellarEventHook eventHook = new StellarEventHook();
-        public StellarTickHandler tickHandler = new StellarTickHandler();
+        private StellarEventHook eventHook = new StellarEventHook();
+        private StellarTickHandler tickHandler = new StellarTickHandler();
+        private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
+        private StellarNetworkManager networkManager = new StellarNetworkManager();
         
-        public static StellarManager getManager() { return proxy.manager; }
-        
-        @EventHandler
-        public void preInit(FMLPreInitializationEvent event) throws IOException{
-        	
-        	proxy.preInit(event);
-        	
-    		MinecraftForge.EVENT_BUS.register(eventHook);
-    		FMLCommonHandler.instance().bus().register(tickHandler);
-    		
+        public StellarNetworkManager getNetworkManager() {
+        	return this.networkManager;
         }
         
         @EventHandler
-        public void load(FMLInitializationEvent event) {
+        public void preInit(FMLPreInitializationEvent event) {        	
+        	proxy.preInit(event);
+        	
+    		MinecraftForge.EVENT_BUS.register(this.eventHook);
+    		FMLCommonHandler.instance().bus().register(this.tickHandler);
+    		FMLCommonHandler.instance().bus().register(this.fmlEventHook);
+    		
+    		FMLCommonHandler.instance().bus().register(this.networkManager);
+    		
+    		StellarSkyAPI.setSkyProviderGetter(new SkyProviderGetter());
+    		CompatManager.getInstance().onPreInit();
+        }
+        
+        @EventHandler
+        public void load(FMLInitializationEvent event) throws IOException {
         	proxy.load(event);
+        	
+    		CompatManager.getInstance().onInit();
         }
         
         @EventHandler
         public void postInit(FMLPostInitializationEvent event) {
         	proxy.postInit(event);
+        	
+    		CompatManager.getInstance().onPostInit();
         }
         
+        @EventHandler
+        public void serverStarting(FMLServerStartingEvent event) {
+        	event.registerServerCommand(new CommandLock());
+        }
 }

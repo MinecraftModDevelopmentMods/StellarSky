@@ -7,8 +7,8 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.EVectorSet;
 import sciapi.api.value.util.COp;
 import stellarium.StellarSky;
-import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.StellarManager;
+import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 import net.minecraft.entity.Entity;
@@ -34,8 +34,9 @@ import net.minecraftforge.common.DimensionManager;
 public class StellarWorldProvider extends WorldProvider {
 	
 	private WorldProvider parProvider;
+	private StellarManager manager;
 	
-	public StellarWorldProvider(WorldProvider provider) {
+	public StellarWorldProvider(WorldProvider provider, StellarManager manager) {
 		this.parProvider = provider;
 		this.worldObj = provider.worldObj;
 		this.field_82913_c = provider.field_82913_c;
@@ -45,37 +46,42 @@ public class StellarWorldProvider extends WorldProvider {
 		this.hasNoSky = provider.hasNoSky;
 		this.lightBrightnessTable = provider.lightBrightnessTable;
 		this.dimensionId = provider.dimensionId;
+		this.manager = manager;
 	}
 
 	@Override
-    public float calculateCelestialAngle(long par1, float par3)
-    {
-    	if(StellarSky.getManager().Earth.EcRPos == null)
-    		StellarSky.getManager().Update(par1+par3, isSurfaceWorld());
+    public float calculateCelestialAngle(long par1, float par3) {
+    	if(!manager.isSetupComplete())
+    		manager.update(par1+par3, isSurfaceWorld());
     	
-    	IValRef<EVector> sun = EVectorSet.ins(3).getSTemp();
-    	
-    	sun.set(StellarSky.getManager().Sun.GetPosition());
-    	sun.set(ExtinctionRefraction.Refraction(sun, true));
-    	sun.set(VecMath.normalize(sun));
+    	IValRef sun = VecMath.normalize(manager.Sun.appPos);
     	
     	double h=Math.asin(VecMath.getZ(sun));
     	
     	if(VecMath.getCoord(sun, 0).asDouble()<0) h=Math.PI-h;
     	if(VecMath.getCoord(sun, 0).asDouble()>0 && h<0) h=h+2*Math.PI;
     	
-    	sun.onUsed();
-    	
-    	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,2*Math.PI));
+    	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,1.0));
     }
+	
+	@Override
+	public float getSunBrightnessFactor(float par1) {
+		return parProvider.getSunBrightnessFactor(par1);
+	}
 
 	@Override
-    public int getMoonPhase(long par1)
-    {
-    	if(StellarSky.getManager().Earth.EcRPos==null)
-    		StellarSky.getManager().Update(par1, isSurfaceWorld());
-    	return (int)(StellarSky.getManager().Moon.Phase_Time()*8);
+    public int getMoonPhase(long par1) {
+    	if(!manager.isSetupComplete())
+    		manager.update(par1, isSurfaceWorld());
+    	return (int)(manager.Moon.phase_Time()*8);
     }
+	
+	@Override
+	public float getCurrentMoonPhaseFactor() {
+    	if(manager.isSetupComplete())
+    		return parProvider.getCurrentMoonPhaseFactor();
+		return (float) manager.Moon.getPhase();
+	}
 
     /**
      * Returns a new chunk provider which generates chunks for this world

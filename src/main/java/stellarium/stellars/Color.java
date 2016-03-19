@@ -70,7 +70,7 @@ public class Color {
 	255,	123,	0,
 	255,	82,	0};
 	
-	public static final Color GetColor(double B_V){
+	public static final Color getColor(double B_V){
 		int k=(int)((B_V+0.4)*20.0);
 		if(k<0) k=0;
 		if(k>48) k=48;
@@ -83,7 +83,7 @@ public class Color {
 		return c;
 	}
 	
-	public static final Color GetColor(float B_V){
+	public static final Color getColor(float B_V){
 		int k=(int)((B_V+0.4)*20.0);
 		if(k<0) k=0;
 		if(k>48) k=48;

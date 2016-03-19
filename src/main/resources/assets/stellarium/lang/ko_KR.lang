@@ -1,0 +1,104 @@
+﻿
+//Keys
+key.stellarsky=Stellar Sky
+key.stellarsky.viewmod.description=시각 표시 모드 바꾸기
+
+//HUD Texts
+hud.text.year=제 %1$s년
+hud.text.day=#%1$s일 (/%2$s)
+hud.text.tick=#%1$s틱 (/%2$s)
+hud.text.time=%1$s분 %2$s초(/%3$s:%4$s)
+
+
+//Client Configs
+config.category.client=클라이언트 컨피그
+config.category.client.tooltip=클라이언트 수정 관련 컨피그로서, 대부분 시각적인 효과에 관련되어 있습니다.
+
+config.property.client.maglimit=한계등급
+config.property.client.maglimit.tooltip=맨눈으로 볼 수 있는 등급의 한계입니다. FPS를 증가시키고 싶으면, 한계등급을 낮추세요. 실제로는 6.5, 기본값은 4.0이며, 더 작게 세팅할수록 더 적은 별이 보이지만 FPS는 기하급수적으로 좋아집니다!
+
+config.property.client.milkywaybrightness=은하수의 밝기
+config.property.client.milkywaybrightness.tooltip=은하수의 밝기로서, 실제 세계에서는 1.0이거나 더 작지만 기본값은 멋진 효과를 위해 1.5로 설정되어 있습니다.
+
+config.property.client.turbulance=별의 반짝임(대기 교란)
+config.property.client.turbulance.tooltip=별의 반짝임 효과의 정도를 나타내며, 별의 반짝임을 일으키는 대기의 교란이 얼마나 심할 것인가를 결정합니다.
+
+config.property.client.moonfrac=달의 조각 개수
+config.property.client.moonfrac.tooltip=달은 여러 조각으로 나뉘어 그려지게 됩니다. 조각 개수를 줄임으로서 FPS를 증가시킬 수 있지만, 그렇게 하면 달은 불완전하게 보일 것입니다.
+
+config.property.client.milkywayfrac=은하수의 조각 개수
+config.property.client.milkywayfrac.tooltip=은하수는 여러 조각으로 나뉘어 그려지게 됩니다. 조각 개수를 줄임으로서 FPS를 증가시킬 수 있지만, 그렇게 하면 은하수는 불완전하게 보일 것입니다.
+
+config.property.client.minutelength=1분의 길이
+config.property.client.minutelength.tooltip=1분이 몇틱(Tick)인지를 결정합니다. 현재 시간은 시간:분의 형식으로 HUD에 보여질 것입니다.
+
+config.property.client.hourlength=1시간의 길이
+config.property.client.hourlength.tooltip=1시간이 몇분인지를 결정합니다. 현재 시간은 시간:분의 형식으로 HUD에 보여질 것입니다.
+
+config.property.client.modeview=HUD 시간 표시 모드
+config.property.client.modeview.tooltip=HUD에 시간이 어떻게 표시될지를 결정합니다. 'empty'(HUD 없음), 'hhmm'(시간:분), 'tick'(틱 표시) 중에 고르실 수 있습니다. 플레이 중에도 지정된 키를 눌러 바꿀 수 있습니다.
+
+config.property.client.brcontrast=밝기 대조
+config.property.client.brcontrast.tooltip=이 속성은 밝은 별들과 어두운 별들 사이의 밝기 차이를 결정하며, 값이 클수록 밝기 차이가 작게 됩니다. 실제 세계는 1.0값을 갖지만, 기본값은 멋진 효과를 위해 1.75로 설정되어 있습니다.
+
+
+//Server Configs
+config.category.server=서버(일반[Common]) 컨피그
+config.category.server.tooltip=서버 수정 관련 컨피그입니다.
+
+config.property.server.serverenabled=서버 수정 허용 여부
+config.property.server.serverenabled.tooltip=서버에서의 하늘의 변화를 허용합니다.
+
+config.property.server.daylength=하루의 길이
+config.property.server.daylength.tooltip=Tick 단위로 나타낸 하루의 길이입니다.
+
+config.property.server.yearlength=1년의 길이
+config.property.server.yearlength.tooltip=하루 단위로 나타낸 1년의 길이입니다.
+
+config.property.server.yearoffset=연 단위 오프셋
+config.property.server.yearoffset.tooltip=월드 시작 시각의 연도를 나타냅니다.
+
+config.property.server.dayoffset=하루 단위 오프셋
+config.property.server.dayoffset.tooltip=월드 시작 시각이 1년 중 며칠째인지를 나타냅니다.
+
+config.property.server.tickoffset=Tick 단위 오프셋
+config.property.server.tickoffset.tooltip=월드 시작 시각이 하루 중 몇틱(Tick)째인지를 나타냅니다.
+
+config.property.server.latitudeoverworld=오버월드의 위도
+config.property.server.latitudeoverworld.tooltip=도 단위로 나타낸 오버월드의 위도입니다.
+
+config.property.server.longitudeoverworld=오버월드의 경도
+config.property.server.longitudeoverworld.tooltip=도 단위로 나타낸 오버월드의 경도로 동경이 +, 서경이 -입니다.
+
+config.property.server.latitudeender=엔더의 위도
+config.property.server.latitudeender.tooltip=도 단위로 나타낸 엔더의 위도입니다.
+
+config.property.server.longitudeender=엔더의 경도
+config.property.server.longitudeender.tooltip=도 단위로 나타낸 엔더의 경도로 동경이 +, 서경이 -입니다.
+
+config.property.server.moonsize=달의 크기
+config.property.server.moonsize.tooltip=달의 크기를 나타냅니다. (기본값은 1.0입니다)
+
+config.property.server.moonbrightness=달의 밝기
+config.property.server.moonbrightness.tooltip=달의 밝기를 나타냅니다. (기본값은 1.0입니다)
+
+config.property.server.wakemode=기상 모드
+config.property.server.wakemode.expl=가능한 기상 조건 중 가장 빠른[earliest] 혹은 가장 늦은[latest] 것을 선택하십시오.
+
+config.property.server.enablewake=기상 조건 활성화
+config.property.server.enablewake.expl=기상 조건 활성화/비활성화
+
+config.property.server.wakeangle=기상시 태양의 고도
+config.property.server.wakeangle.expl=일어날 때 태양이 위치할 고도를 나타냅니다. 도 단위로 나타내어집니다.
+
+config.property.server.waketime=자정으로부터의 기상 시간
+config.property.server.waketime.expl=알람 형태의 기상 시간으로 자정으로부터의 시간(틱 단위)로 나타냅니다.
+
+
+//Commands
+stellarsky.command.lock.usage=/locksky [잠금=true]
+
+
+//GUIs
+stellarsky.gui.lock=하늘 설정 잠그기 (바로 잠기니 숙고하세요)
+stellarsky.gui.unlock=하늘 설정 잠금 풀기 (바로 풀립니다)
