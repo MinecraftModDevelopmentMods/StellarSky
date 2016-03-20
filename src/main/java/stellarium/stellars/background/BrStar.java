@@ -48,11 +48,11 @@ public class BrStar extends Star {
 	 * time is 'tick' unit
 	 * world is false in Overworld, and true in Ender
 	*/
-	public IValRef<EVector> GetPositionf(){
+	public IValRef<EVector> GetPositionf() {
 		return getManager().transforms.projection.transform(this.EcRPos);
 	}
 	
-	public IValRef<EVector> GetAtmPosf(){
+	public IValRef<EVector> GetAtmPosf() {
 		return ExtinctionRefraction.refraction(GetPositionf(), true);
 	}
 
