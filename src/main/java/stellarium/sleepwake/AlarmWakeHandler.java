@@ -47,7 +47,7 @@ public class AlarmWakeHandler implements IWakeHandler {
     			- DEFAULT_OFFSET;
     	worldTimeOffset = worldTimeOffset % dayLength;
     	
-    	return !world.isDaytime() && worldTimeOffset > 0.5;
+    	return (!world.isDaytime()) && worldTimeOffset > 0.5;
 	}
 
 }

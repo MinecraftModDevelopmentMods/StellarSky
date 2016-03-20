@@ -78,7 +78,12 @@ public class StellarWorldProvider extends WorldProvider {
     
 	@Override
 	public float getSunBrightnessFactor(float par1) {
-		return this.calculateSunHeight(worldObj.getWorldTime(), par1);
+        float f1 = 1.0F - (this.calculateSunHeight(worldObj.getWorldTime(), par1) * 2.0F + 0.5F);
+        f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
+        f1 = 1.0F - f1;
+        f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
+        f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getThunderStrength(par1) * 5.0F) / 16.0D));
+        return f1;
 	}
 
 	@Override

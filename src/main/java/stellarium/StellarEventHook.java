@@ -60,7 +60,7 @@ public class StellarEventHook {
 	
 	@SubscribeEvent
 	public void onSleepInBed(PlayerSleepInBedEvent event) {
-		if(!StellarSky.proxy.wakeManager.isEnabled()) {
+		if(!StellarSky.proxy.wakeManager.isEnabled() || event.entityPlayer.worldObj.isRemote) {
 			return;
 		}
 

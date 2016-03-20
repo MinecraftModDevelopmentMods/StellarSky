@@ -2,6 +2,7 @@ package stellarium;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -113,9 +114,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		        viewMode.setValue(settings.getViewMode().getName());
 		        
 		        
-		        List<String> propNameList = Arrays.asList(mag_Limit.getName(),
+		        List<String> propNameList = new ArrayList(Arrays.asList(mag_Limit.getName(),
 		        		moon_Frac.getName(), turb.getName(), viewMode.getName(),
-		        		minuteLength.getName(), hourToMinute.getName());
+		        		minuteLength.getName(), hourToMinute.getName()));
 		        config.setCategoryPropertyOrder(category, propNameList);
 			}
 
