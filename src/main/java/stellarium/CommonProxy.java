@@ -70,6 +70,12 @@ public class CommonProxy implements IProxy {
 	}
 	
 	@Override
+    public World getDefWorld(boolean isRemote) {
+    	return MinecraftServer.getServer().getEntityWorld();
+    }
+
+	
+	@Override
 	public ClientSettings getClientSettings() {
 		return null;
 	}

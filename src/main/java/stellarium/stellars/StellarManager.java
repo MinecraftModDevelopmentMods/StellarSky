@@ -54,6 +54,9 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 	private long timeOfManager;
 	
 	public static StellarManager loadOrCreateManager(World world) {
+		if(StellarSky.proxy.getDefWorld(world.isRemote) != null)
+			world = StellarSky.proxy.getDefWorld(world.isRemote);
+		
 		WorldSavedData data = world.mapStorage.loadData(StellarManager.class, ID);
 		
 		if(!(data instanceof StellarManager))
@@ -69,8 +72,8 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 		return (StellarManager) data;
 	}
 	
-	public static StellarManager getManager(World world) {
-		return getManager(world.mapStorage);
+	public static StellarManager getManager(boolean isRemote) {
+		return getManager(StellarSky.proxy.getDefWorld(isRemote).mapStorage);
 	}
 
 	public static StellarManager getManager(MapStorage mapStorage) {

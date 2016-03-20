@@ -73,7 +73,7 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 
 		double time=(double)world.getWorldTime()+partialTicks;
 		
-		StellarManager manager = StellarManager.getManager(world);
+		StellarManager manager = StellarManager.getManager(true);
 		
 		if(!manager.isSetupComplete())
 			manager.update(time, true);

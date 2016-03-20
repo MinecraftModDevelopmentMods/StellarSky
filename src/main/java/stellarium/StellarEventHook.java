@@ -71,7 +71,7 @@ public class StellarEventHook {
 	public void onSleepInBed(PlayerSleepInBedEvent event) {
 		
 		World world = event.entityPlayer.worldObj;
-		StellarManager manager = StellarManager.getManager(world);
+		StellarManager manager = StellarManager.getManager(world.isRemote);
 		
 		if(!manager.getSettings().serverEnabled)
 			return;

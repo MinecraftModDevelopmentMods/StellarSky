@@ -24,7 +24,7 @@ public class StellarNetworkManager {
 	
 	@SubscribeEvent
 	public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-		StellarManager manager = StellarManager.getManager(event.player.worldObj);
+		StellarManager manager = StellarManager.getManager(event.player.worldObj.isRemote);
 		NBTTagCompound compound = new NBTTagCompound();
 		manager.writeToNBT(compound);
 		

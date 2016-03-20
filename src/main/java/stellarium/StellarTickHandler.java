@@ -37,7 +37,7 @@ public class StellarTickHandler {
 			World world = StellarSky.proxy.getDefWorld();
 			
 			if(world != null && (world.provider.dimensionId == 0 || world.provider.dimensionId == 1)) {
-				StellarManager manager = StellarManager.getManager(world);
+				StellarManager manager = StellarManager.getManager(true);
 				manager.update(world.getWorldTime(),
 							world.provider.isSurfaceWorld());
 			}
@@ -48,7 +48,7 @@ public class StellarTickHandler {
 	public void tickStart(TickEvent.WorldTickEvent e) {
 		if(e.phase == Phase.START){
 			if(e.world != null) {
-				StellarManager manager = StellarManager.getManager(e.world);
+				StellarManager manager = StellarManager.getManager(false);
 				if(!manager.getSettings().serverEnabled)
 					return;
 				

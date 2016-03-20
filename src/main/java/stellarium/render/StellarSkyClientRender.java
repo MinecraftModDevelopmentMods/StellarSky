@@ -29,7 +29,7 @@ public class StellarSkyClientRender {
 				return;
 			
 			FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-			StellarManager manager = StellarManager.getManager(Minecraft.getMinecraft().theWorld);
+			StellarManager manager = StellarManager.getManager(true);
 
 			double currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
 			double time = manager.getSkyTime(currentTick);
@@ -80,7 +80,7 @@ public class StellarSkyClientRender {
 		{
 			GuiButton guibutton = new GuiButton(30, event.gui.width / 2 - 100, event.gui.height / 2 - 10, 200, 20, I18n.format("stellarsky.gui.lock"));
 			event.buttonList.add(guibutton);
-			guibutton.enabled = !StellarManager.getManager(StellarSky.proxy.getDefWorld()).isLocked();
+			guibutton.enabled = !StellarManager.getManager(true).isLocked();
 		}
 	}
 	

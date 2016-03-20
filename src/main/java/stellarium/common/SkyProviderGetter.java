@@ -9,7 +9,7 @@ public class SkyProviderGetter implements ISkyProviderGetter {
 
 	@Override
 	public ISkyProvider getSkyProvider() {
-		return StellarManager.getManager(StellarSky.proxy.getDefWorld());
+		return StellarManager.getManager(StellarSky.proxy.getDefWorld().isRemote);
 	}
 
 }

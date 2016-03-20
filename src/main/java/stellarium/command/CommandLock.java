@@ -24,7 +24,7 @@ public class CommandLock extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		StellarManager manager = StellarManager.getManager(sender.getEntityWorld());
+		StellarManager manager = StellarManager.getManager(sender.getEntityWorld().isRemote);
 		manager.lock();
 	}
 

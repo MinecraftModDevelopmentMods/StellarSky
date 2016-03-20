@@ -11,6 +11,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -72,4 +73,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public World getDefWorld() {
 		return Minecraft.getMinecraft().theWorld;
 	}
+	
+	@Override
+    public World getDefWorld(boolean isRemote) {
+    	return isRemote? this.getDefWorld() : super.getDefWorld();
+    }
 }
