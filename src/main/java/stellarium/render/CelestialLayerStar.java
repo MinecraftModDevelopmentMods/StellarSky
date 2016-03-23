@@ -35,10 +35,6 @@ public class CelestialLayerStar implements ICelestialLayer {
 
 	@Override
 	public void render(Minecraft mc, StellarManager manager, float bglight, float weathereff, double time) {
-		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-
 		mc.renderEngine.bindTexture(locationStarPng);
 		Tessellator tessellator1 = Tessellator.instance;
 
@@ -50,15 +46,14 @@ public class CelestialLayerStar implements ICelestialLayer {
 				continue;
 
 			BrStar star=BrStar.stars[i];
-
+			
 			pos.set(VecMath.normalize(star.appPos));
 			float Mag=star.App_Mag;
 			float B_V=star.App_B_V;
 			
-
 			if(Mag > settings.mag_Limit)
 				continue;
-
+			
 			if(mc.theWorld.provider.dimensionId == 0 && VecMath.getZ(pos)<0) continue;
 
 			float size=0.5f;

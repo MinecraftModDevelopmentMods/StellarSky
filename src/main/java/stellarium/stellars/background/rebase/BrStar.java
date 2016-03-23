@@ -4,8 +4,8 @@ import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.StellarSky;
 import stellarium.stellars.Optics;
-import stellarium.stellars.base.IPerDimensionCache;
 import stellarium.stellars.base.StellarObject;
+import stellarium.stellars.sketch.IPerDimensionCache;
 import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.stellars.view.IStellarViewpoint;
 import stellarium.util.math.Rotate;
@@ -13,7 +13,7 @@ import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
 
 public class BrStar extends StellarObject {
-		
+	
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
 	public static final Rotate EqtoEc = new Rotate('X').setRAngle(-e); 

@@ -8,9 +8,9 @@ import sciapi.api.value.euclidian.EVectorSet;
 //Right Ascension(RA) and Declination(Dec)
 //-Azimuth and Height
 public class SpCoord {
-	//RA or -Azimuth
+	/**RA or -Azimuth*/
 	public double x;
-	//Dec or Height
+	/**Dec or Height*/
 	public double y;
 	
 	public SpCoord(double a, double b){
@@ -22,8 +22,8 @@ public class SpCoord {
 	}
 
 	/**Gives Vector with this SpCoord*/
-	public IValRef<EVector> getVec(){
-		EVector ret = EVectorSet.ins(3).getNew();
+	public EVector getVec(){
+		EVector ret = new EVector(3);
 		
 		ret.getVal().getCoord(0).set(Spmath.cosd(y)*Spmath.cosd(x));
 		ret.getVal().getCoord(1).set(Spmath.cosd(y)*Spmath.sind(x));

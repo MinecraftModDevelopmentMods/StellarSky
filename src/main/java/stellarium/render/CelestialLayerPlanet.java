@@ -44,8 +44,6 @@ public class CelestialLayerPlanet implements ICelestialLayer {
 	
 	public void drawStellarObj(float bglight, float weathereff, EVector pos, double Mag) {
 
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-
 		if(Mag > settings.mag_Limit) return;
 		if(VecMath.getZ(pos)<0) return;
 

@@ -51,7 +51,8 @@ public class CelestialLayerMilkyway implements ICelestialLayer {
 		
 		float Mag = 3.5f;
 		float alpha=Optics.getAlphaForGalaxy(Mag, bglight) - (((1-weathereff)/1)*20f);
-		
+		tessellator1.setColorRGBA_F(1.0f, 1.0f, 1.0f, this.brightness * alpha);
+
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<latn; latc++){
 				int longcd=(longc+1)%longn;
@@ -60,7 +61,6 @@ public class CelestialLayerMilkyway implements ICelestialLayer {
 				double longdd=1.0-(double)(longc+1)/(double)longn;
 				double latdd=1.0-(double)(latc+1)/(double)latn;
 
-				tessellator1.setColorRGBA_F(1.0f, 1.0f, 1.0f, this.brightness * alpha);
 				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), longd, latd);
 				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1]), longd, latdd);
 				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1]), longdd, latdd);
