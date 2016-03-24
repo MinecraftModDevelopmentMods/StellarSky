@@ -2,23 +2,19 @@ package stellarium;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.List;
 
 import com.google.common.base.Throwables;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import stellarium.render.SkyRenderer;
+import stellarium.stellars.StellarManager;
 import stellarium.world.StellarWorldProvider;
 
 public class StellarEventHook {
@@ -39,23 +35,32 @@ public class StellarEventHook {
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e)
 	{
-		StellarSky.getManager().initializePlanet();
+		if(e.world.provider.getDimensionId() == 0 || e.world.provider.getDimensionId() == 1) {
+			StellarManager manager = StellarManager.loadOrCreateManager(e.world);
+			manager.setRemote(e.world.isRemote);
+			setupManager(e.world, manager);
+		}
 		
-		if(StellarSky.getManager().serverEnabled && e.world.provider.getDimensionId() == 0) {
+		if(!e.world.isRemote)
+			return;
+		
+		if(e.world.provider.getDimensionId() == 0 || e.world.provider.getDimensionId() == 1)
+			e.world.provider.setSkyRenderer(new SkyRenderer());
+	}
+	
+	public static void setupManager(World world, StellarManager manager) {
+		manager.initialize();
+		
+		if(manager.getSettings().serverEnabled) {
 			try {
-				providerField.set(e.world, new StellarWorldProvider(e.world, e.world.provider));
+				providerField.set(world, new StellarWorldProvider(world, world.provider, manager));
 			} catch (Exception exc) {
 				Throwables.propagate(exc);
 			}
 		}
-
-		if(!e.world.isRemote)
-			return;
-				
-		if(e.world.provider.getDimensionId() == 0 || e.world.provider.getDimensionId() == -1)
-		{
-			e.world.provider.setSkyRenderer(new DrawSky());
-		}
+		
+		if(world.isRemote && (world.provider.getDimensionId() == 0 || world.provider.getDimensionId() == 1))
+			world.provider.setSkyRenderer(new SkyRenderer());
 	}
 	
 	@SubscribeEvent
@@ -66,7 +71,8 @@ public class StellarEventHook {
 
 		if(event.result == null || event.result == EnumStatus.OK || event.result == EnumStatus.NOT_POSSIBLE_NOW) {
 			World worldObj = event.entityPlayer.worldObj;
-			if (!StellarSky.proxy.wakeManager.canSkipTime(worldObj, worldObj.getWorldTime()))
+			StellarManager manager = StellarManager.getManager(true);
+			if (!StellarSky.proxy.wakeManager.canSkipTime(worldObj, manager, worldObj.getWorldTime()))
 				event.result = EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW;
 		}
 	}

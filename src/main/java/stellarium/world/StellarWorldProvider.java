@@ -20,8 +20,8 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.EVectorSet;
 import stellarium.StellarSky;
 import stellarium.stellars.ExtinctionRefraction;
+import stellarium.stellars.StellarManager;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class StellarWorldProvider extends WorldProvider {
@@ -29,29 +29,32 @@ public class StellarWorldProvider extends WorldProvider {
 	private WorldProvider parProvider;
 	private final float[] colorsSunriseSunset = new float[4];
 	
+	private StellarManager manager;
+	
 	private long cloudColour = 16777215L;
 	
-	public StellarWorldProvider(World world, WorldProvider provider) {
+	public StellarWorldProvider(World world, WorldProvider provider, StellarManager manager) {
 		this.parProvider = provider;
 		this.worldObj = world;
+		this.manager = manager;
 	}
 
 	@Override
     public float calculateCelestialAngle(long par1, float par3) {
-		double dayLength = StellarSky.getManager().day;
-		double longitude = StellarSky.getManager().longitudeOverworld / 360.0;
-		double skyTime = StellarSky.getManager().getSkyTime(par1 + par3);
+		double dayLength = manager.getDayLength();
+		double longitude = manager.getSettings().longitudeOverworld / 360.0;
+		double skyTime = manager.getSkyTime(par1 + par3);
 		double angle = skyTime / dayLength + longitude + 0.5;
 		return (float) (angle - Math.floor(angle));
     }
 	
 	public float calculateSunHeight(long par1, float par3) {
-    	if(!StellarSky.getManager().isSetupComplete())
-    		StellarSky.getManager().update(par1+par3, isSurfaceWorld());
+    	if(!manager.isSetupComplete())
+    		manager.update(par1+par3, isSurfaceWorld());
     	
     	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
     	
-    	sun.set(StellarSky.getManager().Sun.getPosition());
+    	sun.set(manager.Sun.getPosition());
     	sun.set(ExtinctionRefraction.refraction(sun, true));
     	sun.set(VecMath.normalize(sun));
     	
@@ -59,12 +62,12 @@ public class StellarWorldProvider extends WorldProvider {
 	}
 	
     public float calculateRelativeHeightAngle(long par1, float par3) {
-    	if(!StellarSky.getManager().isSetupComplete())
-    		StellarSky.getManager().update(par1+par3, isSurfaceWorld());
+    	if(!manager.isSetupComplete())
+    		manager.update(par1+par3, isSurfaceWorld());
     	
     	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
     	
-    	sun.set(StellarSky.getManager().Sun.getPosition());
+    	sun.set(manager.Sun.getPosition());
     	sun.set(ExtinctionRefraction.refraction(sun, true));
     	sun.set(VecMath.normalize(sun));
     	
@@ -88,16 +91,16 @@ public class StellarWorldProvider extends WorldProvider {
 
 	@Override
     public int getMoonPhase(long par1) {
-    	if(!StellarSky.getManager().isSetupComplete())
-    		StellarSky.getManager().update(par1, isSurfaceWorld());
-    	return (int)(StellarSky.getManager().Moon.phase_Time()*8);
+    	if(!manager.isSetupComplete())
+    		manager.update(par1, isSurfaceWorld());
+    	return (int)(manager.Moon.phase_Time()*8);
     }
 	
 	@Override
 	public float getCurrentMoonPhaseFactor() {
-    	if(!StellarSky.getManager().isSetupComplete())
+    	if(!manager.isSetupComplete())
     		return parProvider.getCurrentMoonPhaseFactor();
-		return (float) StellarSky.getManager().Moon.getPhase();
+		return (float) manager.Moon.getPhase();
 	}
 
     /**

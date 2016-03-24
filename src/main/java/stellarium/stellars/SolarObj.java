@@ -7,7 +7,6 @@ import sciapi.api.value.numerics.DDouble;
 import sciapi.api.value.util.BOp;
 import stellarium.StellarSky;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public abstract class SolarObj extends StellarObj {
@@ -30,18 +29,14 @@ public abstract class SolarObj extends StellarObj {
 
 	//Get Direction EVectortor of Object
 	public synchronized IValRef<EVector> getPosition(){
-		IValRef pEVector = Transforms.ZTEctoNEc.transform((IEVector)EcRPosE);
-		pEVector=Transforms.EctoEq.transform(pEVector);
-		pEVector=Transforms.NEqtoREq.transform(pEVector);
-		pEVector=Transforms.REqtoHor.transform(pEVector);
-		return pEVector;
+		return getManager().transforms.projection.transform(EcRPosE);
 	}
 	
 	//Update SolarObj
 	@Override
 	public void update(){
-		EcRPos.set(getEcRPos(Transforms.yr));
-		EcRPosE.set(VecMath.sub(this.EcRPos, StellarSky.getManager().Earth.EcRPos));
+		EcRPos.set(getEcRPos(getManager().transforms.yr));
+		EcRPosE.set(VecMath.sub(this.EcRPos, getManager().Earth.EcRPos));
 		super.update();
 		
 		this.updateMagnitude();
@@ -51,7 +46,7 @@ public abstract class SolarObj extends StellarObj {
 	public void updateMagnitude(){
 		double dist=Spmath.getD(VecMath.size(EcRPosE));
 		double distS=Spmath.getD(VecMath.size(EcRPos));
-		double distE=Spmath.getD(VecMath.size(StellarSky.getManager().Earth.EcRPos));
+		double distE=Spmath.getD(VecMath.size(getManager().Earth.EcRPos));
 		double LvsSun=this.radius.asDouble()*this.radius.asDouble()*this.getPhase()*distE*distE*albedo*1.4/(dist*dist*distS*distS);
 		this.mag=-26.74-2.5*Math.log10(LvsSun);
 	}
@@ -59,10 +54,5 @@ public abstract class SolarObj extends StellarObj {
 	//Phase of the Object(Update Needed)
 	public double getPhase(){
 		return (1+Spmath.getD((BOp.div(VecMath.dot(EcRPos, EcRPosE),BOp.mult(VecMath.size(EcRPos),VecMath.size(EcRPosE))))))/2;
-	}
-
-	@Override
-	public void initialize(){
-		
 	}
 }

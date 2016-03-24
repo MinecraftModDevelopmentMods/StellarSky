@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.config.IConfigHandler;
+import stellarium.stellars.StellarManager;
 
 public class SleepWakeManager implements IConfigHandler {
 	
@@ -59,32 +60,32 @@ public class SleepWakeManager implements IConfigHandler {
 		}
 	}
 	
-	public long getWakeTime(World world, long sleepTime) {
+	public long getWakeTime(World world, StellarManager manager, long sleepTime) {
 		long wakeTime;
 		if(this.mode)
 		{
 			wakeTime=Integer.MAX_VALUE;
 			for(WakeHandler handler : wakeHandlers) {
 				if(handler.enabled)
-					wakeTime = Math.min(wakeTime, handler.handler.getWakeTime(world, sleepTime));
+					wakeTime = Math.min(wakeTime, handler.handler.getWakeTime(world, manager, sleepTime));
 			}
 		} else {
 			wakeTime=Integer.MIN_VALUE;
 			for(WakeHandler handler : wakeHandlers) {
 				if(handler.enabled)
-					wakeTime = Math.max(wakeTime, handler.handler.getWakeTime(world, sleepTime));
+					wakeTime = Math.max(wakeTime, handler.handler.getWakeTime(world, manager, sleepTime));
 			}
 		}
 		return wakeTime;
 	}
 	
-	public boolean canSkipTime(World world, long sleepTime) {
+	public boolean canSkipTime(World world, StellarManager manager, long sleepTime) {
 		boolean canSkip = true;
 		boolean wakeHandlerExist = false;
 		for(WakeHandler handler : wakeHandlers) {
 			if(handler.enabled) {
 				wakeHandlerExist = true;
-				if(!handler.handler.canSleep(world, sleepTime))
+				if(!handler.handler.canSleep(world, manager, sleepTime))
 					canSkip = false;
 			}
 		}

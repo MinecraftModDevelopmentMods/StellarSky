@@ -34,7 +34,8 @@ public class Satellite extends SolarObj {
 	
 	//Initialize
 	@Override
-	public void initialize() {
+	public void initialize(StellarManager manager) {
+		super.initialize(manager);
 		mean_mot=parPlanet.mass;
 	}
 }
