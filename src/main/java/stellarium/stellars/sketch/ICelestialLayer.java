@@ -9,9 +9,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public interface ICelestialLayer {
 	
 	public boolean existOnServer();
+	
 	public void initialize(boolean isRemote) throws IOException;
 	
+	public void updateLayer(double year);
+	
 	public List<? extends CelestialObject> getObjectList();
+	
 	public int getLayerRendererIndex();
 	
 	@SideOnly(Side.CLIENT)

@@ -6,7 +6,7 @@ import stellarium.StellarSky;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 
-public class Sun extends StellarObj{
+public class OldSun extends StellarObj{
 
 	public double radius;
 	public double mass;
@@ -20,7 +20,7 @@ public class Sun extends StellarObj{
 	//Get Direction Vector of Sun from Earth
 	@Override
 	public synchronized IValRef<EVector> getPosition() {
-		IValRef pvec=(IValRef)VecMath.mult(-1.0, getManager().Earth.EcRPos);
+		IValRef pvec=(IValRef)VecMath.mult(-1.0, getManager().earth.EcRPos);
 		
 		return getManager().transforms.projection.transform(pvec);
 	}

@@ -1,5 +1,6 @@
 package stellarium.stellars.star;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -30,4 +31,12 @@ public abstract class LayerBgStar implements ICelestialLayer {
 			BgStar.setRenderId(registry.registerObjectRenderer(new StarRenderer()));
 		}
 	}
+
+	@Override
+	public boolean existOnServer() {
+		return false;
+	}
+
+	@Override
+	public void updateLayer(double year) { }
 }

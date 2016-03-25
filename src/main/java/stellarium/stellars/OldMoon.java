@@ -13,7 +13,7 @@ import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 
-public class Moon extends Satellite {
+public class OldMoon extends Satellite {
 		
 	//Additional Orbital Elements for Moon
 	double a0, e0, I0, w0, Omega0, M0_0;

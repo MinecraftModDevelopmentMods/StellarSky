@@ -5,7 +5,7 @@ import sciapi.api.value.euclidian.EVector;
 import stellarium.StellarSky;
 import stellarium.stellars.Optics;
 import stellarium.stellars.base.StellarObject;
-import stellarium.stellars.sketch.IPerDimensionCache;
+import stellarium.stellars.system.IPerDimensionCache;
 import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.stellars.view.IStellarViewpoint;
 import stellarium.util.math.Rotate;

@@ -28,19 +28,19 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 	
 	public final double AU=1.496e+8;
 
-	public Sun Sun = new Sun();
-	public Earth Earth = new Earth();
-	public Moon Moon = new Moon();
+	public OldSun Sun = new OldSun();
+	public OldEarth Earth = new OldEarth();
+	public OldMoon Moon = new OldMoon();
 	
-	private Planet Mercury = new Planet();
-	private Planet Venus = new Planet();
-	private Planet Mars = new Planet();
-	private Planet Jupiter = new Planet();
-	private Planet Saturn = new Planet();
-	private Planet Uranus = new Planet();
-	private Planet Neptune = new Planet();
+	private OldPlanet Mercury = new OldPlanet();
+	private OldPlanet Venus = new OldPlanet();
+	private OldPlanet Mars = new OldPlanet();
+	private OldPlanet Jupiter = new OldPlanet();
+	private OldPlanet Saturn = new OldPlanet();
+	private OldPlanet Uranus = new OldPlanet();
+	private OldPlanet Neptune = new OldPlanet();
 	
-	public Planet[] planets = {Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune};
+	public OldPlanet[] planets = {Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune};
 	
 	private CommonSettings settings;
 	private boolean locked = false;
@@ -141,7 +141,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 	}
 	
 	
-	public Planet[] getPlanets() {
+	public OldPlanet[] getPlanets() {
 		return this.planets;
 	}
 	

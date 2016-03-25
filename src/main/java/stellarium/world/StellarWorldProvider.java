@@ -28,6 +28,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.DimensionManager;
 
@@ -35,6 +36,11 @@ public class StellarWorldProvider extends WorldProvider {
 	
 	private WorldProvider parProvider;
 	private StellarManager manager;
+	
+    /** Array for sunrise/sunset colors (RGBA) */
+    private float[] colorsSunriseSunset = new float[4];
+    
+    private long cloudColour = 16777215L;
 	
 	public StellarWorldProvider(WorldProvider provider, StellarManager manager) {
 		this.parProvider = provider;
@@ -48,25 +54,77 @@ public class StellarWorldProvider extends WorldProvider {
 		this.dimensionId = provider.dimensionId;
 		this.manager = manager;
 	}
-
+	
 	@Override
     public float calculateCelestialAngle(long par1, float par3) {
+		double dayLength = manager.getDayLength();
+		double longitude = manager.getSettings().longitudeOverworld / 360.0;
+		double skyTime = manager.getSkyTime(par1 + par3);
+		double angle = skyTime / dayLength + longitude + 0.5;
+		return (float) (angle - Math.floor(angle));
+    }
+	
+	public float calculateSunHeight(long par1, float par3) {
     	if(!manager.isSetupComplete())
     		manager.update(par1+par3, isSurfaceWorld());
     	
-    	IValRef sun = VecMath.normalize(manager.Sun.appPos);
+    	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
     	
-    	double h=Math.asin(VecMath.getZ(sun));
+    	sun.set(manager.Sun.getPosition());
+    	sun.set(ExtinctionRefraction.refraction(sun, true));
+    	sun.set(VecMath.normalize(sun));
+    	
+    	return (float)VecMath.getZ(sun);
+	}
+	
+    public float calculateRelativeHeightAngle(long par1, float par3) {
+    	if(!manager.isSetupComplete())
+    		manager.update(par1+par3, isSurfaceWorld());
+    	
+    	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
+    	
+    	sun.set(manager.Sun.getPosition());
+    	sun.set(ExtinctionRefraction.refraction(sun, true));
+    	sun.set(VecMath.normalize(sun));
+    	
+    	double h = Math.asin(VecMath.getZ(sun));
     	
     	if(VecMath.getCoord(sun, 0).asDouble()<0) h=Math.PI-h;
     	if(VecMath.getCoord(sun, 0).asDouble()>0 && h<0) h=h+2*Math.PI;
     	
     	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,1.0));
     }
+    
+    @Override
+    @SideOnly(Side.CLIENT)
+    public float getSunBrightness(float par1)
+    {
+        float f2 = 1.0F - (this.calculateSunHeight(worldObj.getWorldTime(), par1) * 2.0F + 0.2F);
+
+        if (f2 < 0.0F)
+        {
+            f2 = 0.0F;
+        }
+
+        if (f2 > 1.0F)
+        {
+            f2 = 1.0F;
+        }
+
+        f2 = 1.0F - f2;
+        f2 = (float)((double)f2 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
+        f2 = (float)((double)f2 * (1.0D - (double)(worldObj.getWeightedThunderStrength(par1) * 5.0F) / 16.0D));
+        return f2 * 0.8F + 0.2F;
+    }
 	
 	@Override
 	public float getSunBrightnessFactor(float par1) {
-		return parProvider.getSunBrightnessFactor(par1);
+        float f1 = 1.0F - (this.calculateSunHeight(worldObj.getWorldTime(), par1) * 2.0F + 0.5F);
+        f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
+        f1 = 1.0F - f1;
+        f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
+        f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getWeightedThunderStrength(par1) * 5.0F) / 16.0D));
+        return f1;
 	}
 
 	@Override
@@ -117,7 +175,25 @@ public class StellarWorldProvider extends WorldProvider {
     @Override
     public float[] calcSunriseSunsetColors(float p_76560_1_, float p_76560_2_)
     {
-        return parProvider.calcSunriseSunsetColors(p_76560_1_, p_76560_2_);
+        float f2 = 0.4F;
+        float f3 = this.calculateSunHeight(worldObj.getWorldTime(), p_76560_2_) - 0.0F;
+        float f4 = -0.0F;
+
+        if (f3 >= f4 - f2 && f3 <= f4 + f2)
+        {
+            float f5 = (f3 - f4) / f2 * 0.5F + 0.5F;
+            float f6 = 1.0F - (1.0F - MathHelper.sin(f5 * (float)Math.PI)) * 0.99F;
+            f6 *= f6;
+            this.colorsSunriseSunset[0] = f5 * 0.3F + 0.7F;
+            this.colorsSunriseSunset[1] = f5 * f5 * 0.7F + 0.2F;
+            this.colorsSunriseSunset[2] = f5 * f5 * 0.0F + 0.2F;
+            this.colorsSunriseSunset[3] = f6;
+            return this.colorsSunriseSunset;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**
@@ -127,7 +203,25 @@ public class StellarWorldProvider extends WorldProvider {
     @Override
     public Vec3 getFogColor(float p_76562_1_, float p_76562_2_)
     {
-        return parProvider.getFogColor(p_76562_1_, p_76562_2_);
+        float f2 = this.calculateSunHeight(worldObj.getWorldTime(), p_76562_2_) * 2.0F + 0.5F;
+
+        if (f2 < 0.0F)
+        {
+            f2 = 0.0F;
+        }
+
+        if (f2 > 1.0F)
+        {
+            f2 = 1.0F;
+        }
+
+        float f3 = 0.7529412F;
+        float f4 = 0.84705883F;
+        float f5 = 1.0F;
+        f3 *= f2 * 0.94F + 0.06F;
+        f4 *= f2 * 0.94F + 0.06F;
+        f5 *= f2 * 0.91F + 0.09F;
+        return Vec3.createVectorHelper((double)f3, (double)f4, (double)f5);
     }
 
     /**
@@ -320,21 +414,136 @@ public class StellarWorldProvider extends WorldProvider {
     @SideOnly(Side.CLIENT)
     public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
     {
-        return parProvider.getSkyColor(cameraEntity, partialTicks);
+        float f2 = this.calculateSunHeight(worldObj.getWorldTime(), partialTicks) * 2.0F + 0.5F;
+
+        if (f2 < 0.0F)
+        {
+            f2 = 0.0F;
+        }
+
+        if (f2 > 1.0F)
+        {
+            f2 = 1.0F;
+        }
+
+        int i = MathHelper.floor_double(cameraEntity.posX);
+        int j = MathHelper.floor_double(cameraEntity.posY);
+        int k = MathHelper.floor_double(cameraEntity.posZ);
+        int l = ForgeHooksClient.getSkyBlendColour(this.worldObj, i, j, k);
+        float f4 = (float)(l >> 16 & 255) / 255.0F;
+        float f5 = (float)(l >> 8 & 255) / 255.0F;
+        float f6 = (float)(l & 255) / 255.0F;
+        f4 *= f2;
+        f5 *= f2;
+        f6 *= f2;
+        float f7 = worldObj.getRainStrength(partialTicks);
+        float f8;
+        float f9;
+
+        if (f7 > 0.0F)
+        {
+            f8 = (f4 * 0.3F + f5 * 0.59F + f6 * 0.11F) * 0.6F;
+            f9 = 1.0F - f7 * 0.75F;
+            f4 = f4 * f9 + f8 * (1.0F - f9);
+            f5 = f5 * f9 + f8 * (1.0F - f9);
+            f6 = f6 * f9 + f8 * (1.0F - f9);
+        }
+
+        f8 = worldObj.getWeightedThunderStrength(partialTicks);
+
+        if (f8 > 0.0F)
+        {
+            f9 = (f4 * 0.3F + f5 * 0.59F + f6 * 0.11F) * 0.2F;
+            float f10 = 1.0F - f8 * 0.75F;
+            f4 = f4 * f10 + f9 * (1.0F - f10);
+            f5 = f5 * f10 + f9 * (1.0F - f10);
+            f6 = f6 * f10 + f9 * (1.0F - f10);
+        }
+
+        if (worldObj.lastLightningBolt > 0)
+        {
+            f9 = (float)worldObj.lastLightningBolt - partialTicks;
+
+            if (f9 > 1.0F)
+            {
+                f9 = 1.0F;
+            }
+
+            f9 *= 0.45F;
+            f4 = f4 * (1.0F - f9) + 0.8F * f9;
+            f5 = f5 * (1.0F - f9) + 0.8F * f9;
+            f6 = f6 * (1.0F - f9) + 1.0F * f9;
+        }
+
+        return Vec3.createVectorHelper((double)f4, (double)f5, (double)f6);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public Vec3 drawClouds(float partialTicks)
     {
-        return parProvider.drawClouds(partialTicks);
+        float f2 = this.calculateSunHeight(worldObj.getWorldTime(), partialTicks) * 2.0F + 0.5F;
+
+        if (f2 < 0.0F)
+        {
+            f2 = 0.0F;
+        }
+
+        if (f2 > 1.0F)
+        {
+            f2 = 1.0F;
+        }
+
+        float f3 = (float)(this.cloudColour >> 16 & 255L) / 255.0F;
+        float f4 = (float)(this.cloudColour >> 8 & 255L) / 255.0F;
+        float f5 = (float)(this.cloudColour & 255L) / 255.0F;
+        float f6 = worldObj.getRainStrength(partialTicks);
+        float f7;
+        float f8;
+
+        if (f6 > 0.0F)
+        {
+            f7 = (f3 * 0.3F + f4 * 0.59F + f5 * 0.11F) * 0.6F;
+            f8 = 1.0F - f6 * 0.95F;
+            f3 = f3 * f8 + f7 * (1.0F - f8);
+            f4 = f4 * f8 + f7 * (1.0F - f8);
+            f5 = f5 * f8 + f7 * (1.0F - f8);
+        }
+
+        f3 *= f2 * 0.9F + 0.1F;
+        f4 *= f2 * 0.9F + 0.1F;
+        f5 *= f2 * 0.85F + 0.15F;
+        f7 = worldObj.getWeightedThunderStrength(partialTicks);
+
+        if (f7 > 0.0F)
+        {
+            f8 = (f3 * 0.3F + f4 * 0.59F + f5 * 0.11F) * 0.2F;
+            float f9 = 1.0F - f7 * 0.95F;
+            f3 = f3 * f9 + f8 * (1.0F - f9);
+            f4 = f4 * f9 + f8 * (1.0F - f9);
+            f5 = f5 * f9 + f8 * (1.0F - f9);
+        }
+
+        return Vec3.createVectorHelper((double)f3, (double)f4, (double)f5);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public float getStarBrightness(float par1)
     {
-        return parProvider.getStarBrightness(par1);
+        float f2 = 1.0F - (this.calculateSunHeight(worldObj.getWorldTime(), par1) * 2.0F + 0.25F);
+
+        if (f2 < 0.0F)
+        {
+            f2 = 0.0F;
+        }
+
+        if (f2 > 1.0F)
+        {
+            f2 = 1.0F;
+        }
+
+        return f2 * f2 * 0.5F;
     }
 
     @Override

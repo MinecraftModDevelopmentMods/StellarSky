@@ -11,7 +11,6 @@ public abstract class CelestialObject {
 	
 	/** Client-only cache. */
 	private IRenderCache cache;
-	private HashMap<Integer, IPerDimensionCache> map = Maps.newHashMap();
 	
 	public CelestialObject(boolean isRemote) {
 		if(isRemote)
@@ -21,11 +20,7 @@ public abstract class CelestialObject {
 	public IRenderCache getRenderCache() {
 		return this.cache;
 	}
-	
-	public IPerDimensionCache getDimensionCache(int dimId) {
-		return map.get(dimId);
-	}
-	
+		
 	public abstract IRenderCache generateCache();
 	public abstract int getRenderId();
 

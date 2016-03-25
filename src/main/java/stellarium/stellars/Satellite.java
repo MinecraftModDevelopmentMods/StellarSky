@@ -8,7 +8,7 @@ import stellarium.util.math.VecMath;
 
 public class Satellite extends SolarObj {
 	
-	Planet parPlanet;
+	OldPlanet parPlanet;
 	
 	//Orbital Elements
 	double a, e, I, w, Omega, M0;

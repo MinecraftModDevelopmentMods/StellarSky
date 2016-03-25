@@ -1,4 +1,4 @@
-package stellarium.stellars.sketch;
+package stellarium.stellars.system;
 
 import stellarium.stellars.view.IStellarViewpoint;
 

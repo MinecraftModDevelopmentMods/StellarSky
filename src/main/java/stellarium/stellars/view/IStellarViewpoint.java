@@ -10,11 +10,13 @@ public interface IStellarViewpoint {
 	
 	public void update(World world);
 	
-	public EProjection getProjection(float partialTicks);
+	public EProjection getProjection();
 		
 	public void applyAtmRefraction(SpCoord coord);
 	
 	public void disapplyAtmRefraction(SpCoord coord);
 	
-	public double getAirmass(IValRef<EVector> vector);
+	public double getAirmass(IValRef<EVector> vector, boolean isRefractionApplied);
+	
+	public boolean hideObjectsUnderHorizon();
 }

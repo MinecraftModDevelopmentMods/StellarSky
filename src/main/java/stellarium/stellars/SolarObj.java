@@ -38,7 +38,7 @@ public abstract class SolarObj extends StellarObj {
 		return VecMath.normalize(EcRPosE);
 	}
 
-	//Get Direction EVectortor of Object
+	//Get Direction EVector of Object
 	public synchronized IValRef<EVector> getPosition(){
 		return getManager().transforms.projection.transform(EcRPosE);
 	}

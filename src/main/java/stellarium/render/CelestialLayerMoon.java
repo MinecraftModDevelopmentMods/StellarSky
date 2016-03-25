@@ -44,7 +44,7 @@ public class CelestialLayerMoon implements ICelestialLayer {
 	@Override
 	public void render(Minecraft mc, StellarManager manager, float bglight, float weathereff, double time) {
 		
-		posm.set(ExtinctionRefraction.refraction(manager.Moon.getPosition(), true));
+		posm.set(manager.Moon.appPos);
 		double sizem=manager.Moon.radius.asDouble()/Spmath.getD(VecMath.size(posm));
 
 		double difactor = 0.8 / 180.0 * Math.PI / sizem;

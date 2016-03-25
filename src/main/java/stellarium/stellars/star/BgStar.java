@@ -7,8 +7,8 @@ import stellarium.stellars.sketch.IRenderCache;
 public class BgStar extends CelestialObject {
 
 	private static int renderIndex = -1;
-	private double mag, B_V;
-	private EVector pos;
+	protected double mag, B_V;
+	protected EVector pos;
 	
 	public BgStar(boolean isRemote, double mag, double B_V, EVector pos) {
 		super(isRemote);

@@ -12,9 +12,9 @@ import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 
-public class Planet extends SolarObj{
+public class OldPlanet extends SolarObj{
 	
-	Planet(){
+	OldPlanet(){
 		b=c=s=f=0.0;
 	}
 	
