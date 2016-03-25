@@ -17,11 +17,17 @@ config.category.client.tooltip=Configurations for client modifications. Most of 
 config.property.client.maglimit=Limit Magnitude
 config.property.client.maglimit.tooltip=Limit of magnitude can be seen on naked eye. If you want to increase FPS, lower the Mag_Limit. (Realistic = 6.5, Default = 4.0) The lower you set it, the fewer stars you will see, but the better FPS you will get.
 
+config.property.client.milkywaybrightness=Brightness of Milky way
+config.property.client.milkywaybrightness.tooltip=Brightness of milky way. For real world it should be 1.0 or lower, but default is set to 1.5 for visual effect.
+
 config.property.client.turbulance=Twinkling(Turbulance)
 config.property.client.turbulance.tooltip=Degree of the twinkling effect of star. It determines the turbulance of atmosphere, which actually cause the twinkling effect. The greater the value, the more the stars will twinkle.
 
 config.property.client.moonfrac=Number of Moon fragment
 config.property.client.moonfrac.tooltip=Moon is drawn with fragments. Less fragments will increase FPS, but the moon become more defective.
+
+config.property.client.milkywayfrac=Number of Milky way fragment
+config.property.client.milkywayfrac.tooltip=Milky way is drawn with fragments. Less fragments will increase FPS, but the milky way become more defective.
 
 config.property.client.minutelength=Length of Minute
 config.property.client.minutelength.tooltip=Number of ticks in a minute. (The minute & hour is displayed on HUD as HH:MM format)
@@ -87,3 +93,13 @@ config.property.server.wakeangle.expl=Solar azimuth(height) angle to wake up. (i
 
 config.property.server.waketime=Wake Time from midnight
 config.property.server.waketime.expl=Wake-up time from midnight. (in tick)
+
+
+//Commands
+stellarsky.command.lock.usage=/locksky
+
+
+//GUIs
+stellarsky.gui.lock=Lock Sky Settings
+stellarsky.gui.lock.expl1=Lock Sky Settings
+stellarsky.gui.lock.expl2=Are you sure you want to lock sky settings of the world? This will fix the server side sky settings, which means it won't be affected by configuration, and you cannot change it in any way.

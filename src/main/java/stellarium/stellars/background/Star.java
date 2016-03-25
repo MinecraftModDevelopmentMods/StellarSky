@@ -5,7 +5,7 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.StellarObj;
-import stellarium.util.math.Transforms;
+import stellarium.stellars.StellarTransforms;
 
 public abstract class Star extends StellarObj{
 	
@@ -32,10 +32,7 @@ public abstract class Star extends StellarObj{
 	 * world is false in Overworld, and true in Ender
 	*/
 	public IValRef<EVector> getPosition(){
-		IValRef pvec=Transforms.ZTEctoNEc.transform((IEVector)EcRPos);
-		pvec=Transforms.EctoEq.transform(pvec);
-		pvec=Transforms.NEqtoREq.transform(pvec);
-		pvec=Transforms.REqtoHor.transform(pvec);
+		IValRef pvec=getManager().transforms.projection.transform(EcRPos);
 		return pvec;
 	}
 
@@ -46,8 +43,6 @@ public abstract class Star extends StellarObj{
     	appMag=mag+Airmass*ExtinctionRefraction.ext_coeff_V;
     	app_B_V=B_V+Airmass*ExtinctionRefraction.ext_coeff_B_V;
 	}
-
-	@Override
-	abstract public void initialize();
 	
+	public abstract void initialize();
 }

@@ -1,8 +1,10 @@
 package stellarium;
 
-import java.util.Random;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -20,26 +22,20 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.IRenderHandler;
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.CrossUtil;
-import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.IEVector;
-import sciapi.api.value.util.VOp;
-import stellarium.stellars.Color;
-import stellarium.stellars.ExtinctionRefraction;
-import stellarium.stellars.Optics;
-import stellarium.stellars.Planet;
-import stellarium.stellars.background.BrStar;
-import stellarium.util.math.SpCoord;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
-import stellarium.util.math.VecMath;
+import stellarium.client.ClientSettings;
+import stellarium.render.CelestialLayerMilkyway;
+import stellarium.render.CelestialLayerMoon;
+import stellarium.render.CelestialLayerPlanet;
+import stellarium.render.CelestialLayerStar;
+import stellarium.render.CelestialLayerSun;
+import stellarium.render.ICelestialLayer;
+import stellarium.render.StellarRenderInfo;
+import stellarium.stellars.StellarManager;
 
-public class DrawSky extends IRenderHandler {
+public class SkyRenderer extends IRenderHandler {
 
 	private TextureManager renderEngine;
 	private Minecraft mc;
-	private Random random;
 	private Tessellator tessellator1=Tessellator.getInstance();
 	
     private VertexFormat vertexBufferFormat;
@@ -49,18 +45,17 @@ public class DrawSky extends IRenderHandler {
     
     private int glSkyList = -1;
     private int glSkyList2 = -1;
+    
+	private List<ICelestialLayer> celestialLayers = Lists.newArrayList();
+	private ClientSettings settings;
 
 	private static final ResourceLocation locationEndSkyPng = new ResourceLocation("textures/environment/end_sky.png");
 	private static final ResourceLocation locationSunPng = new ResourceLocation("stellarium", "stellar/halo.png");
 	private static final ResourceLocation locationMoonPng = new ResourceLocation("stellarium", "stellar/lune.png");
 	private static final ResourceLocation locationStarPng = new ResourceLocation("stellarium", "stellar/star.png");
 	private static final ResourceLocation locationhalolunePng = new ResourceLocation("stellarium", "stellar/haloLune.png");
-	private static final ResourceLocation locationMilkywayPng = new ResourceLocation("stellarium", "stellar/milkyway.png");
 
-	/*private boolean IsMid, IsCalcd;*/
-
-	public DrawSky(){
-		this.random = new Random(System.currentTimeMillis());
+	public SkyRenderer(){
 		this.mc = Minecraft.getMinecraft();
         this.renderEngine = mc.getTextureManager();
         this.vboEnabled = OpenGlHelper.useVbo();
@@ -69,6 +64,19 @@ public class DrawSky extends IRenderHandler {
         this.vertexBufferFormat.addElement(new VertexFormatElement(0, VertexFormatElement.EnumType.FLOAT, VertexFormatElement.EnumUsage.POSITION, 2));
         this.generateSky();
         this.generateSky2();
+        
+        //Custom Starts
+		this.settings = StellarSky.proxy.getClientSettings();
+		
+		celestialLayers.add(new CelestialLayerMilkyway());
+		celestialLayers.add(new CelestialLayerStar());
+		celestialLayers.add(new CelestialLayerSun());
+		celestialLayers.add(new CelestialLayerPlanet());
+		celestialLayers.add(new CelestialLayerMoon());
+		
+		for(ICelestialLayer layer : this.celestialLayers)
+			layer.init(this.settings);
+		//Custom Ends
 	}
 	
     private void generateSky2()
@@ -143,7 +151,7 @@ public class DrawSky extends IRenderHandler {
     {
         int i = 64;
         int j = 6;
-        worldRendererIn.begin(7, DefaultVertexFormats.POSITION);
+        worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
         for (int k = -384; k <= 384; k += 64)
         {
@@ -215,20 +223,24 @@ public class DrawSky extends IRenderHandler {
             tessellator.draw();
             GlStateManager.popMatrix();
         }
-
-        GlStateManager.depthMask(true);
+        
         GlStateManager.enableTexture2D();
+
+        this.renderCelestial(new StellarRenderInfo(mc, tessellator, worldrenderer, 0.0f, 1.0f, (double)mc.theWorld.getWorldTime()));
+
+        GlStateManager.disableBlend();
+        GlStateManager.depthMask(true);
         GlStateManager.enableAlpha();
     }
 	
 	@Override
 	public void render(float partialTicks, WorldClient theWorld, Minecraft mc)
     {
-        if (this.mc.theWorld.provider.getDimension() == 1)
+        if (theWorld.provider.getDimension() == 1)
         {
             this.renderSkyEnd();
         }
-        else if (this.mc.theWorld.provider.isSurfaceWorld())
+        else if (theWorld.provider.isSurfaceWorld())
         {
             GlStateManager.disableTexture2D();
             Vec3d vec3 = theWorld.getSkyColor(this.mc.getRenderViewEntity(), partialTicks);
@@ -319,171 +331,13 @@ public class DrawSky extends IRenderHandler {
             float weathereff = 1.0F - theWorld.getRainStrength(partialTicks);
 			float bglight=f+f1+f2;
 
+
 			GlStateManager.rotate(-90.0f, 1.0f, 0.0f, 0.0f); //e,n,z
 
 			GlStateManager.color(1.0F, 1.0F, 1.0F, weathereff);
-
-			double time=(double)theWorld.getWorldTime()+partialTicks;
 			
-			this.RenderStar(bglight, weathereff, time);
-
-			GlStateManager.color(1.0F, 1.0F, 1.0F, weathereff);
-
-			//Rendering Sun
-			EVector pos = new EVector(3);
-			pos.set(StellarSky.getManager().Sun.getPosition());
-			double size=StellarSky.getManager().Sun.radius/Spmath.getD(VecMath.size(pos))*99.0*20;
-			pos.set(VecMath.normalize(pos));
-			dif.set(VOp.normalize(CrossUtil.cross((IEVector)pos, (IEVector)new EVector(0.0,0.0,1.0))));
-			dif2.set((IValRef)CrossUtil.cross((IEVector)dif, (IEVector)pos));
-			pos.set(VecMath.mult(99.0, pos));
-
-			dif.set(VecMath.mult(size, dif));
-			dif2.set(VecMath.mult(size, dif2));
-
-			renderEngine.bindTexture(this.locationSunPng);
-			worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-			worldrenderer.pos(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif)).tex(0.0,0.0).endVertex();
-			worldrenderer.pos(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2)).tex(1.0,0.0).endVertex();
-			worldrenderer.pos(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif)).tex(1.0,1.0).endVertex();
-			worldrenderer.pos(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2)).tex(0.0,1.0).endVertex();
-			tessellator1.draw();
-			//Sun
-
-
-			//Rendering Moon
-			int latn=StellarSky.proxy.getClientSettings().imgFrac;
-			int longn=2*latn;
-			EVector moonvec[][];
-			double moonilum[][];
-			moonvec=new EVector[longn][latn+1];
-			moonilum=new double[longn][latn+1];
-			EVector Buf = new EVector(3);
-			EVector Buff = new EVector(3);
-			int latc, longc;
-			for(longc=0; longc<longn; longc++){
-				for(latc=0; latc<=latn; latc++){
-					Buf.set(StellarSky.getManager().Moon.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0, Transforms.yr));
-					moonilum[longc][latc]=StellarSky.getManager().Moon.illumination(Buf);
-					Buf.set(StellarSky.getManager().Moon.posLocalG(Buf));
-					Buf.set(VecMath.mult(50000.0, Buf));
-					Buff.set(VecMath.getX(Buf),VecMath.getY(Buf),VecMath.getZ(Buf));
-					IValRef ref=Transforms.ZTEctoNEc.transform((IEVector)Buff);
-					ref=Transforms.EctoEq.transform(ref);
-					ref=Transforms.NEqtoREq.transform(ref);
-					ref=Transforms.REqtoHor.transform(ref);
-
-					moonvec[longc][latc] = new EVector(3);
-					moonvec[longc][latc].set(ExtinctionRefraction.refraction(ref, true));
-
-					if(VecMath.getZ(moonvec[longc][latc])<0.0f) moonilum[longc][latc]=0.0;
-
-				}
-			}
+			this.renderCelestial(new StellarRenderInfo(mc, tessellator, worldrenderer, bglight, weathereff, (double)theWorld.getWorldTime()+partialTicks));
 			
-			renderEngine.bindTexture(locationhalolunePng);
-
-
-			EVector posm = new EVector(3);
-
-
-			posm.set(ExtinctionRefraction.refraction(StellarSky.getManager().Moon.getPosition(), true));
-
-			if(VecMath.getZ(posm)>0.0f){
-				double sizem=StellarSky.getManager().Moon.radius.asDouble()/Spmath.getD(VecMath.size(posm))*98.0*5.0;
-
-				posm.set(VOp.normalize(posm));
-				difm.set(VOp.normalize(CrossUtil.cross((IEVector)posm, (IEVector)new EVector(0.0,0.0,1.0))));
-				difm2.set((IValRef)CrossUtil.cross((IEVector)difm, (IEVector)posm));
-				posm.set(VecMath.mult(98.0, posm));
-
-				difm.set(VecMath.mult(sizem, difm));
-				difm2.set(VecMath.mult(sizem, difm2));
-
-				float alpha=Optics.getAlphaFromMagnitude(-17.0-StellarSky.getManager().Moon.mag,bglight);
-
-				GlStateManager.color(1.0f, 1.0f, 1.0f, weathereff*alpha);
-
-				worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-				worldrenderer.pos(VecMath.getX(posm)+VecMath.getX(difm), VecMath.getY(posm)+VecMath.getY(difm), VecMath.getZ(posm)+VecMath.getZ(difm)).tex(0.0,0.0).endVertex();
-				worldrenderer.pos(VecMath.getX(posm)+VecMath.getX(difm2), VecMath.getY(posm)+VecMath.getY(difm2), VecMath.getZ(posm)+VecMath.getZ(difm2)).tex(0.0,1.0).endVertex();
-				worldrenderer.pos(VecMath.getX(posm)-VecMath.getX(difm), VecMath.getY(posm)-VecMath.getY(difm), VecMath.getZ(posm)-VecMath.getZ(difm)).tex(1.0,1.0).endVertex();
-				worldrenderer.pos(VecMath.getX(posm)-VecMath.getX(difm2), VecMath.getY(posm)-VecMath.getY(difm2), VecMath.getZ(posm)-VecMath.getZ(difm2)).tex(1.0,0.0).endVertex();
-				tessellator1.draw();
-			}
-
-
-			renderEngine.bindTexture(locationMoonPng);
-
-
-			for(longc=0; longc<longn; longc++){
-				for(latc=0; latc<latn; latc++){
-
-					int longcd=(longc+1)%longn;
-					double longd=(double)longc/(double)longn;
-					double latd=1.0-(double)latc/(double)latn;
-					double longdd=(double)longcd/(double)longn;
-					double latdd=1.0-(double)(latc+1)/(double)latn;
-
-					GlStateManager.color(1.0f, 1.0f, 1.0f, (weathereff*(float)moonilum[longc][latc]-4.0f*bglight)*2.0f);
-
-					worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-					worldrenderer.pos(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc])).tex(Spmath.fmod(longd+0.5, 1.0), latd).endVertex();
-					worldrenderer.pos(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc])).tex(Spmath.fmod(longdd+0.5,1.0), latd).endVertex();
-					worldrenderer.pos(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1])).tex(Spmath.fmod(longdd+0.5, 1.0), latdd).endVertex();
-					worldrenderer.pos(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1])).tex(Spmath.fmod(longd+0.5,1.0), latdd).endVertex();
-					tessellator1.draw();
-				}
-			}
-			//Moon
-			
-			//Galaxy
-			for(longc=0; longc<longn; longc++){
-				for(latc=0; latc<=latn; latc++){
-					Buf.set(new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec());
-					Buf.set(VecMath.mult(50.0, Buf));
-					IValRef ref = Transforms.EqtoEc.transform(Buf);
-					ref = Transforms.ZTEctoNEc.transform(ref);
-					ref = Transforms.EctoEq.transform(ref);
-					ref = Transforms.NEqtoREq.transform(ref);
-					ref = Transforms.REqtoHor.transform(ref);
-					ref = ExtinctionRefraction.refraction(ref, true);
-
-					moonvec[longc][latc] = new EVector(3);
-					moonvec[longc][latc].set(ExtinctionRefraction.refraction(ref, true));
-				}
-			}
-						
-			mc.renderEngine.bindTexture(locationMilkywayPng);
-			worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-			
-			float Mag = 3.5f;
-			float alpha=Optics.getAlphaForGalaxy(Mag, bglight) - (((1-weathereff)/1)*20f);
-			
-			GlStateManager.color(1.0f, 1.0f, 1.0f, alpha*2.0f);
-			GlStateManager.disableAlpha();
-			
-			for(longc=0; longc<longn; longc++){
-				for(latc=0; latc<latn; latc++){
-					int longcd=(longc+1)%longn;
-					double longd=1.0-(double)longc/(double)longn;
-					double latd=1.0-(double)latc/(double)latn;
-					double longdd=1.0-(double)(longc+1)/(double)longn;
-					double latdd=1.0-(double)(latc+1)/(double)latn;
-
-					worldrenderer.pos(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc])).tex(longd, latd).endVertex();
-					worldrenderer.pos(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1])).tex(longd, latdd).endVertex();
-					worldrenderer.pos(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1])).tex(longdd, latdd).endVertex();
-					worldrenderer.pos(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc])).tex(longdd, latd).endVertex();
-				}
-			}
-			tessellator1.draw();
-			//Galaxy
-
-			renderEngine.bindTexture(locationStarPng);
-			for(Planet planet : StellarSky.getManager().planets)
-				this.DrawStellarObj(bglight, weathereff, planet.appPos, planet.appMag);
-
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
@@ -557,96 +411,21 @@ public class DrawSky extends IRenderHandler {
             GlStateManager.depthMask(true);
         }
     }
-
-	EVector dif = new EVector(3);
-	EVector dif2 = new EVector(3);
-
-	public void RenderStar(float bglight, float weathereff, double time){
-
-		VertexBuffer worldRenderer = tessellator1.getBuffer();
-		
-		renderEngine.bindTexture(locationStarPng);
-
-		EVector pos = new EVector(3);
-		
-		GlStateManager.disableAlpha();
-		
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-		for(int i=0; i<BrStar.NumStar; i++){
-			if(BrStar.stars[i].unable) continue;
-
-			BrStar star=BrStar.stars[i];
-
-			pos.set(VecMath.normalize(star.appPos));
-			float Mag=star.App_Mag;
-			float B_V=star.App_B_V;
-
-			if(Mag > StellarSky.proxy.getClientSettings().mag_Limit)
-				continue;
-
-			if(VecMath.getZ(pos)<0) continue;
-
-			float size=0.5f;
-			float alpha=Optics.getAlphaFromMagnitudeSparkling(Mag, bglight);
-
-			dif.set(CrossUtil.cross(pos, new EVector(0.0,0.0,1.0)));
-			if(Spmath.getD(VecMath.size2(dif)) < 0.01)
-				dif.set(CrossUtil.cross(pos, new EVector(0.0,1.0,0.0)));
-			dif.set(VecMath.normalize(dif));
-			dif2.set((IValRef)CrossUtil.cross(dif, pos));
-			pos.set(VecMath.mult(100.0, pos));
-
-			dif.set(VecMath.mult(size, dif));
-			dif2.set(VecMath.mult(size, dif2));
-
-			Color c=Color.getColor(B_V);
-			
-			int ialpha = (int)(weathereff*alpha*255.0);
-			if(ialpha < 0)
-				ialpha = 0;
-
-			worldRenderer.pos(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif)).tex(0.0,0.0).color(c.r, c.g, c.b, ialpha).endVertex();
-			worldRenderer.pos(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2)).tex(1.0,0.0).color(c.r, c.g, c.b, ialpha).endVertex();
-			worldRenderer.pos(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif)).tex(1.0,1.0).color(c.r, c.g, c.b, ialpha).endVertex();
-			worldRenderer.pos(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2)).tex(0.0,1.0).color(c.r, c.g, c.b, ialpha).endVertex();
+	
+	private void renderCelestial(StellarRenderInfo info) {
+		if(settings.isDirty)
+		{
+			for(ICelestialLayer layer : this.celestialLayers)
+				layer.init(this.settings);
+			settings.isDirty = false;
 		}
 		
-		tessellator1.draw();
-		GlStateManager.enableAlpha();
-	}
-
-
-	EVector difm = new EVector(3);
-	EVector difm2 = new EVector(3);
-
-	public void DrawStellarObj(float bglight, float weathereff, EVector pos, double Mag){
-
-		if(Mag > StellarSky.proxy.getClientSettings().mag_Limit) return;
-		if(VecMath.getZ(pos)<0) return;
-
-		VertexBuffer worldRenderer = tessellator1.getBuffer();
-
-		float size=0.6f;
-		float alpha=Optics.getAlphaFromMagnitude(Mag, bglight);
-
-		pos.set(VecMath.normalize(pos));
-
-		difm.set(CrossUtil.cross((IEVector)pos, (IEVector)new EVector(0.0,0.0,1.0)));
-		if(Spmath.getD(VecMath.size2(difm)) < 0.01)
-			difm.set(CrossUtil.cross((IEVector)pos, (IEVector)new EVector(0.0,1.0,0.0)));
-		difm.set(VecMath.normalize(difm));
-		difm2.set((IValRef)CrossUtil.cross((IEVector)difm, (IEVector)pos));
-		pos.set(VecMath.mult(99.0, pos));
-
-		difm.set(VecMath.mult(size, difm));
-		difm2.set(VecMath.mult(size, difm2));
-
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-		worldRenderer.pos(VecMath.getX(pos)+VecMath.getX(difm), VecMath.getY(pos)+VecMath.getY(difm), VecMath.getZ(pos)+VecMath.getZ(difm)).tex(0.0,0.0).color(1.0f, 1.0f, 1.0f, weathereff * alpha).endVertex();
-		worldRenderer.pos(VecMath.getX(pos)+VecMath.getX(difm2), VecMath.getY(pos)+VecMath.getY(difm2), VecMath.getZ(pos)+VecMath.getZ(difm2)).tex(1.0,0.0).color(1.0f, 1.0f, 1.0f, weathereff * alpha).endVertex();
-		worldRenderer.pos(VecMath.getX(pos)-VecMath.getX(difm), VecMath.getY(pos)-VecMath.getY(difm), VecMath.getZ(pos)-VecMath.getZ(difm)).tex(1.0,1.0).color(1.0f, 1.0f, 1.0f, weathereff * alpha).endVertex();
-		worldRenderer.pos(VecMath.getX(pos)-VecMath.getX(difm2), VecMath.getY(pos)-VecMath.getY(difm2), VecMath.getZ(pos)-VecMath.getZ(difm2)).tex(0.0,1.0).color(1.0f, 1.0f, 1.0f, weathereff * alpha).endVertex();
-
-		tessellator1.draw();
+		StellarManager manager = StellarManager.getManager(true);
+		
+		if(!manager.isSetupComplete())
+			manager.update(info.time, true);
+		
+		for(ICelestialLayer layer : this.celestialLayers)
+			layer.render(manager, info);
 	}
 }

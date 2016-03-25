@@ -7,7 +7,6 @@ import sciapi.api.value.euclidian.EVector;
 import stellarium.StellarSky;
 import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class Planet extends SolarObj{
@@ -80,7 +79,7 @@ public class Planet extends SolarObj{
 	public void updateMagnitude(){
 		double dist=Spmath.getD(VecMath.size(EcRPosE));
 		double distS=Spmath.getD(VecMath.size(EcRPos));
-		double distE=Spmath.getD(VecMath.size(StellarSky.getManager().Earth.EcRPos));
+		double distE=Spmath.getD(VecMath.size(getManager().Earth.EcRPos));
 		double LvsSun=this.radius.asDouble()*this.radius.asDouble()*this.getPhase()*distE*distE*albedo*1.4/(dist*dist*distS*distS);
 		this.mag=-26.74-2.5*Math.log10(LvsSun);
 	}
@@ -90,8 +89,8 @@ public class Planet extends SolarObj{
 	//Update Planet
 	@Override
 	public void update() {
-		EcRPos.set(getEcRPos(Transforms.yr));
-		EcRPosE.set(VecMath.sub(this.EcRPos, StellarSky.getManager().Earth.EcRPos));
+		EcRPos.set(getEcRPos(getManager().transforms.yr));
+		EcRPosE.set(VecMath.sub(this.EcRPos, getManager().Earth.EcRPos));
 		
 		for(int i=0; i<satellites.size(); i++)
 			satellites.get(i).update();
@@ -109,10 +108,11 @@ public class Planet extends SolarObj{
 
 
 	@Override
-	public void initialize() {
+	public void initialize(StellarManager manager) {
 //		East=EVector.Cross(Pole, PrMer0);
+		super.initialize(manager);
 		for(int i=0; i<satellites.size(); i++)
-			satellites.get(i).initialize();
+			satellites.get(i).initialize(manager);
 	}
 
 }

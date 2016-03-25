@@ -34,6 +34,14 @@ public class Spmath {
 		return x;
 	}
 	
+	public static final float clip(float toClip) {
+		if(toClip > 1.0f)
+			return 1.0f;
+		else if(toClip < 0.0f)
+			return 0.0f;
+		return toClip;
+	}
+	
 	//fmod
 	public static final double fmod(double a, double b){
 		return a-Math.floor(a/b)*b;
@@ -138,6 +146,7 @@ public class Spmath {
 			}
 		}	
 	}
+
 	
 	//Float sine
 	public static final float sinf(float d){

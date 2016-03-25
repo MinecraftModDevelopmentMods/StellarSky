@@ -9,7 +9,6 @@ import sciapi.api.value.util.VOp;
 import stellarium.StellarSky;
 import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
-import stellarium.util.math.Transforms;
 import stellarium.util.math.VecMath;
 
 public class Moon extends Satellite {
@@ -35,8 +34,9 @@ public class Moon extends Satellite {
 	
 	Rotate ri = new Rotate('X'), rom = new Rotate('Z'), rw = new Rotate('Z');
 
-	
-	public void initialize(){
+	@Override
+	public void initialize(StellarManager manager) {
+		super.initialize(manager);
 		Pole=new EVector(0.0, 0.0, 1.0);
 		ri.setRAngle(-Spmath.Radians(I0));
 		rom.setRAngle(-Spmath.Radians(Omega0));
@@ -66,11 +66,11 @@ public class Moon extends Satellite {
 	
 	//Update Moon(Use After Earth is Updated)
 	public void update(){
-		double yr=Transforms.yr;
+		double yr=getManager().transforms.yr;
 		
 		EcRPosE.set(getEcRPosE(yr));
 		EcRPos.set(VecMath.add(parPlanet.getEcRPos(yr),EcRPosE));
-		EcRPosG.set(VecMath.sub(EcRPosE,Transforms.Zen));
+		EcRPosG.set(VecMath.sub(EcRPosE,getManager().transforms.Zen));
 		
 		appPos.set(getAtmPos());
 		/*App_Mag=Mag+ExtinctionRefraction.Airmass(AppPos.z, true)*ExtinctionRefraction.ext_coeff_V;*/
@@ -81,7 +81,7 @@ public class Moon extends Satellite {
 	public void updateMagnitude(){
 		double dist=Spmath.getD(VecMath.size(EcRPosG));
 		double distS=Spmath.getD(VecMath.size(EcRPos));
-		double distE=Spmath.getD(VecMath.size(StellarSky.getManager().Earth.EcRPos));
+		double distE=Spmath.getD(VecMath.size(getManager().Earth.EcRPos));
 		double LvsSun=this.radius.asDouble()*this.radius.asDouble()*this.getPhase()*distE*distE*albedo*1.4/(dist*dist*distS*distS);
 		this.mag=-26.74-2.5*Math.log10(LvsSun);
 		
@@ -89,11 +89,7 @@ public class Moon extends Satellite {
 	}
 	
 	public IValRef<EVector> getPosition(){
-		IValRef pvec=Transforms.ZTEctoNEc.transform((IValRef)EcRPosG);
-		pvec=Transforms.EctoEq.transform(pvec);
-		pvec=Transforms.NEqtoREq.transform(pvec);
-		pvec=Transforms.REqtoHor.transform(pvec);
-		return pvec;
+		return getManager().transforms.projection.transform(this.EcRPosG);
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)
@@ -128,5 +124,9 @@ public class Moon extends Satellite {
 				*(1.0 - getPhase());
 		if(k<0) k=k+2;
 		return k/2;
+	}
+
+	public double getPeriod() {
+		return this.a * Math.sqrt(this.a / parPlanet.mass);
 	}
 }

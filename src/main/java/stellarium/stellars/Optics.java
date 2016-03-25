@@ -55,14 +55,14 @@ public class Optics implements IConfigHandler {
 		return getAlpha(Mag, bglight);
 	}
 	
+	public static float getAlphaForGalaxy(double Mag, float bglight) {
+		return getAlpha(((Mag + 1.46f) * instance.magCompression), bglight);
+	}
+	
 	public static final double constantBgDiv = Math.log(2.1333334f + 1.0f);
 	
 	private static float getAlpha(double magCompressed, float bglight) {
 		return (float) ((Math.pow(instance.magContrast,	- magCompressed - magOffset * ((Math.pow(Math.log(bglight + 1.0f)/constantBgDiv, magOffset)))))	- (bglight / 2.1333334f));
-	}
-
-	public static float getAlphaForGalaxy(double Mag, float bglight) {
-		return getAlpha(((Mag + 1.46f) * instance.magCompression), bglight);
 	}
 	
 }

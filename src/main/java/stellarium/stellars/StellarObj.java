@@ -19,8 +19,16 @@ public abstract class StellarObj {
 	//Object's Apparent Magnitude
 	public double appMag;
 	
+	private StellarManager manager;
+	
 	//Initialize the Object
-	abstract public void initialize();
+	public void initialize(StellarManager manager) {
+		this.manager = manager;
+	}
+	
+	public StellarManager getManager() {
+		return this.manager;
+	}
 	
 	//Update the Object
 	public void update(){
@@ -28,7 +36,7 @@ public abstract class StellarObj {
 		appMag=mag+ExtinctionRefraction.airmass(VecMath.getCoord(appPos, 2).asDouble(), true)*ExtinctionRefraction.ext_coeff_V;
 	}
 	
-	//Get EVectortor of Object from Earth
+	//Get EVector of Object from Earth
 	abstract public IValRef<EVector> getPosition();
 	
 	public IValRef<EVector> getAtmPos(){
