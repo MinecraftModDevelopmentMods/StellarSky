@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.EVectorSet;
-import stellarium.SkyRenderer;
+import stellarium.render.SkyRenderer;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.StellarManager;
 import stellarium.util.math.Spmath;

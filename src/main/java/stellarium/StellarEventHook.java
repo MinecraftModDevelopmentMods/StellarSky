@@ -13,6 +13,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import stellarium.render.SkyRenderer;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarWorldProvider;
 

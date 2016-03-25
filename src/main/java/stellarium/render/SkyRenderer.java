@@ -1,4 +1,4 @@
-package stellarium;
+package stellarium.render;
 
 import java.util.List;
 
@@ -22,14 +22,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.IRenderHandler;
+import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
-import stellarium.render.CelestialLayerMilkyway;
-import stellarium.render.CelestialLayerMoon;
-import stellarium.render.CelestialLayerPlanet;
-import stellarium.render.CelestialLayerStar;
-import stellarium.render.CelestialLayerSun;
-import stellarium.render.ICelestialLayer;
-import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.StellarManager;
 
 public class SkyRenderer extends IRenderHandler {
