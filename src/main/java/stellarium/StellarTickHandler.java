@@ -62,8 +62,9 @@ public class StellarTickHandler {
 					}
 				}
 				
-				manager.update(e.world.getWorldTime(),
-						e.world.provider.isSurfaceWorld());
+				if(e.world.provider.getDimensionId() == 0)
+					manager.update(e.world.getWorldTime(),
+							e.world.provider.isSurfaceWorld());
 			}
 		}
 	}

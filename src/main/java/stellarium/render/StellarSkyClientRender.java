@@ -1,16 +1,13 @@
 package stellarium.render;
 
-import cpw.mods.fml.client.GuiIngameModOptions;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stellarium.StellarSky;
 import stellarium.api.IHourProvider;
 import stellarium.api.StellarSkyAPI;
@@ -28,7 +25,7 @@ public class StellarSkyClientRender {
 			if(!viewMode.showOnHUD())
 				return;
 			
-			FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+			FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
 			StellarManager manager = StellarManager.getManager(true);
 
 			double currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
@@ -76,23 +73,23 @@ public class StellarSkyClientRender {
 	
 	@SubscribeEvent
 	public void onInitGui(InitGuiEvent.Post event) {
-		if(event.gui instanceof GuiIngameModOptions)
+		/*if(event.gui instanceof GuiIngameModOptions)
 		{
 			GuiButton guibutton = new GuiButton(30, event.gui.width / 2 - 100, event.gui.height / 2 - 10, 200, 20, I18n.format("stellarsky.gui.lock"));
 			event.buttonList.add(guibutton);
 			guibutton.enabled = !StellarManager.getManager(true).isLocked();
-		}
+		}*/
 	}
 	
 	@SubscribeEvent
 	public void onButtonActivated(ActionPerformedEvent event) {
-		if(event.gui instanceof GuiIngameModOptions)
+		/*if(event.gui instanceof GuiIngameModOptions)
 		{
 			if(event.button.id == 30)
 			{
 				Minecraft.getMinecraft().thePlayer.sendChatMessage("/locksky");
 				event.button.enabled = false;
 			}
-		}
+		}*/
 	}
 }

@@ -13,7 +13,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import stellarium.render.SkyRenderer;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarWorldProvider;
 
@@ -71,7 +70,7 @@ public class StellarEventHook {
 
 		if(event.result == null || event.result == EnumStatus.OK || event.result == EnumStatus.NOT_POSSIBLE_NOW) {
 			World worldObj = event.entityPlayer.worldObj;
-			StellarManager manager = StellarManager.getManager(true);
+			StellarManager manager = StellarManager.getManager(false);
 			if (!StellarSky.proxy.wakeManager.canSkipTime(worldObj, manager, worldObj.getWorldTime()))
 				event.result = EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW;
 		}

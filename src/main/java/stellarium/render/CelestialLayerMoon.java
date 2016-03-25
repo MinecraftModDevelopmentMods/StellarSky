@@ -3,7 +3,9 @@ package stellarium.render;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.CrossUtil;
@@ -42,7 +44,7 @@ public class CelestialLayerMoon implements ICelestialLayer {
 	}
 	
 	@Override
-	public void render(Minecraft mc, StellarManager manager, float bglight, float weathereff, double time) {
+	public void render(StellarManager manager, StellarRenderInfo info) {
 		
 		posm.set(ExtinctionRefraction.refraction(manager.Moon.getPosition(), true));
 		double sizem=manager.Moon.radius.asDouble()/Spmath.getD(VecMath.size(posm));
@@ -69,10 +71,8 @@ public class CelestialLayerMoon implements ICelestialLayer {
 				if(VecMath.getZ(moonvec[longc][latc])<0.0f) moonilum[longc][latc]=0.0f;
 			}
 		}
-
-		Tessellator tessellator1 = Tessellator.instance;
 		
-		mc.renderEngine.bindTexture(locationhalolunePng);
+		info.mc.renderEngine.bindTexture(locationhalolunePng);
 
 		if(VecMath.getZ(posm)>0.0f){
 
@@ -84,22 +84,21 @@ public class CelestialLayerMoon implements ICelestialLayer {
 			difm.set(VecMath.mult(sizem, difm));
 			difm2.set(VecMath.mult(sizem, difm2));
 
-			float alpha=(float) (Optics.getAlphaFromMagnitude(-17.0-manager.Moon.mag-2.5*Math.log10(difactor),bglight) / (manager.Moon.getPhase()));		
+			float alpha=(float) (Optics.getAlphaFromMagnitude(-17.0-manager.Moon.mag-2.5*Math.log10(difactor), info.bglight) / (manager.Moon.getPhase()));		
 			
-			GL11.glColor4d(1.0, 1.0, 1.0, weathereff*alpha);
+			GlStateManager.color(1.0f, 1.0f, 1.0f, info.weathereff*alpha);
 
-			tessellator1.startDrawingQuads();
-			tessellator1.addVertexWithUV(VecMath.getX(posm)+VecMath.getX(difm), VecMath.getY(posm)+VecMath.getY(difm), VecMath.getZ(posm)+VecMath.getZ(difm),0.0,0.0);
-			tessellator1.addVertexWithUV(VecMath.getX(posm)+VecMath.getX(difm2), VecMath.getY(posm)+VecMath.getY(difm2), VecMath.getZ(posm)+VecMath.getZ(difm2),0.0,1.0);
-			tessellator1.addVertexWithUV(VecMath.getX(posm)-VecMath.getX(difm), VecMath.getY(posm)-VecMath.getY(difm), VecMath.getZ(posm)-VecMath.getZ(difm),1.0,1.0);
-			tessellator1.addVertexWithUV(VecMath.getX(posm)-VecMath.getX(difm2), VecMath.getY(posm)-VecMath.getY(difm2), VecMath.getZ(posm)-VecMath.getZ(difm2),1.0,0.0);
-			tessellator1.draw();
+			info.worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+			info.worldrenderer.pos(VecMath.getX(posm)+VecMath.getX(difm), VecMath.getY(posm)+VecMath.getY(difm), VecMath.getZ(posm)+VecMath.getZ(difm)).tex(0.0,0.0).endVertex();
+			info.worldrenderer.pos(VecMath.getX(posm)+VecMath.getX(difm2), VecMath.getY(posm)+VecMath.getY(difm2), VecMath.getZ(posm)+VecMath.getZ(difm2)).tex(0.0,1.0).endVertex();
+			info.worldrenderer.pos(VecMath.getX(posm)-VecMath.getX(difm), VecMath.getY(posm)-VecMath.getY(difm), VecMath.getZ(posm)-VecMath.getZ(difm)).tex(1.0,1.0).endVertex();
+			info.worldrenderer.pos(VecMath.getX(posm)-VecMath.getX(difm2), VecMath.getY(posm)-VecMath.getY(difm2), VecMath.getZ(posm)-VecMath.getZ(difm2)).tex(1.0,0.0).endVertex();
+			info.tessellator.draw();
 		}
 
-
-		mc.renderEngine.bindTexture(locationMoonPng);
-
-		tessellator1.startDrawingQuads();
+/*
+		info.mc.renderEngine.bindTexture(locationMoonPng);
+		info.worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
 
 		for(longc=0; longc<longn; longc++){
 			for(latc=0; latc<latn; latc++){
@@ -110,24 +109,31 @@ public class CelestialLayerMoon implements ICelestialLayer {
 				double longdd=(double)(longc+1)/(double)longn;
 				double latdd=1.0-(double)(latc+1)/(double)latn;
 
-				float lightlevel = (0.875f*(bglight/2.1333334f));
-				tessellator1.setColorRGBA_F(1.0f - lightlevel, 1.0f - lightlevel, 1.0f - lightlevel, ((weathereff*moonilum[longc][latc]-0.015f*bglight)*2.0f));
+				float lightlevel = (0.875f*(info.bglight/2.1333334f));
 				
-				tessellator1.setNormal((float)VecMath.getX(moonnormal[longc][latc]), (float)VecMath.getY(moonnormal[longc][latc]), (float)VecMath.getZ(moonnormal[longc][latc]));
-				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc]), Spmath.fmod(longd+0.5, 1.0), latd);
+				info.worldrenderer.pos(VecMath.getX(moonvec[longc][latc]), VecMath.getY(moonvec[longc][latc]), VecMath.getZ(moonvec[longc][latc])).tex(Spmath.fmod(longd+0.5, 1.0), latd);
+				info.worldrenderer.color(1.0f, 1.0f, 1.0f, Math.max((info.weathereff*(float)moonilum[longc][latc]-4.0f*info.bglight)*2.0f,0.0f));
+				info.worldrenderer.normal((float)VecMath.getX(moonnormal[longc][latc]), (float)VecMath.getY(moonnormal[longc][latc]), (float)VecMath.getZ(moonnormal[longc][latc]));
+				info.worldrenderer.endVertex();
 				
-				tessellator1.setNormal((float)VecMath.getX(moonnormal[longcd][latc]), (float)VecMath.getY(moonnormal[longcd][latc]), (float)VecMath.getZ(moonnormal[longcd][latc]));
-				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc]), Spmath.fmod(longdd+0.5, 1.0), latd);
+				info.worldrenderer.pos(VecMath.getX(moonvec[longcd][latc]), VecMath.getY(moonvec[longcd][latc]), VecMath.getZ(moonvec[longcd][latc])).tex(Spmath.fmod(longdd+0.5,1.0), latd);
+				info.worldrenderer.color(1.0f, 1.0f, 1.0f, Math.max((info.weathereff*(float)moonilum[longc][latc]-4.0f*info.bglight)*2.0f,0.0f));
+				info.worldrenderer.normal((float)VecMath.getX(moonnormal[longcd][latc]), (float)VecMath.getY(moonnormal[longcd][latc]), (float)VecMath.getZ(moonnormal[longcd][latc]));
+				info.worldrenderer.endVertex();
 				
-				tessellator1.setNormal((float)VecMath.getX(moonnormal[longcd][latc+1]), (float)VecMath.getY(moonnormal[longcd][latc+1]), (float)VecMath.getZ(moonnormal[longcd][latc+1]));
-				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1]), Spmath.fmod(longdd+0.5, 1.0), latdd);
-				
-				tessellator1.setNormal((float)VecMath.getX(moonnormal[longc][latc+1]), (float)VecMath.getY(moonnormal[longc][latc+1]), (float)VecMath.getZ(moonnormal[longc][latc+1]));
-				tessellator1.addVertexWithUV(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1]), Spmath.fmod(longd+0.5, 1.0), latdd);
+				info.worldrenderer.pos(VecMath.getX(moonvec[longcd][latc+1]), VecMath.getY(moonvec[longcd][latc+1]), VecMath.getZ(moonvec[longcd][latc+1])).tex(Spmath.fmod(longdd+0.5, 1.0), latdd);
+				info.worldrenderer.color(1.0f, 1.0f, 1.0f, Math.max((info.weathereff*(float)moonilum[longc][latc]-4.0f*info.bglight)*2.0f,0.0f));
+				info.worldrenderer.normal((float)VecMath.getX(moonnormal[longcd][latc+1]), (float)VecMath.getY(moonnormal[longcd][latc+1]), (float)VecMath.getZ(moonnormal[longcd][latc+1]));
+				info.worldrenderer.endVertex();
+
+				info.worldrenderer.pos(VecMath.getX(moonvec[longc][latc+1]), VecMath.getY(moonvec[longc][latc+1]), VecMath.getZ(moonvec[longc][latc+1])).tex(Spmath.fmod(longd+0.5,1.0), latdd);
+				info.worldrenderer.color(1.0f, 1.0f, 1.0f, (info.weathereff*(float)moonilum[longc][latc+1]-4.0f*info.bglight)*2.0f);
+				info.worldrenderer.normal((float)VecMath.getX(moonnormal[longc][latc+1]), (float)VecMath.getY(moonnormal[longc][latc+1]), (float)VecMath.getZ(moonnormal[longc][latc+1]));
+				info.worldrenderer.endVertex();
 			}
 		}
 
-		tessellator1.draw();
+		info.tessellator.draw();*/
 	}
 
 }

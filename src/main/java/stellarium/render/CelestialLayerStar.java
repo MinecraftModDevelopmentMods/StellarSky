@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.CrossUtil;
@@ -34,17 +35,17 @@ public class CelestialLayerStar implements ICelestialLayer {
 	}
 
 	@Override
-	public void render(Minecraft mc, StellarManager manager, float bglight, float weathereff, double time) {
+	public void render(StellarManager manager, StellarRenderInfo info) {
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
-		mc.renderEngine.bindTexture(locationStarPng);
-		Tessellator tessellator1 = Tessellator.instance;
+		info.mc.renderEngine.bindTexture(locationStarPng);
 
 		EVector pos = new EVector(3);
 
-		tessellator1.startDrawingQuads();
+		info.worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		
 		for(int i=0; i<BrStar.NumStar; i++){
 			if(BrStar.stars[i].unable)
 				continue;
@@ -58,10 +59,10 @@ public class CelestialLayerStar implements ICelestialLayer {
 			if(Mag > settings.mag_Limit)
 				continue;
 
-			if(mc.theWorld.provider.dimensionId == 0 && VecMath.getZ(pos)<0) continue;
+			if(info.mc.theWorld.provider.getDimensionId() == 0 && VecMath.getZ(pos)<0) continue;
 
 			float size=0.5f;
-			float alpha=Optics.getAlphaFromMagnitudeSparkling(Mag, bglight) - (((1-weathereff)/1)*20f);
+			float alpha=Optics.getAlphaFromMagnitudeSparkling(Mag, info.bglight) - (((1-info.weathereff)/1)*20f);
 			
 			dif.set(CrossUtil.cross(pos, new EVector(0.0,0.0,1.0)));
 			if(Spmath.getD(VecMath.size2(dif)) < 0.01)
@@ -74,15 +75,18 @@ public class CelestialLayerStar implements ICelestialLayer {
 			dif2.set(VecMath.mult(size, dif2));
 
 			Color c=Color.getColor(B_V);
+			
+			int ialpha = (int)(info.weathereff*alpha*255.0);
+			if(ialpha < 0)
+				ialpha = 0;
 
-			tessellator1.setColorRGBA(c.r, c.g, c.b, (int)(alpha*255.0));
-			tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
-			tessellator1.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2),1.0,0.0);
-			tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif),1.0,1.0);
-			tessellator1.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2),0.0,1.0);
+			info.worldrenderer.pos(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif)).tex(0.0,0.0).color(c.r, c.g, c.b, ialpha).endVertex();
+			info.worldrenderer.pos(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2)).tex(1.0,0.0).color(c.r, c.g, c.b, ialpha).endVertex();
+			info.worldrenderer.pos(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif)).tex(1.0,1.0).color(c.r, c.g, c.b, ialpha).endVertex();
+			info.worldrenderer.pos(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2)).tex(0.0,1.0).color(c.r, c.g, c.b, ialpha).endVertex();
 		}
 
-		tessellator1.draw();
+		info.tessellator.draw();
 	}
 	
 }

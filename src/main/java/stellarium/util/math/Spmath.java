@@ -206,8 +206,8 @@ public class Spmath {
 		int yi = (int) (d * invDiv);
 		double part = e * invDiv - xi;
 
-		return (atan2[yi * ATAN2_DIM + xi] * (1-part)
-				+ atan2[yi * ATAN2_DIM + xi + 1] * part
+		return (atan2[yi * ATAN2_DIM + xi] * part
+				+ atan2[yi * ATAN2_DIM + xi + 1] * (1-part)
 				+ add) * mul;
 	}
 	

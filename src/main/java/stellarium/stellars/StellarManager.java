@@ -49,7 +49,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 	private long timeOfManager;
 	
 	public static StellarManager loadOrCreateManager(World world) {
-		if(StellarSky.proxy.getDefWorld(world.isRemote) != null)
+		if(!world.isRemote && StellarSky.proxy.getDefWorld(world.isRemote) != null)
 			world = StellarSky.proxy.getDefWorld(world.isRemote);
 		
 		WorldSavedData data = world.getMapStorage().loadData(StellarManager.class, ID);
@@ -375,7 +375,7 @@ public class StellarManager extends WorldSavedData implements ISkyProvider {
 	}
 	
 	//Update Objects
-	public final void update(double time, boolean isOverWorld){
+	public final void update(double time, boolean isOverWorld){		
 		double longitude = isOverWorld? settings.longitudeOverworld : settings.longitudeEnder;
 		this.timeOfManager = (long) Math.floor(time);
 		this.setup = true;

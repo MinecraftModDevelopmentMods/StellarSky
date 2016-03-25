@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.EVectorSet;
-import stellarium.StellarSky;
+import stellarium.SkyRenderer;
 import stellarium.stellars.ExtinctionRefraction;
 import stellarium.stellars.StellarManager;
 import stellarium.util.math.Spmath;
@@ -348,6 +348,14 @@ public class StellarWorldProvider extends WorldProvider {
     public double getMovementFactor()
     {
         return parProvider.getMovementFactor();
+    }
+    
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void setSkyRenderer(net.minecraftforge.client.IRenderHandler skyRenderer)
+    {
+        if(skyRenderer instanceof SkyRenderer)
+        	super.setSkyRenderer(skyRenderer);
     }
 
     @Override

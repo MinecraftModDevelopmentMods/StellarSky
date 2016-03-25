@@ -6,6 +6,7 @@ import net.minecraft.util.Vec3;
 
 public interface ISkyRenderLayer {
 	
+	public void initialize();
 	public void render(float partialTicks, WorldClient world, Minecraft mc);
 
 }
