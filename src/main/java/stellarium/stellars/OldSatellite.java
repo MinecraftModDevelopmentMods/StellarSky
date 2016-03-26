@@ -6,7 +6,7 @@ import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 
-public class Satellite extends SolarObj {
+public class OldSatellite extends SolarObj {
 	
 	OldPlanet parPlanet;
 	

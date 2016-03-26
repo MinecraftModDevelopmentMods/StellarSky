@@ -20,6 +20,9 @@ public abstract class SolarObject extends CelestialObject {
 	
 	/**Radius*/
 	protected double radius;
+	
+	/**Mass*/
+	protected double mass;
 
 	public SolarObject(boolean isRemote) {
 		super(isRemote);

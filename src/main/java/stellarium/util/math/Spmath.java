@@ -270,12 +270,12 @@ public class Spmath {
 		return delM/(1.0-e*cosd(E));
 	}
 	
-	public static IValRef GetOrbVec(double a, double e, Rotate Ir, Rotate wr, Rotate Omr, double M){
+	public static EVector GetOrbVec(double a, double e, Rotate Ir, Rotate wr, Rotate Omr, double M){
 		M=Spmath.fmod(M+180.0,360.0)-180.0;
 		double e2=Spmath.Degrees(e);
 		double E=Spmath.CalEcanomaly(e2, M);
 		IValRef r = new EVector(a*(cosd(E)-e), a*Math.sqrt(1-e*e)*sind(E), 0.0);
-		return Omr.transform(Ir.transform(wr.transform(r)));
+		return Omr.transform(Ir.transform(wr.transform(r))).getVal();
 	}
 
 	public static double TemptoB_V(double temp) {

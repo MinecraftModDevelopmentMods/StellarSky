@@ -23,15 +23,6 @@ public class OldPlanet extends SolarObj{
 	double ad, ed, Id, Ld, wbard, Omegad;
 	double b, c, s, f;
 	
-	//Planet's Pole(Ecliptic Coord)
-	//EVector pole;
-	
-	//Planet's Prime Meridian at first
-	//EVector prMer0;
-	
-	//Planet's East from Prime Meridian
-	//EVector east;
-	
 	//Rotating angular velocity
 	double rot;
 	
@@ -39,7 +30,7 @@ public class OldPlanet extends SolarObj{
 	double mass;
 	
 	//Satellites
-	ArrayList<Satellite> satellites=new ArrayList(1);
+	ArrayList<OldSatellite> satellites=new ArrayList(1);
 	
 	//Planet name
 	char name[];
@@ -65,18 +56,6 @@ public class OldPlanet extends SolarObj{
 		
 		return Spmath.GetOrbVec(a, e, roti, rotw, rotom, M);
 	}
-	
-	//Ecliptic Position of Planet's Local Region from Moon Center (Update Needed)
-	/*public IValRef<EVector> posLocalP(double longitude, double latitude, double time){
-		double longp=Spmath.Radians(longitude+rot*time);
-		double lat=Spmath.Radians(latitude);
-		return VOp.mult(radius, BOp.add(BOp.add(VecMath.mult(Math.sin(lat), pole), VecMath.mult(Math.cos(lat)*Math.cos(longp), prMer0)), VecMath.mult(Math.cos(lat)*Math.sin(longp), east)));
-	}*/
-	
-	//Ecliptic Position of Planet's Local Region from Earth (Update Needed)
-	/*public IValRef<EVector> posLocalE(double longitude, double latitude, double time){
-		return VecMath.add(EcRPosE, posLocalP(longitude, latitude, time));
-	}*/
 	
 	//Update magnitude
 	public void updateMagnitude(){
@@ -104,7 +83,7 @@ public class OldPlanet extends SolarObj{
 		appMag=mag+ExtinctionRefraction.airmass(appPos, true)*Optics.ext_coeff_V;
 	}
 	
-	public void addSatellite(Satellite sat){
+	public void addSatellite(OldSatellite sat){
 		sat.parPlanet=this;
 		satellites.add(sat);
 	}
@@ -112,7 +91,6 @@ public class OldPlanet extends SolarObj{
 
 	@Override
 	public void initialize(StellarManager manager) {
-//		East=EVector.Cross(Pole, PrMer0);
 		super.initialize(manager);
 		for(int i=0; i<satellites.size(); i++)
 			satellites.get(i).initialize(manager);

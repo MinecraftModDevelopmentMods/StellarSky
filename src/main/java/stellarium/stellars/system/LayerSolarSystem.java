@@ -41,15 +41,20 @@ public class LayerSolarSystem implements ICelestialLayer {
 		System.out.println("[Stellarium]: "+"Initializing Solar System...");
 		///Sun
 		System.out.println("[Stellarium]: "+"Initializing Sun...");
+		sun = new Sun(isRemote);
 		sun.radius=0.00465469;
 		sun.mass=1.0;
-		sun.initialize(this);
+		sun.initialize();
 		
 		///Earth System
 		//Declaration
+		earth = new Earth(isRemote);
+		moon = new Moon(isRemote);
+		
 		System.out.println("[Stellarium]: "+"Initializing Earth...");
+		
 		earth.addSatellite(this.moon);
-		earth.radius.set(4.2634e-5);
+		earth.radius=4.2634e-5;
 		earth.mass=3.002458398e-6;
 		moon.radius.set(4e-5 * settings.moonSizeMultiplier);
 		
@@ -88,7 +93,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		System.out.println("[Stellarium]: "+"Initializing Mercury...");
 		mercury = new Planet(isRemote);
 		mercury.albedo=0.119;
-		mercury.radius.set(1.630815508e-5);
+		mercury.radius=1.630815508e-5;
 		mercury.mass=1.660147806e-7;
 		mercury.a0=0.38709843;
 		mercury.e0=0.20563661;
@@ -109,7 +114,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		System.out.println("[Stellarium]: "+"Initizlizing Venus...");
 		venus = new Planet(isRemote);
 		venus.albedo=0.90;
-		venus.radius.set(4.0453208556e-5);
+		venus.radius=4.0453208556e-5;
 		venus.mass=2.447589362e-6;
 		venus.a0=0.72332102;
 		venus.e0=0.00676399;
@@ -130,7 +135,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		System.out.println("[Stellarium]: "+"Initializing Mars...");
 		mars = new Planet(isRemote);
 		mars.albedo=0.25;
-		mars.radius.set(2.26604278e-5);
+		mars.radius=2.26604278e-5;
 		mars.mass=3.22683626e-7;
 		mars.a0=1.52371243;
 		mars.e0=0.09336511;
@@ -151,7 +156,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		System.out.println("[Stellarium]: "+"Initializing Jupiter...");
 		jupiter = new Planet(isRemote);
 		jupiter.albedo=0.343;
-		jupiter.radius.set(4.673195187e-4);
+		jupiter.radius=4.673195187e-4;
 		jupiter.mass=9.54502036e-4;
 		jupiter.a0=5.20248019;
 		jupiter.e0=0.0485359;
@@ -176,7 +181,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		System.out.println("[Stellarium]: "+"Initializing Saturn...");
 		saturn = new Planet(isRemote);
 		saturn.albedo=0.342;
-		saturn.radius.set(3.83128342e-4);
+		saturn.radius=3.83128342e-4;
 		saturn.mass=2.8578754e-4;
 		saturn.a0=9.54149883;
 		saturn.e0=0.05550825;
@@ -201,7 +206,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		System.out.println("[Stellarium]: "+"Initializing Uranus...");
 		uranus = new Planet(isRemote);
 		uranus.albedo=0.300;
-		uranus.radius.set(1.68890374e-4);
+		uranus.radius=1.68890374e-4;
 		uranus.mass=4.3642853557e-5;
 		uranus.a0=19.1897948;
 		uranus.e0=0.0468574;
@@ -226,7 +231,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		System.out.println("[Stellarium]: "+"Initializing Neptune...");
 		neptune = new Planet(isRemote);
 		neptune.albedo=0.290;
-		neptune.radius.set(1.641209893e-4);
+		neptune.radius=1.641209893e-4;
 		neptune.mass=5.14956513e-5;
 		neptune.a0=30.06952752;
 		neptune.e0=0.00895439;
