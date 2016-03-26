@@ -52,73 +52,73 @@ public class CommonSettings implements IConfigHandler {
 		List<String> propNameList = Lists.newArrayList();
 		
         propServerEnabled=config.get(category, "Server_Enabled", true);
-        propServerEnabled.comment="Enables Server-Side Sky change.";
+        propServerEnabled.setComment("Enables Server-Side Sky change.");
         propServerEnabled.setRequiresWorldRestart(true);
         propServerEnabled.setLanguageKey("config.property.server.serverenabled");
         propNameList.add(propServerEnabled.getName());
         
         propDay=config.get(category, "Day_Length", 24000.0);
-        propDay.comment="Length of a day, in a tick.";
+        propDay.setComment("Length of a day, in a tick.");
         propDay.setRequiresWorldRestart(true);
         propDay.setLanguageKey("config.property.server.daylength");
         propNameList.add(propDay.getName());
         
         propYear=config.get(category, "Year_Length", 365.25);
-        propYear.comment="Length of a year, in a day.";
+        propYear.setComment("Length of a year, in a day.");
         propYear.setRequiresWorldRestart(true);
         propYear.setLanguageKey("config.property.server.yearlength");
         propNameList.add(propYear.getName());
 
        	propYearOffset = config.get(category, "Year_Offset", 0);
-       	propYearOffset.comment = "Year offset on world starting time.";
+       	propYearOffset.setComment("Year offset on world starting time.");
        	propYearOffset.setRequiresWorldRestart(true);
        	propYearOffset.setLanguageKey("config.property.server.yearoffset");
         propNameList.add(propYearOffset.getName());
 
        	propDayOffset = config.get(category, "Day_Offset", 0);
-       	propDayOffset.comment = "Day offset on world starting time.";
+       	propDayOffset.setComment("Day offset on world starting time.");
        	propDayOffset.setRequiresWorldRestart(true);
        	propDayOffset.setLanguageKey("config.property.server.dayoffset");
         propNameList.add(propDayOffset.getName());
 
        	propTickOffset = config.get(category, "Tick_Offset", 5000.0);
-       	propTickOffset.comment = "Tick offset on world starting time.";
+       	propTickOffset.setComment("Tick offset on world starting time.");
        	propTickOffset.setRequiresWorldRestart(true);
        	propTickOffset.setLanguageKey("config.property.server.tickoffset");
         propNameList.add(propTickOffset.getName());
 
        	propLatitudeOverworld = config.get(category, "Latitude_Overworld", 37.5);
-       	propLatitudeOverworld.comment = "Latitude on Overworld, in Degrees.";
+       	propLatitudeOverworld.setComment("Latitude on Overworld, in Degrees.");
        	propLatitudeOverworld.setRequiresWorldRestart(true);
        	propLatitudeOverworld.setLanguageKey("config.property.server.latitudeoverworld");
         propNameList.add(propLatitudeOverworld.getName());
 
        	propLongitudeOverworld = config.get(category, "Longitude_Overworld", 0.0);
-       	propLongitudeOverworld.comment = "Longitude on Overworld, in Degrees. (East is +)";
+       	propLongitudeOverworld.setComment("Longitude on Overworld, in Degrees. (East is +)");
        	propLongitudeOverworld.setRequiresWorldRestart(true);
        	propLongitudeOverworld.setLanguageKey("config.property.server.longitudeoverworld");
         propNameList.add(propLongitudeOverworld.getName());
 
        	propLatitudeEnder = config.get(category, "Latitude_Ender", -52.5);
-       	propLatitudeEnder.comment = "Latitude on Ender, in Degrees.";
+       	propLatitudeEnder.setComment("Latitude on Ender, in Degrees.");
        	propLatitudeEnder.setRequiresWorldRestart(true);
        	propLatitudeEnder.setLanguageKey("config.property.server.latitudeender");
         propNameList.add(propLatitudeEnder.getName());
 
        	propLongitudeEnder = config.get(category, "Longitude_Ender", 180.0);
-       	propLongitudeEnder.comment = "Longitude on Ender, in Degrees. (East is +)";
+       	propLongitudeEnder.setComment("Longitude on Ender, in Degrees. (East is +)");
        	propLongitudeEnder.setRequiresWorldRestart(true);
        	propLongitudeEnder.setLanguageKey("config.property.server.longitudeender");
         propNameList.add(propLongitudeEnder.getName());
         
        	propMoonSize = config.get(category, "Moon_Size", 1.0);
-       	propMoonSize.comment = "Size of moon. (Default size is 1.0)";
+       	propMoonSize.setComment("Size of moon. (Default size is 1.0)");
        	propMoonSize.setRequiresWorldRestart(true);
        	propMoonSize.setLanguageKey("config.property.server.moonsize");
         propNameList.add(propMoonSize.getName());
         
        	propMoonBrightness = config.get(category, "Moon_Brightness", 1.0);
-       	propMoonBrightness.comment = "Brightness of moon. (Default brightness is 1.0)";
+       	propMoonBrightness.setComment("Brightness of moon. (Default brightness is 1.0)");
        	propMoonBrightness.setRequiresWorldRestart(true);
        	propMoonBrightness.setLanguageKey("config.property.server.moonbrightness");
         propNameList.add(propMoonBrightness.getName());

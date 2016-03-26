@@ -23,7 +23,7 @@ public class StellarSkyClientRender {
 		
 	@SubscribeEvent
 	public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
-		if(event.type == RenderGameOverlayEvent.ElementType.ALL) {
+		if(event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
 			ClientSettings setting = StellarSky.proxy.getClientSettings();
 			EnumViewMode viewMode = setting.getViewMode();
 			if(!viewMode.showOnHUD())
@@ -77,20 +77,20 @@ public class StellarSkyClientRender {
 	
 	@SubscribeEvent
 	public void onInitGui(InitGuiEvent.Post event) {
-		if(event.gui instanceof GuiOptions)
+		if(event.getGui() instanceof GuiOptions)
 		{
-			GuiButton guibutton = new GuiButton(30, event.gui.width / 2 + 5, event.gui.height / 6 + 12, 150, 20, I18n.format("stellarsky.gui.lock"));
-			event.buttonList.add(guibutton);
+			GuiButton guibutton = new GuiButton(30, event.getGui().width / 2 + 5, event.getGui().height / 6 + 12, 150, 20, I18n.format("stellarsky.gui.lock"));
+			event.getButtonList().add(guibutton);
 			guibutton.enabled = !StellarManager.getManager(true).isLocked();
 		}
 	}
 	
 	@SubscribeEvent
 	public void onButtonActivated(final ActionPerformedEvent event) {
-		if(event.gui instanceof GuiOptions)
+		if(event.getGui() instanceof GuiOptions)
 		{
-			if(event.button.id == 30)
-                event.gui.mc.displayGuiScreen(new GuiYesNo(new GuiYesNoCallback() {
+			if(event.getButton().id == 30)
+                event.getGui().mc.displayGuiScreen(new GuiYesNo(new GuiYesNoCallback() {
 
 					@Override
 					public void confirmClicked(boolean result, int id) {
@@ -98,7 +98,7 @@ public class StellarSkyClientRender {
 							Minecraft.getMinecraft().thePlayer.sendChatMessage("/locksky");
 							StellarManager.getManager(true).lock();
 						}
-						Minecraft.getMinecraft().displayGuiScreen(event.gui);
+						Minecraft.getMinecraft().displayGuiScreen(event.getGui());
 					}
                 	
                 }, I18n.format("stellarsky.gui.lock.expl1"), I18n.format("stellarsky.gui.lock.expl2"), 10));

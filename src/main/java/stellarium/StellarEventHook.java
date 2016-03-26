@@ -35,17 +35,17 @@ public class StellarEventHook {
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e)
 	{
-		if(e.world.provider.getDimension() == 0 || e.world.provider.getDimension() == 1) {
-			StellarManager manager = StellarManager.loadOrCreateManager(e.world);
-			manager.setRemote(e.world.isRemote);
-			setupManager(e.world, manager);
+		if(e.getWorld().provider.getDimension() == 0 || e.getWorld().provider.getDimension() == 1) {
+			StellarManager manager = StellarManager.loadOrCreateManager(e.getWorld());
+			manager.setRemote(e.getWorld().isRemote);
+			setupManager(e.getWorld(), manager);
 		}
 		
-		if(!e.world.isRemote)
+		if(!e.getWorld().isRemote)
 			return;
 		
-		if(e.world.provider.getDimension() == 0 || e.world.provider.getDimension() == 1)
-			e.world.provider.setSkyRenderer(new SkyRenderer());
+		if(e.getWorld().provider.getDimension() == 0 || e.getWorld().provider.getDimension() == 1)
+			e.getWorld().provider.setSkyRenderer(new SkyRenderer());
 	}
 	
 	public static void setupManager(World world, StellarManager manager) {
@@ -65,15 +65,15 @@ public class StellarEventHook {
 	
 	@SubscribeEvent
 	public void onSleepInBed(PlayerSleepInBedEvent event) {
-		if(!StellarSky.proxy.wakeManager.isEnabled() || event.entityPlayer.worldObj.isRemote) {
+		if(!StellarSky.proxy.wakeManager.isEnabled() || event.getEntityPlayer().worldObj.isRemote) {
 			return;
 		}
 
-		if(event.result == null || event.result == EnumStatus.OK || event.result == EnumStatus.NOT_POSSIBLE_NOW) {
-			World worldObj = event.entityPlayer.worldObj;
+		if(event.getResultStatus() == null || event.getResultStatus() == EnumStatus.OK || event.getResultStatus() == EnumStatus.NOT_POSSIBLE_NOW) {
+			World worldObj = event.getEntityPlayer().worldObj;
 			StellarManager manager = StellarManager.getManager(false);
 			if (!StellarSky.proxy.wakeManager.canSkipTime(worldObj, manager, worldObj.getWorldTime()))
-				event.result = EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW;
+				event.setResult(EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW);
 		}
 	}
 }
