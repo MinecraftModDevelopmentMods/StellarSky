@@ -79,9 +79,11 @@ public class StellarSkyClientRender {
 	public void onInitGui(InitGuiEvent.Post event) {
 		if(event.getGui() instanceof GuiOptions)
 		{
-			GuiButton guibutton = new GuiButton(30, event.getGui().width / 2 + 5, event.getGui().height / 6 + 12, 150, 20, I18n.format("stellarsky.gui.lock"));
-			event.getButtonList().add(guibutton);
-			guibutton.enabled = !StellarManager.getManager(true).isLocked();
+			if(event.getGui().mc.theWorld != null) {
+				GuiButton guibutton = new GuiButton(30, event.getGui().width / 2 + 5, event.getGui().height / 6 + 12, 150, 20, I18n.format("stellarsky.gui.lock"));
+				event.getButtonList().add(guibutton);
+				guibutton.enabled = !StellarManager.getManager(true).isLocked();
+			}
 		}
 	}
 	

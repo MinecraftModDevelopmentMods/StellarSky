@@ -35,7 +35,7 @@ public class StellarEventHook {
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load e)
 	{
-		if(e.getWorld().provider.getDimension() == 0 || e.getWorld().provider.getDimension() == 1) {
+		if(e.getWorld().provider.getDimension() == 0 || e.getWorld().provider.getDimension() == 1 || e.getWorld().isRemote) {
 			StellarManager manager = StellarManager.loadOrCreateManager(e.getWorld());
 			manager.setRemote(e.getWorld().isRemote);
 			setupManager(e.getWorld(), manager);
