@@ -5,12 +5,21 @@ import java.util.List;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import stellarium.config.INBTConfig;
 
 public interface ICelestialLayer {
 	
+	public String getLayerName();
+	
 	public boolean existOnServer();
 	
-	public void initialize(boolean isRemote) throws IOException;
+	/**
+	 * Gets configuration for certain layer.
+	 * Only for server layers.
+	 * */
+	public INBTConfig getConfigType();
+	
+	public void initialize(boolean isRemote, INBTConfig config) throws IOException;
 	
 	public void updateLayer(double year);
 	

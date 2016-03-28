@@ -10,7 +10,7 @@ import com.google.common.collect.Lists;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.StellarSky;
-import stellarium.stellars.background.rebase.BrStar;
+import stellarium.config.INBTConfig;
 import stellarium.stellars.sketch.CelestialObject;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
@@ -43,8 +43,7 @@ public class LayerBrStar extends LayerBgStar {
 	}
 	
 	@Override
-	public void initialize(boolean isRemote) throws IOException {
-		
+	public void initialize(boolean isRemote, INBTConfig config) throws IOException {
 		//Counter Variable
 		int i, j, k;
 		
@@ -52,7 +51,7 @@ public class LayerBrStar extends LayerBgStar {
 		
 		//Read
 		str=new byte[NumStar*Bufsize];
-		InputStream brs=BrStar.class.getResourceAsStream("/data/bsc5.dat");
+		InputStream brs=BgStar.class.getResourceAsStream("/data/bsc5.dat");
 	    BufferedInputStream bbrs = new BufferedInputStream(brs);
 	    bbrs.read(str);
 	    bbrs.close();
@@ -113,6 +112,16 @@ public class LayerBrStar extends LayerBgStar {
 	@Override
 	public boolean existOnServer() {
 		return false;
+	}
+
+	@Override
+	public String getLayerName() {
+		return "Bright Stars";
+	}
+
+	@Override
+	public INBTConfig getConfigType() {
+		return null;
 	}
 
 }

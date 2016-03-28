@@ -275,7 +275,7 @@ public class Spmath {
 		double e2=Spmath.Degrees(e);
 		double E=Spmath.CalEcanomaly(e2, M);
 		IValRef r = new EVector(a*(cosd(E)-e), a*Math.sqrt(1-e*e)*sind(E), 0.0);
-		return Omr.transform(Ir.transform(wr.transform(r))).getVal();
+		return (EVector) Omr.transform(Ir.transform(wr.transform(r))).getVal();
 	}
 
 	public static double TemptoB_V(double temp) {

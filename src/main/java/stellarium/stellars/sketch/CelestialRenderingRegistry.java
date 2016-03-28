@@ -21,6 +21,11 @@ public class CelestialRenderingRegistry {
 	private List<ICelestialLayerRenderer> layerRendererList = Lists.newArrayList();
 	private List<ICelestialObjectRenderer> objectRendererList = Lists.newArrayList();
 	
+	protected void refresh() {
+		layerRendererList.clear();
+		objectRendererList.clear();
+	}
+	
 	public int registerLayerRenderer(ICelestialLayerRenderer renderer) {
 		int index = layerRendererList.size();
 		layerRendererList.add(renderer);

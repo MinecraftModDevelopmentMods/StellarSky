@@ -11,10 +11,10 @@ import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.CrossUtil;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.client.ClientSettings;
-import stellarium.stellars.Color;
 import stellarium.stellars.Optics;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.background.BrStar;
+import stellarium.util.Color;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 

@@ -76,12 +76,19 @@ config.property.server.latitudeender.tooltip=Latitude on Ender, in Degrees.
 config.property.server.longitudeender=Longitude on Ender
 config.property.server.longitudeender.tooltip=Longitude on Ender, in Degrees. (East is +)
 
+
+///Solar System
+config.category.solarsystem=Solar System Configurations
+config.category.solarsystem.tooltip=Configurations for Solar System.
+
 config.property.server.moonsize=Size of Moon
 config.property.server.moonsize.tooltip=Size of moon. (Default size is 1.0)
 
 config.property.server.moonbrightness=Brightness of Moon
 config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brightness is 1.0)
 
+
+///Wake
 config.property.server.wakemode=Wake Mode
 config.property.server.wakemode.expl=You can choose earliest or latest available wake time among these wake properties.
 

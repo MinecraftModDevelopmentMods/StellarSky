@@ -18,14 +18,12 @@ import sciapi.api.value.util.VOp;
 public class VecMath {
 	
 	/** Gives Added value for EVector. */
-	@Temporal
 	public static IValRef<EVector> add(IValRef<EVector> par1, IValRef<EVector> par2)
 	{
 		return BOp.add(par1, par2);
 	}
 	
 	/** Gives Subtracted value for EVector. */
-	@Temporal
 	public static IValRef<EVector> sub(IValRef<EVector> par1, IValRef<EVector> par2)
 	{
 		return BOp.sub(par1, par2);
@@ -35,7 +33,6 @@ public class VecMath {
 	/**
 	 * Gives Multiplicated value for EVector.
 	 * */
-	@Temporal
 	public static IValRef<EVector> mult(IValRef<IReal> par1, IValRef<EVector> par2)
 	{
 		return VOp.mult(par1, par2);
@@ -44,7 +41,6 @@ public class VecMath {
 	/**
 	 * Gives Divided value for EVector.
 	 * */
-	@Temporal
 	public static IValRef<EVector> div(IValRef<IReal> par1, IValRef<EVector> par2)
 	{
 		return VOp.div(par1, par2);
@@ -53,7 +49,6 @@ public class VecMath {
 	/**
 	 * Gives Multiplicated value for EVector.
 	 * */
-	@Temporal
 	public static IValRef<EVector> mult(double par1, IValRef<EVector> par2)
 	{
 		DDouble ref = DDoubleSet.ins.getNew();
@@ -64,7 +59,6 @@ public class VecMath {
 	/**
 	 * Gives Divided value for EVector.
 	 * */
-	@Temporal
 	public static IValRef<EVector> div(double par1, IValRef<EVector> par2)
 	{
 		DDouble ref = DDoubleSet.ins.getNew();
@@ -76,7 +70,6 @@ public class VecMath {
 	/**
 	 * Gives Dot product of Euclidian Vectors.
 	 * */
-	@Temporal
 	public static IValRef<IReal> dot(IValRef<EVector> par1, IValRef<EVector> par2)
 	{
 		return VOp.dot(par1, par2);
@@ -85,19 +78,16 @@ public class VecMath {
 	/**
 	 * Gives Normalized EVector.
 	 * */
-	@Temporal
 	public static IValRef<EVector> normalize(IValRef<EVector> par)
 	{
 		return VOp.normalize(par);
 	}
 	
-	@Temporal
 	public static IValRef<IReal> size2(IValRef<EVector> par)
 	{
 		return VOp.size2(par);
 	}
 	
-	@Temporal
 	public static IValRef<IReal> size(IValRef<EVector> par)
 	{
 		return NumMath.sqrt.calc(size2(par));

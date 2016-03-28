@@ -7,9 +7,11 @@ import com.google.common.collect.Lists;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarium.config.HierarchicalNBTConfig;
 import stellarium.config.IConfigHandler;
+import stellarium.config.INBTConfig;
 
-public class CommonSettings implements IConfigHandler {
+public class CommonSettings extends HierarchicalNBTConfig {
 	
 	public boolean serverEnabled;
 	public double day, year;
@@ -17,14 +19,12 @@ public class CommonSettings implements IConfigHandler {
 	public double tickOffset;
 	public double latitudeOverworld, latitudeEnder;
 	public double longitudeOverworld, longitudeEnder;
-	public double moonSizeMultiplier, moonBrightnessMultiplier;
 
 	private Property propServerEnabled;
 	private Property propDay, propYear;
 	private Property propYearOffset, propDayOffset, propTickOffset;
 	private Property propLatitudeOverworld, propLongitudeOverworld;
 	private Property propLatitudeEnder, propLongitudeEnder;
-	private Property propMoonSize, propMoonBrightness;
 	
 	public CommonSettings() { }
 	
@@ -39,8 +39,6 @@ public class CommonSettings implements IConfigHandler {
 		this.longitudeOverworld = settingsToCopy.longitudeOverworld;
 		this.latitudeEnder = settingsToCopy.latitudeEnder;
 		this.longitudeEnder = settingsToCopy.longitudeEnder;
-		this.moonSizeMultiplier = settingsToCopy.moonSizeMultiplier;
-		this.moonBrightnessMultiplier = settingsToCopy.moonBrightnessMultiplier;
 	}
 
 	@Override
@@ -111,17 +109,6 @@ public class CommonSettings implements IConfigHandler {
        	propLongitudeEnder.setLanguageKey("config.property.server.longitudeender");
         propNameList.add(propLongitudeEnder.getName());
         
-       	propMoonSize = config.get(category, "Moon_Size", 1.0);
-       	propMoonSize.comment = "Size of moon. (Default size is 1.0)";
-       	propMoonSize.setRequiresWorldRestart(true);
-       	propMoonSize.setLanguageKey("config.property.server.moonsize");
-        propNameList.add(propMoonSize.getName());
-        
-       	propMoonBrightness = config.get(category, "Moon_Brightness", 1.0);
-       	propMoonBrightness.comment = "Brightness of moon. (Default brightness is 1.0)";
-       	propMoonBrightness.setRequiresWorldRestart(true);
-       	propMoonBrightness.setLanguageKey("config.property.server.moonbrightness");
-        propNameList.add(propMoonBrightness.getName());
         config.setCategoryPropertyOrder(category, propNameList);
 	}
 
@@ -137,8 +124,6 @@ public class CommonSettings implements IConfigHandler {
        	this.longitudeOverworld = propLongitudeOverworld.getDouble();
        	this.latitudeEnder = propLatitudeEnder.getDouble();
        	this.longitudeEnder = propLongitudeEnder.getDouble();
-       	this.moonSizeMultiplier = propMoonSize.getDouble();
-       	this.moonBrightnessMultiplier = propMoonBrightness.getDouble();
 	}
 
 	
@@ -153,8 +138,6 @@ public class CommonSettings implements IConfigHandler {
        	this.longitudeOverworld = compound.getDouble("longitudeOverworld");
        	this.latitudeEnder = compound.getDouble("lattitudeEnder");
        	this.longitudeEnder = compound.getDouble("longitudeEnder");
-       	this.moonSizeMultiplier = compound.getDouble("moonSize");
-       	this.moonBrightnessMultiplier = compound.getDouble("moonBrightness");
 	}
 
 	
@@ -169,7 +152,12 @@ public class CommonSettings implements IConfigHandler {
        	compound.setDouble("longitudeOverworld", this.longitudeOverworld);
        	compound.setDouble("lattitudeEnder", this.latitudeEnder);
        	compound.setDouble("longitudeEnder", this.longitudeEnder);
-       	compound.setDouble("moonSize", this.moonSizeMultiplier);
-       	compound.setDouble("moonBrightness", this.moonBrightnessMultiplier);
+	}
+
+	@Override
+	public INBTConfig copy() {
+		CommonSettings settings = new CommonSettings(this);
+		this.applyCopy(settings);
+		return settings;
 	}
 }

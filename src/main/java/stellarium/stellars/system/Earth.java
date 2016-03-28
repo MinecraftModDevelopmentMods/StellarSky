@@ -1,10 +1,21 @@
 package stellarium.stellars.system;
 
+import stellarium.stellars.sketch.IRenderCache;
+
 public class Earth extends Planet {
 
-	public Earth(boolean isRemote) {
-		super(isRemote);
-		// TODO Auto-generated constructor stub
+	public Earth(boolean isRemote, SolarObject parent) {
+		super(isRemote, parent);
+	}
+	
+	@Override
+	public IRenderCache generateCache() {
+		return null;
+	}
+
+	@Override
+	public int getRenderId() {
+		return -1;
 	}
 
 }

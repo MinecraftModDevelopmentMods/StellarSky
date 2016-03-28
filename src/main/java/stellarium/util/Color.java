@@ -1,4 +1,4 @@
-package stellarium.stellars;
+package stellarium.util;
 
 public class Color {
 	public short r;

@@ -3,10 +3,10 @@ package stellarium.stellars.system;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import sciapi.api.value.euclidian.EVector;
-import stellarium.stellars.Color;
 import stellarium.stellars.Optics;
 import stellarium.stellars.sketch.ICelestialObjectRenderer;
 import stellarium.stellars.sketch.IRenderCache;
+import stellarium.util.Color;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.VecMath;
 
