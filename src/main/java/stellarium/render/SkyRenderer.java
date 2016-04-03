@@ -17,20 +17,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IRenderHandler;
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.CrossUtil;
-import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.IEVector;
-import sciapi.api.value.util.VOp;
-import stellarium.StellarSky;
-import stellarium.stellars.Optics;
-import stellarium.stellars.StellarObj;
-import stellarium.stellars.StellarTransforms;
-import stellarium.stellars.background.BrStar;
-import stellarium.stellars.util.ExtinctionRefraction;
-import stellarium.util.Color;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
 
 public class SkyRenderer extends IRenderHandler {
 

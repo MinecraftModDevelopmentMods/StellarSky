@@ -1,23 +1,21 @@
 package stellarium;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.EnumSet;
 import java.util.Iterator;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.WorldInfo;
-import stellarium.stellars.StellarManager;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.WorldInfo;
+import stellarium.api.ISkyProvider;
+import stellarium.api.StellarSkyAPI;
+import stellarium.stellars.StellarManager;
+import stellarium.stellars.view.StellarDimensionManager;
 
 public class StellarTickHandler {
 	
@@ -34,12 +32,25 @@ public class StellarTickHandler {
 	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
 		if(e.phase == Phase.START){
-			World world = StellarSky.proxy.getDefWorld();
+			World world = StellarSky.proxy.getDefWorld(true);
 			
 			if(world != null) {
-				StellarManager manager = StellarManager.getManager(world);
-				manager.update(world.getWorldTime(),
-							world.provider.isSurfaceWorld());
+				StellarManager manager = StellarManager.getManager(true);
+				manager.update(world.getWorldTime());
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void tickStart(TickEvent.ServerTickEvent e) {
+		if(e.phase == Phase.START){
+			World world = StellarSky.proxy.getDefWorld(false);
+			
+			if(world != null) {
+				StellarManager manager = StellarManager.getManager(false);
+				
+				if(manager.getSettings().serverEnabled)
+					manager.update(world.getWorldTime());
 			}
 		}
 	}
@@ -48,7 +59,10 @@ public class StellarTickHandler {
 	public void tickStart(TickEvent.WorldTickEvent e) {
 		if(e.phase == Phase.START){
 			if(e.world != null) {
-				StellarManager manager = StellarManager.getManager(e.world);
+				StellarDimensionManager dimManager = StellarDimensionManager.get(e.world);
+				dimManager.update(e.world, e.world.getWorldTime());
+				
+				StellarManager manager = StellarManager.getManager(false);
 				if(!manager.getSettings().serverEnabled)
 					return;
 				
@@ -57,7 +71,7 @@ public class StellarTickHandler {
 
 					world.updateAllPlayersSleepingFlag();
 					if (world.areAllPlayersAsleep())
-						this.tryWakePlayers(world, manager);
+						this.tryWakePlayers(world, StellarSkyAPI.getSkyProvider(e.world));
 
 					try {
 						sleep.setBoolean(world, false);
@@ -67,19 +81,16 @@ public class StellarTickHandler {
 						ex.printStackTrace();
 					}
 				}
-				
-				manager.update(e.world.getWorldTime(),
-						e.world.provider.isSurfaceWorld());
 			}
 		}
 	}
 
-	private void tryWakePlayers(WorldServer world, StellarManager manager) {		
+	private void tryWakePlayers(WorldServer world, ISkyProvider skyProvider) {		
         if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
         {
         	WorldInfo info = world.getWorldInfo();
         	long worldTime = info.getWorldTime();
-            info.setWorldTime(StellarSky.proxy.wakeManager.getWakeTime(world, manager, worldTime));
+            info.setWorldTime(StellarSky.proxy.wakeManager.getWakeTime(world, skyProvider, worldTime));
         }
 
         Iterator iterator = world.playerEntities.iterator();

@@ -4,7 +4,7 @@ import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.Optics;
-import stellarium.stellars.sketch.IRenderCache;
+import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.stellars.view.IStellarViewpoint;
 import stellarium.util.math.SpCoord;
@@ -12,6 +12,8 @@ import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 
 public class MoonRenderCache implements IRenderCache<Moon> {
+	
+	protected boolean shouldRenderGlow;
 	
 	protected SpCoord appCoord, cache;
 	protected int latn, longn;
@@ -39,6 +41,8 @@ public class MoonRenderCache implements IRenderCache<Moon> {
 		double mag = object.currentMag + airmass * Optics.ext_coeff_V;
 		appCoord.setWithVec(ref);
 		viewpoint.applyAtmRefraction(this.appCoord);
+		
+		this.shouldRenderGlow = appCoord.y >= 0 || !viewpoint.hideObjectsUnderHorizon();
 		
 		this.size = object.radius/Spmath.getD(VecMath.size(object.earthPos));
 		this.difactor = 0.8 / 180.0 * Math.PI / this.size;

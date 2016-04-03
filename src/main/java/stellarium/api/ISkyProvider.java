@@ -82,6 +82,21 @@ public interface ISkyProvider {
 	public double getHighestMoonHeightAngle();
 	
 	/**
+	 * Daytime offset when sun reaches certain height angle first.
+	 * May give negative value or time on reflected position.
+	 * Also error gets bigger when year is short relative to day.
+	 * @param heightAngle the height angle in degrees.
+	 * */
+	public double dayOffsetUntilSunReach(double heightAngle);
+	
+	/**
+	 * Day offset when moon reaches certain height angle first.
+	 * May give negative value or time on reflected position.
+	 * @param heightAngle the height angle in degrees.
+	 * */
+	public double dayOffsetUntilMoonReach(double heightAngle);
+	
+	/**
 	 * Current position of sun.
 	 * */
 	public Vector3f getCurrentSunPosition();

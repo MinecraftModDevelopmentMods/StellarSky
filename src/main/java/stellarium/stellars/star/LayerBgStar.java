@@ -7,9 +7,9 @@ import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import stellarium.stellars.sketch.CelestialObject;
-import stellarium.stellars.sketch.CelestialRenderingRegistry;
-import stellarium.stellars.sketch.ICelestialLayer;
+import stellarium.stellars.layer.CelestialObject;
+import stellarium.stellars.layer.CelestialRenderingRegistry;
+import stellarium.stellars.layer.ICelestialLayer;
 
 public abstract class LayerBgStar implements ICelestialLayer {
 	
@@ -31,12 +31,7 @@ public abstract class LayerBgStar implements ICelestialLayer {
 			BgStar.setRenderId(registry.registerObjectRenderer(new StarRenderer()));
 		}
 	}
-
-	@Override
-	public boolean existOnServer() {
-		return false;
-	}
-
+	
 	@Override
 	public void updateLayer(double year) { }
 }

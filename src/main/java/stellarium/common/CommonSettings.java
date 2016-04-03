@@ -10,6 +10,7 @@ import net.minecraftforge.common.config.Property;
 import stellarium.config.HierarchicalNBTConfig;
 import stellarium.config.IConfigHandler;
 import stellarium.config.INBTConfig;
+import stellarium.stellars.layer.CelestialLayerRegistry;
 
 public class CommonSettings extends HierarchicalNBTConfig {
 	
@@ -17,16 +18,14 @@ public class CommonSettings extends HierarchicalNBTConfig {
 	public double day, year;
 	public int yearOffset, dayOffset;
 	public double tickOffset;
-	public double latitudeOverworld, latitudeEnder;
-	public double longitudeOverworld, longitudeEnder;
 
 	private Property propServerEnabled;
 	private Property propDay, propYear;
 	private Property propYearOffset, propDayOffset, propTickOffset;
-	private Property propLatitudeOverworld, propLongitudeOverworld;
-	private Property propLatitudeEnder, propLongitudeEnder;
 	
-	public CommonSettings() { }
+	public CommonSettings() {
+		CelestialLayerRegistry.getInstance().composeSettings(this);
+	}
 	
 	public CommonSettings(CommonSettings settingsToCopy) {
 		this.serverEnabled = settingsToCopy.serverEnabled;
@@ -35,10 +34,6 @@ public class CommonSettings extends HierarchicalNBTConfig {
 		this.yearOffset = settingsToCopy.yearOffset;
 		this.dayOffset = settingsToCopy.dayOffset;
 		this.tickOffset = settingsToCopy.tickOffset;
-		this.latitudeOverworld = settingsToCopy.latitudeOverworld;
-		this.longitudeOverworld = settingsToCopy.longitudeOverworld;
-		this.latitudeEnder = settingsToCopy.latitudeEnder;
-		this.longitudeEnder = settingsToCopy.longitudeEnder;
 	}
 
 	@Override
@@ -84,32 +79,10 @@ public class CommonSettings extends HierarchicalNBTConfig {
        	propTickOffset.setRequiresWorldRestart(true);
        	propTickOffset.setLanguageKey("config.property.server.tickoffset");
         propNameList.add(propTickOffset.getName());
-
-       	propLatitudeOverworld = config.get(category, "Latitude_Overworld", 37.5);
-       	propLatitudeOverworld.comment = "Latitude on Overworld, in Degrees.";
-       	propLatitudeOverworld.setRequiresWorldRestart(true);
-       	propLatitudeOverworld.setLanguageKey("config.property.server.latitudeoverworld");
-        propNameList.add(propLatitudeOverworld.getName());
-
-       	propLongitudeOverworld = config.get(category, "Longitude_Overworld", 0.0);
-       	propLongitudeOverworld.comment = "Longitude on Overworld, in Degrees. (East is +)";
-       	propLongitudeOverworld.setRequiresWorldRestart(true);
-       	propLongitudeOverworld.setLanguageKey("config.property.server.longitudeoverworld");
-        propNameList.add(propLongitudeOverworld.getName());
-
-       	propLatitudeEnder = config.get(category, "Latitude_Ender", -52.5);
-       	propLatitudeEnder.comment = "Latitude on Ender, in Degrees.";
-       	propLatitudeEnder.setRequiresWorldRestart(true);
-       	propLatitudeEnder.setLanguageKey("config.property.server.latitudeender");
-        propNameList.add(propLatitudeEnder.getName());
-
-       	propLongitudeEnder = config.get(category, "Longitude_Ender", 180.0);
-       	propLongitudeEnder.comment = "Longitude on Ender, in Degrees. (East is +)";
-       	propLongitudeEnder.setRequiresWorldRestart(true);
-       	propLongitudeEnder.setLanguageKey("config.property.server.longitudeender");
-        propNameList.add(propLongitudeEnder.getName());
         
         config.setCategoryPropertyOrder(category, propNameList);
+        
+        super.setupConfig(config, category);
 	}
 
 	@Override
@@ -120,10 +93,8 @@ public class CommonSettings extends HierarchicalNBTConfig {
        	this.yearOffset = propYearOffset.getInt();
        	this.dayOffset = propDayOffset.getInt();
        	this.tickOffset = propTickOffset.getDouble();
-       	this.latitudeOverworld = propLatitudeOverworld.getDouble();
-       	this.longitudeOverworld = propLongitudeOverworld.getDouble();
-       	this.latitudeEnder = propLatitudeEnder.getDouble();
-       	this.longitudeEnder = propLongitudeEnder.getDouble();
+       	
+       	super.loadFromConfig(config, category);
 	}
 
 	
@@ -134,10 +105,8 @@ public class CommonSettings extends HierarchicalNBTConfig {
        	this.yearOffset = compound.getInteger("yearOffset");
        	this.dayOffset = compound.getInteger("dayOffset");
        	this.tickOffset = compound.getDouble("tickOffset");
-       	this.latitudeOverworld = compound.getDouble("lattitudeOverworld");
-       	this.longitudeOverworld = compound.getDouble("longitudeOverworld");
-       	this.latitudeEnder = compound.getDouble("lattitudeEnder");
-       	this.longitudeEnder = compound.getDouble("longitudeEnder");
+       	
+       	super.readFromNBT(compound);
 	}
 
 	
@@ -148,10 +117,8 @@ public class CommonSettings extends HierarchicalNBTConfig {
        	compound.setInteger("yearOffset", this.yearOffset);
        	compound.setInteger("dayOffset", this.dayOffset);
        	compound.setDouble("tickOffset", this.tickOffset);
-       	compound.setDouble("lattitudeOverworld", this.latitudeOverworld);
-       	compound.setDouble("longitudeOverworld", this.longitudeOverworld);
-       	compound.setDouble("lattitudeEnder", this.latitudeEnder);
-       	compound.setDouble("longitudeEnder", this.longitudeEnder);
+       	
+       	super.writeToNBT(compound);
 	}
 
 	@Override

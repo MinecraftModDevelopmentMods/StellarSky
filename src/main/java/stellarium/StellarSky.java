@@ -2,6 +2,8 @@ package stellarium;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.Logger;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -32,6 +34,8 @@ public class StellarSky {
         @SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
         public static CommonProxy proxy;
         
+        public static Logger logger;
+        
         private StellarEventHook eventHook = new StellarEventHook();
         private StellarTickHandler tickHandler = new StellarTickHandler();
         private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
@@ -42,7 +46,9 @@ public class StellarSky {
         }
         
         @EventHandler
-        public void preInit(FMLPreInitializationEvent event) {        	
+        public void preInit(FMLPreInitializationEvent event) { 
+        	logger = event.getModLog();
+        	
         	proxy.preInit(event);
         	
     		MinecraftForge.EVENT_BUS.register(this.eventHook);

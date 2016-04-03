@@ -1,5 +1,7 @@
 package stellarium.api;
 
+import net.minecraft.world.World;
+
 public class StellarSkyAPI {
 	
 	public ISkyProviderGetter skyProviderGetter;
@@ -24,8 +26,8 @@ public class StellarSkyAPI {
 	 * Gets Sky Provider. Effective on both side.<p>
 	 * NOTE: This do no work when world is not open.
 	 * */
-	public static ISkyProvider getSkyProvider() {
-		return INSTANCE.skyProviderGetter.getSkyProvider();
+	public static ISkyProvider getSkyProvider(World world) {
+		return INSTANCE.skyProviderGetter.getSkyProvider(world);
 	}
 	
 	/**

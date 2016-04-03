@@ -10,8 +10,9 @@ import com.google.common.collect.Lists;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.StellarSky;
+import stellarium.config.IConfigHandler;
 import stellarium.config.INBTConfig;
-import stellarium.stellars.sketch.CelestialObject;
+import stellarium.stellars.layer.CelestialObject;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
 import stellarium.util.math.Rotate;
@@ -43,11 +44,11 @@ public class LayerBrStar extends LayerBgStar {
 	}
 	
 	@Override
-	public void initialize(boolean isRemote, INBTConfig config) throws IOException {
+	public void initialize(boolean isRemote, IConfigHandler config) throws IOException {
 		//Counter Variable
 		int i, j, k;
 		
-		System.out.println("[Stellarium]: "+"Loading Bright Stars Data...");
+		StellarSky.logger.info("Loading Bright Stars Data...");
 		
 		//Read
 		str=new byte[NumStar*Bufsize];
@@ -105,23 +106,8 @@ public class LayerBrStar extends LayerBgStar {
 	    
 	    str=null;
 	    
-	    System.out.println("[Stellarium]: "+"Bright Stars are Loaded!");
+	    StellarSky.logger.info("Bright Stars are Loaded!");
 	    IsInitialized=true;
-	}
-
-	@Override
-	public boolean existOnServer() {
-		return false;
-	}
-
-	@Override
-	public String getLayerName() {
-		return "Bright Stars";
-	}
-
-	@Override
-	public INBTConfig getConfigType() {
-		return null;
 	}
 
 }

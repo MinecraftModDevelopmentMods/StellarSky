@@ -7,9 +7,10 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.StellarSky;
 import stellarium.config.EnumViewMode;
-import stellarium.config.IConfigHandler;
+import stellarium.config.HierarchicalConfig;
+import stellarium.stellars.layer.CelestialLayerRegistry;
 
-public class ClientSettings implements IConfigHandler {
+public class ClientSettings extends HierarchicalConfig {
 	
 	public float mag_Limit;
 	public float milkywayBrightness;
@@ -24,6 +25,12 @@ public class ClientSettings implements IConfigHandler {
 	private Property propViewMode;
 	
 	private EnumViewMode viewMode = EnumViewMode.EMPTY;
+	
+	private boolean isDirty = false;
+	
+	public ClientSettings() {
+		CelestialLayerRegistry.getInstance().composeSettings(this);
+	}
 	
 	public void incrementViewMode() {
 		this.viewMode = viewMode.nextMode();
@@ -106,6 +113,8 @@ public class ClientSettings implements IConfigHandler {
         		propViewMode.getName(),
         		propMinuteLength.getName(), propHourToMinute.getName());
         config.setCategoryPropertyOrder(category, propNameList);
+        
+        super.setupConfig(config, category);
 	}
 
 	@Override
@@ -120,6 +129,16 @@ public class ClientSettings implements IConfigHandler {
         this.anHourToMinute = propHourToMinute.getInt();
         
         this.setViewMode(EnumViewMode.getModeForName(propViewMode.getString()));
+        
+        super.loadFromConfig(config, category);
+        
+        this.isDirty = true;
+	}
+	
+	public boolean checkDirty() {
+		boolean flag = this.isDirty;
+		this.isDirty = false;
+		return flag;
 	}
 	
 }

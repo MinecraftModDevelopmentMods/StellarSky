@@ -4,12 +4,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import stellarium.StellarSky;
-import stellarium.stellars.StellarManager;
+import stellarium.api.ISkyProvider;
 
 public class AlarmWakeHandler implements IWakeHandler {
-	
-	private static final int DEFAULT_OFFSET = 1000;
+
 	//Wake time from midnight
 	private int wakeTime;
 
@@ -28,27 +26,18 @@ public class AlarmWakeHandler implements IWakeHandler {
 	}
 
 	@Override
-	public long getWakeTime(World world, StellarManager manager, long sleepTime) {
-		double tickOffset = manager.getSettings().tickOffset;
-		double dayLength = manager.getSettings().day;
-		double longitudeEffect = manager.getSettings().longitudeOverworld / 360.0;
-    	double modifiedWorldTime = sleepTime - sleepTime % dayLength
-    			- dayLength * longitudeEffect - tickOffset - DEFAULT_OFFSET + this.wakeTime;
+	public long getWakeTime(World world, ISkyProvider skyProvider, long sleepTime) {
+		double currentOffset = skyProvider.getDaytimeOffset(sleepTime);
+		double dayLength = skyProvider.getDayLength();
+		double modifiedWorldTime = this.wakeTime - (0.25 + currentOffset) * dayLength;
     	while(modifiedWorldTime < sleepTime)
     		modifiedWorldTime += dayLength;
 		return (long) modifiedWorldTime;
 	}
 
 	@Override
-	public boolean canSleep(World world, StellarManager manager, long sleepTime) {
-		double tickOffset = manager.getSettings().tickOffset;
-		double dayLength = manager.getSettings().day;
-		double longitudeEffect = manager.getSettings().longitudeOverworld / 360.0;
-    	double worldTimeOffset = sleepTime % dayLength + dayLength * longitudeEffect + tickOffset
-    			- DEFAULT_OFFSET;
-    	worldTimeOffset = worldTimeOffset % dayLength;
-    	
-    	return !world.isDaytime() && worldTimeOffset > 0.5;
+	public boolean canSleep(World world, ISkyProvider skyProvider, long sleepTime) {    	
+    	return !world.isDaytime() && skyProvider.getDaytimeOffset(sleepTime) > 0.5;
 	}
 
 }

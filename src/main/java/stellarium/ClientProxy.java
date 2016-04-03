@@ -2,29 +2,21 @@ package stellarium;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.DefaultHourProvider;
 import stellarium.client.StellarKeyHook;
 import stellarium.client.StellarSkyClientHandler;
-import stellarium.config.EnumViewMode;
-import stellarium.config.IConfigHandler;
 import stellarium.stellars.Optics;
-import stellarium.stellars.StellarManager;
-import stellarium.stellars.background.BrStar;
+import stellarium.stellars.layer.CelestialManager;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
@@ -33,8 +25,15 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	
 	private ClientSettings clientSettings = new ClientSettings();
 	
+	private CelestialManager celestialManager = new CelestialManager(true);
+	
 	public ClientSettings getClientSettings() {
 		return this.clientSettings;
+	}
+	
+	@Override
+	public CelestialManager getClientCelestialManager() {
+		return this.celestialManager;
 	}
 	
 	@Override
@@ -51,9 +50,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public void load(FMLInitializationEvent event) throws IOException {
 		super.load(event);
 		
-		System.out.println("[Stellarium]: "+"Initializing Stars...");
-    	BrStar.initializeAll();
-    	System.out.println("[Stellarium]: "+"Stars Initialized!");
+    	celestialManager.initializeClient(this.clientSettings);
 	}
 
 	@Override
@@ -71,5 +68,10 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	@Override
 	public World getDefWorld() {
 		return Minecraft.getMinecraft().theWorld;
+	}
+	
+	@Override
+	public World getDefWorld(boolean isRemote) {
+		return isRemote? this.getDefWorld() : super.getDefWorld();
 	}
 }

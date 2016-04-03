@@ -1,13 +1,11 @@
 package stellarium.client;
 
-import cpw.mods.fml.client.GuiIngameModOptions;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -16,6 +14,7 @@ import stellarium.api.IHourProvider;
 import stellarium.api.StellarSkyAPI;
 import stellarium.config.EnumViewMode;
 import stellarium.stellars.StellarManager;
+import stellarium.stellars.view.StellarDimensionManager;
 
 public class StellarSkyClientHandler {
 		
@@ -28,13 +27,17 @@ public class StellarSkyClientHandler {
 				return;
 			
 			FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-			StellarManager manager = StellarManager.getManager(Minecraft.getMinecraft().theWorld);
-
+			StellarManager manager = StellarManager.getManager(true);
+			StellarDimensionManager dimManager = StellarDimensionManager.get(Minecraft.getMinecraft().theWorld);
+			
+			if(dimManager == null)
+				return;
+			
 			double currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
 			double time = manager.getSkyTime(currentTick);
 			double daylength = manager.getSettings().day;
 			double yearlength = manager.getSettings().year;
-			double date = currentTick / daylength + manager.getSettings().latitudeOverworld / 180.0;
+			double date = currentTick / daylength + dimManager.getSettings().latitude / 180.0;
 			double year = date / yearlength;
 			
 			int yr = (int)Math.floor(year);
@@ -75,23 +78,25 @@ public class StellarSkyClientHandler {
 	
 	@SubscribeEvent
 	public void onInitGui(InitGuiEvent.Post event) {
-		if(event.gui instanceof GuiIngameModOptions)
+		if(event.gui instanceof GuiOptions)
 		{
-			boolean locked = StellarManager.getManager(StellarSky.proxy.getDefWorld()).isLocked();
-			GuiButton guibutton = new GuiButton(30, event.gui.width / 2 - 100, event.gui.height / 2 - 10, 200, 20,
-					locked? I18n.format("stellarsky.gui.unlock") : I18n.format("stellarsky.gui.lock"));
-			event.buttonList.add(guibutton);
+			if(event.gui.mc.theWorld != null) {
+				boolean locked = StellarManager.getManager(true).isLocked();
+				GuiButton guibutton = new GuiButton(30, event.gui.width / 2 + 5, event.gui.height / 6 + 12, 150, 20,
+						locked? I18n.format("stellarsky.gui.unlock") : I18n.format("stellarsky.gui.lock"));
+				event.buttonList.add(guibutton);
+			}
 		}
 	}
 	
 	@SubscribeEvent
 	public void onButtonActivated(ActionPerformedEvent event) {
-		if(event.gui instanceof GuiIngameModOptions)
+		if(event.gui instanceof GuiOptions)
 		{
 			if(event.button.id == 30)
 			{
-				boolean locked = StellarManager.getManager(StellarSky.proxy.getDefWorld()).isLocked();
-				Minecraft.getMinecraft().thePlayer.sendChatMessage(String.format("/locksky %s", !locked));
+				boolean locked = StellarManager.getManager(true).isLocked();
+				event.gui.mc.thePlayer.sendChatMessage(String.format("/locksky %s", !locked));
 				event.button.displayString = locked? I18n.format("stellarsky.gui.unlock") : I18n.format("stellarsky.gui.lock");
 			}
 		}

@@ -1,11 +1,4 @@
-package stellarium.stellars.sketch;
-
-import java.util.HashMap;
-
-import com.google.common.collect.Maps;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+package stellarium.stellars.layer;
 
 public abstract class CelestialObject {
 	

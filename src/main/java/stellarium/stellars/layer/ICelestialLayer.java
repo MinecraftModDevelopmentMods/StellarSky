@@ -1,25 +1,15 @@
-package stellarium.stellars.sketch;
+package stellarium.stellars.layer;
 
 import java.io.IOException;
 import java.util.List;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import stellarium.config.INBTConfig;
+import stellarium.config.IConfigHandler;
 
-public interface ICelestialLayer {
+public interface ICelestialLayer<T extends IConfigHandler> {
 	
-	public String getLayerName();
-	
-	public boolean existOnServer();
-	
-	/**
-	 * Gets configuration for certain layer.
-	 * Only for server layers.
-	 * */
-	public INBTConfig getConfigType();
-	
-	public void initialize(boolean isRemote, INBTConfig config) throws IOException;
+	public void initialize(boolean isRemote, T config) throws IOException;
 	
 	public void updateLayer(double year);
 	

@@ -10,7 +10,7 @@ import sciapi.api.value.euclidian.CrossUtil;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
-import stellarium.stellars.sketch.ICelestialObjectRenderer;
+import stellarium.stellars.layer.ICelestialObjectRenderer;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.VecMath;
 

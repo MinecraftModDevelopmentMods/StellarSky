@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import sciapi.api.value.euclidian.EVector;
-import stellarium.stellars.sketch.ICelestialLayerRenderer;
+import stellarium.stellars.layer.ICelestialLayerRenderer;
 
 public class LayerSolarSystemRenderer implements ICelestialLayerRenderer {
 	

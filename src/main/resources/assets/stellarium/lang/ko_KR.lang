@@ -64,18 +64,6 @@ config.property.server.dayoffset.tooltip=월드 시작 시각이 1년 중 며칠
 config.property.server.tickoffset=Tick 단위 오프셋
 config.property.server.tickoffset.tooltip=월드 시작 시각이 하루 중 몇틱(Tick)째인지를 나타냅니다.
 
-config.property.server.latitudeoverworld=오버월드의 위도
-config.property.server.latitudeoverworld.tooltip=도 단위로 나타낸 오버월드의 위도입니다.
-
-config.property.server.longitudeoverworld=오버월드의 경도
-config.property.server.longitudeoverworld.tooltip=도 단위로 나타낸 오버월드의 경도로 동경이 +, 서경이 -입니다.
-
-config.property.server.latitudeender=엔더의 위도
-config.property.server.latitudeender.tooltip=도 단위로 나타낸 엔더의 위도입니다.
-
-config.property.server.longitudeender=엔더의 경도
-config.property.server.longitudeender.tooltip=도 단위로 나타낸 엔더의 경도로 동경이 +, 서경이 -입니다.
-
 
 ///Solar System
 config.category.solarsystem=태양계 컨피그
@@ -86,6 +74,29 @@ config.property.server.moonsize.tooltip=달의 크기를 나타냅니다. (기�
 
 config.property.server.moonbrightness=달의 밝기
 config.property.server.moonbrightness.tooltip=달의 밝기를 나타냅니다. (기본값은 1.0입니다)
+
+
+///Dimension
+config.category.dimension=월드 컨피그
+config.category.dimension.tooltip=월드간 세팅에 대한 
+
+config.property.dimension.applied=적용 월드 목록
+config.property.dimension.applied.tooltip=stellar sky의 설정과 렌더링이 적용되는 월드들을 정합니다. 각각의 디멘션들의 설정값들을 변화시키려면 modlist 페이지로 돌아간 후 다시 config버튼을 눌러 컨피그 gui로 돌아오면 됩니다.
+
+config.property.dimension.patchprovider=월드 패치 여부
+config.property.dimension.patchprovider.tooltip=월드를 패치하여 경도/위도 등의 설정을 바꿉니다. false로 설정되어 있으면 위도와 경도를 바꿀 수 없습니다.
+
+config.property.dimension.latitude=위도
+config.property.dimension.latitude.tooltip=도 단위로 나타낸 이 월드의 위도입니다.
+
+config.property.dimension.longitude=경도
+config.property.dimension.longitude.tooltip=도 단위로 나타낸 이 월드의 경도로 동경이 +, 서경이 -입니다.
+
+config.property.dimension.hidehorizonobj=지평선 아래의 천체 숨기기
+config.property.dimension.hidehorizonobj.tooltip=지평선 아래의 천체를 숨길지를 결정합니다.
+
+config.property.dimension.allowrefraction=대기 굴절 여부
+config.property.dimension.allowrefraction.tooltip=천체의 위치가 대기 굴절로 인하여 변경되는지를 결정합니다.
 
 
 ///Wake

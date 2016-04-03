@@ -6,7 +6,7 @@ import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.CrossUtil;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.stellars.Optics;
-import stellarium.stellars.sketch.ICelestialObjectRenderer;
+import stellarium.stellars.layer.ICelestialObjectRenderer;
 import stellarium.util.Color;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;

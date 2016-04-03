@@ -2,7 +2,7 @@ package stellarium.stellars.system;
 
 import sciapi.api.value.euclidian.EVector;
 import stellarium.client.ClientSettings;
-import stellarium.stellars.sketch.IRenderCache;
+import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.view.IStellarViewpoint;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;

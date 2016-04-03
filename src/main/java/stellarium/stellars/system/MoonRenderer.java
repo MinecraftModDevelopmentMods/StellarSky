@@ -11,7 +11,7 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.VOp;
 import stellarium.stellars.Optics;
-import stellarium.stellars.sketch.ICelestialObjectRenderer;
+import stellarium.stellars.layer.ICelestialObjectRenderer;
 import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
@@ -28,7 +28,7 @@ public class MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 		
 		mc.renderEngine.bindTexture(locationhalolunePng);
 
-		if(cache.appCoord.y >= 0){
+		if(cache.shouldRenderGlow){
 			EVector pos = cache.appCoord.getVec();
 			EVector dif = new SpCoord(cache.appCoord.x+90, 0.0).getVec();
 			EVector dif2 = new SpCoord(cache.appCoord.x, cache.appCoord.y+90).getVec();

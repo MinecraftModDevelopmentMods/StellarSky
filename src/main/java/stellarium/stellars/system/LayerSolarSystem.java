@@ -7,11 +7,12 @@ import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import stellarium.config.INBTConfig;
-import stellarium.stellars.sketch.CelestialRenderingRegistry;
-import stellarium.stellars.sketch.ICelestialLayer;
+import sciapi.api.value.euclidian.EVector;
+import stellarium.StellarSky;
+import stellarium.stellars.layer.CelestialRenderingRegistry;
+import stellarium.stellars.layer.ICelestialLayerCommon;
 
-public class LayerSolarSystem implements ICelestialLayer {
+public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettings> {
 	
 	private static int renderId = -1;
 	protected static int planetRenderId = -1;
@@ -35,23 +36,11 @@ public class LayerSolarSystem implements ICelestialLayer {
 	protected List<SolarObject> objects = Lists.newArrayList();
 
 	@Override
-	public boolean existOnServer() {
-		return true;
-	}
-	
-	@Override
-	public INBTConfig getConfigType() {
-		return new SolarSystemSettings();
-	}
-
-	@Override
-	public void initialize(boolean isRemote, INBTConfig config) throws IOException {
-		SolarSystemSettings settings = (SolarSystemSettings) config;
-		
+	public void initialize(boolean isRemote, SolarSystemSettings settings) throws IOException {		
 		////Solar System
-		System.out.println("[Stellarium]: "+"Initializing Solar System...");
+		StellarSky.logger.info("Initializing Solar System...");
 		///Sun
-		System.out.println("[Stellarium]: "+"Initializing Sun...");
+		StellarSky.logger.info("Initializing Sun...");
 		sun = new Sun(isRemote);
 		sun.radius=0.00465469;
 		sun.mass=1.0;
@@ -63,7 +52,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		earth = new Earth(isRemote, this.sun);
 		moon = new Moon(isRemote, this.earth);
 		
-		System.out.println("[Stellarium]: "+"Initializing Earth...");
+		StellarSky.logger.info("Initializing Earth...");
 		
 		earth.radius=4.2634e-5;
 		earth.mass=3.002458398e-6;
@@ -85,7 +74,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		earth.Omegad=-0.24123856;
 		
 		//-Moon
-		System.out.println("[Stellarium]: "+"Initializing Moon...");
+		StellarSky.logger.info("Initializing Moon...");
 		moon.albedo=0.12 * settings.moonBrightnessMultiplier;
 		moon.a0=0.00257184;
 		moon.e0=0.0549006;
@@ -106,7 +95,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		
 		///Planets
 		//Mercury
-		System.out.println("[Stellarium]: "+"Initializing Mercury...");
+		StellarSky.logger.info("Initializing Mercury...");
 		mercury = new Planet(isRemote, this.sun);
 		mercury.albedo=0.119;
 		mercury.radius=1.630815508e-5;
@@ -128,7 +117,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		objects.add(this.mercury);
 		
 		//Venus
-		System.out.println("[Stellarium]: "+"Initizlizing Venus...");
+		StellarSky.logger.info("Initizlizing Venus...");
 		venus = new Planet(isRemote, this.sun);
 		venus.albedo=0.90;
 		venus.radius=4.0453208556e-5;
@@ -150,7 +139,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		objects.add(this.venus);
 		
 		//Mars
-		System.out.println("[Stellarium]: "+"Initializing Mars...");
+		StellarSky.logger.info("Initializing Mars...");
 		mars = new Planet(isRemote, this.sun);
 		mars.albedo=0.25;
 		mars.radius=2.26604278e-5;
@@ -172,7 +161,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		objects.add(this.mars);
 		
 		//Jupiter
-		System.out.println("[Stellarium]: "+"Initializing Jupiter...");
+		StellarSky.logger.info("Initializing Jupiter...");
 		jupiter = new Planet(isRemote, this.sun);
 		jupiter.albedo=0.343;
 		jupiter.radius=4.673195187e-4;
@@ -198,7 +187,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		objects.add(this.jupiter);
 		
 		//Saturn
-		System.out.println("[Stellarium]: "+"Initializing Saturn...");
+		StellarSky.logger.info("Initializing Saturn...");
 		saturn = new Planet(isRemote, this.sun);
 		saturn.albedo=0.342;
 		saturn.radius=3.83128342e-4;
@@ -224,7 +213,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		objects.add(this.saturn);
 		
 		//Uranus
-		System.out.println("[Stellarium]: "+"Initializing Uranus...");
+		StellarSky.logger.info("Initializing Uranus...");
 		uranus = new Planet(isRemote, this.sun);
 		uranus.albedo=0.300;
 		uranus.radius=1.68890374e-4;
@@ -250,7 +239,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		objects.add(this.uranus);
 		
 		//Neptune
-		System.out.println("[Stellarium]: "+"Initializing Neptune...");
+		StellarSky.logger.info("Initializing Neptune...");
 		neptune = new Planet(isRemote, this.sun);
 		neptune.albedo=0.290;
 		neptune.radius=1.641209893e-4;
@@ -275,7 +264,7 @@ public class LayerSolarSystem implements ICelestialLayer {
 		neptune.initialize();
 		objects.add(this.neptune);
 		
-		System.out.println("[Stellarium]: "+"Solar System Initialized!");
+		StellarSky.logger.info("Solar System Initialized!");
 	}
 
 	@Override
@@ -315,7 +304,27 @@ public class LayerSolarSystem implements ICelestialLayer {
 	}
 
 	@Override
-	public String getLayerName() {
-		return "Solar System";
+	public boolean provideSun() {
+		return true;
+	}
+
+	@Override
+	public EVector getSunEcRPos() {
+		return sun.earthPos;
+	}
+
+	@Override
+	public boolean provideMoon() {
+		return true;
+	}
+
+	@Override
+	public EVector getMoonEcRPos() {
+		return moon.earthPos;
+	}
+
+	@Override
+	public double[] getMoonFactors() {
+		return new double[] {moon.getPeriod(), moon.getPhase(), moon.phase_Time()};
 	}
 }

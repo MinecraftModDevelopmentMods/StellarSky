@@ -1,4 +1,4 @@
-package stellarium.stellars.sketch;
+package stellarium.stellars.layer;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

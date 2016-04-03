@@ -3,8 +3,8 @@ package stellarium.stellars.star;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.Optics;
-import stellarium.stellars.sketch.CelestialObject;
-import stellarium.stellars.sketch.IRenderCache;
+import stellarium.stellars.layer.CelestialObject;
+import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.view.IStellarViewpoint;
 import stellarium.util.math.SpCoord;
 

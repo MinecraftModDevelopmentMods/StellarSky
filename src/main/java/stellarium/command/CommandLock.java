@@ -29,8 +29,8 @@ public class CommandLock extends CommandBase {
 		if(args.length >= 1)
 			lock = this.parseBoolean(sender, args[0]);
 		
-		StellarManager manager = StellarManager.getManager(sender.getEntityWorld());
-		manager.lock(lock);
+		StellarManager manager = StellarManager.getManager(false);
+		manager.setLocked(lock);
 	}
 
 }

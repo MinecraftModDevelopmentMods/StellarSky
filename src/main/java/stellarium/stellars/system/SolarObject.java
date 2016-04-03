@@ -3,7 +3,7 @@ package stellarium.stellars.system;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.util.BOp;
-import stellarium.stellars.sketch.CelestialObject;
+import stellarium.stellars.layer.CelestialObject;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 

@@ -1,48 +1,45 @@
 package stellarium.world;
 
+import org.lwjgl.util.vector.Vector3f;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.EVectorSet;
-import sciapi.api.value.util.COp;
-import stellarium.StellarSky;
-import stellarium.stellars.StellarManager;
-import stellarium.stellars.util.ExtinctionRefraction;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldProviderEnd;
-import net.minecraft.world.WorldProviderHell;
-import net.minecraft.world.WorldProviderSurface;
-import net.minecraft.world.WorldSettings.GameType;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.common.DimensionManager;
+import sciapi.api.value.IValRef;
+import sciapi.api.value.euclidian.EVector;
+import sciapi.api.value.euclidian.EVectorSet;
+import stellarium.api.ISkyProvider;
+import stellarium.stellars.StellarManager;
+import stellarium.stellars.util.ExtinctionRefraction;
+import stellarium.stellars.view.StellarDimensionManager;
+import stellarium.util.math.SpCoord;
+import stellarium.util.math.Spmath;
+import stellarium.util.math.VecMath;
 
-public class StellarWorldProvider extends WorldProvider {
+public class StellarWorldProvider extends WorldProvider implements ISkyProvider {
+	
+	private static final int DEFAULT_OFFSET = 1000;
 	
 	private WorldProvider parProvider;
 	private StellarManager manager;
+	private StellarDimensionManager dimManager;
 	
     /** Array for sunrise/sunset colors (RGBA) */
     private float[] colorsSunriseSunset = new float[4];
     
     private long cloudColour = 16777215L;
 	
-	public StellarWorldProvider(WorldProvider provider, StellarManager manager) {
+	public StellarWorldProvider(WorldProvider provider, StellarManager manager, StellarDimensionManager dimManager) {
 		this.parProvider = provider;
 		this.worldObj = provider.worldObj;
 		this.field_82913_c = provider.field_82913_c;
@@ -53,33 +50,31 @@ public class StellarWorldProvider extends WorldProvider {
 		this.lightBrightnessTable = provider.lightBrightnessTable;
 		this.dimensionId = provider.dimensionId;
 		this.manager = manager;
+		this.dimManager = dimManager;
 	}
 	
 	@Override
     public float calculateCelestialAngle(long par1, float par3) {
-		double dayLength = manager.getDayLength();
-		double longitude = manager.getSettings().longitudeOverworld / 360.0;
+		double dayLength = manager.getSettings().day;
+		double longitude = dimManager.getSettings().longitude / 360.0;
 		double skyTime = manager.getSkyTime(par1 + par3);
 		double angle = skyTime / dayLength + longitude + 0.5;
 		return (float) (angle - Math.floor(angle));
     }
 	
 	public float calculateSunHeight(long par1, float par3) {
-    	if(!manager.isSetupComplete())
-    		manager.update(par1+par3, isSurfaceWorld());
-    	
-    	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
-    	
-    	sun.set(manager.Sun.getPosition());
-    	sun.set(ExtinctionRefraction.refraction(sun, true));
-    	sun.set(VecMath.normalize(sun));
-    	
-    	return (float)VecMath.getZ(sun);
+    	if(!manager.updated())
+    	{
+    		manager.update(par1+par3);
+    		dimManager.update(this.worldObj, par1+par3);
+    	}
+   	
+    	return (float) Math.sin(dimManager.sunAppPos.y);
 	}
 	
-    public float calculateRelativeHeightAngle(long par1, float par3) {
-    	if(!manager.isSetupComplete())
-    		manager.update(par1+par3, isSurfaceWorld());
+    /*public float calculateRelativeHeightAngle(long par1, float par3) {
+    	if(!manager.updated())
+    		manager.update(par1+par3);
     	
     	IValRef<EVector> sun = EVectorSet.ins(3).getNew();
     	
@@ -93,7 +88,7 @@ public class StellarWorldProvider extends WorldProvider {
     	if(VecMath.getCoord(sun, 0).asDouble()>0 && h<0) h=h+2*Math.PI;
     	
     	return (float)(Spmath.fmod((h/2/Math.PI)+0.75,1.0));
-    }
+    }*/
     
     @Override
     @SideOnly(Side.CLIENT)
@@ -129,17 +124,120 @@ public class StellarWorldProvider extends WorldProvider {
 
 	@Override
     public int getMoonPhase(long par1) {
-    	if(!manager.isSetupComplete())
-    		manager.update(par1, isSurfaceWorld());
-    	return (int)(manager.Moon.phase_Time()*8);
+    	if(!manager.updated())
+    		return parProvider.getMoonPhase(par1);
+    	
+    	return (int)(dimManager.moonFactors[2]*8);
     }
 	
 	@Override
 	public float getCurrentMoonPhaseFactor() {
-    	if(manager.isSetupComplete())
+    	if(!manager.updated())
     		return parProvider.getCurrentMoonPhaseFactor();
-		return (float) manager.Moon.getPhase();
+		return (float) dimManager.moonFactors[1];
 	}
+	
+	
+	/* ---------------------------------------
+	 * Start of Stellar Sky API Implementation
+	 * --------------------------------------- */
+	@Override
+	public double getDayLength() {
+		return manager.getSettings().day;
+	}
+
+	@Override
+	public double getLunarMonthLength() {
+		double period = dimManager.moonFactors[0];
+		return period / (1.0 - period) * manager.getSettings().year;
+	}
+
+	@Override
+	public double getYearLength() {
+		return manager.getSettings().year;
+	}
+
+	@Override
+	public double getDaytimeOffset() {
+		return this.getDaytimeOffset(worldObj.getWorldTime());
+	}
+	
+	@Override
+	public double getDaytimeOffset(long tick) {
+		return Spmath.fmod((tick + manager.getSettings().tickOffset + DEFAULT_OFFSET) / manager.getSettings().day, 1.0) + dimManager.getSettings().longitude / 360.0 + 0.5;
+	}
+
+	@Override
+	public double getYearlyOffset() {
+		return this.getYearlyOffset(worldObj.getWorldTime());
+	}
+	
+	@Override
+	public double getYearlyOffset(long tick) {
+		return Spmath.fmod(((tick + manager.getSettings().tickOffset) / manager.getSettings().day + manager.getSettings().dayOffset) / manager.getSettings().year, 1.0);
+	}
+	
+	@Override
+	public double dayOffsetUntilSunReach(double heightAngle) {
+		double radLatitude = Spmath.Radians(dimManager.getSettings().latitude);
+
+		SpCoord coord = new SpCoord();
+		coord.setWithVec(dimManager.sunEquatorPos);
+		
+		return this.hourAngleForHeight(heightAngle, Spmath.Radians(coord.y), radLatitude);
+	}
+	
+	@Override
+	public double dayOffsetUntilMoonReach(double heightAngle) {
+		double radLatitude = Spmath.Radians(dimManager.getSettings().latitude);
+
+		SpCoord coord = new SpCoord();
+		coord.setWithVec(dimManager.moonEquatorPos);
+		
+		return this.hourAngleForHeight(heightAngle, Spmath.Radians(coord.y), radLatitude);
+	}
+	
+	private double hourAngleForHeight(double heightAngle, double dec, double lat) {
+		return Math.acos((Spmath.sind(heightAngle) - Math.sin(dec) * Math.sin(lat)) / (Math.cos(dec) * Math.cos(lat)));
+	}
+
+	@Override
+	public Vector3f getCurrentSunPosition() {
+		EVector sun = dimManager.sunAppPos.getVec();
+    	
+    	return new Vector3f(sun.getCoord(0).asFloat(),
+    			sun.getCoord(1).asFloat(),
+    			sun.getCoord(2).asFloat());
+	}
+
+	@Override
+	public Vector3f getCurrentMoonPosition() {
+    	EVector moon = dimManager.moonAppPos.getVec();
+    	
+    	return new Vector3f(moon.getCoord(0).asFloat(),
+    			moon.getCoord(1).asFloat(),
+    			moon.getCoord(2).asFloat());
+	}
+
+	@Override
+	public double getHighestSunHeightAngle() {
+		SpCoord crd = new SpCoord();
+		crd.setWithVec(dimManager.sunEquatorPos);
+		
+		return 90.0 - Math.abs(dimManager.getSettings().latitude - crd.y);
+	}
+
+	@Override
+	public double getHighestMoonHeightAngle() {
+		SpCoord crd = new SpCoord();
+		crd.setWithVec(dimManager.moonEquatorPos);
+		
+		return 90.0 - Math.abs(dimManager.getSettings().latitude - crd.y);
+	}
+	
+	/* ---------------------------------------
+	 * End of Stellar Sky API Implementation
+	 * --------------------------------------- */
 
     /**
      * Returns a new chunk provider which generates chunks for this world

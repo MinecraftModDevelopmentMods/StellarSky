@@ -64,18 +64,6 @@ config.property.server.dayoffset.tooltip=Day offset on world starting time. (Off
 config.property.server.tickoffset=Tick Offset
 config.property.server.tickoffset.tooltip=Tick offset on world starting time. (Offsets are added together)
 
-config.property.server.latitudeoverworld=Latitude on Overworld
-config.property.server.latitudeoverworld.tooltip=Latitude on Overworld, in Degrees.
-
-config.property.server.longitudeoverworld=Longitude on Overworld
-config.property.server.longitudeoverworld.tooltip=Longitude on Overworld, in Degrees. (East is +)
-
-config.property.server.latitudeender=Latitude on Ender
-config.property.server.latitudeender.tooltip=Latitude on Ender, in Degrees.
-
-config.property.server.longitudeender=Longitude on Ender
-config.property.server.longitudeender.tooltip=Longitude on Ender, in Degrees. (East is +)
-
 
 ///Solar System
 config.category.solarsystem=Solar System Configurations
@@ -86,6 +74,26 @@ config.property.server.moonsize.tooltip=Size of moon. (Default size is 1.0)
 
 config.property.server.moonbrightness=Brightness of Moon
 config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brightness is 1.0)
+
+
+///Dimension
+config.property.dimension.applied=Applied Dimensions
+config.property.dimension.applied.tooltip=List of dimensions which will get applied the stellar sky settings & rendering. To adjust per dimension settings on Gui, refresh the page by getting out to modlist and opening config gui again.
+
+config.property.dimension.patchprovider=Patch Provider
+config.property.dimension.patchprovider.tooltip=Determine whether or not patch provider. Cannot adjust longitude and latitude when this is false.
+
+config.property.dimension.latitude=Latitude
+config.property.dimension.latitude.tooltip=Latitude on this world, in Degrees.
+
+config.property.dimension.longitude=Longitude
+config.property.dimension.longitude.tooltip=Longitude on this world, in Degrees. (East is +)
+
+config.property.dimension.hidehorizonobj=Hide Objects under Horizon
+config.property.dimension.hidehorizonobj.tooltip=Determine whether or not hide objects under horizon.
+
+config.property.dimension.allowrefraction=Apply Atmospheric Refraction
+config.property.dimension.allowrefraction.tooltip=Determine whether or not apply the atmospheric refraction.
 
 
 ///Wake

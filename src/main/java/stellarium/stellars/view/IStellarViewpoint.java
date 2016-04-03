@@ -8,10 +8,12 @@ import stellarium.util.math.SpCoord;
 
 public interface IStellarViewpoint {
 	
-	public void update(World world);
+	public void update(World world, double year);
 	
 	public EProjection getProjection();
-		
+	
+	public EProjection projectionToEquatorial();
+	
 	public void applyAtmRefraction(SpCoord coord);
 	
 	public void disapplyAtmRefraction(SpCoord coord);
