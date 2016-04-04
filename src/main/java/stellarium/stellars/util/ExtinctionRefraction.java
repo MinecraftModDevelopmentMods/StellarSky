@@ -34,7 +34,7 @@ public class ExtinctionRefraction {
 	
 	//Get Extinction magnitude(in V band) of EVectortor(its size must be 1)
 	public static double airmass(IValRef<EVector> vec, boolean IsApparent){
-		return airmass(vec.getVal().getCoord(2).asDouble(), IsApparent);
+		return airmass(VecMath.normalize(vec).getVal().getCoord(2).asDouble(), IsApparent);
 	}
 	
 	//Get Refraction-applied Vector(IsApplying=true) or Refraction-disapplied Vector(IsApplying=false)

@@ -101,11 +101,20 @@ public class Moon extends SolarObject {
 		return VecMath.add(this.earthPos, p);
 	}
 	
+	@Override
+	protected void updateMagnitude(EVector earthFromSun) {
+		double dist=Spmath.getD(VecMath.size(this.earthPos));
+		double distS=Spmath.getD(VecMath.size(this.sunPos));
+		double distE=Spmath.getD(VecMath.size(earthFromSun));
+		double LvsSun=this.radius*this.radius*this.getPhase()*distE*distE*this.albedo*1.4/(dist*dist*distS*distS);
+		this.currentMag=-26.74-2.5*Math.log10(LvsSun);
+		this.brightness = distE*distE*this.albedo/(distS*distS)*10;
+	}
 	
 	//Illumination of Moon's Local Region (Update Needed)
 	//Parameter: PosLocalM Result
 	public double illumination(EVector p){
-		return -Spmath.getD(BOp.div(VecMath.dot(this.earthPos, p), BOp.mult(VecMath.size(this.earthPos), VecMath.size(p))))*this.brightness;
+		return -Spmath.getD(BOp.div(VecMath.dot(this.sunPos, p), BOp.mult(VecMath.size(this.sunPos), VecMath.size(p))))*this.brightness;
 	}
 	
 	//Phase of the Moon(Update Needed)

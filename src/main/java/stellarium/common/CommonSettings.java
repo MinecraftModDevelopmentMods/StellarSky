@@ -18,10 +18,13 @@ public class CommonSettings extends HierarchicalNBTConfig {
 	public double day, year;
 	public int yearOffset, dayOffset;
 	public double tickOffset;
+	public double axialTilt;
+	public double precession;
 
 	private Property propServerEnabled;
 	private Property propDay, propYear;
 	private Property propYearOffset, propDayOffset, propTickOffset;
+	private Property propAxialTilt, propPrecession;
 	
 	public CommonSettings() {
 		CelestialLayerRegistry.getInstance().composeSettings(this);
@@ -34,6 +37,8 @@ public class CommonSettings extends HierarchicalNBTConfig {
 		this.yearOffset = settingsToCopy.yearOffset;
 		this.dayOffset = settingsToCopy.dayOffset;
 		this.tickOffset = settingsToCopy.tickOffset;
+		this.axialTilt = settingsToCopy.axialTilt;
+		this.precession = settingsToCopy.precession;
 	}
 
 	@Override
@@ -80,6 +85,18 @@ public class CommonSettings extends HierarchicalNBTConfig {
        	propTickOffset.setLanguageKey("config.property.server.tickoffset");
         propNameList.add(propTickOffset.getName());
         
+        propAxialTilt = config.get(category, "Axial_Tilt", 23.5);
+        propAxialTilt.comment = "Axial tilt in degrees. Always 0.0 when Server_Enabled is false.";
+        propAxialTilt.setRequiresWorldRestart(true);
+        propAxialTilt.setLanguageKey("config.property.server.axialtilt");
+        propNameList.add(propAxialTilt.getName());
+        
+        propPrecession = config.get(category, "Precession", 0.0);
+       	propPrecession.comment = "Precession in degrees per year.";
+       	propPrecession.setRequiresWorldRestart(true);
+       	propPrecession.setLanguageKey("config.property.server.precession");
+        propNameList.add(propPrecession.getName());
+        
         config.setCategoryPropertyOrder(category, propNameList);
         
         super.setupConfig(config, category);
@@ -88,12 +105,24 @@ public class CommonSettings extends HierarchicalNBTConfig {
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
         this.serverEnabled = propServerEnabled.getBoolean();
-        this.day = propDay.getDouble();
-        this.year = propYear.getDouble();
-       	this.yearOffset = propYearOffset.getInt();
-       	this.dayOffset = propDayOffset.getInt();
-       	this.tickOffset = propTickOffset.getDouble();
-       	
+        if(this.serverEnabled) {
+        	this.day = propDay.getDouble();
+        	this.year = propYear.getDouble();
+        	this.yearOffset = propYearOffset.getInt();
+        	this.dayOffset = propDayOffset.getInt();
+        	this.tickOffset = propTickOffset.getDouble();
+        	this.axialTilt = propAxialTilt.getDouble();
+        	this.precession = propPrecession.getDouble();
+        } else {
+        	this.day = Double.parseDouble(propDay.getDefault());
+        	this.year = Double.parseDouble(propYear.getDefault());
+        	this.yearOffset = Integer.parseInt(propYearOffset.getDefault());
+        	this.dayOffset = Integer.parseInt(propDayOffset.getDefault());
+        	this.tickOffset = Double.parseDouble(propTickOffset.getDefault());
+        	this.axialTilt = 0.0;
+        	this.precession = Double.parseDouble(propPrecession.getDefault());
+        }
+        
        	super.loadFromConfig(config, category);
 	}
 
@@ -105,6 +134,8 @@ public class CommonSettings extends HierarchicalNBTConfig {
        	this.yearOffset = compound.getInteger("yearOffset");
        	this.dayOffset = compound.getInteger("dayOffset");
        	this.tickOffset = compound.getDouble("tickOffset");
+       	this.axialTilt = compound.getDouble("axialTilt");
+       	this.precession = compound.getDouble("precession");
        	
        	super.readFromNBT(compound);
 	}
@@ -117,6 +148,8 @@ public class CommonSettings extends HierarchicalNBTConfig {
        	compound.setInteger("yearOffset", this.yearOffset);
        	compound.setInteger("dayOffset", this.dayOffset);
        	compound.setDouble("tickOffset", this.tickOffset);
+       	compound.setDouble("axialTilt", this.axialTilt);
+       	compound.setDouble("precession", this.precession);
        	
        	super.writeToNBT(compound);
 	}

@@ -17,7 +17,7 @@ public class Sun extends SolarObject {
 		return null;
 	}
 	
-	private void updateMagnitude(EVector earthFromSun) { }
+	protected void updateMagnitude(EVector earthFromSun) { }
 
 	@Override
 	public IRenderCache generateCache() {

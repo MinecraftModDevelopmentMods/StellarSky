@@ -12,11 +12,6 @@ import stellarium.util.math.Spmath;
 
 public class NonRefractiveViewpoint implements IStellarViewpoint {
 	
-	//Axial tilt
-	public static final double e=0.4090926;
-	//Precession
-	public static final double prec=0.0;
-	
 	//Rotation
 	private double rot;
 	
@@ -26,6 +21,8 @@ public class NonRefractiveViewpoint implements IStellarViewpoint {
 	//Coordinate
 	private double latitude, longitude;
 	
+	private double axialTilt, precession;
+	
 	private boolean hideObjectsUnderHorizon;
 	
 	public NonRefractiveViewpoint(CommonSettings commonSettings, PerDimensionSettings settings) {
@@ -34,14 +31,19 @@ public class NonRefractiveViewpoint implements IStellarViewpoint {
 		this.latitude = Spmath.Radians(settings.latitude);
 		this.longitude = Spmath.Radians(settings.longitude);
 		this.rot = 2 * Math.PI * (this.yearLength + 1);
+		this.axialTilt = Spmath.Radians(commonSettings.axialTilt);
+		this.precession = Spmath.Radians(commonSettings.precession);
+		
+		this.EqtoEc = new Rotate('X').setRAngle(-this.axialTilt);
+		this.EctoEq = new Rotate('X').setRAngle(this.axialTilt);
 		
 		this.hideObjectsUnderHorizon = settings.hideObjectsUnderHorizon;
 	}
 
 	@Override
 	public void update(World world, double year) {
-		ZTEctoNEc.setRAngle(-prec*year);
-		NEctoZTEc.setRAngle(prec*year);
+		ZTEctoNEc.setRAngle(-this.precession*year);
+		NEctoZTEc.setRAngle(this.precession*year);
 		NEqtoREq.setRAngle(-this.rot*year - this.longitude);
 		REqtoNEq.setRAngle(this.rot*year + this.longitude);
 		
@@ -117,41 +119,41 @@ public class NonRefractiveViewpoint implements IStellarViewpoint {
 	
 	
 	//Direction of Zenith
-	public IEVector ZenD;
+	private IEVector ZenD;
 	
 	//Vector from Earth center to Ground
 	@Deprecated
-	public EVector Zen = new EVector(3);
+	private EVector Zen = new EVector(3);
 	
 	
 	//Equatorial to Ecliptic
-	public final Rotate EqtoEc = new Rotate('X').setRAngle(-e); 
+	private final Rotate EqtoEc; 
 	
 	//Ecliptic to Equatorial
-	public final Rotate EctoEq = new Rotate('X').setRAngle(e); 
+	private final Rotate EctoEq; 
 	
 	
 	//Zero Time Ecliptic to Now Ecliptic
-	public Rotate ZTEctoNEc = new Rotate('Z');
+	private Rotate ZTEctoNEc = new Rotate('Z');
 
 	//Now Ecliptic to Zero Time Ecliptic
-	public Rotate NEctoZTEc = new Rotate('Z');
+	private Rotate NEctoZTEc = new Rotate('Z');
 
 
 	//Now Equatorial to Rotating Equatorial
-	public Rotate NEqtoREq = new Rotate('Z');
+	private Rotate NEqtoREq = new Rotate('Z');
 	
 	//Rotating Equatorial to Now Equatorial
-	public Rotate REqtoNEq = new Rotate('Z');
+	private Rotate REqtoNEq = new Rotate('Z');
 
 	
 	//Rotating Equatorial to Horizontal
-	public Rotate REqtoHor = new Rotate('X');
+	private Rotate REqtoHor = new Rotate('X');
 	
 	//Horizontal to Rotating Equatorial
-	public Rotate HortoREq = new Rotate('X');
+	private Rotate HortoREq = new Rotate('X');
 	
-	public EProjection projection;
-	public EProjection projectionEq;
+	private EProjection projection;
+	private EProjection projectionEq;
 
 }

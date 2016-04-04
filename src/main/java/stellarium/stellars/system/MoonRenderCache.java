@@ -57,13 +57,12 @@ public class MoonRenderCache implements IRenderCache<Moon> {
 				moonilum[longc][latc]=(float) (object.illumination(buf) * this.difactor * 1.5);
 				moonnormal[longc][latc] = new EVector(3).set(buf);
 				buf.set(object.posLocalG(buf));
-				buf.set(VecMath.mult(50000.0, buf));
 				IValRef ref2 = viewpoint.getProjection().transform(buf);
 
 				cache.setWithVec(ref2);
 				viewpoint.applyAtmRefraction(this.cache);
 
-				moonPos[longc][latc] = cache.getVec();
+				moonPos[longc][latc] = VecMath.mult(98.0, cache.getVec()).getVal();
 
 				if(cache.y < 0)
 					moonilum[longc][latc]=0.0f;

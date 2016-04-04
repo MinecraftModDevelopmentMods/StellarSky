@@ -52,7 +52,7 @@ public class MessageSyncCommon implements IMessage {
 						world, manager, world.provider.getDimensionName());
 			
 			if(dimManager != null)
-				dimManager.syncFromNBT(message.compoundInfo, true);
+				dimManager.syncFromNBT(message.dimensionInfo, true);
 			
 			StellarEventHook.setupManager(world, manager);
 			if(dimManager != null)

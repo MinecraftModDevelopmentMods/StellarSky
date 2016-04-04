@@ -69,7 +69,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
     		dimManager.update(this.worldObj, par1+par3);
     	}
    	
-    	return (float) Math.sin(dimManager.sunAppPos.y);
+    	return (float) Spmath.sind(dimManager.sunAppPos.y);
 	}
 	
     /*public float calculateRelativeHeightAngle(long par1, float par3) {

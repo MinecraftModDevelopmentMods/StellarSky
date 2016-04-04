@@ -37,7 +37,7 @@ public class MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 			dif.set(VecMath.mult(cache.size, dif));
 			dif2.set(VecMath.mult(-cache.size, dif2));
 			
-			float alpha=(float) (Optics.getAlphaFromMagnitude(16.0+cache.appMag-2.5*Math.log10(cache.difactor),bglight));
+			float alpha=(float) (Optics.getAlphaFromMagnitude(14.5+cache.appMag-2.5*Math.log10(cache.difactor),bglight));
 			
 			GL11.glColor4d(1.0, 1.0, 1.0, weathereff*alpha);
 

@@ -74,7 +74,7 @@ public abstract class SolarObject extends CelestialObject {
 			this.updateMagnitude(earth.sunPos);
 	}
 	
-	private void updateMagnitude(EVector earthFromSun){
+	protected void updateMagnitude(EVector earthFromSun){
 		double dist=Spmath.getD(VecMath.size(this.earthPos));
 		double distS=Spmath.getD(VecMath.size(this.sunPos));
 		double distE=Spmath.getD(VecMath.size(earthFromSun));

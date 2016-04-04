@@ -78,7 +78,6 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		//-Moon
 		StellarSky.logger.info("Initializing Moon...");
 		moon.albedo=0.12 * settings.moonBrightnessMultiplier;
-		moon.brightness = settings.moonBrightnessMultiplier;
 		moon.a0=0.00257184;
 		moon.e0=0.0549006;
 		moon.I0=5.14;
