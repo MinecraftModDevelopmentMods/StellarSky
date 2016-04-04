@@ -30,8 +30,16 @@ public interface IHourProvider {
 	 * Gives number of minute in an hour.
 	 * @param dayLength length of day
 	 * @param totalHour number of hour in a day
-	 * @return number of minute in a day to display
+	 * @return number of minute in a hour to display
 	 * */
 	public int getTotalMinute(double dayLength, int totalHour);
+
+	/**
+	 * Gives number of minute left from representing day in hour.
+	 * @param dayLength length of day
+	 * @param totalHour number of hour in a day
+	 * @return number of minute left in a day to display
+	 * */
+	public int getRestMinuteInDay(double daylength, int totalhour);
 
 }

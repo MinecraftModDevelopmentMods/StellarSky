@@ -53,6 +53,7 @@ public class StellarSkyClientHandler {
 			
 			int totalhour = provider.getTotalHour(daylength);
 			int totalminute = provider.getTotalMinute(daylength, totalhour);
+			int restMinuteInDay = provider.getRestMinuteInDay(daylength, totalhour);
 			
 			int yOffset = 0;
 			
@@ -70,6 +71,7 @@ public class StellarSkyClientHandler {
 					String.format("%3d", hour), 
 					String.format("%02d", minute),
 					String.format("%3d", totalhour),
+					String.format("%02d", restMinuteInDay),
 					String.format("%02d", totalminute));
 		}
 	}
@@ -96,13 +98,15 @@ public class StellarSkyClientHandler {
 	}
 	
 	@SubscribeEvent
-	public void onButtonActivated(ActionPerformedEvent event) {
+	public void onButtonActivated(ActionPerformedEvent.Pre event) {
 		if(event.gui instanceof GuiOptions)
 		{
 			if(event.button.id == 30)
 			{
 				boolean locked = StellarManager.getManager(true).isLocked();
 				event.gui.mc.thePlayer.sendChatMessage(String.format("/locksky %s", !locked));
+				StellarManager.getManager(true).setLocked(!locked);
+				locked = !locked;
 				event.button.displayString = locked? I18n.format("stellarsky.gui.unlock") : I18n.format("stellarsky.gui.lock");
 			}
 		}
