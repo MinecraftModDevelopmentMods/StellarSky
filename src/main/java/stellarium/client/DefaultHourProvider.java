@@ -1,7 +1,9 @@
 package stellarium.client;
 
+import akka.actor.ActorSystem.Settings;
 import stellarium.StellarSky;
 import stellarium.api.IHourProvider;
+import stellarium.util.math.Spmath;
 
 public class DefaultHourProvider implements IHourProvider {
 	
@@ -29,6 +31,11 @@ public class DefaultHourProvider implements IHourProvider {
 	@Override
 	public int getTotalMinute(double dayLength, int totalHour) {
 		return setting.anHourToMinute;
+	}
+
+	@Override
+	public int getRestMinuteInDay(double daylength, int totalHour) {
+		return (int) Math.floor(daylength / setting.minuteLength - totalHour * setting.anHourToMinute);
 	}
 
 }

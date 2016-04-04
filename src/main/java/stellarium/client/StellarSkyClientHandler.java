@@ -60,7 +60,7 @@ public class StellarSkyClientHandler {
 			this.drawString(fontRenderer, "hud.text.year", 5, 10*(yOffset++)+5,
 					String.format("%d", yr));
 			this.drawString(fontRenderer, "hud.text.day", 5, 10*(yOffset++)+5,
-					String.format("%-7d", day),
+					String.format("%7d", day),
 					String.format("%.2f", yearlength));
 			
 			if(viewMode.showTick())

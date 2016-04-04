@@ -7,7 +7,7 @@ key.stellarsky.viewmod.description=Change Time Info Text
 hud.text.year=Year %1$s
 hud.text.day=Day  #%1$s (/%2$s)
 hud.text.tick=Tick  #%1$s (/%2$s)
-hud.text.time=Time %1$s:%2$s   (/%3$s:%4$s)
+hud.text.time=Time %1$s:%2$s (/%3$s:%4$s) (1 hour=%5$s min.)
 
 
 //Client Configs
