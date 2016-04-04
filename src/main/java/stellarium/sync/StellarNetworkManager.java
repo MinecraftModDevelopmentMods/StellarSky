@@ -7,6 +7,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.view.StellarDimensionManager;
 
@@ -21,19 +22,9 @@ public class StellarNetworkManager {
 				MessageSyncCommon.class, 0, Side.CLIENT);
 	}
 	
-	@SubscribeEvent
-	public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-		this.onSetManager(event);
-	}
-	
-	@SubscribeEvent
-	public void onPlayerJoin(PlayerEvent.PlayerChangedDimensionEvent event) {
-		this.onSetManager(event);
-	}
-	
-	public void onSetManager(PlayerEvent event) {
+	public void onSetManager(EntityPlayerMP player, World world) {
 		StellarManager manager = StellarManager.getManager(false);
-		StellarDimensionManager dimManager = StellarDimensionManager.get(event.player.worldObj);
+		StellarDimensionManager dimManager = StellarDimensionManager.get(world);
 		
 		NBTTagCompound compound = new NBTTagCompound();
 		manager.writeToNBT(compound);
@@ -42,8 +33,7 @@ public class StellarNetworkManager {
 		if(dimManager != null)
 			dimManager.writeToNBT(dimComp);
 		
-		
-		wrapper.sendTo(new MessageSyncCommon(compound, dimComp), (EntityPlayerMP)event.player);
+		wrapper.sendTo(new MessageSyncCommon(compound, dimComp), player);
 	}
 
 }

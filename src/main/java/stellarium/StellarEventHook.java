@@ -41,16 +41,17 @@ public class StellarEventHook {
 		StellarManager manager;
 		if(!StellarManager.hasManager(e.world.isRemote)) {
 			manager = StellarManager.loadOrCreateManager(e.world);
-			if(!e.world.isRemote || !manager.getSettings().serverEnabled)
-				setupManager(e.world, manager);
 		} else manager = StellarManager.getManager(e.world.isRemote);
 		
+		if(manager.getCelestialManager() == null && (!e.world.isRemote || !manager.getSettings().serverEnabled))
+			setupManager(e.world, manager);
+		
 		String dimName = e.world.provider.getDimensionName();
-		if(StellarSky.proxy.dimensionSettings.hasSubConfig(dimName)) {
-			StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(e.world, manager, dimName);
-			if(!e.world.isRemote || !manager.getSettings().serverEnabled)
+		if(!e.world.isRemote || !manager.getSettings().serverEnabled)
+			if(StellarSky.proxy.dimensionSettings.hasSubConfig(dimName)) {
+				StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(e.world, manager, dimName);
 				setupDimension(e.world, manager, dimManager);
-		}
+			}
 	}
 	
 	public static void setupManager(World world, StellarManager manager) {
@@ -70,7 +71,7 @@ public class StellarEventHook {
 			}
 		}
 		
-		if(world.isRemote && world.provider.dimensionId == 0 || world.provider.dimensionId == 1)
+		if(world.isRemote)
 			world.provider.setSkyRenderer(new SkyRenderer());
 	}
 	

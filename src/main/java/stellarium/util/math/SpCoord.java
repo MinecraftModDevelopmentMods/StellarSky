@@ -35,7 +35,8 @@ public class SpCoord {
 	/**Set this SpCoord with vector.
 	 * The vector has to be normalized.*/
 	public void setWithVec(IValRef<EVector> vec){
-		x = Spmath.Degrees(Spmath.atan2(vec.getVal().getCoord(1).asDouble(), vec.getVal().getCoord(0).asDouble()));
-		y = Spmath.Degrees(Spmath.asin(vec.getVal().getCoord(2).asDouble()));
+		IValRef<EVector> normalized = VecMath.normalize(vec);
+		x = Spmath.Degrees(Spmath.atan2(normalized.getVal().getCoord(1).asDouble(), normalized.getVal().getCoord(0).asDouble()));
+		y = Spmath.Degrees(Spmath.asin(normalized.getVal().getCoord(2).asDouble()));
 	}
 }

@@ -8,12 +8,8 @@ import stellarium.stellars.layer.ICelestialLayerRenderer;
 
 public class LayerSolarSystemRenderer implements ICelestialLayerRenderer {
 	
-	private static final ResourceLocation locationStarPng = new ResourceLocation("stellarium", "stellar/star.png");
-
 	@Override
-	public void preRender(Minecraft mc, Tessellator tessellator, float bglight, float weathereff, float partialTicks) {
-		mc.renderEngine.bindTexture(locationStarPng);
-	}
+	public void preRender(Minecraft mc, Tessellator tessellator, float bglight, float weathereff, float partialTicks) { }
 
 	@Override
 	public void postRender(Minecraft mc, Tessellator tessellator, float bglight, float weathereff, float partialTicks) { }

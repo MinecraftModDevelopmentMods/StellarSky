@@ -78,7 +78,7 @@ config.property.server.moonbrightness.tooltip=달의 밝기를 나타냅니다. 
 
 ///Dimension
 config.category.dimension=월드 컨피그
-config.category.dimension.tooltip=월드간 세팅에 대한 
+config.category.dimension.tooltip=월드의 세팅에 대한 컨피그입니다.
 
 config.property.dimension.applied=적용 월드 목록
 config.property.dimension.applied.tooltip=stellar sky의 설정과 렌더링이 적용되는 월드들을 정합니다. 각각의 디멘션들의 설정값들을 변화시키려면 modlist 페이지로 돌아간 후 다시 config버튼을 눌러 컨피그 gui로 돌아오면 됩니다.
@@ -100,6 +100,9 @@ config.property.dimension.allowrefraction.tooltip=천체의 위치가 대기 굴
 
 
 ///Wake
+config.category.server.wake=기상 조건 컨피그
+config.category.server.wake.expl=기상(잠에서 깨어 일어나는 것) 시스템에 대한 컨피그입니다.
+
 config.property.server.wakemode=기상 모드
 config.property.server.wakemode.expl=가능한 기상 조건 중 가장 빠른[earliest] 혹은 가장 늦은[latest] 것을 선택하십시오.
 

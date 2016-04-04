@@ -50,6 +50,8 @@ public class LayerBrStar extends LayerBgStar {
 		
 		StellarSky.logger.info("Loading Bright Stars Data...");
 		
+		stars.clear();
+		
 		//Read
 		str=new byte[NumStar*Bufsize];
 		InputStream brs=BgStar.class.getResourceAsStream("/data/bsc5.dat");

@@ -11,6 +11,7 @@ import stellarium.client.ClientSettings;
 import stellarium.common.CommonSettings;
 import stellarium.config.IConfigHandler;
 import stellarium.config.INBTConfig;
+import stellarium.stellars.milkyway.LayerMilkyway;
 import stellarium.stellars.star.brstar.LayerBrStar;
 import stellarium.stellars.system.LayerSolarSystem;
 import stellarium.stellars.system.SolarSystemSettings;
@@ -30,6 +31,7 @@ public class CelestialLayerRegistry {
 	
 	public CelestialLayerRegistry() {
 		this.registerLayer(true, LayerBrStar.class);
+		this.registerLayer(true, LayerMilkyway.class);
 		this.registerLayer(false, LayerSolarSystem.class, "SolarSystem", SolarSystemSettings.class);
 	}
 	

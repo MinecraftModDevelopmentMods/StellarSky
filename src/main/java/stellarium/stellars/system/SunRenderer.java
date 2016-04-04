@@ -27,7 +27,7 @@ public class SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 
 		pos.set(VecMath.mult(99.0, pos));
 		dif.set(VecMath.mult(cache.size, dif));
-		dif2.set(VecMath.mult(cache.size, dif2));
+		dif2.set(VecMath.mult(-cache.size, dif2));
 		
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, weathereff);
 		

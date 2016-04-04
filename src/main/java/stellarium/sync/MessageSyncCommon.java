@@ -6,6 +6,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import stellarium.StellarEventHook;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
@@ -26,13 +27,13 @@ public class MessageSyncCommon implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		this.compoundInfo = ByteBufUtils.readTag(buf);
-		this.dimensionInfo = ByteBufUtils.readTag(buf);
+		this.dimensionInfo = compoundInfo.getCompoundTag("dimension");
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
+		compoundInfo.setTag("dimension", this.dimensionInfo);
 		ByteBufUtils.writeTag(buf, this.compoundInfo);
-		ByteBufUtils.writeTag(buf, this.dimensionInfo);
 	}
 	
 	public static class MessageSyncCommonHandler implements IMessageHandler<MessageSyncCommon, IMessage> {
@@ -42,13 +43,20 @@ public class MessageSyncCommon implements IMessage {
 			StellarManager manager = StellarManager.getManager(true);
 			manager.syncFromNBT(message.compoundInfo, true);
 			
-			StellarDimensionManager dimManager = StellarDimensionManager.get(StellarSky.proxy.getDefWorld());
+			World world = StellarSky.proxy.getDefWorld();
+			
+			StellarDimensionManager dimManager = null;
+			
+			if(!message.dimensionInfo.hasNoTags())
+				dimManager = StellarDimensionManager.loadOrCreate(
+						world, manager, world.provider.getDimensionName());
+			
 			if(dimManager != null)
 				dimManager.syncFromNBT(message.compoundInfo, true);
 			
-			StellarEventHook.setupManager(StellarSky.proxy.getDefWorld(), manager);
+			StellarEventHook.setupManager(world, manager);
 			if(dimManager != null)
-				StellarEventHook.setupDimension(StellarSky.proxy.getDefWorld(), manager, dimManager);
+				StellarEventHook.setupDimension(world, manager, dimManager);
 			
 			return null;
 		}

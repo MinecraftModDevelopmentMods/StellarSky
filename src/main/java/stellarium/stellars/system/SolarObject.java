@@ -46,11 +46,15 @@ public abstract class SolarObject extends CelestialObject {
 	public IValRef<EVector> positionTo(SolarObject object) {
 		if(this == object)
 			return new EVector(0.0, 0.0, 0.0);
-		if(object.level < this.level)
-			return VecMath.add(this.relativePos, parent.positionTo(object));
-		else if(object.level != this.level)
-			return VecMath.sub(this.positionTo(object.parent), object.relativePos);
-		else throw new IllegalArgumentException("Tried to compare position between non-related objects!");
+		try {
+			if(object.level < this.level)
+				return VecMath.add(this.relativePos, parent.positionTo(object));
+			else return VecMath.sub(this.positionTo(object.parent), object.relativePos);
+		} catch(NullPointerException exception) {
+			throw new IllegalArgumentException(String.format(
+					"Tried to compare position between non-related objects: %s and %s!",
+					this, object));
+		}
 	}
 	
 	public void updatePre(double year) {

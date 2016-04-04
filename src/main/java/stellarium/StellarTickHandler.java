@@ -30,13 +30,43 @@ public class StellarTickHandler {
 	}
 	
 	@SubscribeEvent
+	public void tickStart(TickEvent.RenderTickEvent e) {
+		if(e.phase == Phase.START){
+			World world = StellarSky.proxy.getDefWorld(true);
+			
+			if(world != null) {
+				StellarManager manager = StellarManager.getManager(true);
+				if(!manager.updated() && manager.getCelestialManager() != null) {
+					manager.update(world.getWorldTime());
+					StellarDimensionManager dimManager = StellarDimensionManager.get(world);
+					if(dimManager != null)
+					{
+						dimManager.update(world, world.getWorldTime());
+						manager.updateClient(StellarSky.proxy.getClientSettings(),
+								dimManager.getViewpoint());
+					}
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
 		if(e.phase == Phase.START){
 			World world = StellarSky.proxy.getDefWorld(true);
 			
 			if(world != null) {
 				StellarManager manager = StellarManager.getManager(true);
-				manager.update(world.getWorldTime());
+				if(manager.getCelestialManager() != null) {
+					manager.update(world.getWorldTime());
+					StellarDimensionManager dimManager = StellarDimensionManager.get(world);
+					if(dimManager != null)
+					{
+						dimManager.update(world, world.getWorldTime());
+						manager.updateClient(StellarSky.proxy.getClientSettings(),
+								dimManager.getViewpoint());
+					}
+				}
 			}
 		}
 	}
@@ -60,7 +90,8 @@ public class StellarTickHandler {
 		if(e.phase == Phase.START){
 			if(e.world != null) {
 				StellarDimensionManager dimManager = StellarDimensionManager.get(e.world);
-				dimManager.update(e.world, e.world.getWorldTime());
+				if(dimManager != null)
+					dimManager.update(e.world, e.world.getWorldTime());
 				
 				StellarManager manager = StellarManager.getManager(false);
 				if(!manager.getSettings().serverEnabled)

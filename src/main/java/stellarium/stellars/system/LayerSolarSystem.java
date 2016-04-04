@@ -37,6 +37,8 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 
 	@Override
 	public void initialize(boolean isRemote, SolarSystemSettings settings) throws IOException {		
+		objects.clear();
+		
 		////Solar System
 		StellarSky.logger.info("Initializing Solar System...");
 		///Sun
@@ -76,6 +78,7 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		//-Moon
 		StellarSky.logger.info("Initializing Moon...");
 		moon.albedo=0.12 * settings.moonBrightnessMultiplier;
+		moon.brightness = settings.moonBrightnessMultiplier;
 		moon.a0=0.00257184;
 		moon.e0=0.0549006;
 		moon.I0=5.14;

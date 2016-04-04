@@ -24,6 +24,7 @@ public class StarRenderCache implements IRenderCache<BgStar> {
 		ref.set(viewpoint.getProjection().transform(object.pos));
 		double airmass = viewpoint.getAirmass(ref, false);
 		this.appMag = (float) (object.mag + airmass * Optics.ext_coeff_V);
+		this.shouldRender = true;
 		if(this.appMag > settings.mag_Limit)
 		{
 			this.shouldRender = false;

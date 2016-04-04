@@ -77,6 +77,9 @@ config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brigh
 
 
 ///Dimension
+config.category.dimension=Dimension Settings
+config.category.dimension.tooltip=Configurations for Dimension Settings.
+
 config.property.dimension.applied=Applied Dimensions
 config.property.dimension.applied.tooltip=List of dimensions which will get applied the stellar sky settings & rendering. To adjust per dimension settings on Gui, refresh the page by getting out to modlist and opening config gui again.
 
@@ -97,6 +100,9 @@ config.property.dimension.allowrefraction.tooltip=Determine whether or not apply
 
 
 ///Wake
+config.category.server.wake=Wake Settings
+config.category.server.wake.expl=Configuration for Waking System.
+
 config.property.server.wakemode=Wake Mode
 config.property.server.wakemode.expl=You can choose earliest or latest available wake time among these wake properties.
 

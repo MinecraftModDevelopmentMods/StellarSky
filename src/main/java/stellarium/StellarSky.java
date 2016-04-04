@@ -18,6 +18,8 @@ import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.common.SkyProviderGetter;
 import stellarium.compat.CompatManager;
+import stellarium.sync.StellarNetworkEventHandler;
+import stellarium.sync.StellarNetworkFMLEventHandler;
 import stellarium.sync.StellarNetworkManager;
 
 @Mod(modid=StellarSky.modid, version=StellarSky.version,
@@ -55,7 +57,8 @@ public class StellarSky {
     		FMLCommonHandler.instance().bus().register(this.tickHandler);
     		FMLCommonHandler.instance().bus().register(this.fmlEventHook);
     		
-    		FMLCommonHandler.instance().bus().register(this.networkManager);
+    		MinecraftForge.EVENT_BUS.register(new StellarNetworkEventHandler(this.networkManager));
+    		FMLCommonHandler.instance().bus().register(new StellarNetworkFMLEventHandler(this.networkManager));
     		
     		StellarSkyAPI.setSkyProviderGetter(new SkyProviderGetter());
     		CompatManager.getInstance().onPreInit();

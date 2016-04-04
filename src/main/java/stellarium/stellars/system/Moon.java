@@ -58,7 +58,7 @@ public class Moon extends SolarObject {
 	public EVector getRelativePos(double yr){
 		this.updateOrbE(yr);
 		this.rotation = mean_mot * yr;
-		double M = this.M0 + this.mean_mot * this.rotation;
+		double M = this.M0 + this.rotation;
 		return Spmath.GetOrbVec(a, e, ri.setRAngle(-Spmath.Radians(I)), rw.setRAngle(-Spmath.Radians(w)), rom.setRAngle(-Spmath.Radians(Omega)), M);
 	}
 	
@@ -98,14 +98,14 @@ public class Moon extends SolarObject {
 	//Ecliptic Position of Moon's Local Region from Ground (Update Needed)
 	//Parameter: PosLocalM Result
 	public IValRef<EVector> posLocalG(IValRef<EVector> p){
-		return VecMath.add(this.sunPos, p);
+		return VecMath.add(this.earthPos, p);
 	}
 	
 	
 	//Illumination of Moon's Local Region (Update Needed)
 	//Parameter: PosLocalM Result
 	public double illumination(EVector p){
-		return -Spmath.getD(BOp.div(VecMath.dot(this.earthPos, p), BOp.mult(VecMath.size(this.earthPos), VecMath.size(p))))*brightness;
+		return -Spmath.getD(BOp.div(VecMath.dot(this.earthPos, p), BOp.mult(VecMath.size(this.earthPos), VecMath.size(p))))*this.brightness;
 	}
 	
 	//Phase of the Moon(Update Needed)

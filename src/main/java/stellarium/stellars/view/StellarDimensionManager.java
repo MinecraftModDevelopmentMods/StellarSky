@@ -12,7 +12,7 @@ import stellarium.util.math.SpCoord;
 
 public final class StellarDimensionManager extends WorldSavedData {
 	
-	public static String ID = "stellarskydimensiondata";
+	public static String ID = "stellarskydimension%s";
 	
 	private StellarManager manager;
 	
@@ -27,20 +27,21 @@ public final class StellarDimensionManager extends WorldSavedData {
 		
 		if(!(data instanceof StellarDimensionManager))
 		{
-			dimManager = new StellarDimensionManager(ID);
-			world.perWorldStorage.setData(ID, dimManager);
+			dimManager = new StellarDimensionManager(String.format(ID, dimName));
+			world.perWorldStorage.setData(String.format(ID, dimName), dimManager);
 			
 			dimManager.loadSettingsFromConfig();
-		} else dimManager = (StellarDimensionManager) data;
+		} else
+			dimManager = (StellarDimensionManager) data;
 
 		dimManager.manager = manager;
-		dimManager.dimensionName = dimName;
 		
 		return dimManager;
 	}
 
 	public static StellarDimensionManager get(World world) {
-		WorldSavedData data = world.perWorldStorage.loadData(StellarDimensionManager.class, ID);
+		WorldSavedData data = world.perWorldStorage.loadData(StellarDimensionManager.class,
+				String.format(ID, world.provider.getDimensionName()));
 		
 		if(!(data instanceof StellarDimensionManager))
 			return null;
@@ -50,10 +51,15 @@ public final class StellarDimensionManager extends WorldSavedData {
 
 	public StellarDimensionManager(String id) {
 		super(id);
+		this.dimensionName = id.replaceFirst("stellarskydimension", "");
 	}
 	
 	public PerDimensionSettings getSettings() {
 		return this.settings;
+	}
+	
+	public IStellarViewpoint getViewpoint() {
+		return this.viewpoint;
 	}
 	
 	private void loadSettingsFromConfig() {
@@ -67,7 +73,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	}
 	
 	public void syncFromNBT(NBTTagCompound compound, boolean isRemote) {
-		if(manager.isLocked() || isRemote)
+		if(StellarManager.getManager(isRemote).isLocked() || isRemote)
 		{
 			this.settings = new PerDimensionSettings(this.dimensionName);
 			settings.readFromNBT(compound);
@@ -105,7 +111,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	}
 	
 	public SpCoord sunAppPos = new SpCoord(), moonAppPos = new SpCoord();
-	public EVector sunEquatorPos, moonEquatorPos;
+	public EVector sunEquatorPos = new EVector(3), moonEquatorPos = new EVector(3);
 	public double[] moonFactors = new double[3];
 
 }

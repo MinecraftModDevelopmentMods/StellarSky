@@ -38,7 +38,7 @@ public class MoonRenderCache implements IRenderCache<Moon> {
 		EVector ref = new EVector(3);
 		ref.set(viewpoint.getProjection().transform(object.earthPos));
 		double airmass = viewpoint.getAirmass(ref, false);
-		double mag = object.currentMag + airmass * Optics.ext_coeff_V;
+		this.appMag = object.currentMag + airmass * Optics.ext_coeff_V;
 		appCoord.setWithVec(ref);
 		viewpoint.applyAtmRefraction(this.appCoord);
 		
@@ -59,7 +59,7 @@ public class MoonRenderCache implements IRenderCache<Moon> {
 				buf.set(object.posLocalG(buf));
 				buf.set(VecMath.mult(50000.0, buf));
 				IValRef ref2 = viewpoint.getProjection().transform(buf);
-				
+
 				cache.setWithVec(ref2);
 				viewpoint.applyAtmRefraction(this.cache);
 

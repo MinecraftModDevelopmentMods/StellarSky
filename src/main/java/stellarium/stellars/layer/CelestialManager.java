@@ -73,7 +73,8 @@ public class CelestialManager {
 		StellarSky.logger.info("Reloading Client Settings...");
 		for(ICelestialLayer<? extends IConfigHandler> layer : this.layers)
 			for(CelestialObject object : layer.getObjectList())
-				object.getRenderCache().initialize(settings);
+				if(object.getRenderId() != -1)
+					object.getRenderCache().initialize(settings);
 		StellarSky.logger.info("Client Settings reloaded.");
 	}
 	
@@ -85,7 +86,8 @@ public class CelestialManager {
 	public void updateClient(ClientSettings settings, IStellarViewpoint viewpoint) {
 		for(ICelestialLayer<? extends IConfigHandler> layer : this.layers)
 			for(CelestialObject object : layer.getObjectList()) {
-				object.getRenderCache().updateCache(settings, object, viewpoint);
+				if(object.getRenderId() != -1)
+					object.getRenderCache().updateCache(settings, object, viewpoint);
 			}
 	}
 	

@@ -29,9 +29,6 @@ public class DimensionSettings extends HierarchicalConfig {
 
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
-		for(String dimName : dimensionApplied.getStringList())
-			this.putSubConfig(dimName, new PerDimensionSettings(dimName));
-		
 		super.loadFromConfig(config, category);
 	}
 

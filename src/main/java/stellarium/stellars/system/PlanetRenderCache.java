@@ -11,7 +11,7 @@ import stellarium.util.math.SpCoord;
 public class PlanetRenderCache implements IRenderCache<SolarObject> {
 	
 	protected boolean shouldRender;
-	protected SpCoord appCoord;
+	protected SpCoord appCoord = new SpCoord();
 	protected float appMag;
 	
 	@Override
@@ -23,6 +23,8 @@ public class PlanetRenderCache implements IRenderCache<SolarObject> {
 		ref.set(viewpoint.getProjection().transform(object.earthPos));
 		double airmass = viewpoint.getAirmass(ref, false);
 		this.appMag = (float) (object.currentMag + airmass * Optics.ext_coeff_V);
+		
+		this.shouldRender = true;
 		if(this.appMag > settings.mag_Limit)
 		{
 			this.shouldRender = false;

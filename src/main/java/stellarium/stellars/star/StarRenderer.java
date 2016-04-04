@@ -32,7 +32,7 @@ public class StarRenderer implements ICelestialObjectRenderer<StarRenderCache> {
 
 		pos.set(VecMath.mult(100.0, pos));
 		dif.set(VecMath.mult(size, dif));
-		dif2.set(VecMath.mult(size, dif2));
+		dif2.set(VecMath.mult(-size, dif2));
 
 		Color c = Color.getColor(B_V);
 		

@@ -2,6 +2,7 @@ package stellarium.stellars.system;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.ResourceLocation;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.ICelestialObjectRenderer;
@@ -12,6 +13,8 @@ import stellarium.util.math.VecMath;
 
 public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache> {
 
+	private static final ResourceLocation locationStarPng = new ResourceLocation("stellarium", "stellar/star.png");
+	
 	@Override
 	public void render(Minecraft mc, Tessellator tessellator, PlanetRenderCache cache, float bglight, float weathereff, float partialTicks) {
 		if(!cache.shouldRender)
@@ -28,7 +31,9 @@ public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCach
 
 		pos.set(VecMath.mult(99.0, pos));
 		dif.set(VecMath.mult(size, dif));
-		dif2.set(VecMath.mult(size, dif2));
+		dif2.set(VecMath.mult(-size, dif2));
+		
+		mc.renderEngine.bindTexture(this.locationStarPng);
 		
 		tessellator.startDrawingQuads();
 		tessellator.setColorRGBA_F(1.0f, 1.0f, 1.0f, alpha);
