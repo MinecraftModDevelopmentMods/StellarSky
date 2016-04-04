@@ -18,6 +18,7 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 
 	private ClientSettings settings;
 	private CelestialRenderer renderer;
+	private boolean updated = false;
 	
 	public SkyLayerCelestial() {
 		this.settings = StellarSky.proxy.getClientSettings();
@@ -36,8 +37,11 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 		if(settings.checkDirty())
 		{
 			manager.reloadClientSettings(this.settings);
-			this.onSettingsUpdated();
+			this.updated = false;
 		}
+		
+		if(!this.updated)
+			this.onSettingsUpdated();
 		
 		renderer.render(mc, Tessellator.instance, manager.getLayers(), bglight, weathereff, partialTicks);
 	}
@@ -49,6 +53,7 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 		if(world != null) {
 			StellarManager manager = StellarManager.getManager(true);
 			if(manager.getCelestialManager() != null) {
+				this.updated = true;
 				manager.update(world.getWorldTime());
 				StellarDimensionManager dimManager = StellarDimensionManager.get(world);
 				if(dimManager != null)

@@ -2,6 +2,7 @@ package stellarium.command;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import stellarium.stellars.StellarManager;
 
 public class CommandLock extends CommandBase {
@@ -15,6 +16,14 @@ public class CommandLock extends CommandBase {
     public int getRequiredPermissionLevel()
     {
         return 3;
+    }
+	
+	@Override
+    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    {
+		if(MinecraftServer.getServer() !=null && MinecraftServer.getServer().isSinglePlayer())
+			return true;
+		else return super.canCommandSenderUseCommand(sender);
     }
 
 	@Override
