@@ -6,10 +6,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
+import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
 import stellarium.stellars.layer.CelestialRenderer;
+import stellarium.stellars.view.StellarDimensionManager;
 
 public class SkyLayerCelestial implements ISkyRenderLayer {
 
@@ -20,18 +23,42 @@ public class SkyLayerCelestial implements ISkyRenderLayer {
 		this.settings = StellarSky.proxy.getClientSettings();
 		this.renderer = new CelestialRenderer();
 		
-		CelestialManager manager = StellarSky.proxy.getClientCelestialManager();
-		renderer.refreshRenderer(manager.getLayers());
+		CelestialManager celManager = StellarSky.proxy.getClientCelestialManager();
+		renderer.refreshRenderer(celManager.getLayers());
 		settings.checkDirty();
-		manager.reloadClientSettings(this.settings);
+		celManager.reloadClientSettings(this.settings);
+		this.onSettingsUpdated();
 	}
 	
 	public void renderCelestial(Minecraft mc, float bglight, float weathereff, float partialTicks) {
 		CelestialManager manager = StellarSky.proxy.getClientCelestialManager();
 
 		if(settings.checkDirty())
+		{
 			manager.reloadClientSettings(this.settings);
+			this.onSettingsUpdated();
+		}
+		
 		renderer.render(mc, Tessellator.instance, manager.getLayers(), bglight, weathereff, partialTicks);
+	}
+	
+	private void onSettingsUpdated() {
+		//Initialization update
+		World world = Minecraft.getMinecraft().theWorld;
+		
+		if(world != null) {
+			StellarManager manager = StellarManager.getManager(true);
+			if(manager.getCelestialManager() != null) {
+				manager.update(world.getWorldTime());
+				StellarDimensionManager dimManager = StellarDimensionManager.get(world);
+				if(dimManager != null)
+				{
+					dimManager.update(world, world.getWorldTime());
+					manager.updateClient(StellarSky.proxy.getClientSettings(),
+							dimManager.getViewpoint());
+				}
+			}
+		}
 	}
 	
 	@Override

@@ -30,27 +30,6 @@ public class StellarTickHandler {
 	}
 	
 	@SubscribeEvent
-	public void tickStart(TickEvent.RenderTickEvent e) {
-		if(e.phase == Phase.START){
-			World world = StellarSky.proxy.getDefWorld(true);
-			
-			if(world != null) {
-				StellarManager manager = StellarManager.getManager(true);
-				if(!manager.updated() && manager.getCelestialManager() != null) {
-					manager.update(world.getWorldTime());
-					StellarDimensionManager dimManager = StellarDimensionManager.get(world);
-					if(dimManager != null)
-					{
-						dimManager.update(world, world.getWorldTime());
-						manager.updateClient(StellarSky.proxy.getClientSettings(),
-								dimManager.getViewpoint());
-					}
-				}
-			}
-		}
-	}
-	
-	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
 		if(e.phase == Phase.START){
 			World world = StellarSky.proxy.getDefWorld(true);

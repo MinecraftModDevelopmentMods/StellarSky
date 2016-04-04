@@ -23,14 +23,18 @@ public class StellarNetworkFMLEventHandler {
 	@SubscribeEvent
 	public void onPlayerLoad(PlayerEvent.PlayerLoggedInEvent event) {
 		EntityPlayerMP player = (EntityPlayerMP) event.player;
-		
 		netManager.onSetManager(player, player.worldObj);
-		//((NetHandlerPlayServer)event.handler).playerEntity
 	}
 	
 	@SubscribeEvent
 	public void onPlayerJoinDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
 		netManager.onSetManager((EntityPlayerMP) event.player, event.player.worldObj);
+	}
+	
+	@SubscribeEvent
+	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+		EntityPlayerMP player = (EntityPlayerMP) event.player;
+		netManager.onSetManager(player, player.worldObj);
 	}
 	
 	@SubscribeEvent

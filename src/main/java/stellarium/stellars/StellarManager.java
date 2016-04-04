@@ -96,12 +96,10 @@ public final class StellarManager extends WorldSavedData {
 	
 	
 	public void setup(CelestialManager manager) {
+		StellarSky.logger.info("Starting Common Initialization...");
 		this.celestialManager = manager;
-		try {
-			manager.initializeCommon(this.settings);
-		} catch (IOException exc) {
-			Throwables.propagate(exc);
-		}
+		manager.initializeCommon(this.settings);
+		StellarSky.logger.info("Common Initialization Ended.");
 	}
 	
 	public CommonSettings getSettings() {

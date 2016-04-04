@@ -88,9 +88,11 @@ public final class StellarDimensionManager extends WorldSavedData {
 	}
 	
 	public void setup() {
+		StellarSky.logger.info("Initializing Dimension Settings...");
 		if(settings.allowRefraction)
 			this.viewpoint = new RefractiveViewpoint(manager.getSettings(), this.settings);
 		else this.viewpoint = new NonRefractiveViewpoint(manager.getSettings(), this.settings);
+		StellarSky.logger.info("Initialized Dimension Settings.");
 	}
 	
 	public void update(World world, double currentTick) {

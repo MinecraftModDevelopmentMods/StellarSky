@@ -46,14 +46,14 @@ public class CelestialManager {
 				layer.initialize(true, layerName != null? settings.getSubConfig(layerName) : null);
 			}
 		} catch(Exception exception) {
-	    	StellarSky.logger.info("Failed to load Client Celestial Layer %s by Exception %s",
+	    	StellarSky.logger.fatal("Failed to load Client Celestial Layer %s by Exception %s",
 	    			layerName, exception.toString());
 			Throwables.propagate(exception);
 		}
     	StellarSky.logger.info("Successfully initialized Client Celestial Layers!");
 	}
 	
-	public void initializeCommon(CommonSettings settings) throws IOException {
+	public void initializeCommon(CommonSettings settings) {
 		StellarSky.logger.info("Initializing Common Celestial Layers...");
 		String layerName = null;
 		try {
@@ -62,7 +62,7 @@ public class CelestialManager {
 				layer.initialize(true, layerName != null? settings.getSubConfig(layerName) : null);
 			}
 		} catch(Exception exception) {
-	    	StellarSky.logger.info("Failed to load Common Celestial Layer %s by Exception %s",
+	    	StellarSky.logger.fatal("Failed to load Common Celestial Layer %s by Exception %s",
 	    			layerName, exception.toString());
 			Throwables.propagate(exception);
 		}

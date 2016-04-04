@@ -64,7 +64,7 @@ public class MoonRenderCache implements IRenderCache<Moon> {
 
 				moonPos[longc][latc] = VecMath.mult(98.0, cache.getVec()).getVal();
 
-				if(cache.y < 0)
+				if(viewpoint.hideObjectsUnderHorizon() && cache.y < 0)
 					moonilum[longc][latc]=0.0f;
 			}
 		}
