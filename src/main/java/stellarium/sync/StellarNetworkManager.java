@@ -14,9 +14,10 @@ import stellarium.stellars.view.StellarDimensionManager;
 public class StellarNetworkManager {
 	
 	private SimpleNetworkWrapper wrapper;
+	protected String id = "stellarskychannel";
 	
 	public StellarNetworkManager() {
-		this.wrapper = NetworkRegistry.INSTANCE.newSimpleChannel("stellarskychannel");
+		this.wrapper = NetworkRegistry.INSTANCE.newSimpleChannel(this.id);
 		
 		wrapper.registerMessage(MessageSyncCommon.MessageSyncCommonHandler.class,
 				MessageSyncCommon.class, 0, Side.CLIENT);

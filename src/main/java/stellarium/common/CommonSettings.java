@@ -114,16 +114,22 @@ public class CommonSettings extends HierarchicalNBTConfig {
         	this.axialTilt = propAxialTilt.getDouble();
         	this.precession = propPrecession.getDouble();
         } else {
-        	this.day = Double.parseDouble(propDay.getDefault());
-        	this.year = Double.parseDouble(propYear.getDefault());
-        	this.yearOffset = Integer.parseInt(propYearOffset.getDefault());
-        	this.dayOffset = Integer.parseInt(propDayOffset.getDefault());
-        	this.tickOffset = Double.parseDouble(propTickOffset.getDefault());
-        	this.axialTilt = 0.0;
-        	this.precession = Double.parseDouble(propPrecession.getDefault());
+        	this.setDefault();
         }
         
        	super.loadFromConfig(config, category);
+	}
+	
+	/**Default for servers without Stellar Sky*/
+	public void setDefault() {
+		this.setupConfig(new Configuration(), "category");
+		this.day = Double.parseDouble(propDay.getDefault());
+    	this.year = Double.parseDouble(propYear.getDefault());
+    	this.yearOffset = Integer.parseInt(propYearOffset.getDefault());
+    	this.dayOffset = Integer.parseInt(propDayOffset.getDefault());
+    	this.tickOffset = Double.parseDouble(propTickOffset.getDefault());
+    	this.axialTilt = 0.0;
+    	this.precession = Double.parseDouble(propPrecession.getDefault());
 	}
 
 	

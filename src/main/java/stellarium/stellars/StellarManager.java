@@ -67,6 +67,10 @@ public final class StellarManager extends WorldSavedData {
 		this.settings = (CommonSettings) StellarSky.proxy.commonSettings.copy();
 		this.markDirty();
 	}
+	
+	public void handleServerWithoutMod() {
+		settings.setDefault();
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {

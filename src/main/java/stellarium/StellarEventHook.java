@@ -52,6 +52,11 @@ public class StellarEventHook {
 				StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(e.world, manager, dimName);
 				setupDimension(e.world, manager, dimManager);
 			}
+		
+		if(e.world.isRemote && mark) {
+			handleNotHaveModOnServer(e.world);
+			mark = false;
+		}
 	}
 	
 	public static void setupManager(World world, StellarManager manager) {
@@ -73,6 +78,28 @@ public class StellarEventHook {
 		
 		if(world.isRemote)
 			world.provider.setSkyRenderer(new SkyRenderer());
+	}
+	
+	private static boolean mark = false;
+	
+	private static void handleNotHaveModOnServer(World world) {
+		StellarManager manager = StellarManager.loadOrCreateManager(world);
+		manager.handleServerWithoutMod();
+		
+		if(manager.getCelestialManager() == null)
+		{
+			StellarEventHook.setupManager(world, manager);
+			
+			String dimName = world.provider.getDimensionName();
+			if(StellarSky.proxy.dimensionSettings.hasSubConfig(dimName)) {
+				StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(world, manager, dimName);
+				StellarEventHook.setupDimension(world, manager, dimManager);
+			}
+		}
+	}
+	
+	public static void markNotHave() {
+		mark = true;
 	}
 	
 	@SubscribeEvent
