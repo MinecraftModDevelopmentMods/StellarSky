@@ -27,7 +27,7 @@ import stellarium.sync.StellarNetworkManager;
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";
-		public static final String version = "0.1.24";
+		public static final String version = "@VERSION@";
 
         // The instance of Stellarium
         @Instance(StellarSky.modid)
