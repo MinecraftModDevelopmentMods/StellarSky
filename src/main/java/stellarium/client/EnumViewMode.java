@@ -1,4 +1,4 @@
-package stellarium.config;
+package stellarium.client;
 
 public enum EnumViewMode {
 	

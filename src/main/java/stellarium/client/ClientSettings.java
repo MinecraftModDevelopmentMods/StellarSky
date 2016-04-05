@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.StellarSky;
-import stellarium.config.EnumViewMode;
 import stellarium.config.HierarchicalConfig;
 import stellarium.stellars.layer.CelestialLayerRegistry;
 
@@ -23,8 +22,10 @@ public class ClientSettings extends HierarchicalConfig {
 	private Property propMilkywayFrac, propMilkywayBrightness;
 	private Property propMinuteLength, propHourToMinute;
 	private Property propViewMode;
+	private Property propLockBtnPosition;
 	
 	private EnumViewMode viewMode = EnumViewMode.EMPTY;
+	private EnumLockBtnPosition btnPosition = EnumLockBtnPosition.UPRIGHT;
 	
 	private boolean isDirty = false;
 	
@@ -43,6 +44,10 @@ public class ClientSettings extends HierarchicalConfig {
 	
 	public void setViewMode(EnumViewMode mode) {
 		this.viewMode = mode;
+	}
+	
+	public EnumLockBtnPosition getBtnPosition() {
+		return this.btnPosition;
 	}
 	
 	@Override
@@ -107,11 +112,22 @@ public class ClientSettings extends HierarchicalConfig {
         propViewMode.setValue(this.getViewMode().getName());
         
         
+        propLockBtnPosition = config.get(category, "Lock_Button_Position", "empty")
+        		.setValidValues(EnumLockBtnPosition.names);
+        propLockBtnPosition.comment = "Position of sky lock button.\n"
+        		+ "Now there are upright and bottomleft.";
+        propLockBtnPosition.setRequiresMcRestart(false);
+        propLockBtnPosition.setLanguageKey("config.property.client.lockbtnpos");
+        
+        propLockBtnPosition.setValue(this.getBtnPosition().getName());  
+        
+        
         List<String> propNameList = Arrays.asList(propMagLimit.getName(),
         		propMoonFrac.getName(), propMilkywayFrac.getName(),
         		propTurb.getName(), propMilkywayBrightness.getName(),
         		propViewMode.getName(),
-        		propMinuteLength.getName(), propHourToMinute.getName());
+        		propMinuteLength.getName(), propHourToMinute.getName(),
+        		propLockBtnPosition.getName());
         config.setCategoryPropertyOrder(category, propNameList);
         
         super.setupConfig(config, category);
@@ -129,6 +145,7 @@ public class ClientSettings extends HierarchicalConfig {
         this.anHourToMinute = propHourToMinute.getInt();
         
         this.setViewMode(EnumViewMode.getModeForName(propViewMode.getString()));
+        this.btnPosition = EnumLockBtnPosition.getModeForName(this.propLockBtnPosition.getString());
         
         super.loadFromConfig(config, category);
         

@@ -14,7 +14,6 @@ import stellarium.StellarSky;
 import stellarium.api.IHourProvider;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
-import stellarium.config.EnumViewMode;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.view.StellarDimensionManager;
 
@@ -90,7 +89,8 @@ public class StellarSkyClientHandler {
 					return;
 				
 				boolean locked = StellarManager.getManager(true).isLocked();
-				GuiButton guibutton = new GuiButton(30, event.gui.width / 2 + 5, event.gui.height / 6 + 12, 150, 20,
+				EnumLockBtnPosition position = StellarSky.proxy.getClientSettings().getBtnPosition();
+				GuiButton guibutton = new GuiButton(30, position.getPosX(event.gui.width), position.getPosY(event.gui.height), 150, 20,
 						locked? I18n.format("stellarsky.gui.unlock") : I18n.format("stellarsky.gui.lock"));
 				event.buttonList.add(guibutton);
 			}
