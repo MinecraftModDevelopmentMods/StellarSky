@@ -24,7 +24,7 @@ public enum EnumLockBtnPosition {
 	}
 	
 	public int getPosY(int height) {
-		return height / 2 + this.offsetY;
+		return height / 6 + this.offsetY;
 	}
 
 	public static EnumLockBtnPosition getModeForName(String name) {

@@ -19,7 +19,7 @@ public class SkyLayerVoid implements ISkyRenderLayer {
 		
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glColor3f(0.0F, 0.0F, 0.0F);
-		double d0 = mc.thePlayer.getPosition(partialTicks).yCoord - world.getHorizon();
+		/*double d0 = mc.thePlayer.getPosition(partialTicks).yCoord - world.getHorizon();
 		
 		if (d0 < 0.0D)
 		{
@@ -49,7 +49,7 @@ public class SkyLayerVoid implements ISkyRenderLayer {
 			tessellator1.addVertex((double)f8, (double)f10, (double)f8);
 			tessellator1.addVertex((double)f8, (double)f10, (double)(-f8));
 			tessellator1.draw();
-		}
+		}*/
 		
 		if (world.provider.isSkyColored())
 		{
