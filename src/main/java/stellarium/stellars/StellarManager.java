@@ -1,9 +1,5 @@
 package stellarium.stellars;
 
-import java.io.IOException;
-
-import com.google.common.base.Throwables;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
@@ -29,12 +25,12 @@ public final class StellarManager extends WorldSavedData {
 		if(!world.isRemote && StellarSky.proxy.getDefWorld(world.isRemote) != null)
 			world = StellarSky.proxy.getDefWorld(world.isRemote);
 		
-		WorldSavedData data = world.mapStorage.loadData(StellarManager.class, ID);
+		WorldSavedData data = world.getMapStorage().loadData(StellarManager.class, ID);
 		
 		if(!(data instanceof StellarManager))
 		{
 			StellarManager manager = new StellarManager(ID);
-			world.mapStorage.setData(ID, manager);
+			world.getMapStorage().setData(ID, manager);
 			
 			manager.loadSettingsFromConfig();
 			
@@ -44,16 +40,16 @@ public final class StellarManager extends WorldSavedData {
 		return (StellarManager) data;
 	}
 	
-	public static boolean hasManager(boolean isRemote) {
-		World world = StellarSky.proxy.getDefWorld(isRemote);
+	public static boolean hasManager(World currentWorld, boolean isRemote) {
+		World world = isRemote? currentWorld : StellarSky.proxy.getDefWorld(isRemote);
 		if(world == null)
 			return false;
-		return (world.mapStorage.loadData(StellarManager.class, ID) instanceof StellarManager);
+		return (world.getMapStorage().loadData(StellarManager.class, ID) instanceof StellarManager);
 	}
 
 	public static StellarManager getManager(boolean isRemote) {
 		World world = StellarSky.proxy.getDefWorld(isRemote);
-		WorldSavedData data = world.mapStorage.loadData(StellarManager.class, ID);
+		WorldSavedData data = world.getMapStorage().loadData(StellarManager.class, ID);
 		
 		if(!(data instanceof StellarManager)) {
 			throw new IllegalStateException(
@@ -133,6 +129,7 @@ public final class StellarManager extends WorldSavedData {
 	
 	public void setLocked(boolean locked) {
 		this.locked = locked;
+		this.markDirty();
 	}
 
 	public boolean isLocked() {

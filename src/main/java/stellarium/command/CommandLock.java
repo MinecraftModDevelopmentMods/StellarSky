@@ -1,6 +1,7 @@
 package stellarium.command;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import stellarium.stellars.StellarManager;
@@ -32,11 +33,11 @@ public class CommandLock extends CommandBase {
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] args) {
+	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
 		boolean lock = true;
 		
 		if(args.length >= 1)
-			lock = this.parseBoolean(sender, args[0]);
+			lock = this.parseBoolean(args[0]);
 		
 		StellarManager manager = StellarManager.getManager(false);
 		manager.setLocked(lock);

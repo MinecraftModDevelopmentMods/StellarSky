@@ -1,6 +1,5 @@
 package stellarium.stellars.layer;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.google.common.base.Throwables;

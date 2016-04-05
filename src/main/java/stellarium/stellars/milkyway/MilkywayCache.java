@@ -35,7 +35,7 @@ public class MilkywayCache implements IRenderCache<Milkyway> {
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				Buf.set(new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec());
-				Buf.set(VecMath.mult(50.0, Buf));
+				Buf.set(VecMath.mult(101.0, Buf));
 				IValRef ref = EqtoEc.transform(Buf);
 				ref = viewpoint.getProjection().transform(ref);
 

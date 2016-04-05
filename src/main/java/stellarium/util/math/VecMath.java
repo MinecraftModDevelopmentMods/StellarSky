@@ -1,13 +1,7 @@
 package stellarium.util.math;
 
-import sciapi.api.temporaries.Temporal;
 import sciapi.api.value.IValRef;
-import sciapi.api.value.IValue;
-import sciapi.api.value.STempRef;
-import sciapi.api.value.absalg.IVectorSpace;
 import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.IEVecSet;
-import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.numerics.DDouble;
 import sciapi.api.value.numerics.DDoubleSet;
 import sciapi.api.value.numerics.IReal;

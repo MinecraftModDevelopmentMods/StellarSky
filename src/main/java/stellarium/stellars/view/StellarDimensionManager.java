@@ -22,13 +22,13 @@ public final class StellarDimensionManager extends WorldSavedData {
 	private String dimensionName;
 	
 	public static StellarDimensionManager loadOrCreate(World world, StellarManager manager, String dimName) {
-		WorldSavedData data = world.perWorldStorage.loadData(StellarDimensionManager.class, ID);
+		WorldSavedData data = world.getPerWorldStorage().loadData(StellarDimensionManager.class, ID);
 		StellarDimensionManager dimManager;
 		
 		if(!(data instanceof StellarDimensionManager))
 		{
 			dimManager = new StellarDimensionManager(String.format(ID, dimName));
-			world.perWorldStorage.setData(String.format(ID, dimName), dimManager);
+			world.getPerWorldStorage().setData(String.format(ID, dimName), dimManager);
 			
 			dimManager.loadSettingsFromConfig();
 		} else
@@ -40,7 +40,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	}
 
 	public static StellarDimensionManager get(World world) {
-		WorldSavedData data = world.perWorldStorage.loadData(StellarDimensionManager.class,
+		WorldSavedData data = world.getPerWorldStorage().loadData(StellarDimensionManager.class,
 				String.format(ID, world.provider.getDimensionName()));
 		
 		if(!(data instanceof StellarDimensionManager))

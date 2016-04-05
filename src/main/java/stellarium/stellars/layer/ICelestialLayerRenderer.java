@@ -1,14 +1,13 @@
 package stellarium.stellars.layer;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarium.render.StellarRenderInfo;
 
 @SideOnly(Side.CLIENT)
 public interface ICelestialLayerRenderer {
 	
-	public void preRender(Minecraft mc, Tessellator tessellator, float bglight, float weathereff, float partialTicks);
-	public void postRender(Minecraft mc, Tessellator tessellator, float bglight, float weathereff, float partialTicks);
+	public void preRender(StellarRenderInfo info);
+	public void postRender(StellarRenderInfo info);
 
 }

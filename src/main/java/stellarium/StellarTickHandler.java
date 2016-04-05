@@ -3,15 +3,14 @@ package stellarium;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import stellarium.api.ISkyProvider;
 import stellarium.api.StellarSkyAPI;
 import stellarium.stellars.StellarManager;
@@ -31,7 +30,7 @@ public class StellarTickHandler {
 	
 	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
-		if(e.phase == Phase.START){
+		if(e.phase == TickEvent.Phase.START){
 			World world = StellarSky.proxy.getDefWorld(true);
 			
 			if(world != null) {
@@ -52,7 +51,7 @@ public class StellarTickHandler {
 	
 	@SubscribeEvent
 	public void tickStart(TickEvent.ServerTickEvent e) {
-		if(e.phase == Phase.START){
+		if(e.phase == TickEvent.Phase.START){
 			World world = StellarSky.proxy.getDefWorld(false);
 			
 			if(world != null) {
@@ -66,7 +65,7 @@ public class StellarTickHandler {
 		
 	@SubscribeEvent
 	public void tickStart(TickEvent.WorldTickEvent e) {
-		if(e.phase == Phase.START){
+		if(e.phase == TickEvent.Phase.START){
 			if(e.world != null) {
 				StellarDimensionManager dimManager = StellarDimensionManager.get(e.world);
 				if(dimManager != null)
@@ -96,7 +95,7 @@ public class StellarTickHandler {
 	}
 
 	private void tryWakePlayers(WorldServer world, ISkyProvider skyProvider) {		
-        if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
+        if (world.getGameRules().getBoolean("doDaylightCycle"))
         {
         	WorldInfo info = world.getWorldInfo();
         	long worldTime = info.getWorldTime();

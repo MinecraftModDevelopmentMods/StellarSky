@@ -1,12 +1,12 @@
 package stellarium.sync;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import stellarium.StellarEventHook;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
@@ -39,24 +39,28 @@ public class MessageSyncCommon implements IMessage {
 	public static class MessageSyncCommonHandler implements IMessageHandler<MessageSyncCommon, IMessage> {
 
 		@Override
-		public IMessage onMessage(MessageSyncCommon message, MessageContext ctx) {
-			StellarManager manager = StellarManager.getManager(true);
-			manager.syncFromNBT(message.compoundInfo, true);
+		public IMessage onMessage(final MessageSyncCommon message, MessageContext ctx) {
+			StellarSky.proxy.addScheduledTask(new Runnable() {
+				public void run() {
+					StellarManager manager = StellarManager.getManager(true);
+					manager.syncFromNBT(message.compoundInfo, true);
 			
-			World world = StellarSky.proxy.getDefWorld();
+					World world = StellarSky.proxy.getDefWorld();
 			
-			StellarDimensionManager dimManager = null;
+					StellarDimensionManager dimManager = null;
 			
-			if(!message.dimensionInfo.hasNoTags())
-				dimManager = StellarDimensionManager.loadOrCreate(
-						world, manager, world.provider.getDimensionName());
+					if(!message.dimensionInfo.hasNoTags())
+						dimManager = StellarDimensionManager.loadOrCreate(
+								world, manager, world.provider.getDimensionName());
 			
-			if(dimManager != null)
-				dimManager.syncFromNBT(message.dimensionInfo, true);
+					if(dimManager != null)
+						dimManager.syncFromNBT(message.dimensionInfo, true);
 			
-			StellarEventHook.setupManager(world, manager);
-			if(dimManager != null)
-				StellarEventHook.setupDimension(world, manager, dimManager);
+					StellarEventHook.setupManager(world, manager);
+					if(dimManager != null)
+						StellarEventHook.setupDimension(world, manager, dimManager);
+				}
+			});
 			
 			return null;
 		}

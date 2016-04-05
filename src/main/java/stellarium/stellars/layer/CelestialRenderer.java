@@ -2,11 +2,12 @@ package stellarium.stellars.layer;
 
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarium.config.IConfigHandler;
+import stellarium.render.StellarRenderInfo;
 
 @SideOnly(Side.CLIENT)
 public class CelestialRenderer {
@@ -17,7 +18,7 @@ public class CelestialRenderer {
 			layer.registerRenderers();
 	}
 	
-	public void render(Minecraft mc, Tessellator tessellator, List<ICelestialLayer> layers, float bglight, float weathereff, float partialTicks) {
+	public void render(List<ICelestialLayer> layers, StellarRenderInfo info) {
 		for(ICelestialLayer<? extends IConfigHandler> layer : layers) {
 			ICelestialLayerRenderer layerRenderer = null;
 			
@@ -25,18 +26,18 @@ public class CelestialRenderer {
 				layerRenderer = CelestialRenderingRegistry.getInstance().getLayerRenderer(layer.getLayerRendererIndex());
 			
 			if(layerRenderer != null)
-				layerRenderer.preRender(mc, tessellator, bglight, weathereff, partialTicks);
+				layerRenderer.preRender(info);
 			
 			for(CelestialObject object : layer.getObjectList())
 			{
 				if(object.getRenderId() != -1) {
 					ICelestialObjectRenderer objRenderer = CelestialRenderingRegistry.getInstance().getObjectRenderer(object.getRenderId());
-					objRenderer.render(mc, tessellator, object.getRenderCache(), bglight, weathereff, partialTicks);
+					objRenderer.render(info, object.getRenderCache());
 				}
 			}
 			
 			if(layerRenderer != null)
-				layerRenderer.postRender(mc, tessellator, bglight, weathereff, partialTicks);
+				layerRenderer.postRender(info);
 		}
 	}
 

@@ -1,9 +1,10 @@
 package stellarium.stellars.star;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
+import org.lwjgl.opengl.GL11;
+
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import sciapi.api.value.euclidian.EVector;
+import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.layer.ICelestialLayerRenderer;
 
 public class LayerStarRenderer implements ICelestialLayerRenderer {
@@ -11,14 +12,14 @@ public class LayerStarRenderer implements ICelestialLayerRenderer {
 	private static final ResourceLocation locationStarPng = new ResourceLocation("stellarium", "stellar/star.png");
 
 	@Override
-	public void preRender(Minecraft mc, Tessellator tessellator, float bglight, float weathereff, float partialTicks) {
-		mc.renderEngine.bindTexture(locationStarPng);
-		tessellator.startDrawingQuads();
+	public void preRender(StellarRenderInfo info) {
+		info.mc.renderEngine.bindTexture(locationStarPng);
+		info.worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 	}
 
 	@Override
-	public void postRender(Minecraft mc, Tessellator tessellator, float bglight, float weathereff, float partialTicks) {
-		tessellator.draw();
+	public void postRender(StellarRenderInfo info) {
+		info.tessellator.draw();
 	}
 
 }

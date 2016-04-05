@@ -34,6 +34,10 @@ public class Spmath {
 		return x;
 	}
 	
+	public static float clip(float alpha) {
+		return Math.max(0.0f, Math.min(1.0f, alpha));
+	}
+	
 	//fmod
 	public static final double fmod(double a, double b){
 		return a-Math.floor(a/b)*b;

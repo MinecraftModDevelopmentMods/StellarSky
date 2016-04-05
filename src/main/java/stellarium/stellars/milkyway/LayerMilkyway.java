@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarium.config.IConfigHandler;
 import stellarium.stellars.layer.CelestialObject;
 import stellarium.stellars.layer.CelestialRenderingRegistry;

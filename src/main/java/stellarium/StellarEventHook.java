@@ -5,14 +5,14 @@ import java.lang.reflect.Modifier;
 
 import com.google.common.base.Throwables;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import stellarium.api.StellarSkyAPI;
 import stellarium.render.SkyRenderer;
 import stellarium.stellars.StellarManager;
@@ -39,7 +39,7 @@ public class StellarEventHook {
 	public void onWorldLoad(WorldEvent.Load e)
 	{
 		StellarManager manager;
-		if(!StellarManager.hasManager(e.world.isRemote)) {
+		if(!StellarManager.hasManager(e.world, e.world.isRemote)) {
 			manager = StellarManager.loadOrCreateManager(e.world);
 		} else manager = StellarManager.getManager(e.world.isRemote);
 		
@@ -70,7 +70,7 @@ public class StellarEventHook {
 		
 		if(manager.getSettings().serverEnabled && dimManager.getSettings().patchProvider) {
 			try {
-				providerField.set(world, new StellarWorldProvider(world.provider, manager, dimManager));
+				providerField.set(world, new StellarWorldProvider(world, world.provider, manager, dimManager));
 			} catch (Exception exc) {
 				Throwables.propagate(exc);
 			}

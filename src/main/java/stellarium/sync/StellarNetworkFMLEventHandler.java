@@ -1,16 +1,11 @@
 package stellarium.sync;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import stellarium.StellarEventHook;
-import stellarium.StellarSky;
-import stellarium.stellars.StellarManager;
-import stellarium.stellars.view.StellarDimensionManager;
 
 public class StellarNetworkFMLEventHandler {
 
