@@ -138,7 +138,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
 	
 	@Override
 	public double getYearlyOffset(long tick) {
-		return Spmath.fmod(((tick + manager.getSettings().tickOffset) / manager.getSettings().day + manager.getSettings().dayOffset) / manager.getSettings().year, 1.0);
+		return Spmath.fmod(((tick + manager.getSettings().tickOffset + DEFAULT_OFFSET) / manager.getSettings().day + manager.getSettings().dayOffset) / manager.getSettings().year, 1.0);
 	}
 	
 	@Override
@@ -148,7 +148,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
 		SpCoord coord = new SpCoord();
 		coord.setWithVec(dimManager.sunEquatorPos);
 		
-		return this.hourAngleForHeight(heightAngle, Spmath.Radians(coord.y), radLatitude);
+		return this.hourAngleForHeight(heightAngle, Spmath.Radians(coord.y), radLatitude) / (2 * Math.PI);
 	}
 	
 	@Override
@@ -158,7 +158,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
 		SpCoord coord = new SpCoord();
 		coord.setWithVec(dimManager.moonEquatorPos);
 		
-		return this.hourAngleForHeight(heightAngle, Spmath.Radians(coord.y), radLatitude);
+		return this.hourAngleForHeight(heightAngle, Spmath.Radians(coord.y), radLatitude) / (2 * Math.PI);
 	}
 	
 	private double hourAngleForHeight(double heightAngle, double dec, double lat) {

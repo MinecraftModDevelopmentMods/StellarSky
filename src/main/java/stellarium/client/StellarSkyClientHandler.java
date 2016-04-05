@@ -35,15 +35,15 @@ public class StellarSkyClientHandler {
 				return;
 			
 			double currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
-			double time = manager.getSkyTime(currentTick);
+			double time = manager.getSkyTime(currentTick)+1000.0;
 			double daylength = manager.getSettings().day;
 			double yearlength = manager.getSettings().year;
-			double date = currentTick / daylength + dimManager.getSettings().latitude / 180.0;
+			double date = time / daylength + dimManager.getSettings().longitude / 180.0;
 			double year = date / yearlength;
 			
 			int yr = (int)Math.floor(year);
-			int day = (int)Math.floor(date - yr * yearlength);
-			int tick = (int)Math.floor((date - yr * yearlength - day)*daylength);
+			int day = (int)Math.floor(date - Math.floor(yr * yearlength));
+			int tick = (int)Math.floor((date - Math.floor(yr * yearlength) - day)*daylength);
 			
 			IHourProvider provider = StellarSkyAPI.getCurrentHourProvider();
 			
