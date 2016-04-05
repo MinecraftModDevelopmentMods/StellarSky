@@ -64,15 +64,15 @@ public class NonRefractiveViewpoint implements IStellarViewpoint {
 		
 		
 		EVector EastEq = new EVector(1.0, 0.0, 0.0);
-		EastEq.set(getInvTransformedEq(East));
+		EastEq.set(getInvTransformedEq(EastEq));
 		
 		EVector NorthEq = new EVector(0.0, 1.0, 0.0);
-		NorthEq.set(getInvTransformedEq(North));
+		NorthEq.set(getInvTransformedEq(NorthEq));
 		
 		EVector ZenEq = new EVector(0.0,0.0,1.0);
 		ZenEq.set(getInvTransformedEq(ZenEq));
 
-		this.projectionEq = new EProjection(East, North, ZenD);
+		this.projectionEq = new EProjection(EastEq, NorthEq, ZenEq);
 		
 		//Zen.set(VOp.mult(manager.Earth.radius, ZenD));
 	}

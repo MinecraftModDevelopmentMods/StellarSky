@@ -17,7 +17,7 @@ public class LightWakeHandler implements IWakeHandler {
 		double currentDayOffset = skyProvider.getDaytimeOffset(sleepTime);
 		double dayLength = skyProvider.getDayLength();
 
-    	double modifiedWorldTime = sleepTime + (wakeDayOffset - currentDayOffset) * dayLength;
+    	double modifiedWorldTime = sleepTime + (-wakeDayOffset - currentDayOffset) * dayLength;
     	while(modifiedWorldTime < sleepTime)
     		modifiedWorldTime += dayLength;
 		return (long) modifiedWorldTime;

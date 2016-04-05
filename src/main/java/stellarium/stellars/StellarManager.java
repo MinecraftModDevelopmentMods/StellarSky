@@ -44,8 +44,8 @@ public final class StellarManager extends WorldSavedData {
 		return (StellarManager) data;
 	}
 	
-	public static boolean hasManager(boolean isRemote) {
-		World world = StellarSky.proxy.getDefWorld(isRemote);
+	public static boolean hasManager(World loadedWorld, boolean isRemote) {
+		World world = isRemote? loadedWorld : StellarSky.proxy.getDefWorld(isRemote);
 		if(world == null)
 			return false;
 		return (world.mapStorage.loadData(StellarManager.class, ID) instanceof StellarManager);
@@ -133,6 +133,7 @@ public final class StellarManager extends WorldSavedData {
 	
 	public void setLocked(boolean locked) {
 		this.locked = locked;
+		this.markDirty();
 	}
 
 	public boolean isLocked() {

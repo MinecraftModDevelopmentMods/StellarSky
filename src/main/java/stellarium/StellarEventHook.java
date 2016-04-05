@@ -39,7 +39,7 @@ public class StellarEventHook {
 	public void onWorldLoad(WorldEvent.Load e)
 	{
 		StellarManager manager;
-		if(!StellarManager.hasManager(e.world.isRemote)) {
+		if(!StellarManager.hasManager(e.world, e.world.isRemote)) {
 			manager = StellarManager.loadOrCreateManager(e.world);
 		} else manager = StellarManager.getManager(e.world.isRemote);
 		
