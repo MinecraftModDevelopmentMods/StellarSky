@@ -16,6 +16,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
+import stellarium.command.FixedCommandTime;
 import stellarium.common.SkyProviderGetter;
 import stellarium.compat.CompatManager;
 import stellarium.sync.StellarNetworkEventHandler;
@@ -81,5 +82,6 @@ public class StellarSky {
         @EventHandler
         public void serverStarting(FMLServerStartingEvent event) {
         	event.registerServerCommand(new CommandLock());
+        	event.registerServerCommand(new FixedCommandTime());
         }
 }
