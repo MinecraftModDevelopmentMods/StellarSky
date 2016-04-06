@@ -35,31 +35,31 @@ public class PerDimensionSettings implements INBTConfig {
 		List<String> propNameList = Lists.newArrayList();
 		
 		propPatchProvider = config.get(category, "Patch_Provider", true);
-		propPatchProvider.comment = "Determine whether or not patch provider. Cannot adjust longitude and latitude when this is false.";
+		propPatchProvider.setComment("Determine whether or not patch provider. Cannot adjust longitude and latitude when this is false.");
 		propPatchProvider.setRequiresWorldRestart(true);
 		propPatchProvider.setLanguageKey("config.property.dimension.patchprovider");
         propNameList.add(propPatchProvider.getName());
 		
        	propLatitude = config.get(category, "Latitude", !dimensionName.equals("The End")? 37.5 : -52.5);
-       	propLatitude.comment = "Latitude on this world, in Degrees.";
+       	propLatitude.setComment("Latitude on this world, in Degrees.");
        	propLatitude.setRequiresWorldRestart(true);
        	propLatitude.setLanguageKey("config.property.dimension.latitude");
         propNameList.add(propLatitude.getName());
 
        	propLongitude = config.get(category, "Longitude", !dimensionName.equals("The End")? 0.0 : 180.0);
-       	propLongitude.comment = "Longitude on this world, in Degrees. (East is +)";
+       	propLongitude.setComment("Longitude on this world, in Degrees. (East is +)");
        	propLongitude.setRequiresWorldRestart(true);
        	propLongitude.setLanguageKey("config.property.dimension.longitude");
         propNameList.add(propLongitude.getName());
         
         propHideObjectsUnderHorizon = config.get(category, "Hide_Objects_Under_Horizon", !dimensionName.equals("The End"));
-        propHideObjectsUnderHorizon.comment = "Determine whether or not hide objects under horizon.";
+        propHideObjectsUnderHorizon.setComment("Determine whether or not hide objects under horizon.");
         propHideObjectsUnderHorizon.setRequiresWorldRestart(true);
         propHideObjectsUnderHorizon.setLanguageKey("config.property.dimension.hidehorizonobj");
         propNameList.add(propHideObjectsUnderHorizon.getName());
         
         propAllowRefraction = config.get(category, "Allow_Atmospheric_Refraction", !dimensionName.equals("The End"));
-        propAllowRefraction.comment = "Determine whether or not apply the atmospheric refraction.";
+        propAllowRefraction.setComment("Determine whether or not apply the atmospheric refraction.");
         propAllowRefraction.setRequiresWorldRestart(true);
         propAllowRefraction.setLanguageKey("config.property.dimension.allowrefraction");
         propNameList.add(propAllowRefraction.getName());

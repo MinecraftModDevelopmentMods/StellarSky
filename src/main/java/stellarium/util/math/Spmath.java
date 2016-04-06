@@ -1,6 +1,6 @@
 package stellarium.util.math;
 
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.numerics.IReal;

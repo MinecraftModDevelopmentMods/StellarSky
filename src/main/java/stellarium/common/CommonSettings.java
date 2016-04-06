@@ -50,49 +50,49 @@ public class CommonSettings extends HierarchicalNBTConfig {
 		List<String> propNameList = Lists.newArrayList();
 		
         propServerEnabled=config.get(category, "Server_Enabled", true);
-        propServerEnabled.comment="Enables Server-Side Sky change.";
+        propServerEnabled.setComment("Enables Server-Side Sky change.");
         propServerEnabled.setRequiresWorldRestart(true);
         propServerEnabled.setLanguageKey("config.property.server.serverenabled");
         propNameList.add(propServerEnabled.getName());
         
         propDay=config.get(category, "Day_Length", 24000.0);
-        propDay.comment="Length of a day, in a tick.";
+        propDay.setComment("Length of a day, in a tick.");
         propDay.setRequiresWorldRestart(true);
         propDay.setLanguageKey("config.property.server.daylength");
         propNameList.add(propDay.getName());
         
         propYear=config.get(category, "Year_Length", 365.25);
-        propYear.comment="Length of a year, in a day.";
+        propYear.setComment("Length of a year, in a day.");
         propYear.setRequiresWorldRestart(true);
         propYear.setLanguageKey("config.property.server.yearlength");
         propNameList.add(propYear.getName());
 
        	propYearOffset = config.get(category, "Year_Offset", 0);
-       	propYearOffset.comment = "Year offset on world starting time.";
+       	propYearOffset.setComment("Year offset on world starting time.");
        	propYearOffset.setRequiresWorldRestart(true);
        	propYearOffset.setLanguageKey("config.property.server.yearoffset");
         propNameList.add(propYearOffset.getName());
 
        	propDayOffset = config.get(category, "Day_Offset", 0);
-       	propDayOffset.comment = "Day offset on world starting time.";
+       	propDayOffset.setComment("Day offset on world starting time.");
        	propDayOffset.setRequiresWorldRestart(true);
        	propDayOffset.setLanguageKey("config.property.server.dayoffset");
         propNameList.add(propDayOffset.getName());
 
        	propTickOffset = config.get(category, "Tick_Offset", 5000.0);
-       	propTickOffset.comment = "Tick offset on world starting time.";
+       	propTickOffset.setComment("Tick offset on world starting time.");
        	propTickOffset.setRequiresWorldRestart(true);
        	propTickOffset.setLanguageKey("config.property.server.tickoffset");
         propNameList.add(propTickOffset.getName());
         
         propAxialTilt = config.get(category, "Axial_Tilt", 23.5);
-        propAxialTilt.comment = "Axial tilt in degrees. Always 0.0 when Server_Enabled is false.";
+        propAxialTilt.setComment("Axial tilt in degrees. Always 0.0 when Server_Enabled is false.");
         propAxialTilt.setRequiresWorldRestart(true);
         propAxialTilt.setLanguageKey("config.property.server.axialtilt");
         propNameList.add(propAxialTilt.getName());
         
         propPrecession = config.get(category, "Precession", 0.0);
-       	propPrecession.comment = "Precession in degrees per year.";
+       	propPrecession.setComment("Precession in degrees per year.");
        	propPrecession.setRequiresWorldRestart(true);
        	propPrecession.setLanguageKey("config.property.server.precession");
         propNameList.add(propPrecession.getName());

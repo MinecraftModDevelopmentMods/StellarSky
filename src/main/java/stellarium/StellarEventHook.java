@@ -39,22 +39,22 @@ public class StellarEventHook {
 	public void onWorldLoad(WorldEvent.Load e)
 	{
 		StellarManager manager;
-		if(!StellarManager.hasManager(e.world, e.world.isRemote)) {
-			manager = StellarManager.loadOrCreateManager(e.world);
-		} else manager = StellarManager.getManager(e.world.isRemote);
+		if(!StellarManager.hasManager(e.getWorld(), e.getWorld().isRemote)) {
+			manager = StellarManager.loadOrCreateManager(e.getWorld());
+		} else manager = StellarManager.getManager(e.getWorld().isRemote);
 		
-		if(manager.getCelestialManager() == null && (!e.world.isRemote || !manager.getSettings().serverEnabled))
-			setupManager(e.world, manager);
+		if(manager.getCelestialManager() == null && (!e.getWorld().isRemote || !manager.getSettings().serverEnabled))
+			setupManager(e.getWorld(), manager);
 		
-		String dimName = e.world.provider.getDimensionName();
-		if(!e.world.isRemote || !manager.getSettings().serverEnabled)
+		String dimName = e.getWorld().provider.getDimensionType().getName();
+		if(!e.getWorld().isRemote || !manager.getSettings().serverEnabled)
 			if(StellarSky.proxy.dimensionSettings.hasSubConfig(dimName)) {
-				StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(e.world, manager, dimName);
-				setupDimension(e.world, manager, dimManager);
+				StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(e.getWorld(), manager, dimName);
+				setupDimension(e.getWorld(), manager, dimManager);
 			}
 		
-		if(e.world.isRemote && mark) {
-			handleNotHaveModOnServer(e.world);
+		if(e.getWorld().isRemote && mark) {
+			handleNotHaveModOnServer(e.getWorld());
 			mark = false;
 		}
 	}
@@ -90,7 +90,7 @@ public class StellarEventHook {
 		{
 			StellarEventHook.setupManager(world, manager);
 			
-			String dimName = world.provider.getDimensionName();
+			String dimName = world.provider.getDimensionType().getName();
 			if(StellarSky.proxy.dimensionSettings.hasSubConfig(dimName)) {
 				StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(world, manager, dimName);
 				StellarEventHook.setupDimension(world, manager, dimManager);
@@ -104,14 +104,14 @@ public class StellarEventHook {
 	
 	@SubscribeEvent
 	public void onSleepInBed(PlayerSleepInBedEvent event) {
-		if(!StellarSky.proxy.wakeManager.isEnabled() || event.entityPlayer.worldObj.isRemote) {
+		if(!StellarSky.proxy.wakeManager.isEnabled() || event.getEntityPlayer().worldObj.isRemote) {
 			return;
 		}
 
-		if(event.result == null || event.result == EnumStatus.OK || event.result == EnumStatus.NOT_POSSIBLE_NOW) {
-			World worldObj = event.entityPlayer.worldObj;
+		if(event.getResultStatus() == null || event.getResultStatus() == EnumStatus.OK || event.getResultStatus() == EnumStatus.NOT_POSSIBLE_NOW) {
+			World worldObj = event.getEntityPlayer().worldObj;
 			if (!StellarSky.proxy.wakeManager.canSkipTime(worldObj, StellarSkyAPI.getSkyProvider(worldObj), worldObj.getWorldTime()))
-				event.result = EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW;
+				event.setResult(EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW);
 		}
 	}
 	

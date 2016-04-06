@@ -41,7 +41,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 
 	public static StellarDimensionManager get(World world) {
 		WorldSavedData data = world.getPerWorldStorage().loadData(StellarDimensionManager.class,
-				String.format(ID, world.provider.getDimensionName()));
+				String.format(ID, world.provider.getDimensionType().getName()));
 		
 		if(!(data instanceof StellarDimensionManager))
 			return null;

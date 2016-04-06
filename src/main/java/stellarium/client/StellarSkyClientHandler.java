@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stellarium.StellarSky;
 import stellarium.api.IHourProvider;
@@ -21,7 +22,7 @@ public class StellarSkyClientHandler {
 		
 	@SubscribeEvent
 	public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
-		if(event.type == RenderGameOverlayEvent.ElementType.ALL) {
+		if(event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
 			ClientSettings setting = StellarSky.proxy.getClientSettings();
 			EnumViewMode viewMode = setting.getViewMode();
 			if(!viewMode.showOnHUD())
@@ -81,33 +82,33 @@ public class StellarSkyClientHandler {
 	
 	@SubscribeEvent
 	public void onInitGui(InitGuiEvent.Post event) {
-		if(event.gui instanceof GuiOptions)
+		if(event.getGui() instanceof GuiOptions)
 		{
-			if(event.gui.mc.theWorld != null) {
-				EntityPlayer player = event.gui.mc.thePlayer;
-				if(!new CommandLock().canCommandSenderUseCommand(player))
+			if(event.getGui().mc.theWorld != null) {
+				EntityPlayer player = event.getGui().mc.thePlayer;
+				if(!new CommandLock().checkPermission(FMLCommonHandler.instance().getMinecraftServerInstance(), player))
 					return;
 				
 				boolean locked = StellarManager.getManager(true).isLocked();
 				EnumLockBtnPosition position = StellarSky.proxy.getClientSettings().getBtnPosition();
-				GuiButton guibutton = new GuiButton(30, position.getPosX(event.gui.width), position.getPosY(event.gui.height), 150, 20,
+				GuiButton guibutton = new GuiButton(30, position.getPosX(event.getGui().width), position.getPosY(event.getGui().height), 150, 20,
 						locked? I18n.format("stellarsky.gui.unlock") : I18n.format("stellarsky.gui.lock"));
-				event.buttonList.add(guibutton);
+				event.getButtonList().add(guibutton);
 			}
 		}
 	}
 	
 	@SubscribeEvent
 	public void onButtonActivated(ActionPerformedEvent.Pre event) {
-		if(event.gui instanceof GuiOptions)
+		if(event.getGui() instanceof GuiOptions)
 		{
-			if(event.button.id == 30)
+			if(event.getButton().id == 30)
 			{
 				boolean locked = StellarManager.getManager(true).isLocked();
-				event.gui.mc.thePlayer.sendChatMessage(String.format("/locksky %s", !locked));
+				event.getGui().mc.thePlayer.sendChatMessage(String.format("/locksky %s", !locked));
 				StellarManager.getManager(true).setLocked(!locked);
 				locked = !locked;
-				event.button.displayString = locked? I18n.format("stellarsky.gui.unlock") : I18n.format("stellarsky.gui.lock");
+				event.getButton().displayString = locked? I18n.format("stellarsky.gui.unlock") : I18n.format("stellarsky.gui.lock");
 			}
 		}
 	}

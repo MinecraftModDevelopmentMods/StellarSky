@@ -46,12 +46,12 @@ public class MessageSyncCommon implements IMessage {
 					manager.syncFromNBT(message.compoundInfo, true);
 			
 					World world = StellarSky.proxy.getDefWorld();
-			
+					
 					StellarDimensionManager dimManager = null;
 			
 					if(!message.dimensionInfo.hasNoTags())
 						dimManager = StellarDimensionManager.loadOrCreate(
-								world, manager, world.provider.getDimensionName());
+								world, manager, world.provider.getDimensionType().getName());
 			
 					if(dimManager != null)
 						dimManager.syncFromNBT(message.dimensionInfo, true);

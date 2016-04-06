@@ -31,7 +31,7 @@ public class LightWakeHandler implements IWakeHandler {
 	@Override
 	public void setupConfig(Configuration config, String category) {
 		Property wakeAngle = config.get(category, "Sun_Height_for_Wake", 10.0);
-		wakeAngle.comment = "Solar azimuth(height) angle to wake up. (in degrees)";
+		wakeAngle.setComment("Solar azimuth(height) angle to wake up. (in degrees)");
 		wakeAngle.setRequiresMcRestart(true);
 		wakeAngle.setLanguageKey("config.property.server.wakeangle");
 	}

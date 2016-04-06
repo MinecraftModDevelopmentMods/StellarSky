@@ -6,6 +6,7 @@ import java.io.IOException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -67,12 +68,12 @@ public class CommonProxy implements IProxy {
 	
 	@Override
 	public World getDefWorld() {
-		return MinecraftServer.getServer().getEntityWorld();
+		return FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld();
 	}
 	
 	@Override
 	public World getDefWorld(boolean isRemote) {
-		return MinecraftServer.getServer().getEntityWorld();
+		return FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld();
 	}
 	
 	@Override
@@ -91,6 +92,6 @@ public class CommonProxy implements IProxy {
 
 	@Override
 	public void addScheduledTask(Runnable runnable) {
-		MinecraftServer.getServer().addScheduledTask(runnable);
+		FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(runnable);
 	}
 }

@@ -5,25 +5,30 @@ import org.lwjgl.util.vector.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.biome.WorldChunkManager;
+import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
+import sciapi.api.value.euclidian.EVectorSet;
 import stellarium.api.ISkyProvider;
 import stellarium.render.SkyRenderer;
 import stellarium.stellars.StellarManager;
+import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.stellars.view.StellarDimensionManager;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
+import stellarium.util.math.VecMath;
 
 public class StellarWorldProvider extends WorldProvider implements ISkyProvider {
 	
@@ -202,11 +207,12 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
 	/* ---------------------------------------
 	 * End of Stellar Sky API Implementation
 	 * --------------------------------------- */
+
     /**
      * Returns a new chunk provider which generates chunks for this world
      */
 	@Override
-    public IChunkProvider createChunkGenerator()
+    public IChunkGenerator createChunkGenerator()
     {
         return parProvider.createChunkGenerator();
     }
@@ -215,9 +221,9 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
      * Will check if the x, z position specified is alright to be set as the map spawn point
      */
 	@Override
-    public boolean canCoordinateBeSpawn(int p_76566_1_, int p_76566_2_)
+    public boolean canCoordinateBeSpawn(int x, int z)
     {
-        return parProvider.canCoordinateBeSpawn(p_76566_1_, p_76566_2_);
+        return parProvider.canCoordinateBeSpawn(x, z);
     }
 
     /**
@@ -258,11 +264,11 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
     }
 
     /**
-     * Return Vec3D with biome specific fog color
+     * Return Vec3dD with biome specific fog color
      */
     @SideOnly(Side.CLIENT)
     @Override
-    public Vec3 getFogColor(float p_76562_1_, float p_76562_2_)
+    public Vec3d getFogColor(float p_76562_1_, float p_76562_2_)
     {
         float f = this.calculateSunHeight(worldObj.getWorldTime(), p_76562_2_) * 2.0F + 0.5F;
         f = MathHelper.clamp_float(f, 0.0F, 1.0F);
@@ -272,7 +278,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
         f1 = f1 * (f * 0.94F + 0.06F);
         f2 = f2 * (f * 0.94F + 0.06F);
         f3 = f3 * (f * 0.91F + 0.09F);
-        return new Vec3((double)f1, (double)f2, (double)f3);
+        return new Vec3d((double)f1, (double)f2, (double)f3);
     }
 
     /**
@@ -337,24 +343,10 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
     {
         return parProvider.doesXZShowFog(p_76568_1_, p_76568_2_);
     }
-
-    /**
-     * Returns the dimension's name, e.g. "The End", "Nether", or "Overworld".
-     */
-    @Override
-    public String getDimensionName() {
-    	return parProvider.getDimensionName();
-    }
     
-    @Override
-    public String getInternalNameSuffix() {
-    	return parProvider.getInternalNameSuffix();
-    }
-    
-    @Override
-    public WorldChunkManager getWorldChunkManager()
+    public BiomeProvider getBiomeProvider()
     {
-        return parProvider.getWorldChunkManager();
+        return parProvider.getBiomeProvider();
     }
     
     @Override
@@ -375,15 +367,6 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
         return parProvider.getLightBrightnessTable();
     }
     
-    /**
-     * Gets the dimension of the provider
-     */
-    @Override
-    public int getDimensionId()
-    {
-        return parProvider.getDimensionId();
-    }
-    
     @Override
     public WorldBorder getWorldBorder()
     {
@@ -401,7 +384,11 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
     @Override
     public void setDimension(int dim)
     {
-        this.dimensionId = dim;
+       parProvider.setDimension(dim);
+    }
+    public int getDimension()
+    {
+        return parProvider.getDimension();
     }
 
     /**
@@ -506,7 +493,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
 
     @Override
     @SideOnly(Side.CLIENT)
-    public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
+    public Vec3d getSkyColor(Entity cameraEntity, float partialTicks)
     {
         float f1 = this.calculateSunHeight(worldObj.getWorldTime(), partialTicks) * 2.0F + 0.5F;
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
@@ -558,12 +545,12 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
             f5 = f5 * (1.0F - f12) + 1.0F * f12;
         }
 
-        return new Vec3((double)f3, (double)f4, (double)f5);
+        return new Vec3d((double)f3, (double)f4, (double)f5);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public Vec3 drawClouds(float partialTicks)
+    public Vec3d getCloudColor(float partialTicks)
     {
         float f1 = this.calculateSunHeight(worldObj.getWorldTime(), partialTicks) * 2.0F + 0.5F;
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
@@ -595,9 +582,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
             f4 = f4 * f8 + f10 * (1.0F - f8);
         }
         
-        worldObj.drawCloudsBody(partialTicks);
-
-        return new Vec3((double)f2, (double)f3, (double)f4);
+        return new Vec3d((double)f2, (double)f3, (double)f4);
     }
 
     @Override
@@ -715,5 +700,58 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
     public boolean canDoRainSnowIce(Chunk chunk)
     {
     	return parProvider.canDoRainSnowIce(chunk);
+    }
+    
+    /**
+     * Called when a Player is added to the provider's world.
+     */
+    @Override
+    public void onPlayerAdded(EntityPlayerMP p_186061_1_)
+    {
+    	parProvider.onPlayerAdded(p_186061_1_);
+    }
+
+    /**
+     * Called when a Player is removed from the provider's world.
+     */
+    @Override
+    public void onPlayerRemoved(EntityPlayerMP p_186062_1_)
+    {
+    	parProvider.onPlayerRemoved(p_186062_1_);
+    }
+
+    @Override
+    public DimensionType getDimensionType() {
+    	return parProvider.getDimensionType();
+    }
+
+    /**
+     * Called when the world is performing a save. Only used to save the state of the Dragon Boss fight in
+     * WorldProviderEnd in Vanilla.
+     */
+    @Override
+    public void onWorldSave()
+    {
+    	parProvider.onWorldSave();
+    }
+
+    /**
+     * Called when the world is updating entities. Only used in WorldProviderEnd to update the DragonFightManager in
+     * Vanilla.
+     */
+    @Override
+    public void onWorldUpdateEntities()
+    {
+    	parProvider.onWorldUpdateEntities();
+    }
+
+    /**
+     * Called to determine if the chunk at the given chunk coordinates within the provider's world can be dropped. Used
+     * in WorldProviderSurface to prevent spawn chunks from being unloaded.
+     */
+    @Override
+    public boolean canDropChunk(int x, int z)
+    {
+        return parProvider.canDropChunk(x, z);
     }
 }

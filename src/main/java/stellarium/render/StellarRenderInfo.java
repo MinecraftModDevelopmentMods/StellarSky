@@ -2,18 +2,18 @@ package stellarium.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 
 public class StellarRenderInfo {
 
 	public Minecraft mc;
 	public Tessellator tessellator;
-	public WorldRenderer worldrenderer;
+	public VertexBuffer worldrenderer;
 	public float bglight;
 	public float weathereff;
 	public float partialTicks;
 	
-	public StellarRenderInfo(Minecraft mc, Tessellator tessellator, WorldRenderer worldrenderer, float bglight, float weathereff, float partialTicks) {
+	public StellarRenderInfo(Minecraft mc, Tessellator tessellator, VertexBuffer worldrenderer, float bglight, float weathereff, float partialTicks) {
 		this.mc = mc;
 		this.tessellator = tessellator;
 		this.worldrenderer = worldrenderer;

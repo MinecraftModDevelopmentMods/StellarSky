@@ -20,11 +20,11 @@ public class CommandLock extends CommandBase {
     }
 	
 	@Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
-		if(MinecraftServer.getServer() !=null && MinecraftServer.getServer().isSinglePlayer())
+		if(server != null && server.isSinglePlayer())
 			return true;
-		else return super.canCommandSenderUseCommand(sender);
+		else return super.checkPermission(server, sender);
     }
 
 	@Override
@@ -33,7 +33,7 @@ public class CommandLock extends CommandBase {
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		boolean lock = true;
 		
 		if(args.length >= 1)

@@ -23,7 +23,7 @@ import stellarium.sync.StellarNetworkFMLEventHandler;
 import stellarium.sync.StellarNetworkManager;
 
 @Mod(modid=StellarSky.modid, version=StellarSky.version,
-	dependencies="required-after:sciapi@[1.2.0.0,1.3.0.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
+	dependencies="required-after:sciapi@[1.3.0.1,1.4.0.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";

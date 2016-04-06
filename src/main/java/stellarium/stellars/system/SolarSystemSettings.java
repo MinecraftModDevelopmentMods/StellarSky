@@ -32,13 +32,13 @@ public class SolarSystemSettings implements INBTConfig {
 		List<String> propNameList = Lists.newArrayList();
         
        	propMoonSize = config.get(category, "Moon_Size", 1.0);
-       	propMoonSize.comment = "Size of moon. (Default size is 1.0)";
+       	propMoonSize.setComment("Size of moon. (Default size is 1.0)");
        	propMoonSize.setRequiresWorldRestart(true);
        	propMoonSize.setLanguageKey("config.property.server.moonsize");
         propNameList.add(propMoonSize.getName());
         
        	propMoonBrightness = config.get(category, "Moon_Brightness", 1.0);
-       	propMoonBrightness.comment = "Brightness of moon. (Default brightness is 1.0)";
+       	propMoonBrightness.setComment("Brightness of moon. (Default brightness is 1.0)");
        	propMoonBrightness.setRequiresWorldRestart(true);
        	propMoonBrightness.setLanguageKey("config.property.server.moonbrightness");
         propNameList.add(propMoonBrightness.getName());

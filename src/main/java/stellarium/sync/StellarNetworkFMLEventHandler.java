@@ -34,14 +34,14 @@ public class StellarNetworkFMLEventHandler {
 	
 	@SubscribeEvent
 	public void handleNotModded(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-		if(!event.connectionType.equals("MODDED"))
+		if(!event.getConnectionType().equals("MODDED"))
 			this.handleNotHave();
 	}
 	
 	@SubscribeEvent
 	public void handleNotHave(FMLNetworkEvent.CustomPacketRegistrationEvent event) {
-		if(event.operation.equals("REGISTER") && !event.registrations.contains(netManager.id)
-				&& event.handler instanceof NetHandlerPlayClient)
+		if(event.getOperation().equals("REGISTER") && !event.getRegistrations().contains(netManager.id)
+				&& event.getHandler() instanceof NetHandlerPlayClient)
 			this.handleNotHave();
 	}
 	
