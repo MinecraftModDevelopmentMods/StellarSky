@@ -1,5 +1,9 @@
 package stellarium.common;
 
+import java.util.Set;
+
+import com.google.common.collect.Sets;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.config.HierarchicalConfig;
@@ -21,8 +25,16 @@ public class DimensionSettings extends HierarchicalConfig {
 		dimensionApplied.setRequiresWorldRestart(true);
 		dimensionApplied.setLanguageKey("config.property.dimension.applied");
 		
+		Set<String> dimApplied = Sets.newHashSet(dimensionApplied.getStringList());
+		
 		for(String dimName : dimensionApplied.getStringList())
-			this.putSubConfig(dimName, new PerDimensionSettings(dimName));
+			if(!this.hasSubConfig(dimName))
+				this.putSubConfig(dimName, new PerDimensionSettings(dimName));
+		
+		
+		for(String dimName : this.getKeySet())
+			if(!dimApplied.contains(dimName))
+				this.removeSubConfig(dimName);
 		
 		super.setupConfig(config, category);
 	}

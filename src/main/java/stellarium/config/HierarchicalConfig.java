@@ -1,6 +1,7 @@
 package stellarium.config;
 
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.Maps;
 
@@ -21,6 +22,14 @@ public class HierarchicalConfig implements IConfigHandler {
 	
 	public IConfigHandler getSubConfig(String key) {
 		return subConfigs.get(key);
+	}
+	
+	public void removeSubConfig(String key) {
+		subConfigs.remove(key);
+	}
+	
+	public Set<String> getKeySet() {
+		return subConfigs.keySet();
 	}
 
 	@Override
