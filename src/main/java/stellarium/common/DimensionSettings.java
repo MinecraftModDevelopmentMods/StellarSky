@@ -19,6 +19,12 @@ public class DimensionSettings extends HierarchicalConfig {
 		config.setCategoryLanguageKey(category, "config.category.dimension");
 		config.setCategoryRequiresWorldRestart(category, true);
 		
+		this.dimensionApplied = config.get(category, "Applied_Dimensions",
+				new String[] {"Overworld", "The End"});
+		dimensionApplied.comment = "Dimensions which will get applied the stellar sky settings.";
+		dimensionApplied.setRequiresWorldRestart(true);
+		dimensionApplied.setLanguageKey("config.property.dimension.applied");
+		
 		Set<String> dimApplied = Sets.newHashSet(dimensionApplied.getStringList());
 		
 		for(String dimName : dimensionApplied.getStringList())
