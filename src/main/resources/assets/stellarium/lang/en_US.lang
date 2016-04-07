@@ -41,6 +41,9 @@ config.property.client.modeview.tooltip=Mode for HUD time view. 3 modes availabl
 config.property.client.brcontrast=Brightness Contrast
 config.property.client.brcontrast.tooltip=Brightness Contrast determines the contrast between bright stars and faint stars. The bigger the value, the less difference between bright stars and faint stars. For real world, 1.0 is right. Though default value is 1.75 for visual effect.
 
+config.property.client.lockbtnpos=Position of Lock Button
+config.property.client.lockbtnpos.tooltip=Position of sky lock button. Now there are upright and downleft.
+
 
 //Server Configs
 config.category.server=Server(Common) Configurations

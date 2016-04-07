@@ -41,6 +41,9 @@ config.property.client.modeview.tooltip=HUD에 시간이 어떻게 표시될지�
 config.property.client.brcontrast=밝기 대조
 config.property.client.brcontrast.tooltip=이 속성은 밝은 별들과 어두운 별들 사이의 밝기 차이를 결정하며, 값이 클수록 밝기 차이가 작게 됩니다. 실제 세계는 1.0값을 갖지만, 기본값은 멋진 효과를 위해 1.75로 설정되어 있습니다.
 
+config.property.client.lockbtnpos=잠금 버튼의 위치
+config.property.client.lockbtnpos.tooltip=잠금 버튼의 위치로서, 현재 upright(오른쪽 위)와 downleft(왼쪽 위)가 있습니다.
+
 
 //Server Configs
 config.category.server=서버(일반[Common]) 컨피그
