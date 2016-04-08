@@ -22,7 +22,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	private String dimensionName;
 	
 	public static StellarDimensionManager loadOrCreate(World world, StellarManager manager, String dimName) {
-		WorldSavedData data = world.getPerWorldStorage().loadData(StellarDimensionManager.class, ID);
+		WorldSavedData data = world.getPerWorldStorage().loadData(StellarDimensionManager.class, String.format(ID, dimName));
 		StellarDimensionManager dimManager;
 		
 		if(!(data instanceof StellarDimensionManager))

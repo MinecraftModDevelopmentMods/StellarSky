@@ -50,20 +50,20 @@ public interface ISkyProvider {
 	/**
 	 * Current time offset during a year. <p>
 	 * Should be in range [0.0, 1.0) <p>
-	 * 0.0 is middle of spring,
-	 * 0.25 is middle of summer,
-	 * 0.5 is middle of autumn,
-	 * 0.75 is middle of winter.
+	 * 0.0 is midday.
+	 * 0.25 is near dusk.
+	 * 0.5 is midnight.
+	 * 0.75 is near dawn.
 	 * */
 	public double getYearlyOffset();
 	
 	/**
 	 * Current time offset during a year. <p>
 	 * Should be in range [0.0, 1.0) <p>
-	 * 0.0 is middle of spring,
-	 * 0.25 is middle of summer,
-	 * 0.5 is middle of autumn,
-	 * 0.75 is middle of winter.
+	 * 0.0 is midday.
+	 * 0.25 is near dusk.
+	 * 0.5 is midnight.
+	 * 0.75 is near dawn.
 	 * @param tick the tick to get year offset.
 	 * */
 	public double getYearlyOffset(long tick);

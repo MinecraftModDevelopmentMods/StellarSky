@@ -16,6 +16,8 @@ public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayCache>
 
 	@Override
 	public void render(StellarRenderInfo info, MilkywayCache cache) {
+		GlStateManager.color(1.0F, 1.0F, 1.0F, info.weathereff);
+
 		info.mc.renderEngine.bindTexture(locationMilkywayPng);
 		
 		info.worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);

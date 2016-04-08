@@ -101,26 +101,22 @@ public class ClientSettings extends HierarchicalConfig {
         propHourToMinute.setRequiresMcRestart(false);
         propHourToMinute.setLanguageKey("config.property.client.hourlength");
         
-        propViewMode = config.get(category, "Mode_HUD_Time_View", "empty")
+        propViewMode = config.get(category, "Mode_HUD_Time_View", viewMode.getName())
         		.setValidValues(EnumViewMode.names);
         propViewMode.setComment("Mode for HUD time view.\n"
         		+ " 3 modes available: empty, hhmm, tick.\n"
         		+ "Can also be changed in-game using key.");
         propViewMode.setRequiresMcRestart(false);
         propViewMode.setLanguageKey("config.property.client.modeview");
+                
         
-        propViewMode.setValue(this.getViewMode().getName());
-        
-        
-        propLockBtnPosition = config.get(category, "Lock_Button_Position", "empty")
+        propLockBtnPosition = config.get(category, "Lock_Button_Position", btnPosition.getName())
         		.setValidValues(EnumLockBtnPosition.names);
         propLockBtnPosition.setComment("Position of sky lock button.\n"
-        		+ "Now there are upright and bottomleft.");
+        		+ "Now there are upright and downleft.");
         propLockBtnPosition.setRequiresMcRestart(false);
         propLockBtnPosition.setLanguageKey("config.property.client.lockbtnpos");
-        
-        propLockBtnPosition.setValue(this.getBtnPosition().getName());  
-        
+                
         
         List<String> propNameList = Arrays.asList(propMagLimit.getName(),
         		propMoonFrac.getName(), propMilkywayFrac.getName(),
@@ -145,7 +141,7 @@ public class ClientSettings extends HierarchicalConfig {
         this.anHourToMinute = propHourToMinute.getInt();
         
         this.setViewMode(EnumViewMode.getModeForName(propViewMode.getString()));
-        this.btnPosition = EnumLockBtnPosition.getModeForName(this.propLockBtnPosition.getString());
+        this.btnPosition = EnumLockBtnPosition.getModeForName(propLockBtnPosition.getString());
         
         super.loadFromConfig(config, category);
         

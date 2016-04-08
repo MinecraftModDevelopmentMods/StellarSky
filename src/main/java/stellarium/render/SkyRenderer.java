@@ -362,8 +362,6 @@ public class SkyRenderer extends IRenderHandler {
 
 			GlStateManager.rotate(-90.0f, 1.0f, 0.0f, 0.0f); //e,n,z
 
-			GlStateManager.color(1.0F, 1.0F, 1.0F, weathereff);
-
 			this.renderCelestial(new StellarRenderInfo(mc, tessellator, vertexbuffer, bglight, weathereff, partialTicks));
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
