@@ -28,10 +28,10 @@ public interface ISkyProvider {
 	 * Current time offset during a day. <p>
 	 * Should be in range [0.0, 1.0) <p>
 	 * Normally,
-	 * 0.0 is near dawn.
-	 * 0.25 is midday.
-	 * 0.5 is near dusk.
-	 * 0.75 is midnight.
+	 * 0.0 is midday.
+	 * 0.25 is near dusk.
+	 * 0.5 is midnight.
+	 * 0.75 is near dawn.
 	 * */
 	public double getDaytimeOffset();
 	
@@ -39,10 +39,10 @@ public interface ISkyProvider {
 	 * Current time offset during a day. <p>
 	 * Should be in range [0.0, 1.0) <p>
 	 * Normally,
-	 * 0.0 is near dawn.
-	 * 0.25 is midday.
-	 * 0.5 is near dusk.
-	 * 0.75 is midnight.
+	 * 0.0 is midday.
+	 * 0.25 is near dusk.
+	 * 0.5 is midnight.
+	 * 0.75 is near dawn.
 	 * @param tick the tick to get daytime offset.
 	 * */
 	public double getDaytimeOffset(long tick);

@@ -41,6 +41,9 @@ config.property.client.modeview.tooltip=HUD에 시간이 어떻게 표시될지�
 config.property.client.brcontrast=밝기 대조
 config.property.client.brcontrast.tooltip=이 속성은 밝은 별들과 어두운 별들 사이의 밝기 차이를 결정하며, 값이 클수록 밝기 차이가 작게 됩니다. 실제 세계는 1.0값을 갖지만, 기본값은 멋진 효과를 위해 1.75로 설정되어 있습니다.
 
+config.property.client.lockbtnpos=잠금 버튼의 위치
+config.property.client.lockbtnpos.tooltip=잠금 버튼의 위치로서, 현재 upright(오른쪽 위)와 downleft(왼쪽 위)가 있습니다.
+
 
 //Server Configs
 config.category.server=서버(일반[Common]) 컨피그
@@ -101,19 +104,19 @@ config.property.dimension.allowrefraction.tooltip=천체의 위치가 대기 굴
 
 ///Wake
 config.category.server.wake=기상 조건 컨피그
-config.category.server.wake.expl=기상(잠에서 깨어 일어나는 것) 시스템에 대한 컨피그입니다.
+config.category.server.wake.tooltip=기상(잠에서 깨어 일어나는 것) 시스템에 대한 컨피그입니다.
 
 config.property.server.wakemode=기상 모드
-config.property.server.wakemode.expl=가능한 기상 조건 중 가장 빠른[earliest] 혹은 가장 늦은[latest] 것을 선택하십시오.
+config.property.server.wakemode.tooltip=가능한 기상 조건 중 가장 빠른[earliest] 혹은 가장 늦은[latest] 것을 선택하십시오.
 
 config.property.server.enablewake=기상 조건 활성화
-config.property.server.enablewake.expl=기상 조건 활성화/비활성화
+config.property.server.enablewake.tooltip=기상 조건 활성화/비활성화
 
 config.property.server.wakeangle=기상시 태양의 고도
-config.property.server.wakeangle.expl=일어날 때 태양이 위치할 고도를 나타냅니다. 도 단위로 나타내어집니다.
+config.property.server.wakeangle.tooltip=일어날 때 태양이 위치할 고도를 나타냅니다. 도 단위로 나타내어집니다.
 
 config.property.server.waketime=자정으로부터의 기상 시간
-config.property.server.waketime.expl=알람 형태의 기상 시간으로 자정으로부터의 시간(틱 단위)로 나타냅니다.
+config.property.server.waketime.tooltip=알람 형태의 기상 시간으로 자정으로부터의 시간(틱 단위)로 나타냅니다.
 
 
 //Commands
