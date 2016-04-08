@@ -101,6 +101,9 @@ config.property.dimension.hidehorizonobj.tooltip=지평선 아래의 천체를 �
 config.property.dimension.allowrefraction=대기 굴절 여부
 config.property.dimension.allowrefraction.tooltip=천체의 위치가 대기 굴절로 인하여 변경되는지를 결정합니다.
 
+config.property.dimension.sunlightmultiplier=태양빛의 상대적 밝기
+config.property.dimension.sunlightmultiplier.tooltip=이 월드에서의 태양빛의 상대적인 밝기로서, 0.0으로 설정하면 이곳은 매우 어두운 세상이 될 것입니다.
+
 
 ///Wake
 config.category.server.wake=기상 조건 컨피그

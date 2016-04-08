@@ -63,12 +63,16 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
    	
     	return (float) Spmath.sind(dimManager.sunAppPos.y);
 	}
+	
+	public float calculateSunlightFactor(long par1, float par3) {
+		return (float) ((2.0*this.calculateSunHeight(par1, par3)+0.5)*dimManager.getSettings().sunlightMultiplier);
+	}
     
     @Override
     @SideOnly(Side.CLIENT)
     public float getSunBrightness(float par1)
     {
-        float f1 = 1.0F - (this.calculateSunHeight(worldObj.getWorldTime(), par1) * 2.0F + 0.2F);
+        float f1 = 1.0F - (this.calculateSunlightFactor(worldObj.getWorldTime(), par1) - 0.3F);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;
         f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
@@ -78,7 +82,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
 	
 	@Override
 	public float getSunBrightnessFactor(float par1) {
-        float f1 = 1.0F - (this.calculateSunHeight(worldObj.getWorldTime(), par1) * 2.0F + 0.5F);
+        float f1 = 1.0F - this.calculateSunlightFactor(worldObj.getWorldTime(), par1);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;
         f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
@@ -249,6 +253,10 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
             this.colorsSunriseSunset[1] = f3 * f3 * 0.7F + 0.2F;
             this.colorsSunriseSunset[2] = f3 * f3 * 0.0F + 0.2F;
             this.colorsSunriseSunset[3] = f4;
+            
+            for(int i = 0; i < 4; i++)
+            	this.colorsSunriseSunset[i] = this.colorsSunriseSunset[i] * (float)Math.sqrt(dimManager.getSettings().sunlightMultiplier);
+            
             return this.colorsSunriseSunset;
         }
         else
@@ -264,7 +272,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
     @Override
     public Vec3 getFogColor(float p_76562_1_, float p_76562_2_)
     {
-        float f = this.calculateSunHeight(worldObj.getWorldTime(), p_76562_2_) * 2.0F + 0.5F;
+        float f = this.calculateSunlightFactor(worldObj.getWorldTime(), p_76562_2_);
         f = MathHelper.clamp_float(f, 0.0F, 1.0F);
         float f1 = 0.7529412F;
         float f2 = 0.84705883F;
@@ -508,7 +516,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
     @SideOnly(Side.CLIENT)
     public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
     {
-        float f1 = this.calculateSunHeight(worldObj.getWorldTime(), partialTicks) * 2.0F + 0.5F;
+        float f1 = this.calculateSunlightFactor(worldObj.getWorldTime(), partialTicks);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         int i = MathHelper.floor_double(cameraEntity.posX);
         int j = MathHelper.floor_double(cameraEntity.posY);
@@ -565,7 +573,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
     @SideOnly(Side.CLIENT)
     public Vec3 drawClouds(float partialTicks)
     {
-        float f1 = this.calculateSunHeight(worldObj.getWorldTime(), partialTicks) * 2.0F + 0.5F;
+        float f1 = this.calculateSunlightFactor(worldObj.getWorldTime(), partialTicks);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         float f2 = (float)(this.cloudColour >> 16 & 255L) / 255.0F;
         float f3 = (float)(this.cloudColour >> 8 & 255L) / 255.0F;
@@ -604,7 +612,7 @@ public class StellarWorldProvider extends WorldProvider implements ISkyProvider 
     @SideOnly(Side.CLIENT)
     public float getStarBrightness(float par1)
     {
-        float f1 = 1.0F - (this.calculateSunHeight(worldObj.getWorldTime(), par1) * 2.0F + 0.25F);
+        float f1 = 1.0F - (this.calculateSunlightFactor(worldObj.getWorldTime(), par1) - 0.25F);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         return f1 * f1 * 0.5F;
     }

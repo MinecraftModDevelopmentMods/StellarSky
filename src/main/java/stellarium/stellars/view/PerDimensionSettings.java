@@ -17,11 +17,13 @@ public class PerDimensionSettings implements INBTConfig {
 	public boolean patchProvider;
 	public boolean hideObjectsUnderHorizon;
 	protected boolean allowRefraction;
+	public double sunlightMultiplier;
 	
 	private Property propLatitude, propLongitude;
 	private Property propPatchProvider;
 	private Property propHideObjectsUnderHorizon;
 	private Property propAllowRefraction;
+	private Property propSunlightMultiplier;
 
 	public PerDimensionSettings(String dimensionName) {
 		this.dimensionName = dimensionName;
@@ -64,6 +66,13 @@ public class PerDimensionSettings implements INBTConfig {
         propAllowRefraction.setLanguageKey("config.property.dimension.allowrefraction");
         propNameList.add(propAllowRefraction.getName());
         
+        propSunlightMultiplier = config.get(category, "SunLight_Multiplier", 1.0);
+        propSunlightMultiplier.comment = "Relative amount of sunlight on the dimension.\n"
+                		+ "Setting this to 0.0 will make the world very dark.";
+        propSunlightMultiplier.setRequiresWorldRestart(true);
+        propSunlightMultiplier.setLanguageKey("config.property.dimension.sunlightmultiplier");
+        propNameList.add(propSunlightMultiplier.getName());
+        
         config.setCategoryPropertyOrder(category, propNameList);
 	}
 
@@ -75,10 +84,12 @@ public class PerDimensionSettings implements INBTConfig {
        		this.latitude = propLatitude.getDouble();
        		this.longitude = propLongitude.getDouble();
        		this.allowRefraction = propAllowRefraction.getBoolean();
+       		this.sunlightMultiplier = propSunlightMultiplier.getDouble();
        	} else {
        		this.latitude =  Double.parseDouble(propLatitude.getDefault());
        		this.longitude = Double.parseDouble(propLongitude.getDefault());
        		this.allowRefraction = Boolean.parseBoolean(propAllowRefraction.getDefault());
+       		this.sunlightMultiplier = Double.parseDouble(propSunlightMultiplier.getDefault());
        	}
        	
    		this.hideObjectsUnderHorizon = propHideObjectsUnderHorizon.getBoolean();
@@ -91,6 +102,7 @@ public class PerDimensionSettings implements INBTConfig {
        	this.patchProvider = compound.getBoolean("patchProvider");
        	this.hideObjectsUnderHorizon = compound.getBoolean("hideObjectsUnderHorizon");
        	this.allowRefraction = compound.getBoolean("allowRefraction");
+       	this.sunlightMultiplier = compound.getDouble("sunlightMultiplier");
 	}
 
 	@Override
@@ -100,6 +112,7 @@ public class PerDimensionSettings implements INBTConfig {
        	compound.setBoolean("patchProvider", this.patchProvider);
        	compound.setBoolean("hideObjectsUnderHorizon", this.hideObjectsUnderHorizon);
        	compound.setBoolean("allowRefraction", this.allowRefraction);
+       	compound.setDouble("sunlightMultiplier", this.sunlightMultiplier);
 	}
 
 	@Override
@@ -110,6 +123,7 @@ public class PerDimensionSettings implements INBTConfig {
 		settings.patchProvider = this.patchProvider;
 		settings.hideObjectsUnderHorizon = this.hideObjectsUnderHorizon;
 		settings.allowRefraction = this.allowRefraction;
+		settings.sunlightMultiplier = this.sunlightMultiplier;
 
 		return settings;
 	}

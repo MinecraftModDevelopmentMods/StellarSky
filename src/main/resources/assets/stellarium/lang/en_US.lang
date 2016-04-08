@@ -101,6 +101,10 @@ config.property.dimension.hidehorizonobj.tooltip=Determine whether or not hide o
 config.property.dimension.allowrefraction=Apply Atmospheric Refraction
 config.property.dimension.allowrefraction.tooltip=Determine whether or not apply the atmospheric refraction.
 
+config.property.dimension.sunlightmultiplier=Sunlight Multiplier
+config.property.dimension.sunlightmultiplier.tooltip=Relative amount of sunlight on the dimension. Setting this to 0.0 will make the world very dark.
+
+
 
 ///Wake
 config.category.server.wake=Wake Settings
