@@ -1,5 +1,7 @@
 package stellarium.stellars.milkyway;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
@@ -14,6 +16,8 @@ public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayCache>
 	@Override
 	public void render(Minecraft mc, Tessellator tessellator, MilkywayCache cache, float bglight, float weathereff,
 			float partialTicks) {
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, weathereff);
+
 		mc.renderEngine.bindTexture(locationMilkywayPng);
 		tessellator.startDrawingQuads();
 		

@@ -1,5 +1,7 @@
 package stellarium.stellars.star;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import sciapi.api.value.IValRef;

@@ -29,7 +29,7 @@ public class AlarmWakeHandler implements IWakeHandler {
 	public long getWakeTime(World world, ISkyProvider skyProvider, long sleepTime) {
 		double currentOffset = skyProvider.getDaytimeOffset(sleepTime);
 		double dayLength = skyProvider.getDayLength();
-		double modifiedWorldTime = this.wakeTime - (0.25 + currentOffset) * dayLength;
+		double modifiedWorldTime = this.wakeTime - (currentOffset - 0.25) * dayLength;
     	while(modifiedWorldTime < sleepTime)
     		modifiedWorldTime += dayLength;
 		return (long) modifiedWorldTime;

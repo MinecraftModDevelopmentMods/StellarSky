@@ -1,4 +1,11 @@
-@API(apiVersion = "1.4", owner = "stellarsky", provides = "stellarsky|API")
+/**
+ * API for Stellar Sky.
+ * 1.5 changelog
+ *  - IMPORTANT: Day offset definition had changed!
+ *  - Now sky api instance should be gotten with world.
+ * */
+
+@API(apiVersion = "1.5", owner = "stellarsky", provides = "stellarsky|API")
 package stellarium.api;
 
 import cpw.mods.fml.common.API;
