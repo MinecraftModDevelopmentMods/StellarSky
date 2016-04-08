@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -16,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
+import stellarium.command.FixedCommandTime;
 import stellarium.common.SkyProviderGetter;
 import stellarium.compat.CompatManager;
 import stellarium.sync.StellarNetworkEventHandler;
@@ -81,5 +81,6 @@ public class StellarSky {
         @EventHandler
         public void serverStarting(FMLServerStartingEvent event) {
         	event.registerServerCommand(new CommandLock());
+        	event.registerServerCommand(new FixedCommandTime());
         }
 }
