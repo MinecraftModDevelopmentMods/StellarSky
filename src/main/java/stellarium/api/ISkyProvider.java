@@ -3,8 +3,8 @@ package stellarium.api;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
- * Interface provided by stellar sky api.
- * Do not implement this!
+ * Interface to provide sky information for certain world from Stellar Sky. <p>
+ * Provided by Stellar Sky.
  * */
 public interface ISkyProvider {
 	
@@ -69,29 +69,71 @@ public interface ISkyProvider {
 	public double getYearlyOffset(long tick);
 	
 	/**
-	 * Gets height angle when sun is on highest today.
-	 * Useful for checking highest time.
+	 * Gets current celestial angle. <p>
+	 * Basically for WorldProvider. <p>
+	 * @param worldTime current world time
+	 * @param partialTicks the partial tick
+	 * */
+	public float calculateCelestialAngle(long worldTime, float partialTicks);
+	
+	/**
+	 * Gets current sun height rate. <p>
+	 * Basically for WorldProvider. <p>
+	 * @param partialTicks the partial tick
+	 * */
+	public float calculateSunHeight(float partialTicks);
+	
+	/**
+	 * Gets current sunlight factor. <p>
+	 * Basically for WorldProvider. <p>
+	 * @param partialTicks the partial tick
+	 * */
+	public float calculateSunlightFactor(float partialTicks);
+	
+	/**
+	 * Gets current sunrise sunset factor(brightness of sunrise/sunset color). <p>
+	 * Basically for WorldProvider. <p>
+	 * @param partialTicks the partial tick
+	 * */
+	public float calculateSunriseSunsetFactor(float partialTicks);
+	
+	/**
+	 * Gets current moon phase. <p>
+	 * Basically for WorldProvider. <p>
+	 * @param worldTime the current World Time. If it isn't, this method will give undefined result.
+	 * */
+	public int getCurrentMoonPhase(long worldTime);
+	
+	/**
+	 * Gets current sunrise sunset factor(brightness of sunrise/sunset color). <p>
+	 * Basically for WorldProvider. <p>
+	 * */
+	public float getCurrentMoonPhaseFactor();
+	
+	/**
+	 * Gets height angle when sun is on highest today. <p>
+	 * Useful for checking highest time. <p>
 	 * Also can be used for seasons.
 	 * */
 	public double getHighestSunHeightAngle();
 	
 	/**
-	 * Gets height angle when moon is on highest today.
+	 * Gets height angle when moon is on highest today. <p>
 	 * Useful for checking highest time.
 	 * */
 	public double getHighestMoonHeightAngle();
 	
 	/**
-	 * Daytime offset when sun reaches certain height angle first.
-	 * May give negative value or time on reflected position.
-	 * Also error gets bigger when year is short relative to day.
+	 * Daytime offset when sun reaches certain height angle first. <p>
+	 * May give negative value or time on reflected position. <p>
+	 * Also error gets bigger when year is short relative to day. <p>
 	 * @param heightAngle the height angle in degrees.
 	 * */
 	public double dayOffsetUntilSunReach(double heightAngle);
 	
 	/**
-	 * Day offset when moon reaches certain height angle first.
-	 * May give negative value or time on reflected position.
+	 * Day offset when moon reaches certain height angle first. <p>
+	 * May give negative value or time on reflected position. <p>
 	 * @param heightAngle the height angle in degrees.
 	 * */
 	public double dayOffsetUntilMoonReach(double heightAngle);
@@ -105,5 +147,5 @@ public interface ISkyProvider {
 	 * Current position of moon.
 	 * */
 	public Vector3f getCurrentMoonPosition();
-
+	
 }

@@ -1,5 +1,9 @@
 package stellarium.api;
 
+/**
+ * Interface for calculating hour and minute from day length and time. <p>
+ * This allows mods to modify hour and minute displayed on Stellar Sky HUD. <p>
+ * */
 public interface IHourProvider {
 	
 	/**
