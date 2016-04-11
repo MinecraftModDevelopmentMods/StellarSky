@@ -44,6 +44,10 @@ config.property.client.brcontrast.tooltip=이 속성은 밝은 별들과 어두�
 config.property.client.lockbtnpos=잠금 버튼의 위치
 config.property.client.lockbtnpos.tooltip=잠금 버튼의 위치로서, 현재 upright(오른쪽 위)와 downleft(왼쪽 위)가 있습니다.
 
+///Optics
+config.category.optics=광학 설정
+config.category.optics.tooltip=광학 설정 관련 컨피그입니다.
+
 
 //Server Configs
 config.category.server=서버(일반[Common]) 컨피그
@@ -93,6 +97,9 @@ config.property.dimension.applied.tooltip=stellar sky의 설정과 렌더링이 
 
 config.property.dimension.patchprovider=월드 패치 여부
 config.property.dimension.patchprovider.tooltip=월드를 패치하여 경도/위도 등의 설정을 바꿉니다. false로 설정되어 있으면 위도와 경도를 바꿀 수 없습니다.
+
+config.property.dimension.skyrenderertype=하늘의 유형
+config.property.dimension.skyrenderertype.tooltip=이 월드에 대한 하늘 렌더링 유형입니다. 기본적으로 오버월드(Overworld Sky) 와 엔더월드(End Sky) 유형이 있습니다.
 
 config.property.dimension.latitude=위도
 config.property.dimension.latitude.tooltip=도 단위로 나타낸 이 월드의 위도입니다.

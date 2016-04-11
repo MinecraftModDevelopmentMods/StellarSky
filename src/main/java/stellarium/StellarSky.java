@@ -18,6 +18,8 @@ import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.command.FixedCommandTime;
 import stellarium.compat.CompatManager;
+import stellarium.render.SkyRenderTypeEnd;
+import stellarium.render.SkyRenderTypeOverworld;
 import stellarium.sync.StellarNetworkEventHandler;
 import stellarium.sync.StellarNetworkFMLEventHandler;
 import stellarium.sync.StellarNetworkManager;
@@ -64,6 +66,10 @@ public class StellarSky {
     		
     		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
     		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());
+    		
+    		StellarSkyAPI.registerRendererType(new SkyRenderTypeOverworld());
+    		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
+    		
     		CompatManager.getInstance().onPreInit();
         }
         

@@ -12,11 +12,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import stellarium.api.IStellarWorldProvider;
 import stellarium.api.StellarSkyAPI;
-import stellarium.render.SkyRenderer;
+import stellarium.render.SkyRenderCelestial;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.StellarSkyProvider;
 import stellarium.stellars.layer.CelestialManager;
@@ -82,7 +83,10 @@ public class StellarEventHook {
 		}
 		
 		if(world.isRemote)
-			world.provider.setSkyRenderer(new SkyRenderer());
+		{
+			IRenderHandler renderer = StellarSkyAPI.getRendererFor(dimManager.getSettings().skyRendererType, new SkyRenderCelestial());
+			world.provider.setSkyRenderer(renderer);
+		}
 	}
 	
 	private static boolean mark = false;

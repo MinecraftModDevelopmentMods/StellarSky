@@ -23,6 +23,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IRenderHandler;
 import stellarium.StellarSky;
+import stellarium.api.ICelestialRenderer;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
@@ -30,18 +31,14 @@ import stellarium.stellars.view.StellarDimensionManager;
 
 public class SkyRenderer extends IRenderHandler {
 
-	private static final ResourceLocation locationEndSkyPng = new ResourceLocation("textures/environment/end_sky.png");
-
 	private Random random;
 	
     private int glSkyList;
     private int glSkyList2;
     
-	private ClientSettings settings;
-	private CelestialRenderer renderer;
-	private boolean updated = false;
+    private ICelestialRenderer celestials;
 
-	public SkyRenderer() {
+	public SkyRenderer(ICelestialRenderer subRenderer) {
         Tessellator tessellator = Tessellator.instance;
         this.glSkyList = GLAllocation.generateDisplayLists(2);
         GL11.glNewList(this.glSkyList, GL11.GL_COMPILE);
@@ -84,114 +81,13 @@ public class SkyRenderer extends IRenderHandler {
         tessellator.draw();
         GL11.glEndList();
         
-        // Customization Starts
-        this.settings = StellarSky.proxy.getClientSettings();
-		this.renderer = new CelestialRenderer();
-		
-		CelestialManager celManager = StellarSky.proxy.getClientCelestialManager();
-		renderer.refreshRenderer(celManager.getLayers());
-		settings.checkDirty();
-		celManager.reloadClientSettings(this.settings);
-		this.onSettingsUpdated(Minecraft.getMinecraft());
-	}
-	
-	public void renderCelestial(Minecraft mc, float bglight, float weathereff, float partialTicks) {
-		CelestialManager manager = StellarSky.proxy.getClientCelestialManager();
-
-		if(settings.checkDirty())
-		{
-			manager.reloadClientSettings(this.settings);
-			this.updated = false;
-		}
-		
-		if(!this.updated)
-			this.onSettingsUpdated(mc);
-		
-		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, bglight, weathereff, partialTicks), manager.getLayers());
-	}
-	
-	private void onSettingsUpdated(Minecraft mc) {
-		//Initialization update
-		World world = mc.theWorld;
-		
-		if(world != null) {
-			StellarManager manager = StellarManager.getManager(true);
-			if(manager.getCelestialManager() != null) {
-				this.updated = true;
-				manager.update(world.getWorldTime());
-				StellarDimensionManager dimManager = StellarDimensionManager.get(world);
-				if(dimManager != null)
-				{
-					dimManager.update(world, world.getWorldTime());
-					manager.updateClient(StellarSky.proxy.getClientSettings(),
-							dimManager.getViewpoint());
-				}
-			}
-		}
+        this.celestials = subRenderer;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(float partialTicks, WorldClient theWorld, Minecraft mc) {
-		if (mc.theWorld.provider.dimensionId == 1)
-        {
-            GL11.glDisable(GL11.GL_FOG);
-            GL11.glDisable(GL11.GL_ALPHA_TEST);
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDepthMask(false);
-            mc.renderEngine.bindTexture(locationEndSkyPng);
-            Tessellator tessellator = Tessellator.instance;
-
-            for (int i = 0; i < 6; ++i)
-            {
-                GL11.glPushMatrix();
-
-                if (i == 1)
-                {
-                    GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
-                }
-
-                if (i == 2)
-                {
-                    GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-                }
-
-                if (i == 3)
-                {
-                    GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
-                }
-
-                if (i == 4)
-                {
-                    GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-                }
-
-                if (i == 5)
-                {
-                    GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
-                }
-
-                tessellator.startDrawingQuads();
-                tessellator.setColorOpaque_I(2631720);
-                tessellator.addVertexWithUV(-100.0D, -100.0D, -100.0D, 0.0D, 0.0D);
-                tessellator.addVertexWithUV(-100.0D, -100.0D, 100.0D, 0.0D, 16.0D);
-                tessellator.addVertexWithUV(100.0D, -100.0D, 100.0D, 16.0D, 16.0D);
-                tessellator.addVertexWithUV(100.0D, -100.0D, -100.0D, 16.0D, 0.0D);
-                tessellator.draw();
-                GL11.glPopMatrix();
-            }
-            
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-            
-            this.renderCelestial(mc, 0.0f, 0.0f, partialTicks);
-
-            GL11.glDepthMask(true);
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-        }
-        else if (theWorld.provider.isSurfaceWorld())
+        if (theWorld.provider.isSurfaceWorld())
         {
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             Vec3 vec3 = theWorld.getSkyColor(mc.renderViewEntity, partialTicks);
@@ -280,7 +176,7 @@ public class SkyRenderer extends IRenderHandler {
             GL11.glTranslatef(f7, f8, f9);
             GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F); // e,n,z
             
-            this.renderCelestial(mc, f1+f2+f3, f6, partialTicks);
+            celestials.renderCelestial(mc, f1+f2+f3, f6, partialTicks);
             
             GL11.glDisable(GL11.GL_TEXTURE_2D);
 

@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarium.api.StellarSkyAPI;
 import stellarium.config.INBTConfig;
 
 public class PerDimensionSettings implements INBTConfig {
@@ -18,12 +19,14 @@ public class PerDimensionSettings implements INBTConfig {
 	public boolean hideObjectsUnderHorizon;
 	protected boolean allowRefraction;
 	public double sunlightMultiplier;
+	public String skyRendererType;
 	
 	private Property propLatitude, propLongitude;
 	private Property propPatchProvider;
 	private Property propHideObjectsUnderHorizon;
 	private Property propAllowRefraction;
 	private Property propSunlightMultiplier;
+	private Property propRenderType;
 
 	public PerDimensionSettings(String dimensionName) {
 		this.dimensionName = dimensionName;
@@ -41,6 +44,15 @@ public class PerDimensionSettings implements INBTConfig {
 		propPatchProvider.setRequiresWorldRestart(true);
 		propPatchProvider.setLanguageKey("config.property.dimension.patchprovider");
         propNameList.add(propPatchProvider.getName());
+        
+        String[] list = StellarSkyAPI.getRenderTypesForDimension(this.dimensionName);
+        propRenderType = config.get(category, "Sky_Renderer_Type", list[0]);
+        propRenderType.comment = "Sky renderer type for this dimension.\n"
+        		+ "There are 'Overworld Sky' and 'End Sky' type by default.";
+        propRenderType.setRequiresWorldRestart(true);
+        propRenderType.setLanguageKey("config.property.dimension.skyrenderertype");
+        propRenderType.setValidValues(list);
+        propNameList.add(propRenderType.getName());
 		
        	propLatitude = config.get(category, "Latitude", !dimensionName.equals("The End")? 37.5 : -52.5);
        	propLatitude.comment = "Latitude on this world, in Degrees.";
@@ -93,6 +105,7 @@ public class PerDimensionSettings implements INBTConfig {
        	}
        	
    		this.hideObjectsUnderHorizon = propHideObjectsUnderHorizon.getBoolean();
+   		this.skyRendererType = propRenderType.getString();
 	}
 
 	@Override
@@ -103,6 +116,7 @@ public class PerDimensionSettings implements INBTConfig {
        	this.hideObjectsUnderHorizon = compound.getBoolean("hideObjectsUnderHorizon");
        	this.allowRefraction = compound.getBoolean("allowRefraction");
        	this.sunlightMultiplier = compound.getDouble("sunlightMultiplier");
+       	this.skyRendererType = compound.getString("skyRendererType");
 	}
 
 	@Override
@@ -113,6 +127,7 @@ public class PerDimensionSettings implements INBTConfig {
        	compound.setBoolean("hideObjectsUnderHorizon", this.hideObjectsUnderHorizon);
        	compound.setBoolean("allowRefraction", this.allowRefraction);
        	compound.setDouble("sunlightMultiplier", this.sunlightMultiplier);
+       	compound.setString("skyRendererType", this.skyRendererType);
 	}
 
 	@Override
@@ -124,6 +139,7 @@ public class PerDimensionSettings implements INBTConfig {
 		settings.hideObjectsUnderHorizon = this.hideObjectsUnderHorizon;
 		settings.allowRefraction = this.allowRefraction;
 		settings.sunlightMultiplier = this.sunlightMultiplier;
+		settings.skyRendererType = this.skyRendererType;
 
 		return settings;
 	}

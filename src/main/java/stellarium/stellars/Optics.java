@@ -31,6 +31,10 @@ public class Optics implements IConfigHandler {
 	
 	@Override
 	public void setupConfig(Configuration config, String category) {
+		config.setCategoryLanguageKey(category, "config.category.optics");
+		config.setCategoryComment(category, "Configuration for Optical settings.");
+		config.setCategoryRequiresMcRestart(category, false);
+		
 		brightnessContrastProperty = config.get(category, "Brightness_Contrast", 2.0);
 		brightnessContrastProperty.comment = "Brightness Contrast determines the contrast "
 				+ "between bright stars and faint stars. "

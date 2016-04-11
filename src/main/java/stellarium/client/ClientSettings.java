@@ -3,6 +3,8 @@ package stellarium.client;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.StellarSky;
@@ -54,6 +56,7 @@ public class ClientSettings extends HierarchicalConfig {
         config.setCategoryLanguageKey(category, "config.category.client");
         config.setCategoryRequiresMcRestart(category, false);
 		
+        List<String> propNameList = Lists.newArrayList();
         propMagLimit=config.get(category, "Mag_Limit", 4.0);
         propMagLimit.comment="Limit of magnitude can be seen on naked eye.\n" +
         		"If you want to increase FPS, lower the Mag_Limit.\n" +
@@ -62,6 +65,7 @@ public class ClientSettings extends HierarchicalConfig {
         		"but the better FPS you will get";
         propMagLimit.setRequiresMcRestart(true);
         propMagLimit.setLanguageKey("config.property.client.maglimit");
+        propNameList.add(propMagLimit.getName());
 
         propTurb=config.get(category, "Twinkling(Turbulance)", 1.0);
         propTurb.comment="Degree of the twinkling effect of star.\n"
@@ -69,17 +73,20 @@ public class ClientSettings extends HierarchicalConfig {
 				+ "The greater the value, the more the stars will twinkle. Default is 1.0. To disable set to 0.0";
         propTurb.setRequiresMcRestart(false);
         propTurb.setLanguageKey("config.property.client.turbulance");
-        
+        propNameList.add(propTurb.getName());
+
         propMinuteLength = config.get(category, "Minute_Length", 16.666);
         propMinuteLength.comment = "Number of ticks in a minute. (The minute & hour is displayed on HUD as HH:MM format)";
         propMinuteLength.setRequiresMcRestart(false);
-        propMinuteLength.setLanguageKey("config.property.client.minutelength");
-        
+        propMinuteLength.setLanguageKey("config.property.client.minutelength");        
+        propNameList.add(propMinuteLength.getName());
+
         propHourToMinute = config.get(category, "Hour_Length", 60);
         propHourToMinute.comment = "Number of minutes in an hour. (The minute & hour is displayed on HUD as HH:MM format)";
         propHourToMinute.setRequiresMcRestart(false);
         propHourToMinute.setLanguageKey("config.property.client.hourlength");
-        
+        propNameList.add(propHourToMinute.getName());
+
         propViewMode = config.get(category, "Mode_HUD_Time_View", viewMode.getName())
         		.setValidValues(EnumViewMode.names);
         propViewMode.comment = "Mode for HUD time view.\n"
@@ -87,7 +94,7 @@ public class ClientSettings extends HierarchicalConfig {
         		+ "Can also be changed in-game using key.";
         propViewMode.setRequiresMcRestart(false);
         propViewMode.setLanguageKey("config.property.client.modeview");
-                
+        propNameList.add(propViewMode.getName());
         
         propLockBtnPosition = config.get(category, "Lock_Button_Position", btnPosition.getName())
         		.setValidValues(EnumLockBtnPosition.names);
@@ -95,12 +102,8 @@ public class ClientSettings extends HierarchicalConfig {
         		+ "Now there are upright and downleft.";
         propLockBtnPosition.setRequiresMcRestart(false);
         propLockBtnPosition.setLanguageKey("config.property.client.lockbtnpos"); 
-        
-        
-        List<String> propNameList = Arrays.asList(propMagLimit.getName(),
-        		propViewMode.getName(),
-        		propMinuteLength.getName(), propHourToMinute.getName(),
-        		propLockBtnPosition.getName());
+        propNameList.add(propLockBtnPosition.getName());
+
         config.setCategoryPropertyOrder(category, propNameList);
         
         super.setupConfig(config, category);
