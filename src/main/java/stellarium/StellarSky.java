@@ -17,11 +17,12 @@ import net.minecraftforge.common.MinecraftForge;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.command.FixedCommandTime;
-import stellarium.common.SkyProviderGetter;
 import stellarium.compat.CompatManager;
 import stellarium.sync.StellarNetworkEventHandler;
 import stellarium.sync.StellarNetworkFMLEventHandler;
 import stellarium.sync.StellarNetworkManager;
+import stellarium.world.DefaultWorldProviderReplacer;
+import stellarium.world.EndReplacer;
 
 @Mod(modid=StellarSky.modid, version=StellarSky.version,
 	dependencies="required-after:sciapi@[1.1.0.0,1.2.0.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
@@ -61,7 +62,8 @@ public class StellarSky {
     		MinecraftForge.EVENT_BUS.register(new StellarNetworkEventHandler(this.networkManager));
     		FMLCommonHandler.instance().bus().register(new StellarNetworkFMLEventHandler(this.networkManager));
     		
-    		StellarSkyAPI.setSkyProviderGetter(new SkyProviderGetter());
+    		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
+    		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());
     		CompatManager.getInstance().onPreInit();
         }
         
