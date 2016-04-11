@@ -1,7 +1,7 @@
 package stellarium.stellars.system;
 
 import sciapi.api.value.euclidian.EVector;
-import stellarium.stellars.layer.IRenderCache;
+import stellarium.render.IRenderCache;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 

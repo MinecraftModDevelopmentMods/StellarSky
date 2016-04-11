@@ -9,10 +9,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.StellarSky;
-import stellarium.stellars.layer.CelestialRenderingRegistry;
+import stellarium.render.CelestialRenderingRegistry;
 import stellarium.stellars.layer.ICelestialLayerCommon;
 
-public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettings> {
+public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettings, SolarSystemClientSettings> {
 	
 	private static int renderId = -1;
 	protected static int planetRenderId = -1;
@@ -34,9 +34,12 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 	private Planet neptune;
 	
 	protected List<SolarObject> objects = Lists.newArrayList();
+	
+	@Override
+	public void initialize(boolean isRemote, SolarSystemClientSettings config) throws IOException { }
 
 	@Override
-	public void initialize(boolean isRemote, SolarSystemSettings settings) throws IOException {		
+	public void initializeCommon(boolean isRemote, SolarSystemSettings settings) throws IOException {		
 		objects.clear();
 		
 		////Solar System

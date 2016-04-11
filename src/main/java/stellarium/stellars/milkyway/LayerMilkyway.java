@@ -8,8 +8,8 @@ import com.google.common.collect.Lists;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import stellarium.config.IConfigHandler;
+import stellarium.render.CelestialRenderingRegistry;
 import stellarium.stellars.layer.CelestialObject;
-import stellarium.stellars.layer.CelestialRenderingRegistry;
 import stellarium.stellars.layer.ICelestialLayer;
 
 public class LayerMilkyway implements ICelestialLayer<IConfigHandler> {

@@ -7,8 +7,8 @@ import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import stellarium.render.CelestialRenderingRegistry;
 import stellarium.stellars.layer.CelestialObject;
-import stellarium.stellars.layer.CelestialRenderingRegistry;
 import stellarium.stellars.layer.ICelestialLayer;
 
 public abstract class LayerBgStar implements ICelestialLayer {

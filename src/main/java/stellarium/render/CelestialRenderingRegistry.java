@@ -1,4 +1,4 @@
-package stellarium.stellars.layer;
+package stellarium.render;
 
 import java.util.List;
 

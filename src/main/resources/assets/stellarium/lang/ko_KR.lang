@@ -79,6 +79,11 @@ config.property.server.moonbrightness=달의 밝기
 config.property.server.moonbrightness.tooltip=달의 밝기를 나타냅니다. (기본값은 1.0입니다)
 
 
+///Milky Way
+config.category.milkyway=은하수 컨피그
+config.category.milkyway.tooltip=은하수 관련 컨피그입니다.
+
+
 ///Dimension
 config.category.dimension=월드 컨피그
 config.category.dimension.tooltip=월드의 세팅에 대한 컨피그입니다.

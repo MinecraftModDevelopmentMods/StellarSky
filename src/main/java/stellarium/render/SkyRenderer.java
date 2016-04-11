@@ -26,7 +26,6 @@ import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.stellars.layer.CelestialRenderer;
 import stellarium.stellars.view.StellarDimensionManager;
 
 public class SkyRenderer extends IRenderHandler {
@@ -108,7 +107,7 @@ public class SkyRenderer extends IRenderHandler {
 		if(!this.updated)
 			this.onSettingsUpdated(mc);
 		
-		renderer.render(mc, Tessellator.instance, manager.getLayers(), bglight, weathereff, partialTicks);
+		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, bglight, weathereff, partialTicks), manager.getLayers());
 	}
 	
 	private void onSettingsUpdated(Minecraft mc) {

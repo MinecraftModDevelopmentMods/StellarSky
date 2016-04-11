@@ -6,7 +6,7 @@ import sciapi.api.value.euclidian.EVector;
 import sciapi.api.value.euclidian.IEVector;
 import sciapi.api.value.util.BOp;
 import sciapi.api.value.util.VOp;
-import stellarium.stellars.layer.IRenderCache;
+import stellarium.render.IRenderCache;
 import stellarium.util.math.Rotate;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;

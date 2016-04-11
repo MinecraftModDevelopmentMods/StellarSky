@@ -15,7 +15,7 @@ public class AlarmWakeHandler implements IWakeHandler {
 	public void setupConfig(Configuration config, String category) {
 		Property pWakeTime = config.get(category, "Wake_Time_from_midnight", 6000);
 		pWakeTime.comment = "Wake-up time from midnight, in tick.";
-		pWakeTime.setRequiresMcRestart(true);
+		pWakeTime.setRequiresWorldRestart(true);
 		pWakeTime.setLanguageKey("config.property.server.waketime");
 	}
 

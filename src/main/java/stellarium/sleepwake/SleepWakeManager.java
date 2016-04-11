@@ -33,21 +33,21 @@ public class SleepWakeManager implements IConfigHandler {
 		
 		Property allEnabled = config.get(category, "Custom_Wake_Enabled", true);
 		allEnabled.comment = "Enable/Disable wake system provided by Stellar Sky";
-		allEnabled.setRequiresMcRestart(true);
+		allEnabled.setRequiresWorldRestart(true);
 		allEnabled.setLanguageKey("config.property.server.wakeenable");
 		
 		Property mode = config.get(category, "Wake_Mode", "latest")
 				.setValidValues(new String[]{"earliest", "latest"});
 		mode.comment = "You can choose earliest or latest available wake time"
 				+ "among these wake properties";
-		mode.setRequiresMcRestart(true);
+		mode.setRequiresWorldRestart(true);
 		mode.setLanguageKey("config.property.server.wakemode");
 		
 		for(WakeHandler entry : this.wakeHandlers) {
 			String cat2 = category + Configuration.CATEGORY_SPLITTER + entry.name.toLowerCase();
 			Property enabled = config.get(cat2, "Enabled", entry.enabled);
 			enabled.comment = "Enable this wake property.";
-			enabled.setRequiresMcRestart(true);
+			enabled.setRequiresWorldRestart(true);
 			enabled.setLanguageKey("config.property.server.enablewake");
 			entry.handler.setupConfig(config, cat2);
 		}

@@ -3,15 +3,15 @@ package stellarium.stellars.system;
 import sciapi.api.value.IValRef;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.client.ClientSettings;
+import stellarium.render.IRenderCache;
 import stellarium.stellars.Optics;
-import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.stellars.view.IStellarViewpoint;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
 import stellarium.util.math.VecMath;
 
-public class MoonRenderCache implements IRenderCache<Moon> {
+public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSettings> {
 	
 	protected boolean shouldRenderGlow;
 	
@@ -23,10 +23,10 @@ public class MoonRenderCache implements IRenderCache<Moon> {
 	protected double size, difactor, appMag;
 
 	@Override
-	public void initialize(ClientSettings settings) {
+	public void initialize(ClientSettings settings, SolarSystemClientSettings specificSettings) {
 		this.appCoord = new SpCoord();
-		this.latn = settings.imgFrac;
-		this.longn = 2*settings.imgFrac;
+		this.latn = specificSettings.imgFrac;
+		this.longn = 2*specificSettings.imgFrac;
 		this.moonPos = new EVector[longn][latn+1];
 		this.moonilum = new float[longn][latn+1];
 		this.moonnormal = new EVector[longn][latn+1];
@@ -34,7 +34,8 @@ public class MoonRenderCache implements IRenderCache<Moon> {
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, Moon object, IStellarViewpoint viewpoint) {
+	public void updateCache(ClientSettings settings, SolarSystemClientSettings specificSettings,
+			Moon object, IStellarViewpoint viewpoint) {
 		EVector ref = new EVector(3);
 		ref.set(viewpoint.getProjection().transform(object.earthPos));
 		double airmass = viewpoint.getAirmass(ref, false);

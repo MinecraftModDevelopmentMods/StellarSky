@@ -1,5 +1,7 @@
 package stellarium.stellars.layer;
 
+import stellarium.render.IRenderCache;
+
 public abstract class CelestialObject {
 	
 	/** Client-only cache. */

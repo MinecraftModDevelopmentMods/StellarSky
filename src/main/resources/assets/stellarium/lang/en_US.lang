@@ -79,6 +79,11 @@ config.property.server.moonbrightness=Brightness of Moon
 config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brightness is 1.0)
 
 
+///Milky Way
+config.category.milkyway=Milky Way Configurations
+config.category.milkyway.tooltip=Configurations for Milky Way.
+
+
 ///Dimension
 config.category.dimension=Dimension Settings
 config.category.dimension.tooltip=Configurations for Dimension Settings.

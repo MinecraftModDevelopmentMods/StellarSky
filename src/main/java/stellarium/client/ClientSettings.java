@@ -12,14 +12,11 @@ import stellarium.stellars.layer.CelestialLayerRegistry;
 public class ClientSettings extends HierarchicalConfig {
 	
 	public float mag_Limit;
-	public float milkywayBrightness;
-	public int imgFrac, imgFracMilkyway;
 	public float turb;
 	public double minuteLength;
 	public int anHourToMinute;
 	
-	private Property propMagLimit, propTurb, propMoonFrac;
-	private Property propMilkywayFrac, propMilkywayBrightness;
+	private Property propMagLimit, propTurb;
 	private Property propMinuteLength, propHourToMinute;
 	private Property propViewMode;
 	private Property propLockBtnPosition;
@@ -65,12 +62,6 @@ public class ClientSettings extends HierarchicalConfig {
         		"but the better FPS you will get";
         propMagLimit.setRequiresMcRestart(true);
         propMagLimit.setLanguageKey("config.property.client.maglimit");
-        
-        propMilkywayBrightness=config.get(category, "Milkyway_Brightness", 1.5);
-        propMilkywayBrightness.comment="Brightness of milky way.\n"
-        		+ "For real world it should be 1.0 or lower, but default is set to 1.5 for visual effect.";
-        propMilkywayBrightness.setRequiresMcRestart(false);
-        propMilkywayBrightness.setLanguageKey("config.property.client.milkywaybrightness");
 
         propTurb=config.get(category, "Twinkling(Turbulance)", 1.0);
         propTurb.comment="Degree of the twinkling effect of star.\n"
@@ -78,18 +69,6 @@ public class ClientSettings extends HierarchicalConfig {
 				+ "The greater the value, the more the stars will twinkle. Default is 1.0. To disable set to 0.0";
         propTurb.setRequiresMcRestart(false);
         propTurb.setLanguageKey("config.property.client.turbulance");
-        
-        propMoonFrac=config.get(category, "Moon_Fragments_Number", 16);
-        propMoonFrac.comment="Moon is drawn with fragments\n" +
-        		"Less fragments will increase FPS, but the moon will become more defective";
-        propMoonFrac.setRequiresMcRestart(false);
-        propMoonFrac.setLanguageKey("config.property.client.moonfrac");
-        
-        propMilkywayFrac=config.get(category, "Milkyway_Fragments_Number", 32);
-        propMilkywayFrac.comment="Milky way is drawn with fragments\n" +
-        		"Less fragments will increase FPS, but the milky way will become more defective";
-        propMilkywayFrac.setRequiresMcRestart(false);
-        propMilkywayFrac.setLanguageKey("config.property.client.milkywayfrac");
         
         propMinuteLength = config.get(category, "Minute_Length", 16.666);
         propMinuteLength.comment = "Number of ticks in a minute. (The minute & hour is displayed on HUD as HH:MM format)";
@@ -119,8 +98,6 @@ public class ClientSettings extends HierarchicalConfig {
         
         
         List<String> propNameList = Arrays.asList(propMagLimit.getName(),
-        		propMoonFrac.getName(), propMilkywayFrac.getName(),
-        		propTurb.getName(), propMilkywayBrightness.getName(),
         		propViewMode.getName(),
         		propMinuteLength.getName(), propHourToMinute.getName(),
         		propLockBtnPosition.getName());
@@ -134,9 +111,6 @@ public class ClientSettings extends HierarchicalConfig {
 		this.mag_Limit=(float)propMagLimit.getDouble();
         //Scaling
 		this.turb=(float)propTurb.getDouble() * 4.0f;
-		this.milkywayBrightness = (float) propMilkywayBrightness.getDouble();
-        this.imgFrac=propMoonFrac.getInt();
-        this.imgFracMilkyway = propMilkywayFrac.getInt();
         this.minuteLength = propMinuteLength.getDouble();
         this.anHourToMinute = propHourToMinute.getInt();
         
