@@ -8,6 +8,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraft.world.border.WorldBorder;
@@ -19,7 +20,7 @@ import stellarium.api.ISkyProvider;
 import stellarium.api.IStellarWorldProvider;
 import stellarium.render.SkyRenderer;
 
-public class StellarWorldProvider extends WorldProvider implements IStellarWorldProvider {
+public class StellarWorldProviderEnd extends WorldProviderEnd implements IStellarWorldProvider {
 	
 	private WorldProvider parProvider;
 	private ISkyProvider skyProvider;
@@ -28,7 +29,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
 		
 	private long cloudColour = 16777215L;
 	
-	public StellarWorldProvider(World world, WorldProvider provider) {
+	public StellarWorldProviderEnd(World world, WorldProvider provider) {
 		this.parProvider = provider;
 		this.worldObj = world;
 	}
@@ -123,29 +124,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @Override
     public float[] calcSunriseSunsetColors(float p_76560_1_, float p_76560_2_)
     {
-        float f = 0.4F;
-        float f1 = this.calculateSunHeight(p_76560_2_) - 0.0F;
-        float f2 = -0.0F;
-
-        if (f1 >= f2 - f && f1 <= f2 + f)
-        {
-            float f3 = (f1 - f2) / f * 0.5F + 0.5F;
-            float f4 = 1.0F - (1.0F - MathHelper.sin(f3 * (float)Math.PI)) * 0.99F;
-            f4 = f4 * f4;
-            this.colorsSunriseSunset[0] = f3 * 0.3F + 0.7F;
-            this.colorsSunriseSunset[1] = f3 * f3 * 0.7F + 0.2F;
-            this.colorsSunriseSunset[2] = f3 * f3 * 0.0F + 0.2F;
-            this.colorsSunriseSunset[3] = f4;
-            
-            for(int i = 0; i < 4; i++)
-            	this.colorsSunriseSunset[i] = this.colorsSunriseSunset[i] * skyProvider.calculateSunriseSunsetFactor(p_76560_2_);
-            
-            return this.colorsSunriseSunset;
-        }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     /**
@@ -155,14 +134,15 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @Override
     public Vec3 getFogColor(float p_76562_1_, float p_76562_2_)
     {
+    	int i = 10518688;
         float f = this.calculateSunlightFactor(p_76562_2_);
         f = MathHelper.clamp_float(f, 0.0F, 1.0F);
-        float f1 = 0.7529412F;
-        float f2 = 0.84705883F;
-        float f3 = 1.0F;
-        f1 = f1 * (f * 0.94F + 0.06F);
-        f2 = f2 * (f * 0.94F + 0.06F);
-        f3 = f3 * (f * 0.91F + 0.09F);
+        float f1 = (float)(i >> 16 & 255) / 255.0F;
+        float f2 = (float)(i >> 8 & 255) / 255.0F;
+        float f3 = (float)(i & 255) / 255.0F;
+        f1 = f1 * (f * 0.0F + 0.15F);
+        f2 = f2 * (f * 0.0F + 0.15F);
+        f3 = f3 * (f * 0.0F + 0.15F);
         return new Vec3((double)f1, (double)f2, (double)f3);
     }
 

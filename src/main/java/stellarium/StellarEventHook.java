@@ -8,17 +8,19 @@ import com.google.common.base.Throwables;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import stellarium.api.IStellarWorldProvider;
 import stellarium.api.StellarSkyAPI;
 import stellarium.render.SkyRenderer;
 import stellarium.stellars.StellarManager;
+import stellarium.stellars.StellarSkyProvider;
 import stellarium.stellars.layer.CelestialManager;
 import stellarium.stellars.view.StellarDimensionManager;
-import stellarium.world.StellarWorldProvider;
 
 public class StellarEventHook {
 	
@@ -70,7 +72,10 @@ public class StellarEventHook {
 		
 		if(manager.getSettings().serverEnabled && dimManager.getSettings().patchProvider) {
 			try {
-				providerField.set(world, new StellarWorldProvider(world, world.provider, manager, dimManager));
+				WorldProvider newProvider = StellarSkyAPI.getReplacedWorldProvider(world, world.provider);
+				if(newProvider instanceof IStellarWorldProvider)
+					((IStellarWorldProvider) newProvider).setSkyProvider(new StellarSkyProvider(world, world.provider, manager, dimManager));
+				providerField.set(world, newProvider);
 			} catch (Exception exc) {
 				Throwables.propagate(exc);
 			}
