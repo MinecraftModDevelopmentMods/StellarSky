@@ -2,6 +2,7 @@ package stellarium.stellars.system;
 
 import net.minecraft.util.ResourceLocation;
 import sciapi.api.value.euclidian.EVector;
+import stellarium.api.PerDimensionResource;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
@@ -10,7 +11,8 @@ import stellarium.util.math.VecMath;
 
 public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache> {
 
-	private static final ResourceLocation locationStarPng = new ResourceLocation("stellarium", "stellar/star.png");
+	private static final PerDimensionResource resourcePlanetSmall =
+			new PerDimensionResource("Planet_Small", new ResourceLocation("stellarium", "stellar/star.png"));
 	
 	@Override
 	public void render(StellarRenderInfo info, PlanetRenderCache cache) {
@@ -30,7 +32,7 @@ public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCach
 		dif.set(VecMath.mult(size, dif));
 		dif2.set(VecMath.mult(-size, dif2));
 		
-		info.mc.renderEngine.bindTexture(this.locationStarPng);
+		info.mc.renderEngine.bindTexture(resourcePlanetSmall.getLocationFor(info.mc.theWorld));
 		
 		info.tessellator.startDrawingQuads();
 		info.tessellator.setColorRGBA_F(1.0f, 1.0f, 1.0f, alpha);
