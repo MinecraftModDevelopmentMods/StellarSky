@@ -106,4 +106,7 @@ public class SleepWakeManager implements IConfigHandler {
 		protected IWakeHandler handler;
 		protected boolean enabled;
 	}
+
+	@Override
+	public void saveToConfig(Configuration config, String category) { }
 }

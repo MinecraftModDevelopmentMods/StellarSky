@@ -89,7 +89,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	
 	public void setup() {
 		StellarSky.logger.info("Initializing Dimension Settings...");
-		if(settings.allowRefraction)
+		if(settings.allowRefraction())
 			this.viewpoint = new RefractiveViewpoint(manager.getSettings(), this.settings);
 		else this.viewpoint = new NonRefractiveViewpoint(manager.getSettings(), this.settings);
 		StellarSky.logger.info("Initialized Dimension Settings.");
@@ -98,7 +98,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	public void update(World world, double currentTick) {
 		double skyTime = manager.getSkyTime(currentTick);
 		viewpoint.update(world, skyTime / manager.getSettings().day / manager.getSettings().year);
-	
+		
 		EVector sunPos = manager.getCelestialManager().getSunEcRPos();
 		sunEquatorPos.set(viewpoint.projectionToEquatorial().transform(sunPos));
 		sunAppPos.setWithVec(viewpoint.getProjection().transform(sunPos));

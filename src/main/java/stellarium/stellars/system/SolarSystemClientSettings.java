@@ -34,7 +34,10 @@ public class SolarSystemClientSettings implements IConfigHandler {
 
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
-		this.imgFrac=propMoonFrac.getInt();
+		this.imgFrac = propMoonFrac.getInt();
 	}
+
+	@Override
+	public void saveToConfig(Configuration config, String category) { }
 
 }

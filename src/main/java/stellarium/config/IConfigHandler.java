@@ -6,7 +6,6 @@ public interface IConfigHandler {
 	
 	/**
 	 * Sets up configuration.
-	 * (Don't call {@link Configuration#save()} here)
 	 * @param config the configuration instance
 	 * @param category the category to set up
 	 * */
@@ -19,4 +18,12 @@ public interface IConfigHandler {
 	 * @param category the category to load
 	 * */
 	public void loadFromConfig(Configuration config, String category);
+	
+	/**
+	 * Save fields to configuration.
+	 * (Don't call {@link Configuration#save()} here)
+	 * @param config the configuration instance
+	 * @param category the category to load
+	 * */
+	public void saveToConfig(Configuration config, String category);
 }

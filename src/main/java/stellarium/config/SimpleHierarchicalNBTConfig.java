@@ -7,7 +7,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 
-public abstract class HierarchicalNBTConfig implements INBTConfig {
+public abstract class SimpleHierarchicalNBTConfig extends SimpleNBTConfig implements INBTConfig {
 
 	private Map<String, INBTConfig> subConfigs = Maps.newHashMap();
 	
@@ -21,12 +21,14 @@ public abstract class HierarchicalNBTConfig implements INBTConfig {
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
+		super.readFromNBT(compound);
 		for(Map.Entry<String, INBTConfig> entry : subConfigs.entrySet())
 			entry.getValue().readFromNBT(compound.getCompoundTag(entry.getKey()));
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
 		for(Map.Entry<String, INBTConfig> entry : subConfigs.entrySet()) {
 			NBTTagCompound subComp = new NBTTagCompound();
 			entry.getValue().writeToNBT(subComp);
@@ -36,18 +38,21 @@ public abstract class HierarchicalNBTConfig implements INBTConfig {
 
 	@Override
 	public void setupConfig(Configuration config, String category) {
+		super.setupConfig(config, category);
 		for(Map.Entry<String, INBTConfig> entry : subConfigs.entrySet())
 			entry.getValue().setupConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
 	}
 
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
+		super.loadFromConfig(config, category);
 		for(Map.Entry<String, INBTConfig> entry : subConfigs.entrySet())
 			entry.getValue().loadFromConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
 	}
 	
 	@Override
 	public void saveToConfig(Configuration config, String category) {
+		super.saveToConfig(config, category);
 		for(Map.Entry<String, INBTConfig> entry : subConfigs.entrySet())
 			entry.getValue().saveToConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
 	}
@@ -55,7 +60,8 @@ public abstract class HierarchicalNBTConfig implements INBTConfig {
 	@Override
 	public abstract INBTConfig copy();
 	
-	protected void applyCopy(HierarchicalNBTConfig config) {
+	protected void applyCopy(SimpleHierarchicalNBTConfig config) {
+		super.applyCopy(config);
 		for(Map.Entry<String, INBTConfig> entry : subConfigs.entrySet())
 			config.putSubConfig(entry.getKey(), entry.getValue().copy());
 	}

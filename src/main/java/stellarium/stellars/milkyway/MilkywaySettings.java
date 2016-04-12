@@ -46,4 +46,7 @@ public class MilkywaySettings implements IConfigHandler {
         this.imgFracMilkyway = propMilkywayFrac.getInt();
 	}
 
+	@Override
+	public void saveToConfig(Configuration config, String category) { }
+
 }

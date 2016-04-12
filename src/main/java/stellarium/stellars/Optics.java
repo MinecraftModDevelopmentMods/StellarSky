@@ -53,8 +53,11 @@ public class Optics implements IConfigHandler {
 		this.magContrast = (float) Math.pow(2.512, (1.0/(brightnessContrast * magCompression)));
 	}
 	
+	@Override
+	public void saveToConfig(Configuration config, String category) { }
+	
 	public static float getAlphaFromMagnitudeSparkling(float Mag, float bglight){
-		double turb = randomTurbulance.nextGaussian() * ((settings.turb) / (Mag + 4.46f));
+		double turb = randomTurbulance.nextGaussian() * ((settings.getTurbulance()) / (Mag + 4.46f));
 		return getAlpha(((Mag + 1.46f) * instance.magCompression) + turb, bglight);
 	}
 

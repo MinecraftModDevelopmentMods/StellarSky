@@ -71,7 +71,7 @@ public class StellarEventHook {
 	public static void setupDimension(World world, StellarManager manager, StellarDimensionManager dimManager) {
 		dimManager.setup();
 		
-		if(manager.getSettings().serverEnabled && dimManager.getSettings().patchProvider) {
+		if(manager.getSettings().serverEnabled && dimManager.getSettings().doesPatchProvider()) {
 			try {
 				WorldProvider newProvider = StellarSkyAPI.getReplacedWorldProvider(world, world.provider);
 				if(newProvider instanceof IStellarWorldProvider)
@@ -84,7 +84,7 @@ public class StellarEventHook {
 		
 		if(world.isRemote)
 		{
-			IRenderHandler renderer = StellarSkyAPI.getRendererFor(dimManager.getSettings().skyRendererType, new SkyRenderCelestial());
+			IRenderHandler renderer = StellarSkyAPI.getRendererFor(dimManager.getSettings().getSkyRendererType(), new SkyRenderCelestial());
 			world.provider.setSkyRenderer(renderer);
 		}
 	}

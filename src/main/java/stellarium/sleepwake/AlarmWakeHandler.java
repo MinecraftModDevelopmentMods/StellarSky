@@ -40,4 +40,7 @@ public class AlarmWakeHandler implements IWakeHandler {
     	return !world.isDaytime() && skyProvider.getDaytimeOffset(sleepTime) > 0.5;
 	}
 
+	@Override
+	public void saveToConfig(Configuration config, String category) { }
+
 }

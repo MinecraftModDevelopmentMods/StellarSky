@@ -144,12 +144,12 @@ public class StellarSkyProvider implements ISkyProvider {
 
 	@Override
 	public float calculateSunlightFactor(float partialTicks) {
-		return (float) ((2.0*this.calculateSunHeight(partialTicks)+0.5)*dimManager.getSettings().sunlightMultiplier);
+		return (float) ((2.0*this.calculateSunHeight(partialTicks)+0.5)*dimManager.getSettings().getSunlightMultiplier());
 	}
 
 	@Override
 	public float calculateSunriseSunsetFactor(float partialTicks) {
-		return (float) Math.sqrt(dimManager.getSettings().sunlightMultiplier);
+		return (float) Math.sqrt(dimManager.getSettings().getSunlightMultiplier());
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public class StellarSkyProvider implements ISkyProvider {
 
 	@Override
 	public float calculateDispersionFactor(float partialTicks) {
-		return (float) dimManager.getSettings().skyDispersionRate;
+		return (float) dimManager.getSettings().getSkyDispersionRate();
 	}
 
 	@Override

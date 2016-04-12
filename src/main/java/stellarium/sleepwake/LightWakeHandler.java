@@ -43,4 +43,7 @@ public class LightWakeHandler implements IWakeHandler {
 		this.wakeAngle = cfgCategory.get("Sun_Height_for_Wake").getDouble();
 	}
 
+	@Override
+	public void saveToConfig(Configuration config, String category) { }
+
 }

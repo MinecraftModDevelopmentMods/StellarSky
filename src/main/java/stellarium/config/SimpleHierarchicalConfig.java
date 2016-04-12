@@ -7,7 +7,7 @@ import com.google.common.collect.Maps;
 
 import net.minecraftforge.common.config.Configuration;
 
-public class HierarchicalConfig implements IConfigHandler {
+public class SimpleHierarchicalConfig extends SimpleConfigHandler implements IConfigHandler {
 	
 	private Map<String, IConfigHandler> subConfigs = Maps.newHashMap();
 	
@@ -34,20 +34,22 @@ public class HierarchicalConfig implements IConfigHandler {
 
 	@Override
 	public void setupConfig(Configuration config, String category) {
+		super.setupConfig(config, category);
 		for(Map.Entry<String, IConfigHandler> entry : subConfigs.entrySet())
 			entry.getValue().setupConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
 	}
 
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
+		super.loadFromConfig(config, category);
 		for(Map.Entry<String, IConfigHandler> entry : subConfigs.entrySet())
 			entry.getValue().loadFromConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
 	}
-
+	
 	@Override
 	public void saveToConfig(Configuration config, String category) {
+		super.saveToConfig(config, category);
 		for(Map.Entry<String, IConfigHandler> entry : subConfigs.entrySet())
 			entry.getValue().saveToConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
 	}
-
 }

@@ -71,6 +71,12 @@ config.property.server.dayoffset.tooltip=Day offset on world starting time. (Off
 config.property.server.tickoffset=Tick Offset
 config.property.server.tickoffset.tooltip=Tick offset on world starting time. (Offsets are added together)
 
+config.property.server.axialtilt=Axial Tilt
+config.property.server.axialtilt.tooltip=Axial tilt in degrees. Always 0.0 when Server Enabled is false.
+
+config.property.server.precession=Precession
+config.property.server.precession.tooltip=Precession in degrees per year.
+
 
 ///Solar System
 config.category.solarsystem=Solar System Configurations
