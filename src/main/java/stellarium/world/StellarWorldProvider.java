@@ -501,7 +501,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @SideOnly(Side.CLIENT)
     public float getStarBrightness(float par1)
     {
-        float f2 = 1.0F - (this.calculateSunlightFactor(par1)-0.25f);
+        float f2 = 1.0F - (this.calculateSunlightFactor(par1)*skyProvider.calculateDispersionFactor(par1)-0.25f);
 
         if (f2 < 0.0F)
         {

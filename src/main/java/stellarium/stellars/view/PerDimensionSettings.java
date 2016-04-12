@@ -19,7 +19,7 @@ public class PerDimensionSettings implements INBTConfig {
 	public boolean hideObjectsUnderHorizon;
 	protected boolean allowRefraction;
 	public double sunlightMultiplier;
-	public double skyDispersionMultiplier;
+	public double skyDispersionRate;
 	public String skyRendererType;
 	
 	private Property propLatitude, propLongitude;
@@ -27,7 +27,7 @@ public class PerDimensionSettings implements INBTConfig {
 	private Property propHideObjectsUnderHorizon;
 	private Property propAllowRefraction;
 	private Property propSunlightMultiplier;
-	private Property propSkyDispersionMultiplier;
+	private Property propSkyDispersionRate;
 	private Property propRenderType;
 
 	public PerDimensionSettings(String dimensionName) {
@@ -87,12 +87,12 @@ public class PerDimensionSettings implements INBTConfig {
         propSunlightMultiplier.setLanguageKey("config.property.dimension.sunlightmultiplier");
         propNameList.add(propSunlightMultiplier.getName());
         
-        propSkyDispersionMultiplier = config.get(category, "Sky_Dispersion_Miltiplier", 1.0);
-        propSkyDispersionMultiplier.comment = "Relative strength of sky dispersion on the dimension.\n"
+        propSkyDispersionRate = config.get(category, "Sky_Dispersion_Rate", 1.0);
+        propSkyDispersionRate.comment = "Relative strength of sky dispersion on the dimension.\n"
         		+ "The effect is similar with sunlight multiplier on client, but usually don't affect the server, e.g. do not spawn mobs.";
-        propSkyDispersionMultiplier.setRequiresWorldRestart(true);
-        propSkyDispersionMultiplier.setLanguageKey("config.property.dimension.skydispersionmultiplier");
-        propNameList.add(propSkyDispersionMultiplier.getName());
+        propSkyDispersionRate.setRequiresWorldRestart(true);
+        propSkyDispersionRate.setLanguageKey("config.property.dimension.skydispersionrate");
+        propNameList.add(propSkyDispersionRate.getName());
         
         config.setCategoryPropertyOrder(category, propNameList);
 	}
@@ -113,7 +113,7 @@ public class PerDimensionSettings implements INBTConfig {
        		this.sunlightMultiplier = Double.parseDouble(propSunlightMultiplier.getDefault());
        	}
        	
-   		this.skyDispersionMultiplier = propSkyDispersionMultiplier.getDouble();
+   		this.skyDispersionRate = propSkyDispersionRate.getDouble();
    		this.hideObjectsUnderHorizon = propHideObjectsUnderHorizon.getBoolean();
    		this.skyRendererType = propRenderType.getString();
 	}
@@ -126,7 +126,7 @@ public class PerDimensionSettings implements INBTConfig {
        	this.hideObjectsUnderHorizon = compound.getBoolean("hideObjectsUnderHorizon");
        	this.allowRefraction = compound.getBoolean("allowRefraction");
        	this.sunlightMultiplier = compound.getDouble("sunlightMultiplier");
-       	this.skyDispersionMultiplier = compound.getDouble("skyDispersionMultiplier");
+       	this.skyDispersionRate = compound.getDouble("skyDispersionRate");
        	this.skyRendererType = compound.getString("skyRendererType");
 	}
 
@@ -138,7 +138,7 @@ public class PerDimensionSettings implements INBTConfig {
        	compound.setBoolean("hideObjectsUnderHorizon", this.hideObjectsUnderHorizon);
        	compound.setBoolean("allowRefraction", this.allowRefraction);
        	compound.setDouble("sunlightMultiplier", this.sunlightMultiplier);
-       	compound.setDouble("skyDispersionMultiplier", this.skyDispersionMultiplier);
+       	compound.setDouble("skyDispersionRate", this.skyDispersionRate);
        	compound.setString("skyRendererType", this.skyRendererType);
 	}
 
@@ -152,7 +152,7 @@ public class PerDimensionSettings implements INBTConfig {
 		settings.allowRefraction = this.allowRefraction;
 		settings.sunlightMultiplier = this.sunlightMultiplier;
 		settings.skyRendererType = this.skyRendererType;
-		settings.skyDispersionMultiplier = this.skyDispersionMultiplier;
+		settings.skyDispersionRate = this.skyDispersionRate;
 
 		return settings;
 	}

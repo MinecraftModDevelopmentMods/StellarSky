@@ -116,8 +116,8 @@ config.property.dimension.allowrefraction.tooltip=천체의 위치가 대기 굴
 config.property.dimension.sunlightmultiplier=태양빛의 상대적 밝기
 config.property.dimension.sunlightmultiplier.tooltip=이 월드에서의 태양빛의 상대적인 밝기로서, 0.0으로 설정하면 이곳은 매우 어두운 세상이 될 것입니다.
 
-config.property.dimension.skydispersionmultiplier=하늘 산란의 정도
-config.property.dimension.skydispersionmultiplier.tooltip=이 월드에서 나타나는 하늘 산란의 정도입니다. 태양빛의 상대적 밝기와 클라이언트에선 유사한 효과를 갖지만, 서버(특히 빛 레벨)에선 보통 효과를 갖지 않으며, 예를 들어 이를 0.0으로 설정하면 낮이 매우 어둡지만 몹이 스폰되지 않습니다.
+config.property.dimension.skydispersionrate=하늘 산란의 정도
+config.property.dimension.skydispersionrate.tooltip=이 월드에서 나타나는 하늘 산란의 정도입니다. 태양빛의 상대적 밝기와 클라이언트에선 유사한 효과를 갖지만, 서버(특히 빛 레벨)에선 보통 효과를 갖지 않으며, 예를 들어 이를 0.0으로 설정하면 낮이 매우 어둡지만 몹이 스폰되지 않습니다.
 
 
 ///Wake
