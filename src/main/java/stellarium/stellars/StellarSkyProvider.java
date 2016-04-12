@@ -174,8 +174,7 @@ public class StellarSkyProvider implements ISkyProvider {
 
 	@Override
 	public ResourceLocation getPerDimensionResourceLocation(String resourceId) {
-		// TODO configuration work
-		return null;
+		return dimManager.getSettings().resourceSettings.getResourceLocationForId(resourceId);
 	}
 
 }

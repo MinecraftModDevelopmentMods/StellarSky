@@ -2,9 +2,8 @@ package stellarium.stellars.system;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.util.ResourceLocation;
 import sciapi.api.value.euclidian.EVector;
-import stellarium.api.PerDimensionResource;
+import stellarium.StellarSkyResources;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
@@ -14,15 +13,10 @@ import stellarium.util.math.VecMath;
 
 public class MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 	
-	private static final PerDimensionResource resourceMoonSurface = 
-			new PerDimensionResource("Moon_Surface", new ResourceLocation("stellarium", "stellar/lune.png"));
-	private static final PerDimensionResource resourceMoonHalo =
-			new PerDimensionResource("Moon_Halo", new ResourceLocation("stellarium", "stellar/haloLune.png"));
-	
 	@Override
 	public void render(StellarRenderInfo info, MoonRenderCache cache) {
 		
-		info.mc.renderEngine.bindTexture(resourceMoonHalo.getLocationFor(info.mc.theWorld));
+		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceMoonHalo.getLocationFor(info.mc.theWorld));
 
 		if(cache.shouldRenderGlow){
 			EVector pos = cache.appCoord.getVec();
@@ -46,7 +40,7 @@ public class MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 		}
 
 
-		info.mc.renderEngine.bindTexture(resourceMoonSurface.getLocationFor(info.mc.theWorld));
+		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceMoonSurface.getLocationFor(info.mc.theWorld));
 
 		info.tessellator.startDrawingQuads();
 		

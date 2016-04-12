@@ -4,12 +4,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import stellarium.api.StellarSkyAPI;
 import stellarium.config.INBTConfig;
-import stellarium.config.SimpleNBTConfig;
+import stellarium.config.SimpleHierarchicalNBTConfig;
 import stellarium.config.property.ConfigPropertyBoolean;
 import stellarium.config.property.ConfigPropertyDouble;
 import stellarium.config.property.ConfigPropertyString;
 
-public class PerDimensionSettings extends SimpleNBTConfig {
+public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 
 	private String dimensionName;
 	
@@ -22,6 +22,8 @@ public class PerDimensionSettings extends SimpleNBTConfig {
 	private ConfigPropertyDouble propSunlightMultiplier;
 	private ConfigPropertyDouble propSkyDispersionRate;
 	private ConfigPropertyString propRenderType;
+	
+	public PerDimensionResourceSettings resourceSettings;
 
 	public PerDimensionSettings(String dimensionName) {
 		this.dimensionName = dimensionName;
@@ -46,6 +48,8 @@ public class PerDimensionSettings extends SimpleNBTConfig {
        	this.addConfigProperty(this.propAllowRefraction);
        	this.addConfigProperty(this.propSunlightMultiplier);
        	this.addConfigProperty(this.propSkyDispersionRate);
+       	
+       	this.putSubConfig("ResourceSettings", this.resourceSettings = new PerDimensionResourceSettings());
 	}
 
 	@Override

@@ -14,6 +14,7 @@ public class StellarSkyAPI {
 	private List<IWorldProviderReplacer> worldProviderReplacers = Lists.newArrayList();
 	private IWorldProviderReplacer defaultReplacer;
 	private List<ISkyRendererType> rendererTypes = Lists.newArrayList();
+	private List<String> perDimensionResources = Lists.newArrayList();
 	
 	private static StellarSkyAPI INSTANCE = new StellarSkyAPI();
 	
@@ -51,11 +52,21 @@ public class StellarSkyAPI {
 	}
 	
 	/**
-	 * Registers sky renderer type.
+	 * Registers sky renderer type. <p>
+	 * Note that this should be done on both side.
 	 * @param rendererType the sky renderer type to register
 	 * */
 	public static void registerRendererType(ISkyRendererType rendererType) {
 		INSTANCE.rendererTypes.add(rendererType);
+	}
+	
+	/**
+	 * Registers per dimension resource. <p>
+	 * Note that this should be done on both side.
+	 * @param resourceId the id of the resource
+	 * */
+	public static void registerPerDimensionResource(String resourceId) {
+		INSTANCE.perDimensionResources.add(resourceId);
 	}
 	
 	
@@ -95,6 +106,14 @@ public class StellarSkyAPI {
 			if(type.getName().equals(option))
 				return type.createSkyRenderer(subRenderer);
 		return null;
+	}
+	
+	/**
+	 * Gets list of per dimension resource id list. <p>
+	 * Used by Stellar Sky.
+	 * */
+	public static List<String> getPerDimensionResourceIdList() {
+		return INSTANCE.perDimensionResources;
 	}
 	
 	/**

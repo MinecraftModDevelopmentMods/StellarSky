@@ -125,6 +125,12 @@ config.property.dimension.sunlightmultiplier.tooltip=Relative amount of sunlight
 config.property.dimension.skydispersionrate=Sky Dispersion Rate
 config.property.dimension.skydispersionrate.tooltip=Relative strength of sky dispersion on the dimension. The effect is similar with sunlight multiplier on client, but usually don't affect the server(light level), e.g. do not spawn mobs on day even if set to 0.0 which makes sky seems night.
 
+////Dimension Resources
+config.category.dimension.perdimresource=Per Dimension Resources
+config.category.dimension.perdimresource.tooltip=Configuration on resources which are unique to this dimension.
+
+config.property.dimension.perdimresource.tooltip=If this is not set to 'default', the resource will be replaced by the resource on the described location. Note that resource location is form of '(modid):(actual location)'.
+
 
 ///Wake
 config.category.server.wake=Wake Settings

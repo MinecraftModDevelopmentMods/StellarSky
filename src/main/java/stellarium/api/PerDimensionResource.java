@@ -12,6 +12,10 @@ public class PerDimensionResource {
 		this.defaultLocation = defaultLocation;
 	}
 	
+	public String getTextureId() {
+		return this.textureId;
+	}
+	
 	public ResourceLocation getLocationFor(WorldClient world) {
 		ResourceLocation location = null;
 		if(StellarSkyAPI.hasSkyProvider(world))

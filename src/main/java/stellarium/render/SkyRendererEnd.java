@@ -7,15 +7,11 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IRenderHandler;
+import stellarium.StellarSkyResources;
 import stellarium.api.ICelestialRenderer;
-import stellarium.api.PerDimensionResource;
 
 public class SkyRendererEnd extends IRenderHandler {
-	
-	private static final PerDimensionResource resourceEndSky =
-			new PerDimensionResource("End_Sky", new ResourceLocation("textures/environment/end_sky.png"));
 
 	private ICelestialRenderer celestials;
 	
@@ -31,7 +27,7 @@ public class SkyRendererEnd extends IRenderHandler {
         OpenGlHelper.glBlendFunc(770, 771, 1, 0);
         RenderHelper.disableStandardItemLighting();
         GL11.glDepthMask(false);
-        mc.renderEngine.bindTexture(resourceEndSky.getLocationFor(world));
+        mc.renderEngine.bindTexture(StellarSkyResources.resourceEndSky.getLocationFor(world));
         Tessellator tessellator = Tessellator.instance;
 
         for (int i = 0; i < 6; ++i)

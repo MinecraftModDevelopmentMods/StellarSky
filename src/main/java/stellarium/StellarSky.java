@@ -70,6 +70,8 @@ public class StellarSky {
     		StellarSkyAPI.registerRendererType(new SkyRenderTypeOverworld());
     		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
     		
+    		StellarSkyResources.init();
+    		
     		CompatManager.getInstance().onPreInit();
         }
         

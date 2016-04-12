@@ -118,6 +118,8 @@ public class CommonSettings extends SimpleHierarchicalNBTConfig {
 	public void readFromNBT(NBTTagCompound compound) {
        	super.readFromNBT(compound);
        	
+       	this.serverEnabled = propServerEnabled.getBoolean();
+       	
        	this.day = propDay.getDouble();
        	this.year = propYear.getDouble();
        	this.yearOffset = propYearOffset.getInt();
@@ -128,6 +130,7 @@ public class CommonSettings extends SimpleHierarchicalNBTConfig {
 	@Override
 	public INBTConfig copy() {
 		CommonSettings settings = new CommonSettings();
+		settings.serverEnabled = this.serverEnabled;
 		settings.day = this.day;
 		settings.year = this.year;
 		settings.yearOffset = this.yearOffset;
