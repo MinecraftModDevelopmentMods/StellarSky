@@ -2,6 +2,7 @@ package stellarium.stellars;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import sciapi.api.value.euclidian.EVector;
@@ -168,7 +169,13 @@ public class StellarSkyProvider implements ISkyProvider {
 
 	@Override
 	public float calculateDispersionFactor(float partialTicks) {
-		return (float) dimManager.getSettings().skyDispersionMultiplier;
+		return (float) dimManager.getSettings().skyDispersionRate;
+	}
+
+	@Override
+	public ResourceLocation getPerDimensionResourceLocation(String resourceId) {
+		// TODO configuration work
+		return null;
 	}
 
 }

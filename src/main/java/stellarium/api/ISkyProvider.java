@@ -2,6 +2,8 @@ package stellarium.api;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import net.minecraft.util.ResourceLocation;
+
 /**
  * Interface to provide sky information for certain world from Stellar Sky. <p>
  * Provided by Stellar Sky.
@@ -154,5 +156,13 @@ public interface ISkyProvider {
 	 * Current position of moon.
 	 * */
 	public Vector3f getCurrentMoonPosition();
+	
+	
+	/**
+	 * Gets per dimension location for certain resource id.
+	 * @param resourceId id for this resource
+	 * @return resource location on the dimension, or <code>null</code> if there is no specific resource location on the dimension for the id.
+	 * */
+	public ResourceLocation getPerDimensionResourceLocation(String resourceId);
 	
 }
