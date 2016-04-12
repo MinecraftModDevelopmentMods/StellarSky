@@ -45,6 +45,12 @@ public abstract class HierarchicalNBTConfig implements INBTConfig {
 		for(Map.Entry<String, INBTConfig> entry : subConfigs.entrySet())
 			entry.getValue().loadFromConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
 	}
+	
+	@Override
+	public void saveToConfig(Configuration config, String category) {
+		for(Map.Entry<String, INBTConfig> entry : subConfigs.entrySet())
+			entry.getValue().saveToConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
+	}
 
 	@Override
 	public abstract INBTConfig copy();

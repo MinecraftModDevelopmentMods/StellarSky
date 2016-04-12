@@ -2,6 +2,7 @@ package stellarium.stellars;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import sciapi.api.value.euclidian.EVector;
@@ -13,7 +14,7 @@ import stellarium.util.math.Spmath;
 public class StellarSkyProvider implements ISkyProvider {
 	
 	private static final int DEFAULT_OFFSET = 1000;
-	
+
 	private World world;
 	private WorldProvider parProvider;
 	private StellarManager manager;
@@ -60,52 +61,6 @@ public class StellarSkyProvider implements ISkyProvider {
 	@Override
 	public double getYearlyOffset(long tick) {
 		return Spmath.fmod(((tick + manager.getSettings().tickOffset + DEFAULT_OFFSET) / manager.getSettings().day + manager.getSettings().dayOffset) / manager.getSettings().year, 1.0);
-	}
-		
-	@Override
-	public float calculateCelestialAngle(long worldTime, float partialTicks) {
-		double dayLength = manager.getSettings().day;
-		double longitude = dimManager.getSettings().longitude / 360.0;
-		double skyTime = manager.getSkyTime(worldTime + partialTicks);
-		double angle = skyTime / dayLength + longitude + 0.5;
-		return (float) (angle - Math.floor(angle));
-	}
-
-	@Override
-	public float calculateSunHeight(float partialTicks) {
-		if(!manager.updated())
-    	{
-    		manager.update(world.getWorldTime() + partialTicks);
-    		dimManager.update(this.world, world.getWorldTime() + partialTicks);
-    	}
-   	
-    	return (float) Spmath.sind(dimManager.sunAppPos.y);
-	}
-
-	@Override
-	public float calculateSunlightFactor(float partialTicks) {
-		return (float) ((2.0f*this.calculateSunHeight(partialTicks)+0.5)*dimManager.getSettings().sunlightMultiplier);
-
-	}
-
-	@Override
-	public float calculateSunriseSunsetFactor(float partialTicks) {
-		return (float) Math.sqrt(dimManager.getSettings().sunlightMultiplier);
-	}
-	
-	@Override
-    public int getCurrentMoonPhase(long worldTime) {
-    	if(!manager.updated())
-    		return parProvider.getMoonPhase(worldTime);
-    	
-    	return (int)(dimManager.moonFactors[2]*8);
-    }
-	
-	@Override
-	public float getCurrentMoonPhaseFactor() {
-    	if(!manager.updated())
-    		return parProvider.getCurrentMoonPhaseFactor();
-		return (float) dimManager.moonFactors[1];
 	}
 	
 	@Override
@@ -164,5 +119,61 @@ public class StellarSkyProvider implements ISkyProvider {
 		crd.setWithVec(dimManager.moonEquatorPos);
 		
 		return 90.0 - Math.abs(dimManager.getSettings().latitude - crd.y);
+	}
+
+	@Override
+	public float calculateCelestialAngle(long worldTime, float partialTicks) {
+		double dayLength = manager.getSettings().day;
+		double longitude = dimManager.getSettings().longitude / 360.0;
+		double skyTime = manager.getSkyTime(worldTime + partialTicks);
+		double angle = skyTime / dayLength + longitude + 0.5;
+		return (float) (angle - Math.floor(angle));
+	}
+
+	@Override
+	public float calculateSunHeight(float partialTicks) {
+		if(!manager.updated())
+    	{
+    		manager.update(world.getWorldTime() + partialTicks);
+    		dimManager.update(this.world, world.getWorldTime() + partialTicks);
+    	}
+   	
+    	return (float) Spmath.sind(dimManager.sunAppPos.y);
+	}
+
+	@Override
+	public float calculateSunlightFactor(float partialTicks) {
+		return (float) ((2.0*this.calculateSunHeight(partialTicks)+0.5)*dimManager.getSettings().getSunlightMultiplier());
+	}
+
+	@Override
+	public float calculateSunriseSunsetFactor(float partialTicks) {
+		return (float) Math.sqrt(dimManager.getSettings().getSunlightMultiplier());
+	}
+
+	@Override
+	public int getCurrentMoonPhase(long worldTime) {
+		if(!manager.updated())
+    		return parProvider.getMoonPhase(worldTime);
+    	
+    	return (int)(dimManager.moonFactors[2]*8);
+	}
+
+	@Override
+	public float getCurrentMoonPhaseFactor() {
+		if(!manager.updated())
+    		return parProvider.getCurrentMoonPhaseFactor();
+		return (float) dimManager.moonFactors[1];
+	}
+
+	@Override
+	public float calculateDispersionFactor(float partialTicks) {
+		return (float) dimManager.getSettings().getSkyDispersionRate();
+	}
+
+	
+	@Override
+	public ResourceLocation getPerDimensionResourceLocation(String resourceId) {
+		return dimManager.getSettings().resourceSettings.getResourceLocationForId(resourceId);
 	}
 }

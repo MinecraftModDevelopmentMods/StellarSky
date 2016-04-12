@@ -24,12 +24,12 @@ public class HierarchicalConfig implements IConfigHandler {
 		return subConfigs.get(key);
 	}
 	
-	public Set<String> getKeySet() {
-		return subConfigs.keySet();
-	}
-	
 	public void removeSubConfig(String key) {
 		subConfigs.remove(key);
+	}
+	
+	public Set<String> getKeySet() {
+		return subConfigs.keySet();
 	}
 
 	@Override
@@ -42,6 +42,12 @@ public class HierarchicalConfig implements IConfigHandler {
 	public void loadFromConfig(Configuration config, String category) {
 		for(Map.Entry<String, IConfigHandler> entry : subConfigs.entrySet())
 			entry.getValue().loadFromConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
+	}
+
+	@Override
+	public void saveToConfig(Configuration config, String category) {
+		for(Map.Entry<String, IConfigHandler> entry : subConfigs.entrySet())
+			entry.getValue().saveToConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
 	}
 
 }

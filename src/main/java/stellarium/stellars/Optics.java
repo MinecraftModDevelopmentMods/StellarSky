@@ -31,6 +31,10 @@ public class Optics implements IConfigHandler {
 	
 	@Override
 	public void setupConfig(Configuration config, String category) {
+		config.setCategoryLanguageKey(category, "config.category.optics");
+		config.setCategoryComment(category, "Configuration for Optical settings.");
+		config.setCategoryRequiresMcRestart(category, false);
+		
 		brightnessContrastProperty = config.get(category, "Brightness_Contrast", 2.0);
 		brightnessContrastProperty.setComment("Brightness Contrast determines the contrast "
 				+ "between bright stars and faint stars. "
@@ -49,8 +53,11 @@ public class Optics implements IConfigHandler {
 		this.magContrast = (float) Math.pow(2.512, (1.0/(brightnessContrast * magCompression)));
 	}
 	
+	@Override
+	public void saveToConfig(Configuration config, String category) { }
+	
 	public static float getAlphaFromMagnitudeSparkling(float Mag, float bglight){
-		double turb = randomTurbulance.nextGaussian() * ((settings.turb) / (Mag + 4.46f));
+		double turb = randomTurbulance.nextGaussian() * ((settings.getTurbulance()) / (Mag + 4.46f));
 		return getAlpha(((Mag + 1.46f) * instance.magCompression) + turb, bglight);
 	}
 

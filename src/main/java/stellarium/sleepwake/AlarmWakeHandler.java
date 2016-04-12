@@ -15,7 +15,7 @@ public class AlarmWakeHandler implements IWakeHandler {
 	public void setupConfig(Configuration config, String category) {
 		Property pWakeTime = config.get(category, "Wake_Time_from_midnight", 6000);
 		pWakeTime.setComment("Wake-up time from midnight, in tick.");
-		pWakeTime.setRequiresMcRestart(true);
+		pWakeTime.setRequiresWorldRestart(true);
 		pWakeTime.setLanguageKey("config.property.server.waketime");
 	}
 
@@ -39,5 +39,8 @@ public class AlarmWakeHandler implements IWakeHandler {
 	public boolean canSleep(World world, ISkyProvider skyProvider, long sleepTime) {    	
     	return !world.isDaytime() && skyProvider.getDaytimeOffset(sleepTime) > 0.5;
 	}
+
+	@Override
+	public void saveToConfig(Configuration config, String category) { }
 
 }

@@ -52,7 +52,7 @@ public class FixedCommandTime extends CommandTime {
             {
                 if (args[1].equals("daytime"))
                 {
-                    int k = (int)(sender.getEntityWorld().getWorldTime() % 24000L);
+                    int k = this.getTimeInDay(sender.getEntityWorld());
                     sender.setCommandStat(CommandResultStats.Type.QUERY_RESULT, k);
                     notifyOperators(sender, this, "commands.time.query", new Object[] {Integer.valueOf(k)});
                     return;
@@ -60,7 +60,7 @@ public class FixedCommandTime extends CommandTime {
 
                 if (args[1].equals("day"))
                 {
-                    int j = (int)(sender.getEntityWorld().getWorldTime() / 24000L % 2147483647L);
+                    int j = this.getDay(sender.getEntityWorld());
                     sender.setCommandStat(CommandResultStats.Type.QUERY_RESULT, j);
                     notifyOperators(sender, this, "commands.time.query", new Object[] {Integer.valueOf(j)});
                     return;
@@ -105,6 +105,16 @@ public class FixedCommandTime extends CommandTime {
 			modifiedWorldTime = dayLength;
 
 		return (long) modifiedWorldTime;
+	}
+	
+	public int getDay(World world) {
+		ISkyProvider skyProvider = StellarSkyAPI.getSkyProvider(world);
+		return (int)Math.floor(skyProvider.getYearlyOffset() * skyProvider.getYearLength());
+	}
+	
+	public int getTimeInDay(World world) {
+		ISkyProvider skyProvider = StellarSkyAPI.getSkyProvider(world);
+		return (int)Math.floor(skyProvider.getDaytimeOffset() * skyProvider.getYearLength());
 	}
 
     protected void setAllWorldTimes(MinecraftServer server, long time)

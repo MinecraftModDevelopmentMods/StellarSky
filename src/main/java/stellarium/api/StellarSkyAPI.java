@@ -6,12 +6,15 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraftforge.client.IRenderHandler;
 
 public class StellarSkyAPI {
 	
 	private IHourProvider hourProvider;
 	private List<IWorldProviderReplacer> worldProviderReplacers = Lists.newArrayList();
 	private IWorldProviderReplacer defaultReplacer;
+	private List<ISkyRendererType> rendererTypes = Lists.newArrayList();
+	private List<String> perDimensionResources = Lists.newArrayList();
 	
 	private static StellarSkyAPI INSTANCE = new StellarSkyAPI();
 	
@@ -49,6 +52,31 @@ public class StellarSkyAPI {
 	}
 	
 	/**
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+	 * Registers sky renderer type. <p>
+	 * Note that this should be done on both side.
+	 * @param rendererType the sky renderer type to register
+	 * */
+	public static void registerRendererType(ISkyRendererType rendererType) {
+		INSTANCE.rendererTypes.add(rendererType);
+	}
+	
+	/**
+	 * Registers per dimension resource. <p>
+	 * Note that this should be done on both side.
+	 * @param resourceId the id of the resource
+	 * */
+	public static void registerPerDimensionResource(String resourceId) {
+		INSTANCE.perDimensionResources.add(resourceId);
+	}
+	
+	
+	/**
+>>>>>>> refs/remotes/origin/master
+>>>>>>> 1.8.9
 	 * Gets replaced world provider.
 	 * @param world the world to replace the provider
 	 * @param originalProvider original provider to be replaced
@@ -63,6 +91,44 @@ public class StellarSkyAPI {
 	}
 	
 	/**
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+	 * Gets possible render types for certain dimension.
+	 * @param worldName the name of the world; only provided information on the world
+	 * */
+	public static String[] getRenderTypesForDimension(String worldName) {
+		List<String> strlist = Lists.newArrayList();
+		for(ISkyRendererType type : INSTANCE.rendererTypes)
+			if(type.acceptFor(worldName))
+				strlist.add(type.getName());
+		return strlist.toArray(new String[0]);
+	}
+	
+	/**
+	 * Gets renderer for certain option of sky renderer type.
+	 * @param option the sky renderer type
+	 * @param subRenderer renderer to be called for rendering celestial sphere
+	 * */
+	public static IRenderHandler getRendererFor(String option, ICelestialRenderer subRenderer) {
+		for(ISkyRendererType type : INSTANCE.rendererTypes)
+			if(type.getName().equals(option))
+				return type.createSkyRenderer(subRenderer);
+		return null;
+	}
+	
+	/**
+	 * Gets list of per dimension resource id list. <p>
+	 * Used by Stellar Sky.
+	 * */
+	public static List<String> getPerDimensionResourceIdList() {
+		return INSTANCE.perDimensionResources;
+	}
+	
+	/**
+>>>>>>> refs/remotes/origin/master
+>>>>>>> 1.8.9
 	 * Checks if there is sky provider for specific world.
 	 * @param world the world to check if sky provider exists for
 	 * @return <code>true</code> if there exists sky provider for this world.

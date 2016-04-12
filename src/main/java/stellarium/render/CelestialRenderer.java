@@ -1,13 +1,12 @@
-package stellarium.stellars.layer;
+package stellarium.render;
 
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarium.config.IConfigHandler;
-import stellarium.render.StellarRenderInfo;
+import stellarium.stellars.layer.CelestialObject;
+import stellarium.stellars.layer.ICelestialLayer;
 
 @SideOnly(Side.CLIENT)
 public class CelestialRenderer {
@@ -17,8 +16,8 @@ public class CelestialRenderer {
 		for(ICelestialLayer layer : layers)
 			layer.registerRenderers();
 	}
-	
-	public void render(List<ICelestialLayer> layers, StellarRenderInfo info) {
+
+	public void render(StellarRenderInfo info, List<ICelestialLayer> layers) {
 		for(ICelestialLayer<? extends IConfigHandler> layer : layers) {
 			ICelestialLayerRenderer layerRenderer = null;
 			

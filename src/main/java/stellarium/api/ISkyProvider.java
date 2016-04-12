@@ -2,6 +2,8 @@ package stellarium.api;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import net.minecraft.util.ResourceLocation;
+
 /**
  * Interface to provide sky information for certain world from Stellar Sky. <p>
  * Provided by Stellar Sky.
@@ -98,6 +100,13 @@ public interface ISkyProvider {
 	public float calculateSunriseSunsetFactor(float partialTicks);
 	
 	/**
+	 * Gets dispersion factor. (brightness of sky itself, not ground light level) <p>
+	 * Basically for WorldProvider. <p>
+	 * @param partialTicks the partial tick
+	 * */
+	public float calculateDispersionFactor(float partialTicks);
+	
+	/**
 	 * Gets current moon phase. <p>
 	 * Basically for WorldProvider. <p>
 	 * @param worldTime the current World Time. If it isn't, this method will give undefined result.
@@ -148,4 +157,12 @@ public interface ISkyProvider {
 	 * */
 	public Vector3f getCurrentMoonPosition();
 	
+	
+	/**
+	 * Gets per dimension location for certain resource id.
+	 * @param resourceId id for this resource
+	 * @return resource location on the dimension, or <code>null</code> if there is no specific resource location on the dimension for the id.
+	 * */
+	public ResourceLocation getPerDimensionResourceLocation(String resourceId);
+
 }

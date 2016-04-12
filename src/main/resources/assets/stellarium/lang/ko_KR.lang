@@ -44,6 +44,16 @@ config.property.client.brcontrast.tooltip=이 속성은 밝은 별들과 어두�
 config.property.client.lockbtnpos=잠금 버튼의 위치
 config.property.client.lockbtnpos.tooltip=잠금 버튼의 위치로서, 현재 upright(오른쪽 위)와 downleft(왼쪽 위)가 있습니다.
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+///Optics
+config.category.optics=광학 설정
+config.category.optics.tooltip=광학 설정 관련 컨피그입니다.
+
+>>>>>>> refs/remotes/origin/master
+>>>>>>> 1.8.9
 
 //Server Configs
 config.category.server=서버(일반[Common]) 컨피그
@@ -67,6 +77,12 @@ config.property.server.dayoffset.tooltip=월드 시작 시각이 1년 중 며칠
 config.property.server.tickoffset=Tick 단위 오프셋
 config.property.server.tickoffset.tooltip=월드 시작 시각이 하루 중 몇틱(Tick)째인지를 나타냅니다.
 
+config.property.server.axialtilt=궤도경사각
+config.property.server.axialtilt.tooltip=도 단위로 나타낸 궤도경사각입니다. 서버 수정이 금지되어 있을 때에는 언제나 0.0이 됩니다.
+
+config.property.server.precession=세차운동 각속도
+config.property.server.precession.tooltip==도/년 단위로 나타낸 세차운동 각속도입니다.
+
 
 ///Solar System
 config.category.solarsystem=태양계 컨피그
@@ -79,6 +95,11 @@ config.property.server.moonbrightness=달의 밝기
 config.property.server.moonbrightness.tooltip=달의 밝기를 나타냅니다. (기본값은 1.0입니다)
 
 
+///Milky Way
+config.category.milkyway=은하수 컨피그
+config.category.milkyway.tooltip=은하수 관련 컨피그입니다.
+
+
 ///Dimension
 config.category.dimension=월드 컨피그
 config.category.dimension.tooltip=월드의 세팅에 대한 컨피그입니다.
@@ -88,6 +109,9 @@ config.property.dimension.applied.tooltip=stellar sky의 설정과 렌더링이 
 
 config.property.dimension.patchprovider=월드 패치 여부
 config.property.dimension.patchprovider.tooltip=월드를 패치하여 경도/위도 등의 설정을 바꿉니다. false로 설정되어 있으면 위도와 경도를 바꿀 수 없습니다.
+
+config.property.dimension.skyrenderertype=하늘의 유형
+config.property.dimension.skyrenderertype.tooltip=이 월드에 대한 하늘 렌더링 유형입니다. 기본적으로 오버월드(Overworld Sky) 와 엔더월드(End Sky) 유형이 있습니다.
 
 config.property.dimension.latitude=위도
 config.property.dimension.latitude.tooltip=도 단위로 나타낸 이 월드의 위도입니다.
@@ -104,6 +128,21 @@ config.property.dimension.allowrefraction.tooltip=천체의 위치가 대기 굴
 config.property.dimension.sunlightmultiplier=태양빛의 상대적 밝기
 config.property.dimension.sunlightmultiplier.tooltip=이 월드에서의 태양빛의 상대적인 밝기로서, 0.0으로 설정하면 이곳은 매우 어두운 세상이 될 것입니다.
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+config.property.dimension.skydispersionrate=하늘 산란의 정도
+config.property.dimension.skydispersionrate.tooltip=이 월드에서 나타나는 하늘 산란의 정도입니다. 태양빛의 상대적 밝기와 클라이언트에선 유사한 효과를 갖지만, 서버(특히 빛 레벨)에선 보통 효과를 갖지 않으며, 예를 들어 이를 0.0으로 설정하면 낮이 매우 어둡지만 몹이 스폰되지 않습니다.
+
+////Dimension Resources
+config.category.dimension.perdimresource=월드별 리소스 컨피그
+config.category.dimension.perdimresource.tooltip=각각의 월드에 고유한 리소스를 부여할 수 있는 컨피그입니다.
+
+config.property.dimension.perdimresource.tooltip='default' 로 설정되어 있지 않은 경우, 이 리소스는 지정된 위치의 리소스로 대체됩니다. 이때 리소스 위치는 '(모드 ID):(실제 위치)' 의 형태입니다.
+
+>>>>>>> refs/remotes/origin/master
+>>>>>>> 1.8.9
 
 ///Wake
 config.category.server.wake=기상 조건 컨피그

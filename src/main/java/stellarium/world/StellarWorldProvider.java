@@ -16,11 +16,9 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarium.api.ICelestialRenderer;
 import stellarium.api.ISkyProvider;
 import stellarium.api.IStellarWorldProvider;
-import stellarium.render.SkyRenderer;
-import stellarium.stellars.StellarManager;
-import stellarium.stellars.view.StellarDimensionManager;
 
 public class StellarWorldProvider extends WorldProvider implements IStellarWorldProvider {
 		
@@ -34,6 +32,8 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
 	public StellarWorldProvider(World world, WorldProvider provider) {
 		this.parProvider = provider;
 		this.worldObj = world;
+		this.biomeProvider = provider.getBiomeProvider();
+		this.hasNoSky = provider.getHasNoSky();
 	}
 	
 	@Override
@@ -45,7 +45,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
 	public ISkyProvider getSkyProvider() {
 		return this.skyProvider;
 	}
-
+	
 	@Override
     public float calculateCelestialAngle(long worldTime, float partialTicks) {
 		return skyProvider.calculateCelestialAngle(worldTime, partialTicks);
@@ -140,8 +140,10 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
             this.colorsSunriseSunset[3] = f4;
             
             for(int i = 0; i < 4; i++)
-            	this.colorsSunriseSunset[i] = this.colorsSunriseSunset[i] * skyProvider.calculateSunriseSunsetFactor(p_76560_2_);
-            
+            	this.colorsSunriseSunset[i] = this.colorsSunriseSunset[i]
+            			* skyProvider.calculateSunriseSunsetFactor(p_76560_2_)
+            			* skyProvider.calculateDispersionFactor(p_76560_2_);
+
             return this.colorsSunriseSunset;
         }
         else
@@ -157,7 +159,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @Override
     public Vec3d getFogColor(float p_76562_1_, float p_76562_2_)
     {
-        float f = this.calculateSunlightFactor(p_76562_2_);
+        float f = this.calculateSunlightFactor(p_76562_2_) * skyProvider.calculateDispersionFactor(p_76562_2_);
         f = MathHelper.clamp_float(f, 0.0F, 1.0F);
         float f1 = 0.7529412F;
         float f2 = 0.84705883F;
@@ -327,8 +329,10 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @SideOnly(Side.CLIENT)
     public void setSkyRenderer(net.minecraftforge.client.IRenderHandler skyRenderer)
     {
-        if(skyRenderer instanceof SkyRenderer)
-        	super.setSkyRenderer(skyRenderer);
+    	try {
+    		skyRenderer.getClass().getConstructor(ICelestialRenderer.class);
+    		super.setSkyRenderer(skyRenderer);
+    	} catch(Exception exc) { }
     }
 
     @Override
@@ -382,7 +386,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @SideOnly(Side.CLIENT)
     public Vec3d getSkyColor(Entity cameraEntity, float partialTicks)
     {
-        float f1 = this.calculateSunlightFactor(partialTicks);
+        float f1 = this.calculateSunlightFactor(partialTicks) * skyProvider.calculateDispersionFactor(partialTicks);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         int i = MathHelper.floor_double(cameraEntity.posX);
         int j = MathHelper.floor_double(cameraEntity.posY);
@@ -439,13 +443,12 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @SideOnly(Side.CLIENT)
     public Vec3d getCloudColor(float partialTicks)
     {
-        float f1 = this.calculateSunlightFactor(partialTicks);
+        float f1 = this.calculateSunlightFactor(partialTicks) * skyProvider.calculateDispersionFactor(partialTicks);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         float f2 = (float)(this.cloudColour >> 16 & 255L) / 255.0F;
         float f3 = (float)(this.cloudColour >> 8 & 255L) / 255.0F;
         float f4 = (float)(this.cloudColour & 255L) / 255.0F;
         float f5 = worldObj.getRainStrength(partialTicks);
-
         if (f5 > 0.0F)
         {
             float f6 = (f2 * 0.3F + f3 * 0.59F + f4 * 0.11F) * 0.6F;
@@ -476,7 +479,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @SideOnly(Side.CLIENT)
     public float getStarBrightness(float par1)
     {
-        float f1 = 1.0F - (this.calculateSunlightFactor(par1) - 0.25F);
+        float f1 = 1.0F - (this.calculateSunlightFactor(par1)*skyProvider.calculateDispersionFactor(par1) - 0.25F);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         return f1 * f1 * 0.5F;
     }

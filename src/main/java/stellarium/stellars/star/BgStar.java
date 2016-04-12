@@ -1,8 +1,8 @@
 package stellarium.stellars.star;
 
 import sciapi.api.value.euclidian.EVector;
+import stellarium.render.IRenderCache;
 import stellarium.stellars.layer.CelestialObject;
-import stellarium.stellars.layer.IRenderCache;
 
 public class BgStar extends CelestialObject {
 

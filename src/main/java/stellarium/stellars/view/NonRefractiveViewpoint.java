@@ -31,13 +31,13 @@ public class NonRefractiveViewpoint implements IStellarViewpoint {
 		this.latitude = Spmath.Radians(settings.latitude);
 		this.longitude = Spmath.Radians(settings.longitude);
 		this.rot = 2 * Math.PI * (this.yearLength + 1);
-		this.axialTilt = Spmath.Radians(commonSettings.axialTilt);
-		this.precession = Spmath.Radians(commonSettings.precession);
+		this.axialTilt = Spmath.Radians(commonSettings.propAxialTilt.getDouble());
+		this.precession = Spmath.Radians(commonSettings.propPrecession.getDouble());
 		
 		this.EqtoEc = new Rotate('X').setRAngle(-this.axialTilt);
 		this.EctoEq = new Rotate('X').setRAngle(this.axialTilt);
 		
-		this.hideObjectsUnderHorizon = settings.hideObjectsUnderHorizon;
+		this.hideObjectsUnderHorizon = settings.hideObjectsUnderHorizon();
 	}
 
 	@Override

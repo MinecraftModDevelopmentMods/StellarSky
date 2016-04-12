@@ -1,6 +1,6 @@
 package stellarium.stellars.system;
 
-import stellarium.stellars.layer.IRenderCache;
+import stellarium.render.IRenderCache;
 
 public class Earth extends Planet {
 

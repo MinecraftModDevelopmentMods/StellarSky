@@ -1,8 +1,7 @@
-package stellarium.stellars.layer;
+package stellarium.render;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import stellarium.render.StellarRenderInfo;
 
 @SideOnly(Side.CLIENT)
 public interface ICelestialLayerRenderer {

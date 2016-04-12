@@ -18,12 +18,11 @@ import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarium.api.ICelestialRenderer;
 import stellarium.api.ISkyProvider;
 import stellarium.api.IStellarWorldProvider;
-import stellarium.render.SkyRenderer;
 
 public class StellarWorldProviderEnd extends WorldProviderEnd implements IStellarWorldProvider {
-
 	private WorldProviderEnd parProvider;
 	private ISkyProvider skyProvider;
 	
@@ -34,6 +33,8 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
 	public StellarWorldProviderEnd(World world, WorldProviderEnd provider) {
 		this.parProvider = provider;
 		this.worldObj = world;
+		this.biomeProvider = provider.getBiomeProvider();
+		this.hasNoSky = provider.getHasNoSky();
 	}
 	
 	@Override
@@ -45,7 +46,7 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
 	public ISkyProvider getSkyProvider() {
 		return this.skyProvider;
 	}
-
+	
 	@Override
     public float calculateCelestialAngle(long worldTime, float partialTicks) {
 		return skyProvider.calculateCelestialAngle(worldTime, partialTicks);
@@ -135,8 +136,8 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
     @Override
     public Vec3d getFogColor(float p_76562_1_, float p_76562_2_)
     {
-    	int i = 10518688;
-        float f = this.calculateSunlightFactor(p_76562_2_);
+        int i = 10518688;
+        float f = this.calculateSunlightFactor(p_76562_2_) * skyProvider.calculateDispersionFactor(p_76562_2_);
         f = MathHelper.clamp_float(f, 0.0F, 1.0F);
         float f1 = (float)(i >> 16 & 255) / 255.0F;
         float f2 = (float)(i >> 8 & 255) / 255.0F;
@@ -306,8 +307,10 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
     @SideOnly(Side.CLIENT)
     public void setSkyRenderer(net.minecraftforge.client.IRenderHandler skyRenderer)
     {
-        if(skyRenderer instanceof SkyRenderer)
-        	super.setSkyRenderer(skyRenderer);
+    	try {
+    		skyRenderer.getClass().getConstructor(ICelestialRenderer.class);
+    		super.setSkyRenderer(skyRenderer);
+    	} catch(Exception exc) { }
     }
 
     @Override
@@ -361,7 +364,7 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
     @SideOnly(Side.CLIENT)
     public Vec3d getSkyColor(Entity cameraEntity, float partialTicks)
     {
-        float f1 = this.calculateSunlightFactor(partialTicks);
+        float f1 = this.calculateSunlightFactor(partialTicks) * skyProvider.calculateDispersionFactor(partialTicks);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         int i = MathHelper.floor_double(cameraEntity.posX);
         int j = MathHelper.floor_double(cameraEntity.posY);
@@ -418,13 +421,12 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
     @SideOnly(Side.CLIENT)
     public Vec3d getCloudColor(float partialTicks)
     {
-        float f1 = this.calculateSunlightFactor(partialTicks);
+        float f1 = this.calculateSunlightFactor(partialTicks) * skyProvider.calculateDispersionFactor(partialTicks);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         float f2 = (float)(this.cloudColour >> 16 & 255L) / 255.0F;
         float f3 = (float)(this.cloudColour >> 8 & 255L) / 255.0F;
         float f4 = (float)(this.cloudColour & 255L) / 255.0F;
         float f5 = worldObj.getRainStrength(partialTicks);
-
         if (f5 > 0.0F)
         {
             float f6 = (f2 * 0.3F + f3 * 0.59F + f4 * 0.11F) * 0.6F;
@@ -455,7 +457,7 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
     @SideOnly(Side.CLIENT)
     public float getStarBrightness(float par1)
     {
-        float f1 = 1.0F - (this.calculateSunlightFactor(par1) - 0.25F);
+        float f1 = 1.0F - (this.calculateSunlightFactor(par1)*skyProvider.calculateDispersionFactor(par1) - 0.25F);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         return f1 * f1 * 0.5F;
     }
@@ -622,13 +624,9 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
     }
     
     
-    /**
-     * Used for fixing dragon.
-     * */
     @Override
     public DragonFightManager getDragonFightManager()
     {
         return parProvider.getDragonFightManager();
     }
-	
 }

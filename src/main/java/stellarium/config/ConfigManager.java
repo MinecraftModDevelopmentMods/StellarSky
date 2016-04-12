@@ -35,6 +35,10 @@ public class ConfigManager {
 			for(Pair<String, IConfigHandler> entry : handlerPairList) {
 				entry.getValue().loadFromConfig(config, entry.getKey());
 			}
+		} else {
+			for(Pair<String, IConfigHandler> entry : handlerPairList) {
+				entry.getValue().saveToConfig(config, entry.getKey());
+			}
 		}
 		
 		if(config.hasChanged())

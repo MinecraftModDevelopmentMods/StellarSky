@@ -4,18 +4,16 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
 import sciapi.api.value.euclidian.EVector;
+import stellarium.StellarSkyResources;
+import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
-import stellarium.stellars.layer.ICelestialObjectRenderer;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.VecMath;
 
 public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache> {
 
-	private static final ResourceLocation locationStarPng = new ResourceLocation("stellarium", "stellar/star.png");
-	
 	@Override
 	public void render(StellarRenderInfo info, PlanetRenderCache cache) {
 		if(!cache.shouldRender)
@@ -34,7 +32,7 @@ public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCach
 		dif.set(VecMath.mult(size, dif));
 		dif2.set(VecMath.mult(-size, dif2));
 		
-		info.mc.renderEngine.bindTexture(this.locationStarPng);
+		info.mc.renderEngine.bindTexture(StellarSkyResources.resourcePlanetSmall.getLocationFor(info.mc.theWorld));
 		
 		GlStateManager.color(1.0f, 1.0f, 1.0f, alpha);
 		

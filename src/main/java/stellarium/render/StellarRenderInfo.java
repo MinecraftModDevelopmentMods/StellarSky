@@ -21,5 +21,4 @@ public class StellarRenderInfo {
 		this.weathereff = weathereff;
 		this.partialTicks = partialTicks;
 	}
-
 }
