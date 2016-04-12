@@ -2,13 +2,13 @@ package stellarium.stellars.star;
 
 import sciapi.api.value.euclidian.EVector;
 import stellarium.client.ClientSettings;
+import stellarium.config.IConfigHandler;
+import stellarium.render.IRenderCache;
 import stellarium.stellars.Optics;
-import stellarium.stellars.layer.CelestialObject;
-import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.view.IStellarViewpoint;
 import stellarium.util.math.SpCoord;
 
-public class StarRenderCache implements IRenderCache<BgStar> {
+public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 	
 	protected boolean shouldRender;
 	protected SpCoord appCoord = new SpCoord();
@@ -16,10 +16,10 @@ public class StarRenderCache implements IRenderCache<BgStar> {
 	protected float appB_V;
 	
 	@Override
-	public void initialize(ClientSettings settings) { }
+	public void initialize(ClientSettings settings, IConfigHandler config) { }
 
 	@Override
-	public void updateCache(ClientSettings settings, BgStar object, IStellarViewpoint viewpoint) {
+	public void updateCache(ClientSettings settings, IConfigHandler config, BgStar object, IStellarViewpoint viewpoint) {
 		EVector ref = new EVector(3);
 		ref.set(viewpoint.getProjection().transform(object.pos));
 		double airmass = viewpoint.getAirmass(ref, false);

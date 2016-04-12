@@ -1,7 +1,7 @@
 package stellarium.stellars.milkyway;
 
+import stellarium.render.IRenderCache;
 import stellarium.stellars.layer.CelestialObject;
-import stellarium.stellars.layer.IRenderCache;
 
 public class Milkyway extends CelestialObject {
 

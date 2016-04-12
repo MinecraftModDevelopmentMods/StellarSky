@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -16,7 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import stellarium.api.IStellarWorldProvider;
 import stellarium.api.StellarSkyAPI;
-import stellarium.render.SkyRenderer;
+import stellarium.render.SkyRenderCelestial;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.StellarSkyProvider;
 import stellarium.stellars.layer.CelestialManager;
@@ -70,7 +71,7 @@ public class StellarEventHook {
 	public static void setupDimension(World world, StellarManager manager, StellarDimensionManager dimManager) {
 		dimManager.setup();
 		
-		if(manager.getSettings().serverEnabled && dimManager.getSettings().patchProvider) {
+		if(manager.getSettings().serverEnabled && dimManager.getSettings().doesPatchProvider()) {
 			try {
 				WorldProvider newProvider = StellarSkyAPI.getReplacedWorldProvider(world, world.provider);
 				if(newProvider instanceof IStellarWorldProvider)
@@ -82,7 +83,10 @@ public class StellarEventHook {
 		}
 		
 		if(world.isRemote)
-			world.provider.setSkyRenderer(new SkyRenderer());
+		{
+			IRenderHandler renderer = StellarSkyAPI.getRendererFor(dimManager.getSettings().getSkyRendererType(), new SkyRenderCelestial());
+			world.provider.setSkyRenderer(renderer);
+		}
 	}
 	
 	private static boolean mark = false;

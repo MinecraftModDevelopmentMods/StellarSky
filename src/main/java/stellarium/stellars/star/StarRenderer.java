@@ -1,9 +1,9 @@
 package stellarium.stellars.star;
 
 import sciapi.api.value.euclidian.EVector;
+import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
-import stellarium.stellars.layer.ICelestialObjectRenderer;
 import stellarium.util.Color;
 import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;

@@ -32,7 +32,7 @@ public class LightWakeHandler implements IWakeHandler {
 	public void setupConfig(Configuration config, String category) {
 		Property wakeAngle = config.get(category, "Sun_Height_for_Wake", 10.0);
 		wakeAngle.comment = "Solar azimuth(height) angle to wake up. (in degrees)";
-		wakeAngle.setRequiresMcRestart(true);
+		wakeAngle.setRequiresWorldRestart(true);
 		wakeAngle.setLanguageKey("config.property.server.wakeangle");
 	}
 	
@@ -42,5 +42,8 @@ public class LightWakeHandler implements IWakeHandler {
 		ConfigCategory cfgCategory = config.getCategory(category);
 		this.wakeAngle = cfgCategory.get("Sun_Height_for_Wake").getDouble();
 	}
+
+	@Override
+	public void saveToConfig(Configuration config, String category) { }
 
 }

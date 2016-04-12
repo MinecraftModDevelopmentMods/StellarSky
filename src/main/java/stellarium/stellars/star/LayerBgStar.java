@@ -4,8 +4,8 @@ import java.util.List;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarium.render.CelestialRenderingRegistry;
 import stellarium.stellars.layer.CelestialObject;
-import stellarium.stellars.layer.CelestialRenderingRegistry;
 import stellarium.stellars.layer.ICelestialLayer;
 
 public abstract class LayerBgStar implements ICelestialLayer {

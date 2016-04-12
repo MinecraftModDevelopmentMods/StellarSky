@@ -35,7 +35,7 @@ public class StellarSkyClientHandler {
 				return;
 			
 			double currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
-			double time = manager.getSkyTime(currentTick)+1000.0;
+			double time = manager.getSkyTime(currentTick) + 1000.0;
 			double daylength = manager.getSettings().day;
 			double yearlength = manager.getSettings().year;
 			double date = time / daylength + dimManager.getSettings().longitude / 180.0;

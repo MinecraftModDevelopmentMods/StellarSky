@@ -102,7 +102,7 @@ public class FixedCommandTime extends CommandTime {
 
     	double modifiedWorldTime = time + (-wakeDayOffset - currentDayOffset) * dayLength;
     	while(modifiedWorldTime < time)
-    		modifiedWorldTime = dayLength;
+    		modifiedWorldTime += dayLength;
     	
     	return (long) modifiedWorldTime;
 	}
@@ -116,9 +116,8 @@ public class FixedCommandTime extends CommandTime {
 
     	double modifiedWorldTime = time + (-wakeDayOffset - currentDayOffset) * dayLength;
     	while(modifiedWorldTime < time)
-    		modifiedWorldTime = dayLength;
+    		modifiedWorldTime += dayLength;
     	
     	return (long) modifiedWorldTime;
 	}
-
 }

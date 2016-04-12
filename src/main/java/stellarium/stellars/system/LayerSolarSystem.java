@@ -9,10 +9,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import sciapi.api.value.euclidian.EVector;
 import stellarium.StellarSky;
-import stellarium.stellars.layer.CelestialRenderingRegistry;
+import stellarium.render.CelestialRenderingRegistry;
 import stellarium.stellars.layer.ICelestialLayerCommon;
 
-public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettings> {
+public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettings, SolarSystemClientSettings> {
 	
 	private static int renderId = -1;
 	protected static int planetRenderId = -1;
@@ -34,9 +34,12 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 	private Planet neptune;
 	
 	protected List<SolarObject> objects = Lists.newArrayList();
+	
+	@Override
+	public void initialize(boolean isRemote, SolarSystemClientSettings config) throws IOException { }
 
 	@Override
-	public void initialize(boolean isRemote, SolarSystemSettings settings) throws IOException {		
+	public void initializeCommon(boolean isRemote, SolarSystemSettings settings) throws IOException {		
 		objects.clear();
 		
 		////Solar System
@@ -58,7 +61,7 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		
 		earth.radius=4.2634e-5;
 		earth.mass=3.002458398e-6;
-		moon.radius = 4e-5 * settings.moonSizeMultiplier;
+		moon.radius = 4e-5 * settings.propMoonSize.getDouble();
 		
 		//Initialization
 		//-Earth
@@ -77,7 +80,7 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		
 		//-Moon
 		StellarSky.logger.info("Initializing Moon...");
-		moon.albedo=0.12 * settings.moonBrightnessMultiplier;
+		moon.albedo=0.12 * settings.propMoonBrightness.getDouble();
 		moon.a0=0.00257184;
 		moon.e0=0.0549006;
 		moon.I0=5.14;

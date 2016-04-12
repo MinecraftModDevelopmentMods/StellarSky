@@ -14,7 +14,7 @@ public class EndReplacer implements IWorldProviderReplacer {
 
 	@Override
 	public WorldProvider createWorldProvider(World world, WorldProvider originalProvider) {
-		return new StellarWorldProviderEnd(world, originalProvider);
+		return new StellarWorldProviderEnd(world, (WorldProviderEnd) originalProvider);
 	}
 
 }

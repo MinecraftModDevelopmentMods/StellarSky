@@ -44,4 +44,10 @@ public class HierarchicalConfig implements IConfigHandler {
 			entry.getValue().loadFromConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
 	}
 
+	@Override
+	public void saveToConfig(Configuration config, String category) {
+		for(Map.Entry<String, IConfigHandler> entry : subConfigs.entrySet())
+			entry.getValue().saveToConfig(config, category + Configuration.CATEGORY_SPLITTER + entry.getKey());
+	}
+
 }

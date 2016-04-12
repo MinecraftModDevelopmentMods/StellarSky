@@ -44,6 +44,13 @@ config.property.client.brcontrast.tooltip=Brightness Contrast determines the con
 config.property.client.lockbtnpos=Position of Lock Button
 config.property.client.lockbtnpos.tooltip=Position of sky lock button. Now there are upright and downleft.
 
+<<<<<<< HEAD
+=======
+///Optics
+config.category.optics=Optics
+config.category.optics.tooltip=Configuration for Optical settings.
+
+>>>>>>> refs/remotes/origin/master
 
 //Server Configs
 config.category.server=Server(Common) Configurations
@@ -67,6 +74,12 @@ config.property.server.dayoffset.tooltip=Day offset on world starting time. (Off
 config.property.server.tickoffset=Tick Offset
 config.property.server.tickoffset.tooltip=Tick offset on world starting time. (Offsets are added together)
 
+config.property.server.axialtilt=Axial Tilt
+config.property.server.axialtilt.tooltip=Axial tilt in degrees. Always 0.0 when Server Enabled is false.
+
+config.property.server.precession=Precession
+config.property.server.precession.tooltip=Precession in degrees per year.
+
 
 ///Solar System
 config.category.solarsystem=Solar System Configurations
@@ -79,6 +92,11 @@ config.property.server.moonbrightness=Brightness of Moon
 config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brightness is 1.0)
 
 
+///Milky Way
+config.category.milkyway=Milky Way Configurations
+config.category.milkyway.tooltip=Configurations for Milky Way.
+
+
 ///Dimension
 config.category.dimension=Dimension Settings
 config.category.dimension.tooltip=Configurations for Dimension Settings.
@@ -88,6 +106,9 @@ config.property.dimension.applied.tooltip=List of dimensions which will get appl
 
 config.property.dimension.patchprovider=Patch Provider
 config.property.dimension.patchprovider.tooltip=Determine whether or not patch provider. Cannot adjust longitude and latitude when this is false.
+
+config.property.dimension.skyrenderertype=Sky Renderer Type
+config.property.dimension.skyrenderertype.tooltip=Sky renderer type for this dimension. There are 'Overworld Sky' and 'End Sky' type by default.
 
 config.property.dimension.latitude=Latitude
 config.property.dimension.latitude.tooltip=Latitude on this world, in Degrees.
@@ -104,6 +125,17 @@ config.property.dimension.allowrefraction.tooltip=Determine whether or not apply
 config.property.dimension.sunlightmultiplier=Sunlight Multiplier
 config.property.dimension.sunlightmultiplier.tooltip=Relative amount of sunlight on the dimension. Setting this to 0.0 will make the world very dark.
 
+<<<<<<< HEAD
+=======
+config.property.dimension.skydispersionrate=Sky Dispersion Rate
+config.property.dimension.skydispersionrate.tooltip=Relative strength of sky dispersion on the dimension. The effect is similar with sunlight multiplier on client, but usually don't affect the server(light level), e.g. do not spawn mobs on day even if set to 0.0 which makes sky seems night.
+
+////Dimension Resources
+config.category.dimension.perdimresource=Per Dimension Resources
+config.category.dimension.perdimresource.tooltip=Configuration on resources which are unique to this dimension.
+
+config.property.dimension.perdimresource.tooltip=If this is not set to 'default', the resource will be replaced by the resource on the described location. Note that resource location is form of '(modid):(actual location)'.
+>>>>>>> refs/remotes/origin/master
 
 
 ///Wake

@@ -4,26 +4,25 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
+import stellarium.StellarSkyResources;
+import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
-import stellarium.stellars.layer.ICelestialObjectRenderer;
 import stellarium.util.math.VecMath;
 
 public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayCache> {
-	
-	private static final ResourceLocation locationMilkywayPng = new ResourceLocation("stellarium", "stellar/milkyway.png");
 
 	@Override
 	public void render(StellarRenderInfo info, MilkywayCache cache) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, info.weathereff);
-		
-		info.mc.renderEngine.bindTexture(locationMilkywayPng);
+
+		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceMilkyway.getLocationFor(info.mc.theWorld));
 		
 		info.worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
 		float Mag = 3.5f;
 		float alpha=Optics.getAlphaForGalaxy(Mag, info.bglight) - (((1-info.weathereff)/1)*20f);
+
 		GlStateManager.color(1.0f, 1.0f, 1.0f, cache.brightness * alpha);
 
 		for(int longc=0; longc<cache.longn; longc++){

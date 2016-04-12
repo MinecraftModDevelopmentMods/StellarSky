@@ -2,6 +2,7 @@ package stellarium.stellars;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import sciapi.api.value.euclidian.EVector;
@@ -11,22 +12,21 @@ import stellarium.util.math.SpCoord;
 import stellarium.util.math.Spmath;
 
 public class StellarSkyProvider implements ISkyProvider {
-	
 	private static final int DEFAULT_OFFSET = 1000;
 
 	private World world;
 	private WorldProvider parProvider;
 	private StellarManager manager;
 	private StellarDimensionManager dimManager;
-	
-	public StellarSkyProvider(World world, WorldProvider provider, StellarManager manager,
-			StellarDimensionManager dimManager) {
+
+	public StellarSkyProvider(World world, WorldProvider originalProvider,
+			StellarManager manager, StellarDimensionManager dimManager) {
 		this.world = world;
-		this.parProvider = provider;
+		this.parProvider = originalProvider;
 		this.manager = manager;
 		this.dimManager = dimManager;
 	}
-
+	
 	@Override
 	public double getDayLength() {
 		return manager.getSettings().day;
@@ -143,12 +143,12 @@ public class StellarSkyProvider implements ISkyProvider {
 
 	@Override
 	public float calculateSunlightFactor(float partialTicks) {
-		return (float) ((2.0*this.calculateSunHeight(partialTicks)+0.5)*dimManager.getSettings().sunlightMultiplier);
+		return (float) ((2.0*this.calculateSunHeight(partialTicks)+0.5)*dimManager.getSettings().getSunlightMultiplier());
 	}
 
 	@Override
 	public float calculateSunriseSunsetFactor(float partialTicks) {
-		return (float) Math.sqrt(dimManager.getSettings().sunlightMultiplier);
+		return (float) Math.sqrt(dimManager.getSettings().getSunlightMultiplier());
 	}
 
 	@Override
@@ -166,4 +166,14 @@ public class StellarSkyProvider implements ISkyProvider {
 		return (float) dimManager.moonFactors[1];
 	}
 
+	@Override
+	public float calculateDispersionFactor(float partialTicks) {
+		return (float) dimManager.getSettings().getSkyDispersionRate();
+	}
+
+	
+	@Override
+	public ResourceLocation getPerDimensionResourceLocation(String resourceId) {
+		return dimManager.getSettings().resourceSettings.getResourceLocationForId(resourceId);
+	}
 }
