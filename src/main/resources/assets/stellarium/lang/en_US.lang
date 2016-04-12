@@ -116,6 +116,9 @@ config.property.dimension.allowrefraction.tooltip=Determine whether or not apply
 config.property.dimension.sunlightmultiplier=Sunlight Multiplier
 config.property.dimension.sunlightmultiplier.tooltip=Relative amount of sunlight on the dimension. Setting this to 0.0 will make the world very dark.
 
+config.property.dimension.skydispersionmultiplier=Sky Dispersion Multiplier
+config.property.dimension.skydispersionmultiplier.tooltip=Relative strength of sky dispersion on the dimension. The effect is similar with sunlight multiplier on client, but usually don't affect the server(light level), e.g. do not spawn mobs on day even if set to 0.0 which makes sky seems night.
+
 
 ///Wake
 config.category.server.wake=Wake Settings

@@ -166,4 +166,9 @@ public class StellarSkyProvider implements ISkyProvider {
 		return (float) dimManager.moonFactors[1];
 	}
 
+	@Override
+	public float calculateDispersionFactor(float partialTicks) {
+		return (float) dimManager.getSettings().skyDispersionMultiplier;
+	}
+
 }

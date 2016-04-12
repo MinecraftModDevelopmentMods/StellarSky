@@ -87,7 +87,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
 	
 	@Override
 	public float getSunBrightnessFactor(float par1) {
-        float f1 = 1.0F - (this.calculateSunlightFactor(par1));
+        float f1 = 1.0F - this.calculateSunlightFactor(par1);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;
         f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
@@ -154,7 +154,9 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
             this.colorsSunriseSunset[3] = f6;
             
             for(int i = 0; i < 4; i++)
-            	this.colorsSunriseSunset[i] = this.colorsSunriseSunset[i] * skyProvider.calculateSunriseSunsetFactor(p_76560_2_);
+            	this.colorsSunriseSunset[i] = this.colorsSunriseSunset[i]
+            			* skyProvider.calculateSunriseSunsetFactor(p_76560_2_)
+            			* skyProvider.calculateDispersionFactor(p_76560_2_);
             
             return this.colorsSunriseSunset;
         }
@@ -171,7 +173,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @Override
     public Vec3 getFogColor(float p_76562_1_, float p_76562_2_)
     {
-        float f2 = this.calculateSunlightFactor(p_76562_2_);
+        float f2 = this.calculateSunlightFactor(p_76562_2_) * skyProvider.calculateDispersionFactor(p_76562_2_);
 
         if (f2 < 0.0F)
         {
@@ -382,7 +384,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @SideOnly(Side.CLIENT)
     public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
     {
-        float f2 = this.calculateSunlightFactor(partialTicks);
+        float f2 = this.calculateSunlightFactor(partialTicks) * skyProvider.calculateDispersionFactor(partialTicks);
 
         if (f2 < 0.0F)
         {
@@ -450,7 +452,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @SideOnly(Side.CLIENT)
     public Vec3 drawClouds(float partialTicks)
     {
-        float f2 = this.calculateSunlightFactor(partialTicks);
+        float f2 = this.calculateSunlightFactor(partialTicks) * skyProvider.calculateDispersionFactor(partialTicks);
 
         if (f2 < 0.0F)
         {

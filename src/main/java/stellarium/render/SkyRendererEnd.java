@@ -72,7 +72,6 @@ public class SkyRendererEnd extends IRenderHandler {
         }
         
         GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         
         GL11.glPushMatrix();
         GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);

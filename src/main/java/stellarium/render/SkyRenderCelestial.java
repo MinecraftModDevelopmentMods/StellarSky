@@ -1,5 +1,7 @@
 package stellarium.render;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.World;
@@ -28,6 +30,8 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 	}
 	
 	public void renderCelestial(Minecraft mc, float bglight, float weathereff, float partialTicks) {
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		
 		CelestialManager manager = StellarSky.proxy.getClientCelestialManager();
 
 		if(settings.checkDirty())

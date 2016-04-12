@@ -98,6 +98,13 @@ public interface ISkyProvider {
 	public float calculateSunriseSunsetFactor(float partialTicks);
 	
 	/**
+	 * Gets dispersion factor. (brightness of sky itself, not ground light level) <p>
+	 * Basically for WorldProvider. <p>
+	 * @param partialTicks the partial tick
+	 * */
+	public float calculateDispersionFactor(float partialTicks);
+	
+	/**
 	 * Gets current moon phase. <p>
 	 * Basically for WorldProvider. <p>
 	 * @param worldTime the current World Time. If it isn't, this method will give undefined result.
