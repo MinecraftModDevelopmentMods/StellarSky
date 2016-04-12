@@ -3,6 +3,7 @@ package stellarium.stellars.milkyway;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.util.ResourceLocation;
+import stellarium.api.PerDimensionResource;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
@@ -10,13 +11,14 @@ import stellarium.util.math.VecMath;
 
 public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayCache> {
 	
-	private static final ResourceLocation locationMilkywayPng = new ResourceLocation("stellarium", "stellar/milkyway.png");
+	private static final PerDimensionResource resourceMilkyway =
+			new PerDimensionResource("Milkyway", new ResourceLocation("stellarium", "stellar/milkyway.png"));
 
 	@Override
 	public void render(StellarRenderInfo info, MilkywayCache cache) {
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, info.weathereff);
 
-		info.mc.renderEngine.bindTexture(locationMilkywayPng);
+		info.mc.renderEngine.bindTexture(resourceMilkyway.getLocationFor(info.mc.theWorld));
 		info.tessellator.startDrawingQuads();
 		
 		float Mag = 3.5f;
