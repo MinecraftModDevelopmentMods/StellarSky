@@ -119,7 +119,7 @@ public class StellarEventHook {
 
 		if(event.result == null || event.result == EnumStatus.OK || event.result == EnumStatus.NOT_POSSIBLE_NOW) {
 			World worldObj = event.entityPlayer.worldObj;
-			if (!StellarSky.proxy.wakeManager.canSkipTime(worldObj, StellarSkyAPI.getSkyProvider(worldObj), worldObj.getWorldTime()))
+			if (StellarSkyAPI.hasSkyProvider(worldObj) && !StellarSky.proxy.wakeManager.canSkipTime(worldObj, StellarSkyAPI.getSkyProvider(worldObj), worldObj.getWorldTime()))
 				event.result = EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW;
 		}
 	}

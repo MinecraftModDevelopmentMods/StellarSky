@@ -72,7 +72,7 @@ public class StellarTickHandler {
 					dimManager.update(e.world, e.world.getWorldTime());
 				
 				StellarManager manager = StellarManager.getManager(false);
-				if(!manager.getSettings().serverEnabled)
+				if(!StellarSkyAPI.hasSkyProvider(e.world))
 					return;
 				
 				if(StellarSky.proxy.wakeManager.isEnabled()) {

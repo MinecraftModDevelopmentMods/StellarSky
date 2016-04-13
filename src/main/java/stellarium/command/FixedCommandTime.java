@@ -94,6 +94,10 @@ public class FixedCommandTime extends CommandTime {
     }
 	
 	public long getModifiedTimeByAngle(World world, double angle) {
+		if(!StellarSkyAPI.hasSkyProvider(world)) {
+			return (long) (angle / 180.0 * 24000);
+		}
+		
 		long time = world.getWorldTime();
     	ISkyProvider skyProvider = StellarSkyAPI.getSkyProvider(world);
     	double wakeDayOffset = skyProvider.dayOffsetUntilSunReach(angle);
@@ -108,6 +112,10 @@ public class FixedCommandTime extends CommandTime {
 	}
 	
 	public long getModifiedTimeByOffset(World world, double timeOffset) {
+		if(!StellarSkyAPI.hasSkyProvider(world)) {
+			return (long) (timeOffset * 24000);
+		}
+		
 		long time = world.getWorldTime();
     	ISkyProvider skyProvider = StellarSkyAPI.getSkyProvider(world);
     	double wakeDayOffset = timeOffset;
@@ -119,5 +127,21 @@ public class FixedCommandTime extends CommandTime {
     		modifiedWorldTime += dayLength;
     	
     	return (long) modifiedWorldTime;
+	}
+	
+	public int getDay(World world) {
+		if(StellarSkyAPI.hasSkyProvider(world)) {
+			ISkyProvider skyProvider = StellarSkyAPI.getSkyProvider(world);
+			return (int)Math.floor(skyProvider.getYearlyOffset() * skyProvider.getYearLength());
+		}
+		else return (int) ((world.getWorldTime() / 24000L) % (Integer.MAX_VALUE + 1));
+	}
+	
+	public int getTimeInDay(World world) {
+		if(StellarSkyAPI.hasSkyProvider(world)) {
+			ISkyProvider skyProvider = StellarSkyAPI.getSkyProvider(world);
+			return (int)Math.floor(skyProvider.getDaytimeOffset() * skyProvider.getYearLength());
+		}
+		else return (int) (world.getWorldTime() % 24000L);
 	}
 }
