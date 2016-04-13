@@ -453,7 +453,8 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
     }
     
     public float getMixedBrightnessOnBlock(int i, int j, int k) {
-    	return (((worldObj.getBlock(i, j, k).getMixedBrightnessForBlock(this.worldObj, i, j, k) & 0xff))>>4) * 0.005f;
+    	BlockPos pos = new BlockPos(i, j, k);
+    	return (((worldObj.getBlockState(pos).getBlock().getMixedBrightnessForBlock(this.worldObj, pos) & 0xff))>>4) * 0.005f;
     }
 
     @Override
