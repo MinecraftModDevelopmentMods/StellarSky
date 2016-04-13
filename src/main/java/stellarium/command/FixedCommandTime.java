@@ -74,6 +74,10 @@ public class FixedCommandTime extends CommandTime {
     }
 	
 	public long getModifiedTimeByAngle(World world, double angle) {
+		if(!StellarSkyAPI.hasSkyProvider(world)) {
+			return (long) (angle / 180.0 * 24000);
+		}
+		
 		long time = world.getWorldTime();
     	ISkyProvider skyProvider = StellarSkyAPI.getSkyProvider(world);
     	double wakeDayOffset = skyProvider.dayOffsetUntilSunReach(angle);
@@ -88,6 +92,10 @@ public class FixedCommandTime extends CommandTime {
 	}
 	
 	public long getModifiedTimeByOffset(World world, double timeOffset) {
+		if(!StellarSkyAPI.hasSkyProvider(world)) {
+			return (long) (timeOffset * 24000);
+		}
+		
 		long time = world.getWorldTime();
     	ISkyProvider skyProvider = StellarSkyAPI.getSkyProvider(world);
     	double wakeDayOffset = timeOffset;
