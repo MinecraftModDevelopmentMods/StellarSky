@@ -173,6 +173,11 @@ public class StellarSkyProvider implements ISkyProvider {
 
 	
 	@Override
+	public float calculateLightPollutionFactor(float partialTicks) {
+		return (float) dimManager.getSettings().getLightPollutionRate();
+	}
+
+	@Override
 	public ResourceLocation getPerDimensionResourceLocation(String resourceId) {
 		return dimManager.getSettings().resourceSettings.getResourceLocationForId(resourceId);
 	}

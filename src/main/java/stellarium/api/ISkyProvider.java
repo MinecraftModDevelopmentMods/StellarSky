@@ -109,7 +109,13 @@ public interface ISkyProvider {
 	public float calculateDispersionFactor(float partialTicks);
 	
 	/**
->>>>>>> refs/remotes/origin/master
+	 * Gets light pollution factor.
+	 * Basically for WorldProvider. <p>
+	 * @param partialTicks the partial tick
+	 * */
+	public float calculateLightPollutionFactor(float partialTicks);
+	
+	/**
 	 * Gets current moon phase. <p>
 	 * Basically for WorldProvider. <p>
 	 * @param worldTime the current World Time. If it isn't, this method will give undefined result.
