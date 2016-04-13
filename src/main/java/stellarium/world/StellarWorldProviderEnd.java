@@ -377,6 +377,9 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
         int i = MathHelper.floor_double(cameraEntity.posX);
         int j = MathHelper.floor_double(cameraEntity.posY);
         int k = MathHelper.floor_double(cameraEntity.posZ);
+        
+        f2 += this.getMixedBrightnessOn(cameraEntity.posX, cameraEntity.posY, cameraEntity.posZ, i, j, k)
+        		* skyProvider.calculateDispersionFactor(partialTicks) * skyProvider.calculateLightPollutionFactor(partialTicks);
         int l = ForgeHooksClient.getSkyBlendColour(this.worldObj, i, j, k);
         float f4 = (float)(l >> 16 & 255) / 255.0F;
         float f5 = (float)(l >> 8 & 255) / 255.0F;
@@ -424,6 +427,21 @@ public class StellarWorldProviderEnd extends WorldProviderEnd implements IStella
         }
 
         return Vec3.createVectorHelper((double)f4, (double)f5, (double)f6);
+    }
+    
+    public float getMixedBrightnessOn(double posX, double posY, double posZ, int i, int j, int k) {
+    	double f2 = 0;
+        f2 += (posX-i)* this.getMixedBrightnessOnBlock(i+1, j, k);
+        f2 += (i+1-posX)* this.getMixedBrightnessOnBlock(i+1, j, k);
+        f2 += (posY-j)* this.getMixedBrightnessOnBlock(i, j+1, k);
+        f2 += (j+1-posY)* this.getMixedBrightnessOnBlock(i, j+1, k);
+        f2 += (posZ-k)* this.getMixedBrightnessOnBlock(i, j, k+1);
+        f2 += (k+1-posZ)* this.getMixedBrightnessOnBlock(i, j, k+1);
+        return (float)f2 * 0.33f;
+    }
+    
+    public float getMixedBrightnessOnBlock(int i, int j, int k) {
+    	return (((worldObj.getBlock(i, j, k).getMixedBrightnessForBlock(this.worldObj, i, j, k) & 0xff))>>4) * 0.005f;
     }
 
     @Override
