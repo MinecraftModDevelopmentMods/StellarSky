@@ -1,7 +1,7 @@
 package stellarium.api;
 
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 public class PerDimensionResource {
 	private String textureId;
@@ -16,7 +16,7 @@ public class PerDimensionResource {
 		return this.textureId;
 	}
 	
-	public ResourceLocation getLocationFor(WorldClient world) {
+	public ResourceLocation getLocationFor(World world) {
 		ResourceLocation location = null;
 		if(StellarSkyAPI.hasSkyProvider(world))
 			location = StellarSkyAPI.getSkyProvider(world).getPerDimensionResourceLocation(this.textureId);
