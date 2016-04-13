@@ -391,6 +391,9 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
         int i = MathHelper.floor_double(cameraEntity.posX);
         int j = MathHelper.floor_double(cameraEntity.posY);
         int k = MathHelper.floor_double(cameraEntity.posZ);
+        
+        f1 += this.getMixedBrightnessOn(cameraEntity.posX, cameraEntity.posY, cameraEntity.posZ, i, j, k)
+        		* skyProvider.calculateDispersionFactor(partialTicks) * skyProvider.calculateLightPollutionFactor(partialTicks);
         BlockPos blockpos = new BlockPos(i, j, k);
         int l = net.minecraftforge.client.ForgeHooksClient.getSkyBlendColour(this.worldObj, blockpos);
         float f3 = (float)(l >> 16 & 255) / 255.0F;
@@ -437,6 +440,22 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
         }
 
         return new Vec3d((double)f3, (double)f4, (double)f5);
+    }
+    
+    public float getMixedBrightnessOn(double posX, double posY, double posZ, int i, int j, int k) {
+    	double f2 = 0;
+        f2 += (posX-i)* this.getMixedBrightnessOnBlock(i+1, j, k);
+        f2 += (i+1-posX)* this.getMixedBrightnessOnBlock(i+1, j, k);
+        f2 += (posY-j)* this.getMixedBrightnessOnBlock(i, j+1, k);
+        f2 += (j+1-posY)* this.getMixedBrightnessOnBlock(i, j+1, k);
+        f2 += (posZ-k)* this.getMixedBrightnessOnBlock(i, j, k+1);
+        f2 += (k+1-posZ)* this.getMixedBrightnessOnBlock(i, j, k+1);
+        return (float)f2 * 0.33f;
+    }
+    
+    public float getMixedBrightnessOnBlock(int i, int j, int k) {
+    	BlockPos pos = new BlockPos(i, j, k);
+    	return (((worldObj.getCombinedLight(pos, 0) & 0xff))>>4) * 0.005f;
     }
 
     @Override

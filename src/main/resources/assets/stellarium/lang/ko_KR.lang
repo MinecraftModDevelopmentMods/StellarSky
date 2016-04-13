@@ -135,6 +135,9 @@ config.property.dimension.sunlightmultiplier.tooltip=이 월드에서의 태양�
 config.property.dimension.skydispersionrate=하늘 산란의 정도
 config.property.dimension.skydispersionrate.tooltip=이 월드에서 나타나는 하늘 산란의 정도입니다. 태양빛의 상대적 밝기와 클라이언트에선 유사한 효과를 갖지만, 서버(특히 빛 레벨)에선 보통 효과를 갖지 않으며, 예를 들어 이를 0.0으로 설정하면 낮이 매우 어둡지만 몹이 스폰되지 않습니다.
 
+config.property.dimension.lightpollutionrate=광공해의 정도
+config.property.dimension.lightpollutionrate.tooltip=상대적인 광공해의 정도로서, 하늘의 색깔과 별/은하수가 보이는지 여부에만 영향을 줍니다.
+
 ////Dimension Resources
 config.category.dimension.perdimresource=월드별 리소스 컨피그
 config.category.dimension.perdimresource.tooltip=각각의 월드에 고유한 리소스를 부여할 수 있는 컨피그입니다.

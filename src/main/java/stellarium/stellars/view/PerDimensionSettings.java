@@ -21,6 +21,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	private ConfigPropertyBoolean propAllowRefraction;
 	private ConfigPropertyDouble propSunlightMultiplier;
 	private ConfigPropertyDouble propSkyDispersionRate;
+	private ConfigPropertyDouble propLightPollutionRate;
 	private ConfigPropertyString propRenderType;
 	
 	public PerDimensionResourceSettings resourceSettings;
@@ -39,6 +40,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		this.propAllowRefraction = new ConfigPropertyBoolean("Allow_Atmospheric_Refraction", "allowRefraction", !dimensionName.equals("The End"));
        	this.propSunlightMultiplier = new ConfigPropertyDouble("SunLight_Multiplier", "sunlightMultiplier", 1.0);
        	this.propSkyDispersionRate = new ConfigPropertyDouble("Sky_Dispersion_Rate", "skyDispersionRate", 1.0);
+       	this.propLightPollutionRate = new ConfigPropertyDouble("Light_Pollution_Rate", "lightPollutionRate", 1.0);
        	
        	this.addConfigProperty(this.propPatchProvider);
        	this.addConfigProperty(this.propRenderType);
@@ -48,6 +50,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	this.addConfigProperty(this.propAllowRefraction);
        	this.addConfigProperty(this.propSunlightMultiplier);
        	this.addConfigProperty(this.propSkyDispersionRate);
+       	this.addConfigProperty(this.propLightPollutionRate);
        	
        	this.putSubConfig("ResourceSettings", this.resourceSettings = new PerDimensionResourceSettings());
 	}
@@ -95,6 +98,11 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
         		+ "The effect is similar with sunlight multiplier on client, but usually don't affect the server, e.g. do not spawn mobs.");
         propSkyDispersionRate.setRequiresWorldRestart(true);
         propSkyDispersionRate.setLanguageKey("config.property.dimension.skydispersionrate");
+	
+        propLightPollutionRate.setComment("Relative strength of light pollution on the dimension.\n"
+        		+ "Only affects the sky color and visibility of stars/milky way.");
+        propLightPollutionRate.setRequiresWorldRestart(true);
+        propLightPollutionRate.setLanguageKey("config.property.dimension.lightpollutionrate");
 	}
 
 	@Override
@@ -140,6 +148,10 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	public double getSkyDispersionRate() {
 		return propSkyDispersionRate.getDouble();
+	}
+	
+	public double getLightPollutionRate() {
+		return propLightPollutionRate.getDouble();
 	}
 	
 	public String getSkyRendererType() {
