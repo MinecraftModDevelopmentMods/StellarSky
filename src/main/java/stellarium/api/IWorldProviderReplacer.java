@@ -21,7 +21,8 @@ public interface IWorldProviderReplacer {
 	 * Should not return invalid WorldProvider when {@link #accept(World, WorldProvider)} is <code>true</code>.
 	 * @param world the world to replace the provider
 	 * @param originalProvider original provider to be replaced
+	 * @param celestialhelper the celestial helper for the provider
 	 * @return the provider which will replace original provider
 	 * */
-	public WorldProvider createWorldProvider(World world, WorldProvider originalProvider);
+	public WorldProvider createWorldProvider(World world, WorldProvider originalProvider, ICelestialHelper helper);
 }

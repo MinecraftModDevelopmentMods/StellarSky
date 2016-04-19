@@ -2,17 +2,20 @@ package stellarium.stellars.system;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import sciapi.api.value.euclidian.EVector;
+import stellarapi.api.celestials.EnumCelestialCollectionType;
+import stellarapi.api.celestials.ICelestialObject;
+import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
 import stellarium.render.CelestialRenderingRegistry;
-import stellarium.stellars.layer.ICelestialLayerCommon;
+import stellarium.stellars.layer.ICelestialLayer;
 
-public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettings, SolarSystemClientSettings> {
+public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, SolarSystemClientSettings> {
 	
 	private static int renderId = -1;
 	protected static int planetRenderId = -1;
@@ -36,7 +39,7 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 	protected List<SolarObject> objects = Lists.newArrayList();
 	
 	@Override
-	public void initialize(boolean isRemote, SolarSystemClientSettings config) throws IOException { }
+	public void initializeClient(boolean isRemote, SolarSystemClientSettings config) throws IOException { }
 
 	@Override
 	public void initializeCommon(boolean isRemote, SolarSystemSettings settings) throws IOException {		
@@ -309,27 +312,43 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 	}
 
 	@Override
-	public boolean provideSun() {
-		return true;
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public EVector getSunEcRPos() {
-		return sun.earthPos;
+	public Set<ICelestialObject> getObjects() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public boolean provideMoon() {
-		return true;
+	public Set<ICelestialObject> getObjectInRange(SpCoord pos, double radius) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public EVector getMoonEcRPos() {
-		return moon.earthPos;
+	public ICelestialObject getNearerObject(SpCoord pos, ICelestialObject obj1, ICelestialObject obj2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public double[] getMoonFactors() {
-		return new double[] {moon.getPeriod(), moon.getPhase(), moon.phase_Time()};
+	public int searchOrder() {
+		return 0;
+	}
+
+	@Override
+	public boolean isBackground() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public EnumCelestialCollectionType getCollectionType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

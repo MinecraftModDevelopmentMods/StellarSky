@@ -1,17 +1,15 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.util.BOp;
+import javax.vecmath.Vector3d;
+
 import stellarium.stellars.layer.CelestialObject;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
+import stellarium.util.math.StellarMath;
 
 public abstract class SolarObject extends CelestialObject {
 	
-	protected EVector relativePos = new EVector(3);
-	protected EVector sunPos = new EVector(3);
-	protected EVector earthPos = new EVector(3);
+	protected Vector3d relativePos = new Vector3d();
+	protected Vector3d sunPos = new Vector3d();
+	protected Vector3d earthPos = new Vector3d();
 	
 	/**Magnitude from earth without atmosphere*/
 	protected double currentMag;
@@ -43,13 +41,19 @@ public abstract class SolarObject extends CelestialObject {
 	
 	public void initialize() { }
 	
-	public IValRef<EVector> positionTo(SolarObject object) {
+	public Vector3d positionTo(SolarObject object) {
 		if(this == object)
-			return new EVector(0.0, 0.0, 0.0);
+			return new Vector3d(0.0, 0.0, 0.0);
 		try {
-			if(object.level < this.level)
-				return VecMath.add(this.relativePos, parent.positionTo(object));
-			else return VecMath.sub(this.positionTo(object.parent), object.relativePos);
+			if(object.level < this.level) {
+				Vector3d vector = parent.positionTo(object);
+				vector.add(this.relativePos);
+				return vector;
+			} else {
+				Vector3d vector = this.positionTo(object.parent);
+				vector.sub(object.relativePos);
+				return vector;
+			}
 		} catch(NullPointerException exception) {
 			throw new IllegalArgumentException(String.format(
 					"Tried to compare position between non-related objects: %s and %s!",
@@ -74,20 +78,19 @@ public abstract class SolarObject extends CelestialObject {
 			this.updateMagnitude(earth.sunPos);
 	}
 	
-	protected void updateMagnitude(EVector earthFromSun){
-		double dist=Spmath.getD(VecMath.size(this.earthPos));
-		double distS=Spmath.getD(VecMath.size(this.sunPos));
-		double distE=Spmath.getD(VecMath.size(earthFromSun));
+	protected void updateMagnitude(Vector3d earthFromSun){
+		double dist=this.earthPos.length();
+		double distS=this.sunPos.length();
+		double distE=earthFromSun.length();
 		double LvsSun=this.radius*this.radius*this.getPhase()*distE*distE*this.albedo*1.4/(dist*dist*distS*distS);
 		this.currentMag=-26.74-2.5*Math.log10(LvsSun);
 	}
 	
 	public double getPhase(){
-		return (1+Spmath.getD((BOp.div(VecMath.dot(this.sunPos, this.earthPos),
-				BOp.mult(VecMath.size(this.sunPos),VecMath.size(this.earthPos))))))/2;
+		return (1+sunPos.dot(this.earthPos)/(sunPos.length()*this.earthPos.length()))/2;
 	}
 	
-	public abstract EVector getRelativePos(double year);
+	public abstract Vector3d getRelativePos(double year);
 
 
 }

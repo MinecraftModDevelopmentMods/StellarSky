@@ -1,7 +1,8 @@
 package stellarium;
 
 import net.minecraft.util.ResourceLocation;
-import stellarium.api.PerDimensionResource;
+import stellarapi.api.perdimres.PerDimensionResource;
+import stellarapi.feature.perdimres.PerDimensionResourceRegistry;
 import stellarium.api.StellarSkyAPI;
 
 public class StellarSkyResources {
@@ -29,12 +30,12 @@ public class StellarSkyResources {
 			new PerDimensionResource("Planet_Small", new ResourceLocation("stellarium", "stellar/star.png"));
 	
 	public static void init() {
-		StellarSkyAPI.registerPerDimensionResource(resourceEndSky.getTextureId());
-		StellarSkyAPI.registerPerDimensionResource(resourceMilkyway.getTextureId());
-		StellarSkyAPI.registerPerDimensionResource(resourceStar.getTextureId());
-		StellarSkyAPI.registerPerDimensionResource(resourceSunHalo.getTextureId());
-		StellarSkyAPI.registerPerDimensionResource(resourceMoonSurface.getTextureId());
-		StellarSkyAPI.registerPerDimensionResource(resourceMoonHalo.getTextureId());
-		StellarSkyAPI.registerPerDimensionResource(resourcePlanetSmall.getTextureId());
+		PerDimensionResourceRegistry.getInstance().registerResourceId("End_Sky");
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Milkyway");
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Star");
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Sun_Halo");
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Surface");
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Halo");
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Planet_Small");
 	}
 }

@@ -1,17 +1,11 @@
 package stellarium.client;
 
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Lists;
-
 import net.minecraftforge.common.config.Configuration;
+import stellarapi.api.lib.config.SimpleHierarchicalConfig;
+import stellarapi.api.lib.config.property.ConfigPropertyDouble;
+import stellarapi.api.lib.config.property.ConfigPropertyInteger;
+import stellarapi.api.lib.config.property.ConfigPropertyString;
 import stellarium.StellarSky;
-import stellarium.config.IConfigHandler;
-import stellarium.config.SimpleHierarchicalConfig;
-import stellarium.config.property.ConfigPropertyDouble;
-import stellarium.config.property.ConfigPropertyInteger;
-import stellarium.config.property.ConfigPropertyString;
 import stellarium.stellars.layer.CelestialLayerRegistry;
 
 public class ClientSettings extends SimpleHierarchicalConfig {

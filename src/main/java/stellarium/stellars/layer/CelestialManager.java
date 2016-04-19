@@ -1,21 +1,22 @@
 package stellarium.stellars.layer;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
-import sciapi.api.value.euclidian.EVector;
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.lib.config.IConfigHandler;
+import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
 import stellarium.common.CommonSettings;
-import stellarium.config.IConfigHandler;
-import stellarium.stellars.view.IStellarViewpoint;
+import stellarium.stellars.view.IStellarSkySet;
 
 public class CelestialManager {
 	
-	private List<ICelestialLayerCommon> commonLayers = Lists.newArrayList();
 	private List<ICelestialLayer> layers = Lists.newArrayList();
 	private boolean isRemote;
 	
@@ -24,11 +25,7 @@ public class CelestialManager {
 		
 		CelestialLayerRegistry registry = CelestialLayerRegistry.getInstance();
 		
-		if(isRemote)
-			registry.composeClientLayer(this.layers, true);
-		registry.composeCommonLayer(this.commonLayers, false);
-		
-		layers.addAll(this.commonLayers);
+		registry.composeCommonLayer(this.layers);
 	}
 	
 	public List<ICelestialLayer> getLayers() {
@@ -41,7 +38,7 @@ public class CelestialManager {
 		try {
 			for(ICelestialLayer layer : this.layers) {
 				layerName = CelestialLayerRegistry.getInstance().getConfigName(layer);
-				layer.initialize(true, layerName != null? settings.getSubConfig(layerName) : null);
+				layer.initializeClient(true, layerName != null? settings.getSubConfig(layerName) : null);
 			}
 		} catch(Exception exception) {
 	    	StellarSky.logger.fatal("Failed to initialize Celestial Layer %s by Exception %s",
@@ -55,9 +52,9 @@ public class CelestialManager {
 		StellarSky.logger.info("Initializing Celestial Layers with Common Settings...");
 		String layerName = null;
 		try {
-			for(ICelestialLayerCommon layer : this.commonLayers) {
+			for(ICelestialLayer layer : this.layers) {
 				layerName = CelestialLayerRegistry.getInstance().getConfigName(layer);
-				layer.initializeCommon(true, layerName != null? settings.getSubConfig(layerName) : null);
+				layer.initializeCommon(false, layerName != null? settings.getSubConfig(layerName) : null);
 			}
 		} catch(Exception exception) {
 	    	StellarSky.logger.fatal("Failed to initialize Celestial Layer %s by Exception %s",
@@ -70,7 +67,7 @@ public class CelestialManager {
 	public void reloadClientSettings(ClientSettings settings) {
 		StellarSky.logger.info("Reloading Client Settings...");
 		String layerName = null;
-		for(ICelestialLayer<? extends IConfigHandler> layer : this.layers)
+		for(ICelestialLayer<? extends INBTConfig, ? extends IConfigHandler> layer : this.layers)
 			for(CelestialObject object : layer.getObjectList())
 				if(object.getRenderId() != -1)
 				{
@@ -85,41 +82,18 @@ public class CelestialManager {
 			layer.updateLayer(year);
 	}
 	
-	public void updateClient(ClientSettings settings, IStellarViewpoint viewpoint) {
+	public void updateClient(ClientSettings settings,
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
 		String layerName = null;
 		
-		for(ICelestialLayer<? extends IConfigHandler> layer : this.layers)
+		for(ICelestialLayer<? extends INBTConfig, ? extends IConfigHandler> layer : this.layers)
 			for(CelestialObject object : layer.getObjectList()) {
 				if(object.getRenderId() != -1) {
 					layerName = CelestialLayerRegistry.getInstance().getConfigName(layer);
 					object.getRenderCache().updateCache(settings, layerName != null? settings.getSubConfig(layerName) : null,
-							object, viewpoint);
+							object, coordinate, sky, scope);
 				}
 			}
-	}
-	
-	public EVector getSunEcRPos() {
-		for(ICelestialLayerCommon layer : this.commonLayers)
-			if(layer.provideSun())
-				return layer.getSunEcRPos();
-		
-		return new EVector(3);
-	}
-	
-	public EVector getMoonEcRPos() {
-		for(ICelestialLayerCommon layer : this.commonLayers)
-			if(layer.provideMoon())
-				return layer.getMoonEcRPos();
-		
-		return new EVector(3);
-	}
-	
-	public double[] getMoonFactors() {
-		for(ICelestialLayerCommon layer : this.commonLayers)
-			if(layer.provideMoon())
-				return layer.getMoonFactors();
-		
-		return new double[3];
 	}
 
 }

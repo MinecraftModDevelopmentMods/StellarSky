@@ -1,30 +1,30 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.euclidian.EVector;
+import javax.vecmath.Vector3d;
+
+import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSkyResources;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
-import stellarium.util.math.SpCoord;
-import stellarium.util.math.VecMath;
 
 public class SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 	
 	@Override
 	public void render(StellarRenderInfo info, SunRenderCache cache) {
-		EVector pos = cache.appCoord.getVec();
-		EVector dif = new SpCoord(cache.appCoord.x+90, 0.0).getVec();
-		EVector dif2 = new SpCoord(cache.appCoord.x, cache.appCoord.y+90).getVec();
+		Vector3d pos = cache.appCoord.getVec();
+		Vector3d dif = new SpCoord(cache.appCoord.x+90, 0.0).getVec();
+		Vector3d dif2 = new SpCoord(cache.appCoord.x, cache.appCoord.y+90).getVec();
 
-		pos.set(VecMath.mult(99.0, pos));
-		dif.set(VecMath.mult(cache.size, dif));
-		dif2.set(VecMath.mult(-cache.size, dif2));
+		pos.scale(99.0);
+		dif.scale(cache.size);
+		dif2.scale(-cache.size);
 		
-		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceSunHalo.getLocationFor(info.mc.theWorld));
+		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceSunHalo.getLocation());
 		info.tessellator.startDrawingQuads();
-		info.tessellator.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif), VecMath.getY(pos)+VecMath.getY(dif), VecMath.getZ(pos)+VecMath.getZ(dif),0.0,0.0);
-		info.tessellator.addVertexWithUV(VecMath.getX(pos)+VecMath.getX(dif2), VecMath.getY(pos)+VecMath.getY(dif2), VecMath.getZ(pos)+VecMath.getZ(dif2),1.0,0.0);
-		info.tessellator.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif), VecMath.getY(pos)-VecMath.getY(dif), VecMath.getZ(pos)-VecMath.getZ(dif),1.0,1.0);
-		info.tessellator.addVertexWithUV(VecMath.getX(pos)-VecMath.getX(dif2), VecMath.getY(pos)-VecMath.getY(dif2), VecMath.getZ(pos)-VecMath.getZ(dif2),0.0,1.0);
+		info.tessellator.addVertexWithUV(pos.x+dif.x, pos.y+dif.y, pos.z+dif.z,0.0,0.0);
+		info.tessellator.addVertexWithUV(pos.x+dif2.x, pos.y+dif2.y, pos.z+dif2.z,1.0,0.0);
+		info.tessellator.addVertexWithUV(pos.x-dif.x, pos.y-dif.y, pos.z-dif.z,1.0,1.0);
+		info.tessellator.addVertexWithUV(pos.x-dif2.x, pos.y-dif2.y, pos.z-dif2.z,0.0,1.0);
 		info.tessellator.draw();
 	}
 

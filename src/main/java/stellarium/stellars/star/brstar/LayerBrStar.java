@@ -4,20 +4,25 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
+
+import javax.vecmath.AxisAngle4d;
+import javax.vecmath.Matrix3d;
+import javax.vecmath.Vector3d;
 
 import com.google.common.collect.Lists;
 
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.EVector;
+import cpw.mods.fml.relauncher.Side;
+import stellarapi.api.celestials.EnumCelestialCollectionType;
+import stellarapi.api.celestials.ICelestialObject;
+import stellarapi.api.lib.config.IConfigHandler;
+import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
-import stellarium.config.IConfigHandler;
-import stellarium.config.INBTConfig;
 import stellarium.stellars.layer.CelestialObject;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
-import stellarium.util.math.Rotate;
-import stellarium.util.math.SpCoord;
-import stellarium.util.math.Spmath;
+import stellarium.util.math.StellarMath;
 
 public class LayerBrStar extends LayerBgStar {
 	
@@ -27,7 +32,11 @@ public class LayerBrStar extends LayerBgStar {
 
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
-	public static final Rotate EqtoEc = new Rotate('X').setRAngle(-e); 
+	public static final Matrix3d EqtoEc = new Matrix3d();
+	
+	static {
+		EqtoEc.set(new AxisAngle4d(1.0, 0.0, 0.0, -e));
+	}
 
 	//Initialization check
 	private boolean IsInitialized=false;
@@ -44,7 +53,17 @@ public class LayerBrStar extends LayerBgStar {
 	}
 	
 	@Override
-	public void initialize(boolean isRemote, IConfigHandler config) throws IOException {
+	public void initializeClient(boolean isRemote, IConfigHandler config) throws IOException {
+		this.loadStarData(isRemote, StellarSky.proxy.getClientSettings().mag_Limit);
+	}
+
+	@Override
+	public void initializeCommon(boolean isRemote, INBTConfig config) throws IOException {
+		if(!this.IsInitialized)
+			this.loadStarData(isRemote, 6.0);
+	}
+	
+	private void loadStarData(boolean isRemote, double magLimit) throws IOException {
 		//Counter Variable
 		int i, j, k;
 		
@@ -77,28 +96,29 @@ public class LayerBrStar extends LayerBgStar {
 			if(star_value[103]==' ')
 				continue;
 			
-			double mag=Spmath.sgnize(star_value[102],
-					(float)Spmath.btoi(star_value, 103, 1)
-					+Spmath.btoi(star_value, 105, 2)*0.01f);
+			double mag=StellarMath.sgnize(star_value[102],
+					(float)StellarMath.btoi(star_value, 103, 1)
+					+StellarMath.btoi(star_value, 105, 2)*0.01f);
 
-			double B_V=Spmath.sgnize(star_value[109],
-					(float)Spmath.btoi(star_value, 110, 1)
-					+Spmath.btoi(star_value, 112, 2)*0.01f);
+			double B_V=StellarMath.sgnize(star_value[109],
+					(float)StellarMath.btoi(star_value, 110, 1)
+					+StellarMath.btoi(star_value, 112, 2)*0.01f);
 
 			//J2000
-			double RA=Spmath.btoi(star_value, 75, 2)*15.0f
-					+Spmath.btoi(star_value, 77, 2)/4.0f
-					+Spmath.btoi(star_value, 79, 2)/240.0f
-					+Spmath.btoi(star_value, 82, 1)/2400.0f;
+			double RA=StellarMath.btoi(star_value, 75, 2)*15.0f
+					+StellarMath.btoi(star_value, 77, 2)/4.0f
+					+StellarMath.btoi(star_value, 79, 2)/240.0f
+					+StellarMath.btoi(star_value, 82, 1)/2400.0f;
 
-			double Dec=Spmath.sgnize(star_value[83],
-					Spmath.btoi(star_value, 84, 2)
-					+Spmath.btoi(star_value, 86, 2)/60.0f
-					+Spmath.btoi(star_value, 88, 2)/3600.0f);
+			double Dec=StellarMath.sgnize(star_value[83],
+					StellarMath.btoi(star_value, 84, 2)
+					+StellarMath.btoi(star_value, 86, 2)/60.0f
+					+StellarMath.btoi(star_value, 88, 2)/3600.0f);
 
-			EVector pos = new EVector(3).set(EqtoEc.transform((IValRef)new SpCoord(RA, Dec).getVec()));
+			Vector3d pos = new SpCoord(RA, Dec).getVec();
+			EqtoEc.transform(pos);
 
-			if(mag > StellarSky.proxy.getClientSettings().mag_Limit)
+			if(mag > magLimit)
 				continue;
 			
 			star_value=null;
@@ -109,7 +129,46 @@ public class LayerBrStar extends LayerBgStar {
 	    str=null;
 	    
 	    StellarSky.logger.info("Bright Stars are Loaded!");
+	    
 	    IsInitialized=true;
+	}
+
+	@Override
+	public String getName() {
+		return "Bright Stars";
+	}
+
+	@Override
+	public Set<ICelestialObject> getObjects() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<ICelestialObject> getObjectInRange(SpCoord pos, double radius) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ICelestialObject getNearerObject(SpCoord pos, ICelestialObject obj1, ICelestialObject obj2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int searchOrder() {
+		return 1;
+	}
+
+	@Override
+	public boolean isBackground() {
+		return true;
+	}
+
+	@Override
+	public EnumCelestialCollectionType getCollectionType() {
+		return EnumCelestialCollectionType.Stars;
 	}
 
 }

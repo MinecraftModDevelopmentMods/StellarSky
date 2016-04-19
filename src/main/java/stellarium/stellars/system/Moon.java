@@ -1,15 +1,12 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.CrossUtil;
-import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.IEVector;
-import sciapi.api.value.util.BOp;
-import sciapi.api.value.util.VOp;
+import javax.vecmath.AxisAngle4d;
+import javax.vecmath.Matrix3d;
+import javax.vecmath.Vector3d;
+
+import stellarapi.api.lib.math.Spmath;
 import stellarium.render.IRenderCache;
-import stellarium.util.math.Rotate;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
+import stellarium.util.math.StellarMath;
 
 public class Moon extends SolarObject {
 	
@@ -28,15 +25,15 @@ public class Moon extends SolarObject {
 	
 	
 	//Moon's Pole(Ecliptic Coord)
-	EVector Pole;
+	Vector3d Pole;
 	
 	//Moon's Prime Meridian at first
-	EVector PrMer0 = new EVector(3);
+	Vector3d PrMer0 = new Vector3d();
 	
 	//Moon's East from Prime Meridian
-	EVector East = new EVector(3);
+	Vector3d East = new Vector3d();
 	
-	Rotate ri = new Rotate('X'), rom = new Rotate('Z'), rw = new Rotate('Z');
+	Matrix3d ri = new Matrix3d(), rom = new Matrix3d(), rw = new Matrix3d();
 
 
 	public Moon(boolean isRemote, SolarObject earth) {
@@ -46,20 +43,36 @@ public class Moon extends SolarObject {
 	@Override
 	public void initialize() {
 		super.initialize();
-		Pole=new EVector(0.0, 0.0, 1.0);
-		ri.setRAngle(-Spmath.Radians(I0));
-		rom.setRAngle(-Spmath.Radians(Omega0));
-		Pole.set((IValRef)rom.transform(ri.transform((IEVector)Pole)));
-		PrMer0.set(VecMath.normalize(VecMath.mult(-1.0, this.getRelativePos(0.0))));
-		East.set((IValRef)CrossUtil.cross((IEVector)Pole, (IEVector)PrMer0));
+		Pole = new Vector3d(0.0, 0.0, 1.0);
+		ri.set(new AxisAngle4d(1.0, 0.0, 0.0, - Spmath.Radians(I0)));
+		rom.set(new AxisAngle4d(0.0, 0.0, 1.0, -Spmath.Radians(Omega0)));
+		
+		ri.transform(this.Pole);
+		rom.transform(this.Pole);
+		
+		PrMer0 = this.getRelativePos(0.0);
+		PrMer0.scale(-1.0);
+		PrMer0.normalize();
+		East.cross(Pole, PrMer0);
 	}
 	
 	//Get Ecliptic Position Vector from Earth
-	public EVector getRelativePos(double yr){
+	public Vector3d getRelativePos(double yr){
 		this.updateOrbE(yr);
 		this.rotation = mean_mot * yr;
 		double M = this.M0 + this.rotation;
-		return Spmath.GetOrbVec(a, e, ri.setRAngle(-Spmath.Radians(I)), rw.setRAngle(-Spmath.Radians(w)), rom.setRAngle(-Spmath.Radians(Omega)), M);
+		
+		ri.set(new AxisAngle4d(1.0, 0.0, 0.0, -Spmath.Radians(I)));
+		rw.set(new AxisAngle4d(0.0, 0.0, 1.0, -Spmath.Radians(w)));
+		rom.set(new AxisAngle4d(0.0, 0.0, 1.0, -Spmath.Radians(Omega)));
+
+		Matrix3d matrix = new Matrix3d();
+		matrix.setIdentity();
+		matrix.mul(this.rom);
+		matrix.mul(this.ri);
+		matrix.mul(this.rw);
+		
+		return StellarMath.GetOrbVec(a, e, M, matrix);
 	}
 	
 	//Update Orbital Elements in time
@@ -75,7 +88,9 @@ public class Moon extends SolarObject {
 	
 	@Override
 	public void updateModulate() {
-		VecMath.sub(parent.relativePos, VecMath.mult(this.mass / parent.mass, this.relativePos));
+		Vector3d vec = new Vector3d(this.relativePos);
+		vec.scale(this.mass / parent.mass);
+		parent.relativePos.sub(vec);
 	}
 	
 	@Override
@@ -89,23 +104,30 @@ public class Moon extends SolarObject {
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)
-	public IValRef<EVector> posLocalM(double longitude, double latitude){
+	public Vector3d posLocalM(double longitude, double latitude){
 		float longp=(float)Spmath.Radians(longitude + this.rotation);
 		float lat=(float)Spmath.Radians(latitude);
-		return VecMath.mult(this.radius, VecMath.add(VecMath.add(VecMath.mult(Spmath.sinf(lat), Pole), VecMath.mult(Spmath.cosf(lat)*Spmath.cosf(longp), PrMer0)), VecMath.mult(Spmath.cosf(lat)*Spmath.sinf(longp), East)));
+		Vector3d result = new Vector3d(this.Pole);
+		result.scale(Spmath.sinf(lat));
+		result.scaleAdd(Spmath.cosf(lat)*Spmath.cosf(longp), this.PrMer0);
+		result.scaleAdd(Spmath.cosf(lat)*Spmath.sinf(longp), this.East);
+		result.scale(this.radius);
+		return result;
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Ground (Update Needed)
 	//Parameter: PosLocalM Result
-	public IValRef<EVector> posLocalG(IValRef<EVector> p){
-		return VecMath.add(this.earthPos, p);
+	public Vector3d posLocalG(Vector3d p){
+		Vector3d vec = new Vector3d(p);
+		vec.add(this.earthPos);
+		return vec;
 	}
 	
 	@Override
-	protected void updateMagnitude(EVector earthFromSun) {
-		double dist=Spmath.getD(VecMath.size(this.earthPos));
-		double distS=Spmath.getD(VecMath.size(this.sunPos));
-		double distE=Spmath.getD(VecMath.size(earthFromSun));
+	protected void updateMagnitude(Vector3d earthFromSun) {
+		double dist=this.earthPos.length();
+		double distS=this.sunPos.length();
+		double distE=earthFromSun.length();
 		double LvsSun=this.radius*this.radius*this.getPhase()*distE*distE*this.albedo*1.4/(dist*dist*distS*distS);
 		this.currentMag=-26.74-2.5*Math.log10(LvsSun);
 		this.brightness = distE*distE*this.albedo/(distS*distS)*10;
@@ -113,19 +135,20 @@ public class Moon extends SolarObject {
 	
 	//Illumination of Moon's Local Region (Update Needed)
 	//Parameter: PosLocalM Result
-	public double illumination(EVector p){
-		return -Spmath.getD(BOp.div(VecMath.dot(this.sunPos, p), BOp.mult(VecMath.size(this.sunPos), VecMath.size(p))))*this.brightness;
+	public double illumination(Vector3d p){
+		return -this.sunPos.dot(p)/(this.sunPos.length()*p.length())*this.brightness;
 	}
 	
 	//Phase of the Moon(Update Needed)
 	public double getPhase(){
-		return (Math.PI-Math.acos(Spmath.getD(BOp.div(VecMath.dot(this.earthPos, this.sunPos), BOp.mult(VecMath.size(this.earthPos), VecMath.size(this.sunPos))))))/Math.PI;
+		return (Math.PI-Math.acos(earthPos.dot(this.sunPos) / (this.earthPos.length() * this.sunPos.length()))) / Math.PI;
 	}
 	
 	//Time phase for moon
 	public double phase_Time(){
-		double k=Math.signum(Spmath.getD(VOp.dot(CrossUtil.cross(this.earthPos, this.sunPos), (IValRef)Pole)))
-				*(1.0 - getPhase());
+		Vector3d crossed = new Vector3d();
+		crossed.cross(this.earthPos, this.sunPos);
+		double k=Math.signum(crossed.dot(Pole)) * (1.0 - getPhase());
 		if(k<0) k=k+2;
 		return k/2;
 	}

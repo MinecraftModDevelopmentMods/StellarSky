@@ -5,6 +5,7 @@ import java.io.IOException;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.layer.CelestialManager;
@@ -19,6 +20,8 @@ public interface IProxy {
     
     public World getDefWorld();
     public World getDefWorld(boolean isRemote);
+    
+	public Entity getDefViewerEntity();
     
     public ClientSettings getClientSettings();
     

@@ -1,9 +1,9 @@
 package stellarium.stellars.system;
 
-import stellarium.stellars.view.IStellarViewpoint;
+import stellarium.stellars.view.IStellarSkySet;
 
 public interface IPerDimensionCache {
 	
-	public void update(IStellarViewpoint viewpoint);
+	public void update(IStellarSkySet viewpoint);
 
 }

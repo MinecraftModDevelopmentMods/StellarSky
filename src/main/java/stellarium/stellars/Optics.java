@@ -4,9 +4,9 @@ import java.util.Random;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarapi.api.lib.config.IConfigHandler;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
-import stellarium.config.IConfigHandler;
 
 public class Optics implements IConfigHandler {
 	

@@ -7,7 +7,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import stellarium.StellarEventHook;
+import stellarium.StellarForgeEventHook;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.view.StellarDimensionManager;
@@ -54,9 +54,9 @@ public class MessageSyncCommon implements IMessage {
 			if(dimManager != null)
 				dimManager.syncFromNBT(message.dimensionInfo, true);
 			
-			StellarEventHook.setupManager(world, manager);
+			StellarForgeEventHook.setupManager(world, manager);
 			if(dimManager != null)
-				StellarEventHook.setupDimension(world, manager, dimManager);
+				StellarForgeEventHook.setupDimension(world, manager, dimManager);
 			
 			return null;
 		}

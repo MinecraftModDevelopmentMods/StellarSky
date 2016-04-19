@@ -1,23 +1,30 @@
 package stellarium.stellars.milkyway;
 
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.EVector;
+import javax.vecmath.AxisAngle4d;
+import javax.vecmath.Matrix3d;
+import javax.vecmath.Vector3d;
+
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.render.IRenderCache;
 import stellarium.stellars.util.ExtinctionRefraction;
-import stellarium.stellars.view.IStellarViewpoint;
-import stellarium.util.math.Rotate;
-import stellarium.util.math.SpCoord;
-import stellarium.util.math.VecMath;
+import stellarium.stellars.view.IStellarSkySet;
 
 public class MilkywayCache implements IRenderCache<Milkyway, MilkywaySettings> {
 	
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
-	public static final Rotate EqtoEc = new Rotate('X').setRAngle(-e); 
+	public static final Matrix3d EqtoEc = new Matrix3d();
 	
-	private EVector Buf = new EVector(3);
-	protected EVector[][] moonvec = null;
+	static {
+		EqtoEc.set(new AxisAngle4d(1.0, 0.0, 0.0, -e));
+	}
+	
+	private Vector3d Buf = new Vector3d();
+	protected Vector3d[][] moonvec = null;
 	protected int latn, longn;
 	protected float brightness;
 
@@ -25,23 +32,30 @@ public class MilkywayCache implements IRenderCache<Milkyway, MilkywaySettings> {
 	public void initialize(ClientSettings settings, MilkywaySettings specificSettings) {
 		this.latn = specificSettings.imgFracMilkyway;
 		this.longn = 2*specificSettings.imgFracMilkyway;
-		this.moonvec = new EVector[longn][latn+1];
-		this.brightness = specificSettings.milkywayBrightness;
+		this.moonvec = new Vector3d[longn][latn+1];
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, MilkywaySettings specificSettings, Milkyway object, IStellarViewpoint viewpoint) {
+	public void updateCache(ClientSettings settings, MilkywaySettings specificSettings, Milkyway object,
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
-				Buf.set(new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec());
-				Buf.set(VecMath.mult(50.0, Buf));
-				IValRef ref = EqtoEc.transform(Buf);
-				ref = viewpoint.getProjection().transform(ref);
+				Buf = new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec();
+				EqtoEc.transform(Buf);
+				coordinate.getProjectionToGround().transform(Buf);
+				
+				SpCoord coord = new SpCoord();
+				coord.setWithVec(Buf);
+				
+				sky.applyAtmRefraction(coord);
 
-				moonvec[longc][latc] = new EVector(3);
-				moonvec[longc][latc].set(ExtinctionRefraction.refraction(ref, true));
+				moonvec[longc][latc] = coord.getVec();
+				moonvec[longc][latc].scale(50.0);
 			}
 		}
+		
+		this.brightness = (float) (specificSettings.milkywayBrightness
+				* scope.getLGP() / (scope.getMP() * scope.getMP()));
 	}
 
 }

@@ -1,15 +1,16 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.EVector;
+import javax.vecmath.Vector3d;
+
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.render.IRenderCache;
 import stellarium.stellars.Optics;
-import stellarium.stellars.util.ExtinctionRefraction;
-import stellarium.stellars.view.IStellarViewpoint;
-import stellarium.util.math.SpCoord;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
+import stellarium.stellars.view.IStellarSkySet;
+import stellarium.util.math.StellarMath;
 
 public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSettings> {
 	
@@ -17,9 +18,9 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 	
 	protected SpCoord appCoord, cache;
 	protected int latn, longn;
-	protected EVector moonPos[][], moonnormal[][];
+	protected Vector3d moonPos[][], moonnormal[][];
 	protected float moonilum[][];
-	protected EVector buf = new EVector(3);
+	protected Vector3d buf = new Vector3d();
 	protected double size, difactor, appMag;
 
 	@Override
@@ -27,25 +28,26 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 		this.appCoord = new SpCoord();
 		this.latn = specificSettings.imgFrac;
 		this.longn = 2*specificSettings.imgFrac;
-		this.moonPos = new EVector[longn][latn+1];
+		this.moonPos = new Vector3d[longn][latn+1];
 		this.moonilum = new float[longn][latn+1];
-		this.moonnormal = new EVector[longn][latn+1];
+		this.moonnormal = new Vector3d[longn][latn+1];
 		this.cache = new SpCoord();
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, SolarSystemClientSettings specificSettings,
-			Moon object, IStellarViewpoint viewpoint) {
-		EVector ref = new EVector(3);
-		ref.set(viewpoint.getProjection().transform(object.earthPos));
-		double airmass = viewpoint.getAirmass(ref, false);
-		this.appMag = object.currentMag + airmass * Optics.ext_coeff_V;
+	public void updateCache(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon object,
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
+		Vector3d ref = new Vector3d(object.earthPos);
+		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
-		viewpoint.applyAtmRefraction(this.appCoord);
+		double airmass = sky.calculateAirmass(this.appCoord);
+		this.appMag = object.currentMag + airmass * Optics.ext_coeff_V;
+		sky.applyAtmRefraction(this.appCoord);
 		
-		this.shouldRenderGlow = appCoord.y >= 0 || !viewpoint.hideObjectsUnderHorizon();
+		this.shouldRenderGlow = appCoord.y >= 0 || !(sky instanceof IStellarSkySet)
+				|| !((IStellarSkySet) sky).hideObjectsUnderHorizon();
 		
-		this.size = object.radius/Spmath.getD(VecMath.size(object.earthPos));
+		this.size = object.radius/object.earthPos.length();
 		this.difactor = 0.8 / 180.0 * Math.PI / this.size;
 		this.difactor = this.difactor * this.difactor / Math.PI;
 		
@@ -56,16 +58,18 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 			for(latc=0; latc<=latn; latc++){
 				buf.set(object.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0));
 				moonilum[longc][latc]=(float) (object.illumination(buf) * this.difactor * 1.5);
-				moonnormal[longc][latc] = new EVector(3).set(buf);
+				moonnormal[longc][latc] = new Vector3d(buf);
 				buf.set(object.posLocalG(buf));
-				IValRef ref2 = viewpoint.getProjection().transform(buf);
+				coordinate.getProjectionToGround().transform(buf);
 
-				cache.setWithVec(ref2);
-				viewpoint.applyAtmRefraction(this.cache);
+				cache.setWithVec(buf);
+				sky.applyAtmRefraction(this.cache);
 
-				moonPos[longc][latc] = VecMath.mult(98.0, cache.getVec()).getVal();
+				moonPos[longc][latc] = cache.getVec();
+				moonPos[longc][latc].scale(98.0);
 
-				if(viewpoint.hideObjectsUnderHorizon() && cache.y < 0)
+				if(cache.y < 0 && sky instanceof IStellarSkySet
+						&& ((IStellarSkySet) sky).hideObjectsUnderHorizon())
 					moonilum[longc][latc]=0.0f;
 			}
 		}

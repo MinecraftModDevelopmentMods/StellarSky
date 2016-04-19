@@ -27,7 +27,7 @@ public class SkyRendererEnd extends IRenderHandler {
         OpenGlHelper.glBlendFunc(770, 771, 1, 0);
         RenderHelper.disableStandardItemLighting();
         GL11.glDepthMask(false);
-        mc.renderEngine.bindTexture(StellarSkyResources.resourceEndSky.getLocationFor(world));
+        mc.renderEngine.bindTexture(StellarSkyResources.resourceEndSky.getLocation());
         Tessellator tessellator = Tessellator.instance;
 
         for (int i = 0; i < 6; ++i)

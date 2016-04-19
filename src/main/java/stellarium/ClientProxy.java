@@ -8,6 +8,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import stellarium.api.StellarSkyAPI;
@@ -73,5 +74,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	@Override
 	public World getDefWorld(boolean isRemote) {
 		return isRemote? this.getDefWorld() : super.getDefWorld();
+	}
+	
+	public Entity getDefViewerEntity() {
+		return Minecraft.getMinecraft().renderViewEntity;
 	}
 }

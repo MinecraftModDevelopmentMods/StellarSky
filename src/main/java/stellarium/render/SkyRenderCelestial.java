@@ -5,6 +5,10 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.World;
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.StellarAPIReference;
+import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
 import stellarium.api.ICelestialRenderer;
 import stellarium.client.ClientSettings;
@@ -57,11 +61,9 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 				manager.update(world.getWorldTime());
 				StellarDimensionManager dimManager = StellarDimensionManager.get(world);
 				if(dimManager != null)
-				{
 					dimManager.update(world, world.getWorldTime());
-					manager.updateClient(StellarSky.proxy.getClientSettings(),
-							dimManager.getViewpoint());
-				}
+				
+				manager.updateClient(StellarSky.proxy.getClientSettings());
 			}
 		}
 	}

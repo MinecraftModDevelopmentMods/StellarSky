@@ -3,12 +3,10 @@ package stellarium.stellars.view;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.EVector;
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.lib.config.INBTConfig;
 import stellarium.StellarSky;
-import stellarium.config.INBTConfig;
 import stellarium.stellars.StellarManager;
-import stellarium.util.math.SpCoord;
 
 public final class StellarDimensionManager extends WorldSavedData {
 	
@@ -17,7 +15,8 @@ public final class StellarDimensionManager extends WorldSavedData {
 	private StellarManager manager;
 	
 	private PerDimensionSettings settings;
-	private IStellarViewpoint viewpoint;
+	private IStellarSkySet skyset;
+	private StellarCoordinate coordinate;
 	
 	private String dimensionName;
 	
@@ -58,8 +57,12 @@ public final class StellarDimensionManager extends WorldSavedData {
 		return this.settings;
 	}
 	
-	public IStellarViewpoint getViewpoint() {
-		return this.viewpoint;
+	public ICelestialCoordinate getCoordinate() {
+		return this.coordinate;
+	}
+	
+	public IStellarSkySet getSkySet() {
+		return this.skyset;
 	}
 	
 	private void loadSettingsFromConfig() {
@@ -90,30 +93,15 @@ public final class StellarDimensionManager extends WorldSavedData {
 	public void setup() {
 		StellarSky.logger.info("Initializing Dimension Settings...");
 		if(settings.allowRefraction())
-			this.viewpoint = new RefractiveViewpoint(manager.getSettings(), this.settings);
-		else this.viewpoint = new NonRefractiveViewpoint(manager.getSettings(), this.settings);
+			this.skyset = new RefractiveSkySet(this.settings);
+		else this.skyset = new NonRefractiveSkySet(this.settings);
+		this.coordinate = new StellarCoordinate(manager.getSettings(), this.settings);
 		StellarSky.logger.info("Initialized Dimension Settings.");
 	}
 	
 	public void update(World world, double currentTick) {
 		double skyTime = manager.getSkyTime(currentTick);
-		viewpoint.update(world, skyTime / manager.getSettings().day / manager.getSettings().year);
-		
-		EVector sunPos = manager.getCelestialManager().getSunEcRPos();
-		sunEquatorPos.set(viewpoint.projectionToEquatorial().transform(sunPos));
-		sunAppPos.setWithVec(viewpoint.getProjection().transform(sunPos));
-		viewpoint.applyAtmRefraction(this.sunAppPos);
-		
-		EVector moonPos = manager.getCelestialManager().getMoonEcRPos();
-		moonEquatorPos.set(viewpoint.projectionToEquatorial().transform(moonPos));
-		moonAppPos.setWithVec(viewpoint.getProjection().transform(moonPos));
-		viewpoint.applyAtmRefraction(this.moonAppPos);
-		
-		moonFactors = manager.getCelestialManager().getMoonFactors();
+		coordinate.update(world, skyTime / manager.getSettings().day / manager.getSettings().year);
 	}
-	
-	public SpCoord sunAppPos = new SpCoord(), moonAppPos = new SpCoord();
-	public EVector sunEquatorPos = new EVector(3), moonEquatorPos = new EVector(3);
-	public double[] moonFactors = new double[3];
 
 }

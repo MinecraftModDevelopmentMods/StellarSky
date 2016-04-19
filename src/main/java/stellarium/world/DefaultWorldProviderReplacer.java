@@ -2,6 +2,7 @@ package stellarium.world;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import stellarium.api.ICelestialHelper;
 import stellarium.api.IWorldProviderReplacer;
 
 public class DefaultWorldProviderReplacer implements IWorldProviderReplacer {
@@ -12,8 +13,8 @@ public class DefaultWorldProviderReplacer implements IWorldProviderReplacer {
 	}
 
 	@Override
-	public WorldProvider createWorldProvider(World world, WorldProvider originalProvider) {
-		return new StellarWorldProvider(originalProvider);
+	public WorldProvider createWorldProvider(World world, WorldProvider originalProvider, ICelestialHelper helper) {
+		return new StellarWorldProvider(originalProvider, helper);
 	}
 
 }

@@ -6,7 +6,7 @@ import com.google.common.collect.Sets;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import stellarium.config.HierarchicalConfig;
+import stellarapi.api.lib.config.HierarchicalConfig;
 import stellarium.stellars.view.PerDimensionSettings;
 
 public class DimensionSettings extends HierarchicalConfig {

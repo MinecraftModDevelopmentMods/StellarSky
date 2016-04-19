@@ -7,7 +7,7 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import stellarium.StellarEventHook;
+import stellarium.StellarForgeEventHook;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.view.StellarDimensionManager;
@@ -51,7 +51,7 @@ public class StellarNetworkFMLEventHandler {
 	}
 	
 	private void handleNotHave() {
-		StellarEventHook.markNotHave();
+		StellarForgeEventHook.markNotHave();
 	}
 	
 }

@@ -16,8 +16,6 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
-import stellarium.command.FixedCommandTime;
-import stellarium.compat.CompatManager;
 import stellarium.render.SkyRenderTypeEnd;
 import stellarium.render.SkyRenderTypeOverworld;
 import stellarium.sync.StellarNetworkEventHandler;
@@ -27,7 +25,7 @@ import stellarium.world.DefaultWorldProviderReplacer;
 import stellarium.world.EndReplacer;
 
 @Mod(modid=StellarSky.modid, version=StellarSky.version,
-	dependencies="required-after:sciapi@[1.1.0.0,1.2.0.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
+	dependencies="required-after:StellarAPI@[0.0.1.2, 0.0.2.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";
@@ -42,7 +40,7 @@ public class StellarSky {
         
         public static Logger logger;
         
-        private StellarEventHook eventHook = new StellarEventHook();
+        private StellarForgeEventHook eventHook = new StellarForgeEventHook();
         private StellarTickHandler tickHandler = new StellarTickHandler();
         private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
         private StellarNetworkManager networkManager = new StellarNetworkManager();
@@ -71,27 +69,20 @@ public class StellarSky {
     		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
     		
     		StellarSkyResources.init();
-    		
-    		CompatManager.getInstance().onPreInit();
         }
         
         @EventHandler
         public void load(FMLInitializationEvent event) throws IOException {
         	proxy.load(event);
-        	
-    		CompatManager.getInstance().onInit();
         }
         
         @EventHandler
         public void postInit(FMLPostInitializationEvent event) {
         	proxy.postInit(event);
-        	
-    		CompatManager.getInstance().onPostInit();
         }
         
         @EventHandler
         public void serverStarting(FMLServerStartingEvent event) {
         	event.registerServerCommand(new CommandLock());
-        	event.registerServerCommand(new FixedCommandTime());
         }
 }

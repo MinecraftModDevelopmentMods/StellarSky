@@ -1,13 +1,15 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.euclidian.EVector;
+import javax.vecmath.Vector3d;
+
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.lib.config.IConfigHandler;
+import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
-import stellarium.config.IConfigHandler;
 import stellarium.render.IRenderCache;
-import stellarium.stellars.view.IStellarViewpoint;
-import stellarium.util.math.SpCoord;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
+import stellarium.util.math.StellarMath;
 
 public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
 	
@@ -18,13 +20,14 @@ public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
 	public void initialize(ClientSettings settings, IConfigHandler config) { }
 
 	@Override
-	public void updateCache(ClientSettings settings, IConfigHandler config, Sun object, IStellarViewpoint viewpoint) {
-		EVector ref = new EVector(3);
-		ref.set(viewpoint.getProjection().transform(object.earthPos));
+	public void updateCache(ClientSettings settings, IConfigHandler config, Sun object,
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
+		Vector3d ref = new Vector3d(object.earthPos);
+		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
-		viewpoint.applyAtmRefraction(this.appCoord);
+		sky.applyAtmRefraction(this.appCoord);
 		
-		this.size = object.radius / Spmath.getD(VecMath.size(object.earthPos))*99.0*20;
+		this.size = object.radius / object.earthPos.length()*99.0*20;
 	}
 
 }

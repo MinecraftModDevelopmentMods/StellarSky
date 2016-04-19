@@ -2,12 +2,12 @@ package stellarium.stellars.view;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
+import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.lib.config.SimpleHierarchicalNBTConfig;
+import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
+import stellarapi.api.lib.config.property.ConfigPropertyDouble;
+import stellarapi.api.lib.config.property.ConfigPropertyString;
 import stellarium.api.StellarSkyAPI;
-import stellarium.config.INBTConfig;
-import stellarium.config.SimpleHierarchicalNBTConfig;
-import stellarium.config.property.ConfigPropertyBoolean;
-import stellarium.config.property.ConfigPropertyDouble;
-import stellarium.config.property.ConfigPropertyString;
 
 public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 
@@ -24,8 +24,6 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	private ConfigPropertyDouble propLightPollutionRate;
 	private ConfigPropertyString propRenderType;
 	
-	public PerDimensionResourceSettings resourceSettings;
-
 	public PerDimensionSettings(String dimensionName) {
 		this.dimensionName = dimensionName;
 		
@@ -51,8 +49,6 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	this.addConfigProperty(this.propSunlightMultiplier);
        	this.addConfigProperty(this.propSkyDispersionRate);
        	this.addConfigProperty(this.propLightPollutionRate);
-       	
-       	this.putSubConfig("ResourceSettings", this.resourceSettings = new PerDimensionResourceSettings());
 	}
 
 	@Override

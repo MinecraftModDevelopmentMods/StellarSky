@@ -6,7 +6,6 @@ import stellarium.StellarSkyResources;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
-import stellarium.util.math.VecMath;
 
 public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayCache> {
 
@@ -14,7 +13,7 @@ public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayCache>
 	public void render(StellarRenderInfo info, MilkywayCache cache) {
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, info.weathereff);
 
-		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceMilkyway.getLocationFor(info.mc.theWorld));
+		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceMilkyway.getLocation());
 		info.tessellator.startDrawingQuads();
 		
 		float Mag = 3.5f;
@@ -29,10 +28,10 @@ public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayCache>
 				double longdd=1.0-(double)(longc+1)/(double)cache.longn;
 				double latdd=1.0-(double)(latc+1)/(double)cache.latn;
 
-				info.tessellator.addVertexWithUV(VecMath.getX(cache.moonvec[longc][latc]), VecMath.getY(cache.moonvec[longc][latc]), VecMath.getZ(cache.moonvec[longc][latc]), longd, latd);
-				info.tessellator.addVertexWithUV(VecMath.getX(cache.moonvec[longc][latc+1]), VecMath.getY(cache.moonvec[longc][latc+1]), VecMath.getZ(cache.moonvec[longc][latc+1]), longd, latdd);
-				info.tessellator.addVertexWithUV(VecMath.getX(cache.moonvec[longcd][latc+1]), VecMath.getY(cache.moonvec[longcd][latc+1]), VecMath.getZ(cache.moonvec[longcd][latc+1]), longdd, latdd);
-				info.tessellator.addVertexWithUV(VecMath.getX(cache.moonvec[longcd][latc]), VecMath.getY(cache.moonvec[longcd][latc]), VecMath.getZ(cache.moonvec[longcd][latc]), longdd, latd);
+				info.tessellator.addVertexWithUV(cache.moonvec[longc][latc].x, cache.moonvec[longc][latc].y, cache.moonvec[longc][latc].z, longd, latd);
+				info.tessellator.addVertexWithUV(cache.moonvec[longc][latc+1].x, cache.moonvec[longc][latc+1].y, cache.moonvec[longc][latc+1].z, longd, latdd);
+				info.tessellator.addVertexWithUV(cache.moonvec[longcd][latc+1].x, cache.moonvec[longcd][latc+1].y, cache.moonvec[longcd][latc+1].z, longdd, latdd);
+				info.tessellator.addVertexWithUV(cache.moonvec[longcd][latc].x, cache.moonvec[longcd][latc].y, cache.moonvec[longcd][latc].z, longdd, latd);
 			}
 		}
 		info.tessellator.draw();

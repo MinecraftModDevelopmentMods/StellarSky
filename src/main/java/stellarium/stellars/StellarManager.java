@@ -1,17 +1,16 @@
 package stellarium.stellars;
 
-import java.io.IOException;
-
-import com.google.common.base.Throwables;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.StellarAPIReference;
+import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
 import stellarium.common.CommonSettings;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.stellars.view.IStellarViewpoint;
 
 public final class StellarManager extends WorldSavedData {
 	
@@ -123,8 +122,13 @@ public final class StellarManager extends WorldSavedData {
 		this.updated = true;
 	}
 	
-	public void updateClient(ClientSettings clientSettings, IStellarViewpoint renderViewpoint) {
-		celestialManager.updateClient(clientSettings, renderViewpoint);
+	public void updateClient(ClientSettings clientSettings) {
+		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(StellarSky.proxy.getDefWorld());
+		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
+		IViewScope scope = StellarAPIReference.getScope(StellarSky.proxy.getDefViewerEntity());
+		
+		if(coordinate != null && sky != null)
+			celestialManager.updateClient(clientSettings, coordinate, sky, scope);
 	}
 	
 	public boolean updated() {

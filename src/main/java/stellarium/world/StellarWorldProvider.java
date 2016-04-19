@@ -13,22 +13,19 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.ForgeHooksClient;
-import stellarium.api.ISkyProvider;
-import stellarium.api.IStellarWorldProvider;
-import stellarium.stellars.StellarManager;
-import stellarium.stellars.view.StellarDimensionManager;
+import stellarapi.api.optics.EnumRGBA;
+import stellarium.api.ICelestialHelper;
 
-public class StellarWorldProvider extends WorldProvider implements IStellarWorldProvider {
-		
+public class StellarWorldProvider extends WorldProvider {
 	private WorldProvider parProvider;
-	private ISkyProvider skyProvider;
+	private ICelestialHelper celestialHelper;
 	
     /** Array for sunrise/sunset colors (RGBA) */
     private float[] colorsSunriseSunset = new float[4];
     
     private long cloudColour = 16777215L;
 	
-	public StellarWorldProvider(WorldProvider provider) {
+	public StellarWorldProvider(WorldProvider provider, ICelestialHelper celestialHelper) {
 		this.parProvider = provider;
 		this.worldObj = provider.worldObj;
 		this.field_82913_c = provider.field_82913_c;
@@ -38,36 +35,24 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
 		this.hasNoSky = provider.hasNoSky;
 		this.lightBrightnessTable = provider.lightBrightnessTable;
 		this.dimensionId = provider.dimensionId;
-	}
-	
-	@Override
-	public void setSkyProvider(ISkyProvider skyProvider) {
-		this.skyProvider = skyProvider;
-	}
-
-	@Override
-	public ISkyProvider getSkyProvider() {
-		return this.skyProvider;
+		
+		this.celestialHelper = celestialHelper;
 	}
 	
 	@Override
     public float calculateCelestialAngle(long worldTime, float partialTicks) {
-		return skyProvider.calculateCelestialAngle(worldTime, partialTicks);
+		return celestialHelper.calculateCelestialAngle(worldTime, partialTicks);
     }
 	
-	public float calculateSunHeight(float partialTicks) {
-    	return skyProvider.calculateSunHeight(partialTicks);
-	}
-	
-	public float calculateSunlightFactor(float partialTicks) {
-		return skyProvider.calculateSunlightFactor(partialTicks);
+	public float getSunHeight(float partialTicks) {
+    	return celestialHelper.getSunHeightFactor(partialTicks);
 	}
     
     @Override
     @SideOnly(Side.CLIENT)
     public float getSunBrightness(float par1)
     {
-        float f2 = 1.0F - (this.calculateSunlightFactor(par1)-0.3f);
+        float f2 = 1.0F - (celestialHelper.getSunlightFactor(EnumRGBA.Alpha, par1) * celestialHelper.getSkyTransmissionFactor(par1)-0.3f);
 
         if (f2 < 0.0F)
         {
@@ -87,7 +72,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
 	
 	@Override
 	public float getSunBrightnessFactor(float par1) {
-        float f1 = 1.0F - this.calculateSunlightFactor(par1);
+        float f1 = 1.0F - celestialHelper.getSunlightFactor(EnumRGBA.Alpha, par1) * celestialHelper.getSkyTransmissionFactor(par1);
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;
         f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
@@ -97,12 +82,12 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
 
 	@Override
     public int getMoonPhase(long par1) {
-    	return skyProvider.getCurrentMoonPhase(par1);
+    	return celestialHelper.getCurrentMoonPhase(par1);
     }
 	
 	@Override
 	public float getCurrentMoonPhaseFactor() {
-    	return skyProvider.getCurrentMoonPhaseFactor();
+    	return celestialHelper.getCurrentMoonPhaseFactor();
 	}
 	
     /**
@@ -140,7 +125,7 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     public float[] calcSunriseSunsetColors(float p_76560_1_, float p_76560_2_)
     {
         float f2 = 0.4F;
-        float f3 = this.calculateSunHeight(p_76560_2_) - 0.0F;
+        float f3 = this.getSunHeight(p_76560_2_) - 0.0F;
         float f4 = -0.0F;
 
         if (f3 >= f4 - f2 && f3 <= f4 + f2)
@@ -153,10 +138,10 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
             this.colorsSunriseSunset[2] = f5 * f5 * 0.0F + 0.2F;
             this.colorsSunriseSunset[3] = f6;
             
-            for(int i = 0; i < 4; i++)
-            	this.colorsSunriseSunset[i] = this.colorsSunriseSunset[i]
-            			* skyProvider.calculateSunriseSunsetFactor(p_76560_2_)
-            			* skyProvider.calculateDispersionFactor(p_76560_2_);
+            for(EnumRGBA color : EnumRGBA.RGB)
+            	this.colorsSunriseSunset[color.ordinal()] = this.colorsSunriseSunset[color.ordinal()]
+            			* celestialHelper.calculateSunriseSunsetFactor(color, p_76560_2_)
+            			* celestialHelper.getDispersionFactor(color, p_76560_2_);
             
             return this.colorsSunriseSunset;
         }
@@ -173,24 +158,16 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @Override
     public Vec3 getFogColor(float p_76562_1_, float p_76562_2_)
     {
-        float f2 = this.calculateSunlightFactor(p_76562_2_) * skyProvider.calculateDispersionFactor(p_76562_2_);
-
-        if (f2 < 0.0F)
-        {
-            f2 = 0.0F;
-        }
-
-        if (f2 > 1.0F)
-        {
-            f2 = 1.0F;
-        }
-
         float f3 = 0.7529412F;
         float f4 = 0.84705883F;
         float f5 = 1.0F;
-        f3 *= f2 * 0.94F + 0.06F;
-        f4 *= f2 * 0.94F + 0.06F;
-        f5 *= f2 * 0.91F + 0.09F;
+        f3 *= celestialHelper.getSunlightFactor(EnumRGBA.Red, p_76562_2_)
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Red, p_76562_2_) * 0.94F  + 0.06F;
+        f4 *= celestialHelper.getSunlightFactor(EnumRGBA.Green, p_76562_2_)
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Green, p_76562_2_) * 0.94F + 0.06F;
+        f5 *= celestialHelper.getSunlightFactor(EnumRGBA.Blue, p_76562_2_)
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Blue, p_76562_2_) * 0.91F + 0.09F;
+        
         return Vec3.createVectorHelper((double)f3, (double)f4, (double)f5);
     }
 
@@ -384,31 +361,27 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @SideOnly(Side.CLIENT)
     public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
     {
-        float f2 = this.calculateSunlightFactor(partialTicks) * skyProvider.calculateDispersionFactor(partialTicks);
-
-        if (f2 < 0.0F)
-        {
-            f2 = 0.0F;
-        }
-
-        if (f2 > 1.0F)
-        {
-            f2 = 1.0F;
-        }
-
         int i = MathHelper.floor_double(cameraEntity.posX);
         int j = MathHelper.floor_double(cameraEntity.posY);
         int k = MathHelper.floor_double(cameraEntity.posZ);
-
-        f2 += this.getMixedBrightnessOn(cameraEntity.posX, cameraEntity.posY, cameraEntity.posZ, i, j, k)
-        		* skyProvider.calculateDispersionFactor(partialTicks) * skyProvider.calculateLightPollutionFactor(partialTicks);
+        
+        float mixedBrightness =  this.getMixedBrightnessOn(cameraEntity.posX, cameraEntity.posY, cameraEntity.posZ, i, j, k);
+        
         int l = ForgeHooksClient.getSkyBlendColour(this.worldObj, i, j, k);
-        float f4 = (float)(l >> 16 & 255) / 255.0F;
-        float f5 = (float)(l >> 8 & 255) / 255.0F;
-        float f6 = (float)(l & 255) / 255.0F;
-        f4 *= f2;
-        f5 *= f2;
-        f6 *= f2;
+        float f4 = (float)(l >> 16 & 255) / 255.0F
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Red, partialTicks);
+        float f5 = (float)(l >> 8 & 255) / 255.0F
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Green, partialTicks);
+        float f6 = (float)(l & 255) / 255.0F
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Blue, partialTicks);
+       
+        f4 *= (celestialHelper.getSunlightFactor(EnumRGBA.Red, partialTicks)
+        		+ mixedBrightness * celestialHelper.getLightPollutionFactor(EnumRGBA.Red, partialTicks));
+        f5 *= (celestialHelper.getSunlightFactor(EnumRGBA.Green, partialTicks)
+        		+ mixedBrightness * celestialHelper.getLightPollutionFactor(EnumRGBA.Green, partialTicks));
+        f6 *= (celestialHelper.getSunlightFactor(EnumRGBA.Blue, partialTicks)
+        		+ mixedBrightness * celestialHelper.getLightPollutionFactor(EnumRGBA.Blue, partialTicks));
+        
         float f7 = worldObj.getRainStrength(partialTicks);
         float f8;
         float f9;
@@ -470,17 +443,6 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @SideOnly(Side.CLIENT)
     public Vec3 drawClouds(float partialTicks)
     {
-        float f2 = this.calculateSunlightFactor(partialTicks) * skyProvider.calculateDispersionFactor(partialTicks);
-
-        if (f2 < 0.0F)
-        {
-            f2 = 0.0F;
-        }
-
-        if (f2 > 1.0F)
-        {
-            f2 = 1.0F;
-        }
 
         float f3 = (float)(this.cloudColour >> 16 & 255L) / 255.0F;
         float f4 = (float)(this.cloudColour >> 8 & 255L) / 255.0F;
@@ -498,9 +460,12 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
             f5 = f5 * f8 + f7 * (1.0F - f8);
         }
 
-        f3 *= f2 * 0.9F + 0.1F;
-        f4 *= f2 * 0.9F + 0.1F;
-        f5 *= f2 * 0.85F + 0.15F;
+        f3 *= celestialHelper.getSunlightFactor(EnumRGBA.Red, partialTicks)
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Red, partialTicks) * 0.9F + 0.1F;
+        f4 *= celestialHelper.getSunlightFactor(EnumRGBA.Green, partialTicks)
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Green, partialTicks) * 0.9F + 0.1F;
+        f5 *= celestialHelper.getSunlightFactor(EnumRGBA.Blue, partialTicks)
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Blue, partialTicks) * 0.85F + 0.15F;
         f7 = worldObj.getWeightedThunderStrength(partialTicks);
 
         if (f7 > 0.0F)
@@ -519,7 +484,8 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     @SideOnly(Side.CLIENT)
     public float getStarBrightness(float par1)
     {
-        float f2 = 1.0F - (this.calculateSunlightFactor(par1)*skyProvider.calculateDispersionFactor(par1)-0.25f);
+        float f2 = 1.0F - (celestialHelper.getSunlightFactor(EnumRGBA.Alpha, par1)
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Alpha, par1)-0.25f);
 
         if (f2 < 0.0F)
         {
@@ -641,5 +607,4 @@ public class StellarWorldProvider extends WorldProvider implements IStellarWorld
     {
     	return parProvider.canDoRainSnowIce(chunk);
     }
-
 }

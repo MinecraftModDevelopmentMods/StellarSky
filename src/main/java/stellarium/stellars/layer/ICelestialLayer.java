@@ -5,12 +5,15 @@ import java.util.List;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import stellarium.config.IConfigHandler;
+import stellarapi.api.celestials.ICelestialCollection;
+import stellarapi.api.lib.config.IConfigHandler;
+import stellarapi.api.lib.config.INBTConfig;
 
-public interface ICelestialLayer<T extends IConfigHandler> {
-	
-	public void initialize(boolean isRemote, T config) throws IOException;
-	
+public interface ICelestialLayer<T extends INBTConfig, S extends IConfigHandler> 
+		extends ICelestialCollection {
+	public void initializeClient(boolean isRemote, S config) throws IOException;
+	public void initializeCommon(boolean isRemote, T config) throws IOException;
+
 	public void updateLayer(double year);
 	
 	public List<? extends CelestialObject> getObjectList();
@@ -19,20 +22,5 @@ public interface ICelestialLayer<T extends IConfigHandler> {
 	
 	@SideOnly(Side.CLIENT)
 	public void registerRenderers();
+	
 }
-
-/**
- * Data:
- *  - Saved in world
- *  - Loaded from configuration
- *  - Used for cache (Render/Effect)
- *  
- *  Client/Common
- *  Configuration/Decided
- *  Saved&Synced/Not Saved&Synced
- *  Consistent/Time.Dep/VP.Dep
- *  
- *  Render: ClientSettings, LayerClientSettings, RenderCache
- *  
- *  (Will discuss later)
- */

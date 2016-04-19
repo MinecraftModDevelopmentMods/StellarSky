@@ -2,12 +2,12 @@ package stellarium.common;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
-import stellarium.config.INBTConfig;
-import stellarium.config.SimpleHierarchicalNBTConfig;
-import stellarium.config.property.ConfigProperty;
-import stellarium.config.property.ConfigPropertyBoolean;
-import stellarium.config.property.ConfigPropertyDouble;
-import stellarium.config.property.ConfigPropertyInteger;
+import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.lib.config.SimpleHierarchicalNBTConfig;
+import stellarapi.api.lib.config.property.ConfigProperty;
+import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
+import stellarapi.api.lib.config.property.ConfigPropertyDouble;
+import stellarapi.api.lib.config.property.ConfigPropertyInteger;
 import stellarium.stellars.layer.CelestialLayerRegistry;
 
 public class CommonSettings extends SimpleHierarchicalNBTConfig {

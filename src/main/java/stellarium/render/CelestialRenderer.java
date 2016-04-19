@@ -4,7 +4,8 @@ import java.util.List;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import stellarium.config.IConfigHandler;
+import stellarapi.api.lib.config.IConfigHandler;
+import stellarapi.api.lib.config.INBTConfig;
 import stellarium.stellars.layer.CelestialObject;
 import stellarium.stellars.layer.ICelestialLayer;
 
@@ -18,7 +19,7 @@ public class CelestialRenderer {
 	}
 	
 	public void render(StellarRenderInfo info, List<ICelestialLayer> layers) {
-		for(ICelestialLayer<? extends IConfigHandler> layer : layers) {
+		for(ICelestialLayer<? extends INBTConfig, ? extends IConfigHandler> layer : layers) {
 			ICelestialLayerRenderer layerRenderer = null;
 			
 			if(layer.getLayerRendererIndex() != -1)

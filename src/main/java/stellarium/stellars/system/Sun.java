@@ -1,9 +1,8 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.euclidian.EVector;
+import javax.vecmath.Vector3d;
+
 import stellarium.render.IRenderCache;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
 
 public class Sun extends SolarObject {
 
@@ -13,11 +12,11 @@ public class Sun extends SolarObject {
 	}
 
 	@Override
-	public EVector getRelativePos(double year) {
+	public Vector3d getRelativePos(double year) {
 		return null;
 	}
 	
-	protected void updateMagnitude(EVector earthFromSun) { }
+	protected void updateMagnitude(Vector3d earthFromSun) { }
 
 	@Override
 	public IRenderCache generateCache() {

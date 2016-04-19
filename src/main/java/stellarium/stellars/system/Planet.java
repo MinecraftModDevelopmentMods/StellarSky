@@ -1,9 +1,12 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.euclidian.EVector;
+import javax.vecmath.AxisAngle4d;
+import javax.vecmath.Matrix3d;
+import javax.vecmath.Vector3d;
+
+import stellarapi.api.lib.math.Spmath;
 import stellarium.render.IRenderCache;
-import stellarium.util.math.Rotate;
-import stellarium.util.math.Spmath;
+import stellarium.util.math.StellarMath;
 
 public class Planet extends SolarObject {
 	
@@ -12,7 +15,7 @@ public class Planet extends SolarObject {
 	protected double ad, ed, Id, Ld, wbard, Omegad;
 	protected double b, c, s, f;
 
-	private Rotate roti = new Rotate('X'), rotw = new Rotate('Z'), rotom = new Rotate('Z');
+	private Matrix3d roti = new Matrix3d(), rotw = new Matrix3d(), rotom = new Matrix3d();
 	
 	public Planet(boolean isRemote, SolarObject parent) {
 		super(isRemote, parent);
@@ -24,7 +27,7 @@ public class Planet extends SolarObject {
 	}
 
 	@Override
-	public EVector getRelativePos(double year) {
+	public Vector3d getRelativePos(double year) {
 		double cen=year/100.0;
 		double a=a0+ad*cen,
 				e=e0+ed*cen,
@@ -35,11 +38,17 @@ public class Planet extends SolarObject {
 		double w=wbar-Omega;
 		double M=L-wbar+b*cen*cen+c*Spmath.cosd(f*cen)+s*Spmath.sind(f*cen);
 		
-		roti.setRAngle(-Spmath.Radians(I));
-		rotw.setRAngle(-Spmath.Radians(w));
-		rotom.setRAngle(-Spmath.Radians(Omega));
+		roti.set(new AxisAngle4d(1.0, 0.0, 0.0, -Spmath.Radians(I)));
+		rotw.set(new AxisAngle4d(0.0, 0.0, 1.0, -Spmath.Radians(w)));
+		rotom.set(new AxisAngle4d(0.0, 0.0, 1.0, -Spmath.Radians(Omega)));
+
+		Matrix3d matrix = new Matrix3d();
+		matrix.setIdentity();
+		matrix.mul(this.rotom);
+		matrix.mul(this.roti);
+		matrix.mul(this.rotw);
 		
-		return Spmath.GetOrbVec(a, e, roti, rotw, rotom, M);
+		return StellarMath.GetOrbVec(a, e, M, matrix);
 	}
 
 	@Override

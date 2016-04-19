@@ -3,7 +3,7 @@ package stellarium.client;
 import akka.actor.ActorSystem.Settings;
 import stellarium.StellarSky;
 import stellarium.api.IHourProvider;
-import stellarium.util.math.Spmath;
+import stellarium.util.math.StellarMath;
 
 public class DefaultHourProvider implements IHourProvider {
 	

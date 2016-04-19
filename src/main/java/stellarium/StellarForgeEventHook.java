@@ -8,22 +8,22 @@ import com.google.common.base.Throwables;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import stellarium.api.IStellarWorldProvider;
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.StellarAPIReference;
+import stellarapi.api.helper.WorldProviderReplaceHelper;
 import stellarium.api.StellarSkyAPI;
 import stellarium.render.SkyRenderCelestial;
+import stellarium.stellars.DefaultCelestialHelper;
 import stellarium.stellars.StellarManager;
-import stellarium.stellars.StellarSkyProvider;
 import stellarium.stellars.layer.CelestialManager;
 import stellarium.stellars.view.StellarDimensionManager;
 
-public class StellarEventHook {
+public class StellarForgeEventHook {
 	
 	private static Field providerField = ReflectionHelper.findField(World.class,
 			ObfuscationReflectionHelper.remapFieldNames(World.class.getName(), "provider", "field_73011_w"));
@@ -66,20 +66,21 @@ public class StellarEventHook {
 		if(world.isRemote)
 			manager.setup(StellarSky.proxy.getClientCelestialManager());
 		else manager.setup(new CelestialManager(false));
+		StellarAPIReference.constructCelestials(world);
 	}
 	
 	public static void setupDimension(World world, StellarManager manager, StellarDimensionManager dimManager) {
 		dimManager.setup();
+		StellarAPIReference.resetCoordinate(world);
+		StellarAPIReference.resetSkyEffect(world);
+		
+		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(world);
+		ISkyEffect skyEffect = StellarAPIReference.getSkyEffect(world);
 		
 		if(manager.getSettings().serverEnabled && dimManager.getSettings().doesPatchProvider()) {
-			try {
-				WorldProvider newProvider = StellarSkyAPI.getReplacedWorldProvider(world, world.provider);
-				if(newProvider instanceof IStellarWorldProvider)
-					((IStellarWorldProvider) newProvider).setSkyProvider(new StellarSkyProvider(world, world.provider, manager, dimManager));
-				providerField.set(world, newProvider);
-			} catch (Exception exc) {
-				Throwables.propagate(exc);
-			}
+			DefaultCelestialHelper helper = new DefaultCelestialHelper(0, 0, null, null, coordinate, skyEffect);
+			WorldProvider newProvider = StellarSkyAPI.getReplacedWorldProvider(world, world.provider, helper);
+			new WorldProviderReplaceHelper().patchWorldProviderWith(world, newProvider);
 		}
 		
 		if(world.isRemote)
@@ -97,31 +98,18 @@ public class StellarEventHook {
 		
 		if(manager.getCelestialManager() == null)
 		{
-			StellarEventHook.setupManager(world, manager);
+			StellarForgeEventHook.setupManager(world, manager);
 			
 			String dimName = world.provider.getDimensionName();
 			if(StellarSky.proxy.dimensionSettings.hasSubConfig(dimName)) {
 				StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(world, manager, dimName);
-				StellarEventHook.setupDimension(world, manager, dimManager);
+				StellarForgeEventHook.setupDimension(world, manager, dimManager);
 			}
 		}
 	}
 	
 	public static void markNotHave() {
 		mark = true;
-	}
-	
-	@SubscribeEvent
-	public void onSleepInBed(PlayerSleepInBedEvent event) {
-		if(!StellarSky.proxy.wakeManager.isEnabled() || event.entityPlayer.worldObj.isRemote) {
-			return;
-		}
-
-		if(event.result == null || event.result == EnumStatus.OK || event.result == EnumStatus.NOT_POSSIBLE_NOW) {
-			World worldObj = event.entityPlayer.worldObj;
-			if (StellarSkyAPI.hasSkyProvider(worldObj) && !StellarSky.proxy.wakeManager.canSkipTime(worldObj, StellarSkyAPI.getSkyProvider(worldObj), worldObj.getWorldTime()))
-				event.result = EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW;
-		}
 	}
 	
 }

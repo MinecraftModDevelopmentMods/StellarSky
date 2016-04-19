@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import stellarium.config.IConfigHandler;
+import stellarapi.api.lib.config.IConfigHandler;
 
 public class MilkywaySettings implements IConfigHandler {
 	
