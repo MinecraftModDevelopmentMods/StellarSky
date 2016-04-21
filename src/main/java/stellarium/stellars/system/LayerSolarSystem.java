@@ -1,6 +1,7 @@
 package stellarium.stellars.system;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +91,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		
 		//Moon Initialize
 		moon.initialize();
+		container.loadObject("Moon", moon);
 		container.loadObject("System", moon);
 		container.addRenderCache(moon, new MoonRenderCache());
 		
@@ -338,5 +340,15 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	@Override
 	public Map<SolarObject, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
 		return null;
+	}
+
+	@Override
+	public Collection<SolarObject> getSuns(StellarObjectContainer container) {
+		return container.getLoadedObjects("Sun");
+	}
+
+	@Override
+	public Collection<SolarObject> getMoons(StellarObjectContainer container) {
+		return container.getLoadedObjects("Moon");
 	}
 }

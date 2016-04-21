@@ -3,6 +3,7 @@ package stellarium.stellars.star.brstar;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -164,16 +165,6 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	@Override
 	public EnumCelestialCollectionType getCollectionType() {
 		return EnumCelestialCollectionType.Stars;
-	}
-
-	@Override
-	public Comparator<ICelestialObject> getDistanceComparator(SpCoord pos) {
-		return null;
-	}
-
-	@Override
-	public Predicate<ICelestialObject> conditionInRange(SpCoord pos, double radius) {
-		return null;
 	}
 
 	@Override

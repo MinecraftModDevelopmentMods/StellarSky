@@ -1,17 +1,20 @@
 package stellarium.stellars.layer;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
+import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;

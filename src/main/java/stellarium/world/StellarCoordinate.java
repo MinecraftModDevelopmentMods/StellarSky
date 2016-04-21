@@ -52,7 +52,7 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		return this.yearPeriod;
 	}
 	
-	public void update(World world, double year) {
+	public void update(double year) {
 		ZTEctoNEc.set(new AxisAngle4d(0.0, 0.0, 1.0, -this.precession*year));
 		NEctoZTEc.set(new AxisAngle4d(0.0, 0.0, 1.0, this.precession*year));
 		NEqtoREq.set(new AxisAngle4d(0.0, 0.0, 1.0, -this.rot*year - this.longitude));
@@ -151,6 +151,17 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	@Override
 	public CelestialPeriod getPeriod() {
 		return this.dayPeriod;
+	}
+	
+	@Override
+	public double calculateInitialOffset(Vector3d initialAbsPos) {
+		Vector3d eqrPos = new Vector3d(initialAbsPos);
+		projectionEq.transform(eqrPos);
+		
+		SpCoord coord = new SpCoord();
+		coord.setWithVec(eqrPos);
+		
+		return Spmath.fmod((this.longitude-coord.x) / 360.0, 1.0);
 	}
 
 	@Override

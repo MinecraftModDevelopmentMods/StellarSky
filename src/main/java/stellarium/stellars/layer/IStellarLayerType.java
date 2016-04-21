@@ -1,6 +1,7 @@
 package stellarium.stellars.layer;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 
@@ -30,6 +31,9 @@ public interface IStellarLayerType<Obj extends StellarObject, ClientConfig exten
 	public int searchOrder();
 	public boolean isBackground();
 	public EnumCelestialCollectionType getCollectionType();
+	
+	public Collection<Obj> getSuns(StellarObjectContainer container);
+	public Collection<Obj> getMoons(StellarObjectContainer container);
 	
 	/**
 	 * Can be null to use default logic.

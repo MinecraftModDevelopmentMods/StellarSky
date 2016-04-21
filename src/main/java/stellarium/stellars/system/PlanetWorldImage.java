@@ -10,38 +10,39 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.Wavelength;
 import stellarium.stellars.layer.IPerWorldImage;
 
-public class SunWorldImage implements IPerWorldImage<Sun> {
-	
+public class PlanetWorldImage implements IPerWorldImage<Planet> {
+
 	private double mag;
 	private Vector3d pos;
 	private SpCoord appCoord;
-	private CelestialPeriod yearPeriod;
+	private double phase;
+	private CelestialPeriod siderealPeriod, synodicPeriod;
 	private CelestialPeriod horPeriod;
-	
+
 	@Override
-	public void initialize(Sun object, ICelestialCoordinate coordinate, ISkyEffect sky,
-			CelestialPeriod yearPeriod) {
-		this.mag = object.getMagnitude();
-		this.yearPeriod = yearPeriod;
+	public void initialize(Planet object, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
+		this.mag = object.currentMag; // TODO this is not enough
+		this.siderealPeriod = this.synodicPeriod = yearPeriod; // TODO this is not enough too
 		
 		this.pos = new Vector3d(object.earthPos);
 		CelestialPeriod dayPeriod = coordinate.getPeriod();
-		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / yearPeriod.getPeriodLength());
-		this.horPeriod = new CelestialPeriod("Day", length, coordinate.calculateInitialOffset(this.pos));
+		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / synodicPeriod.getPeriodLength());
+		this.horPeriod = new CelestialPeriod(String.format("Sidereal Day for %s", object.getID()), length, coordinate.calculateInitialOffset(this.pos));
 	}
 
 	@Override
-	public void updateCache(Sun object, ICelestialCoordinate coordinate, ISkyEffect sky) {
+	public void updateCache(Planet object, ICelestialCoordinate coordinate, ISkyEffect sky) {
 		this.pos = new Vector3d(object.earthPos);
 		Vector3d ref = new Vector3d(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
 		sky.applyAtmRefraction(this.appCoord);
+		this.phase = object.getPhase();
 	}
-
+	
 	@Override
 	public CelestialPeriod getAbsolutePeriod() {
-		return this.yearPeriod;
+		return this.siderealPeriod;
 	}
 
 	@Override
@@ -51,17 +52,17 @@ public class SunWorldImage implements IPerWorldImage<Sun> {
 
 	@Override
 	public CelestialPeriod getPhasePeriod() {
-		return null;
+		return this.synodicPeriod;
 	}
 
 	@Override
 	public double getCurrentPhase() {
-		return 1.0;
+		return this.phase;
 	}
 
 	@Override
 	public double getCurrentBrightness(Wavelength wavelength) {
-		return 1.0;
+		return this.phase;
 	}
 
 	@Override
@@ -81,6 +82,7 @@ public class SunWorldImage implements IPerWorldImage<Sun> {
 
 	@Override
 	public EnumCelestialObjectType getObjectType() {
-		return EnumCelestialObjectType.Star;
+		return EnumCelestialObjectType.Planet;
 	}
+
 }

@@ -5,6 +5,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.StellarAPIReference;
+import stellarapi.api.celestials.IEffectorType;
 import stellarapi.api.event.ConstructCelestialsEvent;
 import stellarapi.api.event.ResetCoordinateEvent;
 import stellarapi.api.event.ResetSkyEffectEvent;
@@ -23,6 +24,8 @@ public class StellarAPIEventHook {
 			ISkyEffect sky = StellarAPIReference.getSkyEffect(event.getWorld());
 			
 			event.getCollections().addAll(dimManager.constructCelestials(coordinate, sky));
+			event.getEffectors(IEffectorType.Light).addAll(dimManager.getSuns());
+			event.getEffectors(IEffectorType.Tide).addAll(dimManager.getMoons());
 		}
 	}
 	

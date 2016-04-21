@@ -1,6 +1,7 @@
 package stellarium.stellars.milkyway;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,16 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 
 	@Override
 	public Map<Milkyway, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
+		return null;
+	}
+
+	@Override
+	public Collection<Milkyway> getSuns(StellarObjectContainer container) {
+		return null;
+	}
+
+	@Override
+	public Collection<Milkyway> getMoons(StellarObjectContainer container) {
 		return null;
 	}
 }

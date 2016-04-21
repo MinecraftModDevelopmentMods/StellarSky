@@ -1,12 +1,15 @@
 package stellarium.stellars.layer;
 
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
@@ -103,6 +106,26 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 			entry.getValue().updateCache(entry.getKey(), this.coordinate, this.sky);
 	}
 
+	
+	public Collection<IPerWorldImage> getSuns() {
+		List<IPerWorldImage> list = Lists.newArrayList();
+		Collection<Obj> suns = type.getSuns(this.container);
+		if(suns == null) return list;
+		for(Obj sun : suns)
+			list.add(imageMap.get(sun));
+		return list;
+	}
+	
+	public Collection<IPerWorldImage> getMoons() {
+		List<IPerWorldImage> list = Lists.newArrayList();
+		Collection<Obj> moons = type.getMoons(this.container);
+		if(moons == null) return list;
+		for(Obj moon : moons)
+			list.add(imageMap.get(moon));
+		return list;
+	}
+
+	
 	@Override
 	public int searchOrder() {
 		return type.searchOrder();

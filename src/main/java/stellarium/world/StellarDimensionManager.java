@@ -11,6 +11,7 @@ import net.minecraft.world.WorldSavedData;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.StellarAPIReference;
+import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
@@ -27,6 +28,8 @@ public final class StellarDimensionManager extends WorldSavedData {
 	private IStellarSkySet skyset;
 	private StellarCoordinate coordinate;
 	private List<StellarCollection> collections = Lists.newArrayList();
+	private List<ICelestialObject> foundSuns = Lists.newArrayList();
+	private List<ICelestialObject> foundMoons = Lists.newArrayList();
 	
 	private String dimensionName;
 	
@@ -106,6 +109,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 			this.skyset = new RefractiveSkySet(this.settings);
 		else this.skyset = new NonRefractiveSkySet(this.settings);
 		this.coordinate = new StellarCoordinate(manager.getSettings(), this.settings);
+		coordinate.update(manager.getSkyTime(0) / manager.getSettings().day / manager.getSettings().year);
 		StellarSky.logger.info("Initialized Dimension Settings.");
 	}
 	
@@ -115,13 +119,24 @@ public final class StellarDimensionManager extends WorldSavedData {
 					this.coordinate.getYearPeriod());
 			container.addCollection(collection);
 			collections.add(collection);
+			
+			foundSuns.addAll(collection.getSuns());
+			foundMoons.addAll(collection.getMoons());
 		}
 		return this.collections;
 	}
 	
+	public Collection<ICelestialObject> getSuns() {
+		return this.foundSuns;
+	}
+	
+	public Collection<ICelestialObject> getMoons() {
+		return this.foundMoons;
+	}
+	
 	public void update(World world, double currentTick) {
 		double skyTime = manager.getSkyTime(currentTick);
-		coordinate.update(world, skyTime / manager.getSettings().day / manager.getSettings().year);
+		coordinate.update(skyTime / manager.getSettings().day / manager.getSettings().year);
 		
 		ISkyEffect skyEffect = StellarAPIReference.getSkyEffect(world);
 		
