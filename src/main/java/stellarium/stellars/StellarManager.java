@@ -20,6 +20,7 @@ public final class StellarManager extends WorldSavedData {
 	private CommonSettings settings;
 	private CelestialManager celestialManager;
 	private boolean locked = false;
+	private boolean setup = false;
 	
 	public StellarManager(String id) {
 		super(id);
@@ -96,6 +97,9 @@ public final class StellarManager extends WorldSavedData {
 	
 	
 	public void setup(CelestialManager manager) {
+		if(this.setup)
+			return;
+		
 		StellarSky.logger.info("Starting Common Initialization...");
 		this.celestialManager = manager;
 		manager.initializeCommon(this.settings);
@@ -104,6 +108,8 @@ public final class StellarManager extends WorldSavedData {
 		StellarSky.logger.info("Starting Initial Update...");
 		this.update(0.0);
 		StellarSky.logger.info("Initial Update Ended.");
+		
+		this.setup = true;
 	}
 	
 	public CommonSettings getSettings() {

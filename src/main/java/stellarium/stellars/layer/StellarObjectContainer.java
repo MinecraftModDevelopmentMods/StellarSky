@@ -104,6 +104,7 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	
 	public void addCollection(StellarCollection image) {
 		image.addImages(imageTypeMap.keySet(), this.imageTypeMap);
+		addedSet.clear();
 	}
 	
 	public void updateCollection(StellarCollection image) {
@@ -120,13 +121,19 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	}
 	
 	
+	private boolean initialized = false;
+	
 	public void reloadClientSettings(ClientSettings settings, ClientConfig specificSettings) {
+		this.initialized = true;
 		for(IRenderCache cache : renderCacheMap.values())
 			cache.initialize(settings, specificSettings);
 	}
 
 	public void updateClient(ClientSettings settings, ClientConfig specificSettings,
 			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
+		if(!this.initialized)
+			return;
+		
 		for(Map.Entry<Obj, IRenderCache> entry : renderCacheMap.entrySet())
 			entry.getValue().updateCache(settings, specificSettings, entry.getKey(),
 					coordinate, sky, scope);

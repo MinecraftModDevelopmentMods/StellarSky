@@ -78,7 +78,8 @@ public class StellarForgeEventHook {
 		ISkyEffect skyEffect = StellarAPIReference.getSkyEffect(world);
 		
 		if(manager.getSettings().serverEnabled && dimManager.getSettings().doesPatchProvider()) {
-			DefaultCelestialHelper helper = new DefaultCelestialHelper(0, 0, null, null, coordinate, skyEffect);
+			DefaultCelestialHelper helper = new DefaultCelestialHelper((float)dimManager.getSettings().getSunlightMultiplier(), 1.0f,
+					dimManager.getSuns().get(0), dimManager.getMoons().get(0), coordinate, skyEffect);
 			WorldProvider newProvider = StellarSkyAPI.getReplacedWorldProvider(world, world.provider, helper);
 			new WorldProviderReplaceHelper().patchWorldProviderWith(world, newProvider);
 		}

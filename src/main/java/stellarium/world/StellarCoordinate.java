@@ -58,9 +58,8 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		NEqtoREq.set(new AxisAngle4d(0.0, 0.0, 1.0, -this.rot*year - this.longitude));
 		REqtoNEq.set(new AxisAngle4d(0.0, 0.0, 1.0, this.rot*year + this.longitude));
 		
-		REqtoHor.set(new AxisAngle4d(1.0, 0.0, 0.0, this.latitude-Math.PI*0.5));
-		HortoREq.set(new AxisAngle4d(1.0, 0.0, 0.0, Math.PI*0.5-this.latitude));
-		
+		REqtoHor.set(new AxisAngle4d(1.0, 0.0, 0.0, this.latitude));
+		HortoREq.set(new AxisAngle4d(1.0, 0.0, 0.0, -this.latitude));
 		
 		Vector3d East = new Vector3d(1.0, 0.0, 0.0);
 		invtransform(East);
@@ -68,12 +67,12 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		Vector3d North = new Vector3d(0.0, 1.0, 0.0);
 		invtransform(North);
 		
-		this.ZenD = new Vector3d(0.0,0.0,1.0);
+		this.ZenD = new Vector3d(0.0, 0.0, 1.0);
 		invtransform(ZenD);
 
-		projection.setColumn(0, East);
-		projection.setColumn(1, North);
-		projection.setColumn(2, ZenD);
+		projection.setRow(0, East);
+		projection.setRow(1, North);
+		projection.setRow(2, ZenD);
 		
 		Vector3d EastEq = new Vector3d(1.0, 0.0, 0.0);
 		invtransformEq(EastEq);
@@ -84,9 +83,9 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		Vector3d ZenEq = new Vector3d(0.0,0.0,1.0);
 		invtransformEq(ZenEq);
 
-		projectionEq.setColumn(0, EastEq);
-		projectionEq.setColumn(1, NorthEq);
-		projectionEq.setColumn(2, ZenEq);
+		projectionEq.setRow(0, EastEq);
+		projectionEq.setRow(1, NorthEq);
+		projectionEq.setRow(2, ZenEq);
 		
 		//Zen.set(VOp.mult(manager.Earth.radius, ZenD));
 	}
@@ -161,7 +160,7 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		SpCoord coord = new SpCoord();
 		coord.setWithVec(eqrPos);
 		
-		return Spmath.fmod((this.longitude-coord.x) / 360.0, 1.0);
+		return Spmath.fmod((this.longitude-coord.x) / 360.0 + 0.5, 1.0);
 	}
 
 	@Override
@@ -172,7 +171,7 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		SpCoord coord = new SpCoord();
 		coord.setWithVec(eqrPos);
 		
-		return 90.0 - Math.abs(this.latitude - eqrPos.y);
+		return 90.0 - Math.abs(this.latitude - coord.y);
 	}
 
 	@Override
@@ -183,7 +182,7 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		SpCoord coord = new SpCoord();
 		coord.setWithVec(eqrPos);
 		
-		return Math.abs(this.latitude + eqrPos.y) - 90.0;
+		return Math.abs(this.latitude + coord.y) - 90.0;
 	}
 
 	@Override

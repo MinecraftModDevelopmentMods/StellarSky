@@ -31,11 +31,11 @@ public class StellarNetworkFMLEventHandler {
 		netManager.onSetManager((EntityPlayerMP) event.player, event.player.worldObj);
 	}
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
 		EntityPlayerMP player = (EntityPlayerMP) event.player;
 		netManager.onSetManager(player, player.worldObj);
-	}
+	}*/
 	
 	@SubscribeEvent
 	public void handleNotModded(FMLNetworkEvent.ClientConnectedToServerEvent event) {

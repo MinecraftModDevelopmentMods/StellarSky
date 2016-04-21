@@ -10,11 +10,11 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.Wavelength;
 import stellarium.stellars.layer.IPerWorldImage;
 
-public class MoonWorldImage implements IPerWorldImage<Moon> {
+public class MoonImage implements IPerWorldImage<Moon> {
 
 	private double mag;
 	private Vector3d pos;
-	private SpCoord appCoord;
+	private SpCoord appCoord = new SpCoord();
 	private double phase;
 	private CelestialPeriod siderealPeriod, synodicPeriod;
 	private CelestialPeriod horPeriod;

@@ -2,6 +2,8 @@ package stellarium.stellars.system;
 
 import javax.vecmath.Vector3d;
 
+import org.lwjgl.opengl.GL11;
+
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSkyResources;
 import stellarium.render.ICelestialObjectRenderer;
@@ -21,9 +23,9 @@ public class SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 		
 		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceSunHalo.getLocation());
 		info.tessellator.startDrawingQuads();
-		info.tessellator.addVertexWithUV(pos.x+dif.x, pos.y+dif.y, pos.z+dif.z,0.0,0.0);
+		info.tessellator.addVertexWithUV(pos.x+dif.x,  pos.y+dif.y,  pos.z+dif.z, 0.0,0.0);
 		info.tessellator.addVertexWithUV(pos.x+dif2.x, pos.y+dif2.y, pos.z+dif2.z,1.0,0.0);
-		info.tessellator.addVertexWithUV(pos.x-dif.x, pos.y-dif.y, pos.z-dif.z,1.0,1.0);
+		info.tessellator.addVertexWithUV(pos.x-dif.x,  pos.y-dif.y,  pos.z-dif.z, 1.0,1.0);
 		info.tessellator.addVertexWithUV(pos.x-dif2.x, pos.y-dif2.y, pos.z-dif2.z,0.0,1.0);
 		info.tessellator.draw();
 	}

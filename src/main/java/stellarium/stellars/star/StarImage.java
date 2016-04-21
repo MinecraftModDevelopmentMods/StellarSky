@@ -12,11 +12,11 @@ import stellarapi.api.optics.Wavelength;
 import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.layer.IPerWorldImage;
 
-public class StarWorldImage implements IPerWorldImage<BgStar> {
+public class StarImage implements IPerWorldImage<BgStar> {
 	
 	private CelestialPeriod horizontalPeriod;
 	private BgStar main;
-	private SpCoord appPos;
+	private SpCoord appPos = new SpCoord();
 	
 	@Override
 	public void initialize(BgStar object, ICelestialCoordinate coordinate, ISkyEffect effect, CelestialPeriod year) {
@@ -24,7 +24,7 @@ public class StarWorldImage implements IPerWorldImage<BgStar> {
 		
 		SpCoord coord = new SpCoord();
 		coord.setWithVec(object.pos);
-		this.horizontalPeriod = new CelestialPeriod(String.format("Star_%s", main.name),
+		this.horizontalPeriod = new CelestialPeriod(String.format("Day; Star %s", main.name),
 				coordinate.getPeriod().getPeriodLength(),
 				coordinate.calculateInitialOffset(object.pos));
 	}

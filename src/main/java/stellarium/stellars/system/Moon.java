@@ -99,8 +99,12 @@ public class Moon extends SolarObject {
 		float lat=(float)Spmath.Radians(latitude);
 		Vector3d result = new Vector3d(this.Pole);
 		result.scale(Spmath.sinf(lat));
-		result.scaleAdd(Spmath.cosf(lat)*Spmath.cosf(longp), this.PrMer0);
-		result.scaleAdd(Spmath.cosf(lat)*Spmath.sinf(longp), this.East);
+		Vector3d ref = new Vector3d(this.PrMer0);
+		ref.scale(Spmath.cosf(lat)*Spmath.cosf(longp));
+		result.add(ref);
+		ref = new Vector3d(this.East);
+		ref.scale(Spmath.cosf(lat)*Spmath.sinf(longp));
+		result.add(ref);
 		result.scale(this.radius);
 		return result;
 	}
@@ -130,6 +134,7 @@ public class Moon extends SolarObject {
 	}
 	
 	//Phase of the Moon(Update Needed)
+	@Override
 	public double getPhase(){
 		return (Math.PI-Math.acos(earthPos.dot(this.sunPos) / (this.earthPos.length() * this.sunPos.length()))) / Math.PI;
 	}

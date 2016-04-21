@@ -26,7 +26,7 @@ import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
 import stellarium.stellars.star.StarRenderCache;
-import stellarium.stellars.star.StarWorldImage;
+import stellarium.stellars.star.StarImage;
 import stellarium.util.math.StellarMath;
 
 public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {

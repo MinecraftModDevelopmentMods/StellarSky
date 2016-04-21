@@ -46,8 +46,8 @@ public class PlanetRenderCache implements IRenderCache<SolarObject, IConfigHandl
 				&& ((IStellarSkySet) sky).hideObjectsUnderHorizon())
 			this.shouldRender = false;
 		
-		this.size = (float) (scope.getResolution(Wavelength.visible) / (0.2 * scope.getMP()));
-		this.multiplier = (float) scope.getLGP() / this.size / this.size;
+		this.size = (float) (scope.getResolution(Wavelength.visible) / 0.3);
+		this.multiplier = (float)(scope.getLGP() / (this.size * this.size * scope.getMP() * scope.getMP()));
 		this.size *= 0.6f;
 	}
 

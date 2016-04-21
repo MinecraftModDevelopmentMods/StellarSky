@@ -10,6 +10,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
@@ -27,7 +28,7 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	private StellarObjectContainer container;
 	private ICelestialCoordinate coordinate;
 	private ISkyEffect sky;
-	private Map<Obj, IPerWorldImage> imageMap;
+	private Map<Obj, IPerWorldImage> imageMap = Maps.newHashMap();
 	private CelestialPeriod yearPeriod;
 		
 	public StellarCollection(StellarObjectContainer container, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {

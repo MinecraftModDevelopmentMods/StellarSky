@@ -19,11 +19,11 @@ public class StarRenderer implements ICelestialObjectRenderer<StarRenderCache> {
 		float mag = cache.appMag;
 		float B_V = cache.appB_V;
 
-		float alpha=Optics.getAlphaFromMagnitudeSparkling(mag, info.bglight) - (((1-info.weathereff)/1)*20f);
+		float alpha=Optics.getAlphaFromMagnitudeSparkling(mag, info.bglight)*cache.multiplier - (((1-info.weathereff)/1)*20f);
 		
 		Vector3d dif = new SpCoord(cache.appCoord.x+90, 0.0).getVec();
 		Vector3d dif2 = new SpCoord(cache.appCoord.x, cache.appCoord.y+90).getVec();
-
+		
 		pos.scale(100.0);
 		dif.scale(cache.size);
 		dif2.scale(-cache.size);

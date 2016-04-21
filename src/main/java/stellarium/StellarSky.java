@@ -14,6 +14,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.MinecraftForge;
+import stellarapi.api.StellarAPIReference;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.render.SkyRenderTypeEnd;
@@ -43,7 +44,7 @@ public class StellarSky {
         private StellarForgeEventHook eventHook = new StellarForgeEventHook();
         private StellarTickHandler tickHandler = new StellarTickHandler();
         private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
-        private StellarNetworkManager networkManager = new StellarNetworkManager();
+        private StellarNetworkManager networkManager;
         
         public StellarNetworkManager getNetworkManager() {
         	return this.networkManager;
@@ -55,12 +56,16 @@ public class StellarSky {
         	
         	proxy.preInit(event);
         	
+        	this.networkManager = new StellarNetworkManager();
+        	
     		MinecraftForge.EVENT_BUS.register(this.eventHook);
     		FMLCommonHandler.instance().bus().register(this.tickHandler);
     		FMLCommonHandler.instance().bus().register(this.fmlEventHook);
     		
     		MinecraftForge.EVENT_BUS.register(new StellarNetworkEventHandler(this.networkManager));
     		FMLCommonHandler.instance().bus().register(new StellarNetworkFMLEventHandler(this.networkManager));
+    		
+    		StellarAPIReference.getEventBus().register(new StellarAPIEventHook());
     		
     		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
     		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());

@@ -126,11 +126,11 @@ public final class StellarDimensionManager extends WorldSavedData {
 		return this.collections;
 	}
 	
-	public Collection<ICelestialObject> getSuns() {
+	public List<ICelestialObject> getSuns() {
 		return this.foundSuns;
 	}
 	
-	public Collection<ICelestialObject> getMoons() {
+	public List<ICelestialObject> getMoons() {
 		return this.foundMoons;
 	}
 	

@@ -41,7 +41,8 @@ public class MessageSyncCommon implements IMessage {
 		@Override
 		public IMessage onMessage(MessageSyncCommon message, MessageContext ctx) {
 			StellarManager manager = StellarManager.getManager(true);
-			manager.syncFromNBT(message.compoundInfo, true);
+			if(!message.compoundInfo.hasNoTags())
+				manager.syncFromNBT(message.compoundInfo, true);
 			
 			World world = StellarSky.proxy.getDefWorld();
 			

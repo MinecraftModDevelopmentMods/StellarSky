@@ -29,9 +29,9 @@ public class MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 			
 			float alpha=(float) (Optics.getAlphaFromMagnitude(14.5+cache.appMag-2.5*Math.log10(cache.difactor),info.bglight));
 			
-			GL11.glColor4d(1.0, 1.0, 1.0, info.weathereff*alpha);
 
 			info.tessellator.startDrawingQuads();
+			info.tessellator.setColorRGBA_F(1.0f, 1.0f, 1.0f, alpha);
 			info.tessellator.addVertexWithUV(pos.x+dif.x, pos.y+dif.y, pos.z+dif.z,0.0,0.0);
 			info.tessellator.addVertexWithUV(pos.x+dif2.x, pos.y+dif2.y, pos.z+dif2.z,0.0,1.0);
 			info.tessellator.addVertexWithUV(pos.x-dif.x, pos.y-dif.y, pos.z-dif.z,1.0,1.0);

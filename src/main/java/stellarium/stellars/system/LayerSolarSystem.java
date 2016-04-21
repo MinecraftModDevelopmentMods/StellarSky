@@ -46,6 +46,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		container.loadObject("Sun", sun);
 		container.loadObject("System", sun);
 		container.addRenderCache(sun, new SunRenderCache());
+		container.addImageType(sun, SunImage.class);
 		
 		///Earth System
 		//Declaration		
@@ -94,6 +95,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		container.loadObject("Moon", moon);
 		container.loadObject("System", moon);
 		container.addRenderCache(moon, new MoonRenderCache());
+		container.addImageType(moon, MoonImage.class);
 		
 		///Planets
 		//Mercury
