@@ -9,9 +9,9 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.IViewScope;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
-import stellarium.render.IRenderCache;
 import stellarium.stellars.Optics;
-import stellarium.stellars.view.IStellarSkySet;
+import stellarium.stellars.layer.IRenderCache;
+import stellarium.world.IStellarSkySet;
 
 public class PlanetRenderCache implements IRenderCache<SolarObject, IConfigHandler> {
 	
@@ -49,6 +49,11 @@ public class PlanetRenderCache implements IRenderCache<SolarObject, IConfigHandl
 		this.size = (float) (scope.getResolution(Wavelength.visible) / (0.2 * scope.getMP()));
 		this.multiplier = (float) scope.getLGP() / this.size / this.size;
 		this.size *= 0.6f;
+	}
+
+	@Override
+	public int getRenderId() {
+		return LayerSolarSystem.planetRenderId;
 	}
 
 }

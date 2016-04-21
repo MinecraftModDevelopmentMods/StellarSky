@@ -2,12 +2,13 @@ package stellarium.stellars.system;
 
 import javax.vecmath.Vector3d;
 
-import stellarium.render.IRenderCache;
+import stellarium.stellars.layer.IRenderCache;
 
 public class Sun extends SolarObject {
 
-	public Sun(boolean isRemote) {
-		super(isRemote);
+	public Sun(String name) {
+		super(name);
+		//Constant for sun
 		this.currentMag=-26.74;
 	}
 
@@ -18,14 +19,8 @@ public class Sun extends SolarObject {
 	
 	protected void updateMagnitude(Vector3d earthFromSun) { }
 
-	@Override
-	public IRenderCache generateCache() {
-		return new SunRenderCache();
-	}
-
-	@Override
-	public int getRenderId() {
-		return LayerSolarSystem.sunRenderId;
+	public double getMagnitude() {
+		return this.currentMag;
 	}
 
 }

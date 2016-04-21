@@ -21,7 +21,7 @@ import stellarium.render.SkyRenderCelestial;
 import stellarium.stellars.DefaultCelestialHelper;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.stellars.view.StellarDimensionManager;
+import stellarium.world.StellarDimensionManager;
 
 public class StellarForgeEventHook {
 	
@@ -66,13 +66,13 @@ public class StellarForgeEventHook {
 		if(world.isRemote)
 			manager.setup(StellarSky.proxy.getClientCelestialManager());
 		else manager.setup(new CelestialManager(false));
-		StellarAPIReference.constructCelestials(world);
 	}
 	
 	public static void setupDimension(World world, StellarManager manager, StellarDimensionManager dimManager) {
 		dimManager.setup();
-		StellarAPIReference.resetCoordinate(world);
+		
 		StellarAPIReference.resetSkyEffect(world);
+		StellarAPIReference.constructCelestials(world);
 		
 		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(world);
 		ISkyEffect skyEffect = StellarAPIReference.getSkyEffect(world);

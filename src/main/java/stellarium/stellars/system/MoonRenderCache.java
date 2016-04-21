@@ -7,10 +7,10 @@ import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
-import stellarium.render.IRenderCache;
 import stellarium.stellars.Optics;
-import stellarium.stellars.view.IStellarSkySet;
+import stellarium.stellars.layer.IRenderCache;
 import stellarium.util.math.StellarMath;
+import stellarium.world.IStellarSkySet;
 
 public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSettings> {
 	
@@ -73,6 +73,11 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 					moonilum[longc][latc]=0.0f;
 			}
 		}
+	}
+
+	@Override
+	public int getRenderId() {
+		return LayerSolarSystem.moonRenderId;
 	}
 
 }

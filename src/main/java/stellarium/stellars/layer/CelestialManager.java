@@ -13,22 +13,20 @@ import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
 import stellarium.common.CommonSettings;
-import stellarium.stellars.view.IStellarSkySet;
 
 public class CelestialManager {
-	
-	private List<ICelestialLayer> layers = Lists.newArrayList();
+
 	private boolean isRemote;
+	private List<StellarObjectContainer> layers = Lists.newArrayList();
 	
 	public CelestialManager(boolean isRemote) {
 		this.isRemote = isRemote;
 		
-		CelestialLayerRegistry registry = CelestialLayerRegistry.getInstance();
-		
-		registry.composeCommonLayer(this.layers);
+		StellarLayerRegistry registry = StellarLayerRegistry.getInstance();
+		registry.composeLayer(isRemote, this.layers);
 	}
 	
-	public List<ICelestialLayer> getLayers() {
+	public List<StellarObjectContainer> getLayers() {
 		return this.layers;
 	}
 	
@@ -36,9 +34,9 @@ public class CelestialManager {
 		StellarSky.logger.info("Initializing Celestial Layers with Client Settings...");
 		String layerName = null;
 		try {
-			for(ICelestialLayer layer : this.layers) {
-				layerName = CelestialLayerRegistry.getInstance().getConfigName(layer);
-				layer.initializeClient(true, layerName != null? settings.getSubConfig(layerName) : null);
+			for(StellarObjectContainer layer : this.layers) {
+				layerName = layer.getConfigName();
+				layer.getType().initializeClient(layerName != null? settings.getSubConfig(layerName) : null, layer);
 			}
 		} catch(Exception exception) {
 	    	StellarSky.logger.fatal("Failed to initialize Celestial Layer %s by Exception %s",
@@ -52,9 +50,9 @@ public class CelestialManager {
 		StellarSky.logger.info("Initializing Celestial Layers with Common Settings...");
 		String layerName = null;
 		try {
-			for(ICelestialLayer layer : this.layers) {
-				layerName = CelestialLayerRegistry.getInstance().getConfigName(layer);
-				layer.initializeCommon(false, layerName != null? settings.getSubConfig(layerName) : null);
+			for(StellarObjectContainer layer : this.layers) {
+				layerName = layer.getConfigName();
+				layer.getType().initializeCommon(layerName != null? settings.getSubConfig(layerName) : null, layer);
 			}
 		} catch(Exception exception) {
 	    	StellarSky.logger.fatal("Failed to initialize Celestial Layer %s by Exception %s",
@@ -66,34 +64,29 @@ public class CelestialManager {
 	
 	public void reloadClientSettings(ClientSettings settings) {
 		StellarSky.logger.info("Reloading Client Settings...");
-		String layerName = null;
-		for(ICelestialLayer<? extends INBTConfig, ? extends IConfigHandler> layer : this.layers)
-			for(CelestialObject object : layer.getObjectList())
-				if(object.getRenderId() != -1)
-				{
-					layerName = CelestialLayerRegistry.getInstance().getConfigName(layer);
-					object.getRenderCache().initialize(settings, layerName != null? settings.getSubConfig(layerName) : null);
-				}
+		
+		for(StellarObjectContainer layer : this.layers)
+		{
+			String layerName = layer.getConfigName();
+			layer.reloadClientSettings(settings, layerName != null? settings.getSubConfig(layerName) : null);
+		}
+
 		StellarSky.logger.info("Client Settings reloaded.");
 	}
 	
 	public void update(double year) {
-		for(ICelestialLayer layer : this.layers)
-			layer.updateLayer(year);
+		for(StellarObjectContainer layer : this.layers)
+			layer.getType().updateLayer(layer, year);
 	}
 	
 	public void updateClient(ClientSettings settings,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
-		String layerName = null;
-		
-		for(ICelestialLayer<? extends INBTConfig, ? extends IConfigHandler> layer : this.layers)
-			for(CelestialObject object : layer.getObjectList()) {
-				if(object.getRenderId() != -1) {
-					layerName = CelestialLayerRegistry.getInstance().getConfigName(layer);
-					object.getRenderCache().updateCache(settings, layerName != null? settings.getSubConfig(layerName) : null,
-							object, coordinate, sky, scope);
-				}
-			}
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {		
+		for(StellarObjectContainer layer : this.layers)
+		{
+			String layerName = layer.getConfigName();
+			layer.updateClient(settings, layerName != null? settings.getSubConfig(layerName) : null,
+					coordinate, sky, scope);
+		}
 	}
 
 }

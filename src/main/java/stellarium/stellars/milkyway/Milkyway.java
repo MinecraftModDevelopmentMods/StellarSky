@@ -1,22 +1,19 @@
 package stellarium.stellars.milkyway;
 
-import stellarium.render.IRenderCache;
-import stellarium.stellars.layer.CelestialObject;
+import javax.vecmath.Vector3d;
 
-public class Milkyway extends CelestialObject {
+import stellarapi.api.CelestialPeriod;
+import stellarapi.api.celestials.EnumCelestialObjectType;
+import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.Wavelength;
+import stellarium.stellars.layer.StellarObject;
+import stellarium.stellars.layer.IRenderCache;
 
-	public Milkyway(boolean isRemote) {
-		super(isRemote);
-	}
-
-	@Override
-	public IRenderCache generateCache() {
-		return new MilkywayCache();
-	}
+public class Milkyway extends StellarObject {
 
 	@Override
-	public int getRenderId() {
-		return LayerMilkyway.milkywayRenderId;
+	public String getID() {
+		return "Milkyway";
 	}
 
 }

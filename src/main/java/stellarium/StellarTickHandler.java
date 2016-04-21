@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import stellarium.stellars.StellarManager;
-import stellarium.stellars.view.StellarDimensionManager;
+import stellarium.world.StellarDimensionManager;
 
 public class StellarTickHandler {
 	
@@ -55,6 +55,15 @@ public class StellarTickHandler {
 				if(manager.getSettings().serverEnabled)
 					manager.update(world.getWorldTime());
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void tickStart(TickEvent.WorldTickEvent e) {
+		if(e.phase == Phase.START){
+			StellarDimensionManager dimManager = StellarDimensionManager.get(e.world);
+			if(dimManager != null)
+				dimManager.update(e.world, e.world.getWorldTime());
 		}
 	}
 

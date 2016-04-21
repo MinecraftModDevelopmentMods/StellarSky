@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import stellarium.stellars.StellarManager;
-import stellarium.stellars.view.StellarDimensionManager;
+import stellarium.world.StellarDimensionManager;
 
 public class StellarNetworkManager {
 	

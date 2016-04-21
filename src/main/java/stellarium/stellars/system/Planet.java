@@ -5,7 +5,7 @@ import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
 import stellarapi.api.lib.math.Spmath;
-import stellarium.render.IRenderCache;
+import stellarium.stellars.layer.IRenderCache;
 import stellarium.util.math.StellarMath;
 
 public class Planet extends SolarObject {
@@ -17,13 +17,8 @@ public class Planet extends SolarObject {
 
 	private Matrix3d roti = new Matrix3d(), rotw = new Matrix3d(), rotom = new Matrix3d();
 	
-	public Planet(boolean isRemote, SolarObject parent) {
-		super(isRemote, parent);
-	}
-	
-	@Override
-	public IRenderCache generateCache() {
-		return new PlanetRenderCache();
+	public Planet(String name, SolarObject parent) {
+		super(name, parent);
 	}
 
 	@Override
@@ -49,11 +44,6 @@ public class Planet extends SolarObject {
 		matrix.mul(this.rotw);
 		
 		return StellarMath.GetOrbVec(a, e, M, matrix);
-	}
-
-	@Override
-	public int getRenderId() {
-		return LayerSolarSystem.planetRenderId;
 	}
 
 }

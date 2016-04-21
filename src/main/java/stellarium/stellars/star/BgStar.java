@@ -2,34 +2,29 @@ package stellarium.stellars.star;
 
 import javax.vecmath.Vector3d;
 
-import stellarium.render.IRenderCache;
-import stellarium.stellars.layer.CelestialObject;
+import stellarapi.api.CelestialPeriod;
+import stellarapi.api.celestials.EnumCelestialObjectType;
+import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.Wavelength;
+import stellarium.stellars.layer.StellarObject;
+import stellarium.stellars.layer.IRenderCache;
 
-public class BgStar extends CelestialObject {
+public class BgStar extends StellarObject {
 
-	private static int renderIndex = -1;
+	protected String name;
 	protected double mag, B_V;
 	protected Vector3d pos;
 	
-	public BgStar(boolean isRemote, double mag, double B_V, Vector3d pos) {
-		super(isRemote);
+	public BgStar(String name, double mag, double B_V, Vector3d pos) {
+		this.name = name;
 		this.mag = mag;
 		this.B_V = B_V;
 		this.pos = pos;
 	}
 
 	@Override
-	public IRenderCache generateCache() {
-		return new StarRenderCache();
-	}
-	
-	public static void setRenderId(int id) {
-		renderIndex = id;
-	}
-
-	@Override
-	public int getRenderId() {
-		return renderIndex;
+	public String getID() {
+		return this.name;
 	}
 
 }

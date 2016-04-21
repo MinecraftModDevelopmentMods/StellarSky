@@ -1,12 +1,21 @@
-package stellarium.stellars.view;
+package stellarium.world;
+
+import java.util.Collection;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.StellarAPIReference;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
+import stellarium.stellars.layer.StellarCollection;
+import stellarium.stellars.layer.StellarObjectContainer;
 
 public final class StellarDimensionManager extends WorldSavedData {
 	
@@ -17,6 +26,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	private PerDimensionSettings settings;
 	private IStellarSkySet skyset;
 	private StellarCoordinate coordinate;
+	private List<StellarCollection> collections = Lists.newArrayList();
 	
 	private String dimensionName;
 	
@@ -99,9 +109,26 @@ public final class StellarDimensionManager extends WorldSavedData {
 		StellarSky.logger.info("Initialized Dimension Settings.");
 	}
 	
+	public Collection<StellarCollection> constructCelestials(ICelestialCoordinate coordinate, ISkyEffect sky) {
+		for(StellarObjectContainer container : manager.getCelestialManager().getLayers()) {
+			StellarCollection collection = new StellarCollection(container, coordinate, sky,
+					this.coordinate.getYearPeriod());
+			container.addCollection(collection);
+			collections.add(collection);
+		}
+		return this.collections;
+	}
+	
 	public void update(World world, double currentTick) {
 		double skyTime = manager.getSkyTime(currentTick);
 		coordinate.update(world, skyTime / manager.getSettings().day / manager.getSettings().year);
+		
+		ISkyEffect skyEffect = StellarAPIReference.getSkyEffect(world);
+		
+		for(int i = 0; i < collections.size(); i++) {
+			StellarCollection collection = collections.get(i);
+			StellarObjectContainer container = manager.getCelestialManager().getLayers().get(i);
+			container.updateCollection(collection);
+		}
 	}
-
 }

@@ -1,4 +1,4 @@
-package stellarium.stellars.view;
+package stellarium.world;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;

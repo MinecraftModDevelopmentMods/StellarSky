@@ -9,9 +9,9 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.IViewScope;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
-import stellarium.render.IRenderCache;
 import stellarium.stellars.Optics;
-import stellarium.stellars.view.IStellarSkySet;
+import stellarium.stellars.layer.IRenderCache;
+import stellarium.world.IStellarSkySet;
 
 public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 	
@@ -51,6 +51,11 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 		this.size = (float) (scope.getResolution(Wavelength.visible) / (0.2 * scope.getMP()));
 		this.multiplier = (float) scope.getLGP() / this.size / this.size;
 		this.size *= 0.5f;
+	}
+
+	@Override
+	public int getRenderId() {
+		return LayerBgStar.renderStarIndex;
 	}
 
 }

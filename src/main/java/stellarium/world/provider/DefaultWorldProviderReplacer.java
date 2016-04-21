@@ -1,22 +1,20 @@
-package stellarium.world;
+package stellarium.world.provider;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldProviderEnd;
 import stellarium.api.ICelestialHelper;
 import stellarium.api.IWorldProviderReplacer;
 
-public class EndReplacer implements IWorldProviderReplacer {
+public class DefaultWorldProviderReplacer implements IWorldProviderReplacer {
 
 	@Override
 	public boolean accept(World world, WorldProvider provider) {
-		return provider instanceof WorldProviderEnd;
+		return true;
 	}
 
 	@Override
 	public WorldProvider createWorldProvider(World world, WorldProvider originalProvider, ICelestialHelper helper) {
-		return new StellarWorldProviderEnd(originalProvider, helper);
-
+		return new StellarWorldProvider(originalProvider, helper);
 	}
 
 }

@@ -14,7 +14,7 @@ import stellarium.api.ICelestialRenderer;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.stellars.view.StellarDimensionManager;
+import stellarium.world.StellarDimensionManager;
 
 public class SkyRenderCelestial implements ICelestialRenderer {
 	
@@ -27,7 +27,7 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 		this.renderer = new CelestialRenderer();
 		
 		CelestialManager celManager = StellarSky.proxy.getClientCelestialManager();
-		renderer.refreshRenderer(celManager.getLayers());
+		renderer.refreshRenderer();
 		settings.checkDirty();
 		celManager.reloadClientSettings(this.settings);
 		this.onSettingsUpdated(Minecraft.getMinecraft());

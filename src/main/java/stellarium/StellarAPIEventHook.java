@@ -2,18 +2,27 @@ package stellarium;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.StellarAPIReference;
 import stellarapi.api.event.ConstructCelestialsEvent;
 import stellarapi.api.event.ResetCoordinateEvent;
 import stellarapi.api.event.ResetSkyEffectEvent;
-import stellarium.stellars.StellarManager;
-import stellarium.stellars.view.StellarDimensionManager;
+import stellarium.world.StellarDimensionManager;
 
 public class StellarAPIEventHook {
 	
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onConstruct(ConstructCelestialsEvent event) {
-		if(StellarManager.hasManager(event.getWorld(), event.getWorld().isRemote)) {
+		StellarDimensionManager dimManager = StellarDimensionManager.get(event.getWorld());
+		if(dimManager != null) {
+			StellarAPIReference.resetCoordinate(event.getWorld());
+			StellarAPIReference.resetSkyEffect(event.getWorld());
 			
+			ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(event.getWorld());
+			ISkyEffect sky = StellarAPIReference.getSkyEffect(event.getWorld());
+			
+			event.getCollections().addAll(dimManager.constructCelestials(coordinate, sky));
 		}
 	}
 	

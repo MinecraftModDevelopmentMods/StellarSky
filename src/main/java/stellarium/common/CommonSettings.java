@@ -8,7 +8,7 @@ import stellarapi.api.lib.config.property.ConfigProperty;
 import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarapi.api.lib.config.property.ConfigPropertyInteger;
-import stellarium.stellars.layer.CelestialLayerRegistry;
+import stellarium.stellars.layer.StellarLayerRegistry;
 
 public class CommonSettings extends SimpleHierarchicalNBTConfig {
 	
@@ -24,7 +24,7 @@ public class CommonSettings extends SimpleHierarchicalNBTConfig {
 	public ConfigPropertyDouble propAxialTilt, propPrecession;
 	
 	public CommonSettings() {
-		CelestialLayerRegistry.getInstance().composeSettings(this);
+		StellarLayerRegistry.getInstance().composeSettings(this);
 		
 		this.propServerEnabled = new ConfigPropertyBoolean("Server_Enabled", "serverEnabled", true);
         this.propDay = new ConfigPropertyDouble("Day_Length", "day", 24000.0);

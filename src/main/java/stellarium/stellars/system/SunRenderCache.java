@@ -8,7 +8,7 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
-import stellarium.render.IRenderCache;
+import stellarium.stellars.layer.IRenderCache;
 import stellarium.util.math.StellarMath;
 
 public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
@@ -28,6 +28,11 @@ public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
 		sky.applyAtmRefraction(this.appCoord);
 		
 		this.size = object.radius / object.earthPos.length()*99.0*20;
+	}
+
+	@Override
+	public int getRenderId() {
+		return LayerSolarSystem.sunRenderId;
 	}
 
 }

@@ -5,7 +5,7 @@ import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
 import stellarapi.api.lib.math.Spmath;
-import stellarium.render.IRenderCache;
+import stellarium.stellars.layer.IRenderCache;
 import stellarium.util.math.StellarMath;
 
 public class Moon extends SolarObject {
@@ -36,8 +36,8 @@ public class Moon extends SolarObject {
 	Matrix3d ri = new Matrix3d(), rom = new Matrix3d(), rw = new Matrix3d();
 
 
-	public Moon(boolean isRemote, SolarObject earth) {
-		super(isRemote, earth);
+	public Moon(String name, SolarObject earth) {
+		super(name, earth);
 	}
 	
 	@Override
@@ -91,16 +91,6 @@ public class Moon extends SolarObject {
 		Vector3d vec = new Vector3d(this.relativePos);
 		vec.scale(this.mass / parent.mass);
 		parent.relativePos.sub(vec);
-	}
-	
-	@Override
-	public IRenderCache generateCache() {
-		return new MoonRenderCache();
-	}
-
-	@Override
-	public int getRenderId() {
-		return LayerSolarSystem.moonRenderId;
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)

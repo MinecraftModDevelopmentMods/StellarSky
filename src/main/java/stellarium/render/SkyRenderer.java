@@ -27,7 +27,7 @@ import stellarium.api.ICelestialRenderer;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.stellars.view.StellarDimensionManager;
+import stellarium.world.StellarDimensionManager;
 
 public class SkyRenderer extends IRenderHandler {
 

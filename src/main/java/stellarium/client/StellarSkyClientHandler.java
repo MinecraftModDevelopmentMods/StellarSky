@@ -15,7 +15,7 @@ import stellarium.api.IHourProvider;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.stellars.StellarManager;
-import stellarium.stellars.view.StellarDimensionManager;
+import stellarium.world.StellarDimensionManager;
 
 public class StellarSkyClientHandler {
 		

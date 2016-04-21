@@ -1,9 +1,12 @@
 package stellarium.stellars.system;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
@@ -13,9 +16,11 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
 import stellarium.render.CelestialRenderingRegistry;
-import stellarium.stellars.layer.ICelestialLayer;
+import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.layer.IPerWorldImage;
+import stellarium.stellars.layer.IStellarLayerType;
 
-public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, SolarSystemClientSettings> {
+public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSystemClientSettings, SolarSystemSettings> {
 	
 	private static int renderId = -1;
 	protected static int planetRenderId = -1;
@@ -24,43 +29,28 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 	
 	public final double AU=1.496e+8;
 	
-	protected Sun sun;
-	protected Earth earth;
-	protected Moon moon;
-	
-	private Planet mercury;
-	private Planet venus;
-	private Planet mars;
-	private Planet jupiter;
-	private Planet saturn;
-	private Planet uranus;
-	private Planet neptune;
-	
-	protected List<SolarObject> objects = Lists.newArrayList();
-	
 	@Override
-	public void initializeClient(boolean isRemote, SolarSystemClientSettings config) throws IOException { }
+	public void initializeClient(SolarSystemClientSettings config, StellarObjectContainer container) throws IOException { }
 
 	@Override
-	public void initializeCommon(boolean isRemote, SolarSystemSettings settings) throws IOException {		
-		objects.clear();
-		
+	public void initializeCommon(SolarSystemSettings settings, StellarObjectContainer<SolarObject, SolarSystemClientSettings> container) throws IOException {		
 		////Solar System
 		StellarSky.logger.info("Initializing Solar System...");
 		///Sun
 		StellarSky.logger.info("Initializing Sun...");
-		sun = new Sun(isRemote);
+		Sun sun = new Sun("Sun");
 		sun.radius=0.00465469;
 		sun.mass=1.0;
 		sun.initialize();
-		objects.add(this.sun);
+		container.loadObject("Sun", sun);
+		container.loadObject("System", sun);
+		container.addRenderCache(sun, new SunRenderCache());
 		
 		///Earth System
-		//Declaration
-		earth = new Earth(isRemote, this.sun);
-		moon = new Moon(isRemote, this.earth);
-		
+		//Declaration		
 		StellarSky.logger.info("Initializing Earth...");
+		Earth earth = new Earth("Earth", sun);
+		Moon moon = new Moon("Moon", earth);
 		
 		earth.radius=4.2634e-5;
 		earth.mass=3.002458398e-6;
@@ -95,16 +85,18 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 		
 		//Earth Initialize
 		earth.initialize();
-		objects.add(this.earth);
+		container.loadObject("Earth", earth);
+		container.loadObject("System", earth);
 		
 		//Moon Initialize
 		moon.initialize();
-		objects.add(this.moon);
+		container.loadObject("System", moon);
+		container.addRenderCache(moon, new MoonRenderCache());
 		
 		///Planets
 		//Mercury
 		StellarSky.logger.info("Initializing Mercury...");
-		mercury = new Planet(isRemote, this.sun);
+		Planet mercury = new Planet("Mercury", sun);
 		mercury.albedo=0.119;
 		mercury.radius=1.630815508e-5;
 		mercury.mass=1.660147806e-7;
@@ -122,11 +114,12 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 		mercury.Omegad=-0.12214182;
 		
 		mercury.initialize();
-		objects.add(this.mercury);
+		container.loadObject("System", mercury);
+		container.addRenderCache(mercury, new PlanetRenderCache());
 		
 		//Venus
 		StellarSky.logger.info("Initizlizing Venus...");
-		venus = new Planet(isRemote, this.sun);
+		Planet venus = new Planet("Venus", sun);
 		venus.albedo=0.90;
 		venus.radius=4.0453208556e-5;
 		venus.mass=2.447589362e-6;
@@ -144,11 +137,12 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 		venus.Omegad=-0.27274174;
 		
 		venus.initialize();
-		objects.add(this.venus);
+		container.loadObject("System", venus);
+		container.addRenderCache(venus, new PlanetRenderCache());
 		
 		//Mars
 		StellarSky.logger.info("Initializing Mars...");
-		mars = new Planet(isRemote, this.sun);
+		Planet mars = new Planet("Mars", sun);
 		mars.albedo=0.25;
 		mars.radius=2.26604278e-5;
 		mars.mass=3.22683626e-7;
@@ -166,11 +160,12 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 		mars.Omegad=-0.26852431;
 		
 		mars.initialize();
-		objects.add(this.mars);
-		
+		container.loadObject("System", mars);
+		container.addRenderCache(mars, new PlanetRenderCache());
+
 		//Jupiter
 		StellarSky.logger.info("Initializing Jupiter...");
-		jupiter = new Planet(isRemote, this.sun);
+		Planet jupiter = new Planet("Jupiter", sun);
 		jupiter.albedo=0.343;
 		jupiter.radius=4.673195187e-4;
 		jupiter.mass=9.54502036e-4;
@@ -192,11 +187,12 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 		jupiter.f=38.35125;
 		
 		jupiter.initialize();
-		objects.add(this.jupiter);
-		
+		container.loadObject("System", jupiter);
+		container.addRenderCache(jupiter, new PlanetRenderCache());
+
 		//Saturn
 		StellarSky.logger.info("Initializing Saturn...");
-		saturn = new Planet(isRemote, this.sun);
+		Planet saturn = new Planet("Saturn", sun);
 		saturn.albedo=0.342;
 		saturn.radius=3.83128342e-4;
 		saturn.mass=2.8578754e-4;
@@ -218,11 +214,12 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 		saturn.f=38.35125;
 		
 		saturn.initialize();
-		objects.add(this.saturn);
-		
+		container.loadObject("System", saturn);
+		container.addRenderCache(saturn, new PlanetRenderCache());
+
 		//Uranus
 		StellarSky.logger.info("Initializing Uranus...");
-		uranus = new Planet(isRemote, this.sun);
+		Planet uranus = new Planet("uranus", sun);
 		uranus.albedo=0.300;
 		uranus.radius=1.68890374e-4;
 		uranus.mass=4.3642853557e-5;
@@ -244,11 +241,12 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 		uranus.f=7.67025;
 		
 		uranus.initialize();
-		objects.add(this.uranus);
-		
+		container.loadObject("System", uranus);
+		container.addRenderCache(uranus, new PlanetRenderCache());
+
 		//Neptune
 		StellarSky.logger.info("Initializing Neptune...");
-		neptune = new Planet(isRemote, this.sun);
+		Planet neptune = new Planet("Neptune", sun);
 		neptune.albedo=0.290;
 		neptune.radius=1.641209893e-4;
 		neptune.mass=5.14956513e-5;
@@ -270,26 +268,22 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 		neptune.f=7.67025;
 		
 		neptune.initialize();
-		objects.add(this.neptune);
+		container.loadObject("System", neptune);
+		container.addRenderCache(uranus, new PlanetRenderCache());
 		
 		StellarSky.logger.info("Solar System Initialized!");
 	}
 
 	@Override
-	public void updateLayer(double year) {
-		for(SolarObject object : this.objects)
+	public void updateLayer(StellarObjectContainer<SolarObject, SolarSystemClientSettings> container, double year) {
+		for(SolarObject object : container.getLoadedObjects("System"))
 			object.updatePre(year);
-		for(SolarObject object : this.objects)
+		for(SolarObject object : container.getLoadedObjects("System"))
 			object.updateModulate();
-		for(SolarObject object : this.objects)
-			object.updatePos(this.sun, this.earth);
-		for(SolarObject object : this.objects)
-			object.updatePost(this.earth);
-	}
-
-	@Override
-	public List<SolarObject> getObjectList() {
-		return this.objects;
+		for(SolarObject object : container.getLoadedObjects("System"))
+			object.updatePos(container.getLoadedSingleton("Sun"), container.getLoadedSingleton("Earth"));
+		for(SolarObject object : container.getLoadedObjects("System"))
+			object.updatePost(container.getLoadedSingleton("Earth"));
 	}
 
 	@Override
@@ -313,26 +307,7 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<ICelestialObject> getObjects() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<ICelestialObject> getObjectInRange(SpCoord pos, double radius) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ICelestialObject getNearerObject(SpCoord pos, ICelestialObject obj1, ICelestialObject obj2) {
-		// TODO Auto-generated method stub
-		return null;
+		return "Solar System";
 	}
 
 	@Override
@@ -342,13 +317,26 @@ public class LayerSolarSystem implements ICelestialLayer<SolarSystemSettings, So
 
 	@Override
 	public boolean isBackground() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public EnumCelestialCollectionType getCollectionType() {
-		// TODO Auto-generated method stub
+		return EnumCelestialCollectionType.System;
+	}
+
+	@Override
+	public Comparator<ICelestialObject> getDistanceComparator(SpCoord pos) {
+		return null;
+	}
+
+	@Override
+	public Predicate<ICelestialObject> conditionInRange(SpCoord pos, double radius) {
+		return null;
+	}
+
+	@Override
+	public Map<SolarObject, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
 		return null;
 	}
 }

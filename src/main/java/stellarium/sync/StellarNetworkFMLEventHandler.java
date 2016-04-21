@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import stellarium.StellarForgeEventHook;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
-import stellarium.stellars.view.StellarDimensionManager;
+import stellarium.world.StellarDimensionManager;
 
 public class StellarNetworkFMLEventHandler {
 

@@ -1,22 +1,22 @@
 package stellarium.stellars.star;
 
-import java.io.IOException;
 import java.util.List;
-
-import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import stellarapi.api.lib.config.IConfigHandler;
+import stellarapi.api.lib.config.INBTConfig;
 import stellarium.render.CelestialRenderingRegistry;
-import stellarium.stellars.layer.CelestialObject;
-import stellarium.stellars.layer.ICelestialLayer;
+import stellarium.stellars.layer.StellarObject;
+import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.layer.IStellarLayerType;
 
-public abstract class LayerBgStar implements ICelestialLayer {
+public abstract class LayerBgStar<ClientConfig extends IConfigHandler, CommonConfig extends INBTConfig> 
+implements IStellarLayerType<BgStar, ClientConfig, CommonConfig> {
 	
 	public static int renderIndex = -1;
-		
-	public abstract List<? extends CelestialObject> getObjectList();
-
+	public static int renderStarIndex = -1;
+	
 	@Override
 	public int getLayerRendererIndex() {
 		return renderIndex;
@@ -27,9 +27,9 @@ public abstract class LayerBgStar implements ICelestialLayer {
 	public void registerRenderers() {
 		CelestialRenderingRegistry registry = CelestialRenderingRegistry.getInstance();
 		renderIndex = registry.registerLayerRenderer(new LayerStarRenderer());
-		BgStar.setRenderId(registry.registerObjectRenderer(new StarRenderer()));
+		renderStarIndex = registry.registerObjectRenderer(new StarRenderer());
 	}
 	
 	@Override
-	public void updateLayer(double year) { }
+	public void updateLayer(StellarObjectContainer<BgStar, ClientConfig> container, double year) { }
 }

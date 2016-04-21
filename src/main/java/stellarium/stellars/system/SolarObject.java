@@ -2,10 +2,12 @@ package stellarium.stellars.system;
 
 import javax.vecmath.Vector3d;
 
-import stellarium.stellars.layer.CelestialObject;
+import stellarium.stellars.layer.StellarObject;
 import stellarium.util.math.StellarMath;
 
-public abstract class SolarObject extends CelestialObject {
+public abstract class SolarObject extends StellarObject {
+	
+	private String name;
 	
 	protected Vector3d relativePos = new Vector3d();
 	protected Vector3d sunPos = new Vector3d();
@@ -27,19 +29,24 @@ public abstract class SolarObject extends CelestialObject {
 	protected final SolarObject parent;
 	private final int level;
 
-	public SolarObject(boolean isRemote) {
-		super(isRemote);
+	public SolarObject(String name) {
+		this.name = name;
 		this.parent = null;
 		this.level = 0;
 	}
 	
-	public SolarObject(boolean isRemote, SolarObject parent) {
-		super(isRemote);
+	public SolarObject(String name, SolarObject parent) {
+		this.name = name;
 		this.parent = parent;
 		this.level = parent.level + 1;
 	}
 	
 	public void initialize() { }
+	
+	@Override
+	public String getID() {
+		return this.name;
+	}
 	
 	public Vector3d positionTo(SolarObject object) {
 		if(this == object)
@@ -79,8 +86,8 @@ public abstract class SolarObject extends CelestialObject {
 	}
 	
 	protected void updateMagnitude(Vector3d earthFromSun){
-		double dist=this.earthPos.length();
-		double distS=this.sunPos.length();
+		double dist=earthPos.length();
+		double distS=sunPos.length();
 		double distE=earthFromSun.length();
 		double LvsSun=this.radius*this.radius*this.getPhase()*distE*distE*this.albedo*1.4/(dist*dist*distS*distS);
 		this.currentMag=-26.74-2.5*Math.log10(LvsSun);

@@ -6,7 +6,7 @@ import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarapi.api.lib.config.property.ConfigPropertyInteger;
 import stellarapi.api.lib.config.property.ConfigPropertyString;
 import stellarium.StellarSky;
-import stellarium.stellars.layer.CelestialLayerRegistry;
+import stellarium.stellars.layer.StellarLayerRegistry;
 
 public class ClientSettings extends SimpleHierarchicalConfig {
 	
@@ -26,7 +26,7 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 	private boolean isDirty = false;
 	
 	public ClientSettings() {
-		CelestialLayerRegistry.getInstance().composeSettings(this);
+		StellarLayerRegistry.getInstance().composeSettings(this);
 		
 		this.propMagLimit = new ConfigPropertyDouble("Mag_Limit", "", 4.0);
 		this.propTurb = new ConfigPropertyDouble("Twinkling(Turbulance)", "", 1.0);

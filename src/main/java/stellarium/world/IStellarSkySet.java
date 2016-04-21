@@ -1,4 +1,4 @@
-package stellarium.stellars.view;
+package stellarium.world;
 
 import net.minecraft.world.World;
 import stellarapi.api.ISkyEffect;

@@ -1,10 +1,11 @@
-package stellarium.stellars.view;
+package stellarium.world;
 
 import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
 import net.minecraft.world.World;
+import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
@@ -23,6 +24,9 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	
 	private double axialTilt, precession;
 	
+	private CelestialPeriod dayPeriod;
+	private CelestialPeriod yearPeriod;
+	
 	public StellarCoordinate(CommonSettings commonSettings, PerDimensionSettings settings) {
 		this.yearLength = commonSettings.year;
 		this.dayLength = commonSettings.day;
@@ -32,8 +36,20 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		this.axialTilt = Spmath.Radians(commonSettings.propAxialTilt.getDouble());
 		this.precession = Spmath.Radians(commonSettings.propPrecession.getDouble());
 		
+		double fixedDaylength = this.dayLength * this.yearLength / (this.yearLength + 1);
+		this.dayPeriod = new CelestialPeriod("Celestial Day", fixedDaylength,
+				commonSettings.tickOffset / fixedDaylength - this.longitude / 360.0);
+		
+		double fixedYearLength = this.dayLength * this.yearLength / (1.0 - this.precession / 2 / Math.PI);
+		this.yearPeriod = new CelestialPeriod("Celestial Year", fixedYearLength,
+				(commonSettings.dayOffset * commonSettings.day + commonSettings.tickOffset) / fixedYearLength - this.longitude / 360.0);
+		
 		EqtoEc.set(new AxisAngle4d(1.0, 0.0, 0.0, -this.axialTilt));
 		EctoEq.set(new AxisAngle4d(1.0, 0.0, 0.0, this.axialTilt));
+	}
+	
+	public CelestialPeriod getYearPeriod() {
+		return this.yearPeriod;
 	}
 	
 	public void update(World world, double year) {
@@ -130,6 +146,11 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	@Override
 	public Matrix3d getProjectionToGround() {
 		return this.projection;
+	}
+
+	@Override
+	public CelestialPeriod getPeriod() {
+		return this.dayPeriod;
 	}
 
 	@Override

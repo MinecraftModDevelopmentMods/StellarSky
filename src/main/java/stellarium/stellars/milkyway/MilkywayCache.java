@@ -9,9 +9,9 @@ import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
-import stellarium.render.IRenderCache;
+import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.util.ExtinctionRefraction;
-import stellarium.stellars.view.IStellarSkySet;
+import stellarium.world.IStellarSkySet;
 
 public class MilkywayCache implements IRenderCache<Milkyway, MilkywaySettings> {
 	
@@ -56,6 +56,11 @@ public class MilkywayCache implements IRenderCache<Milkyway, MilkywaySettings> {
 		
 		this.brightness = (float) (specificSettings.milkywayBrightness
 				* scope.getLGP() / (scope.getMP() * scope.getMP()));
+	}
+
+	@Override
+	public int getRenderId() {
+		return LayerMilkyway.milkywayRenderId;
 	}
 
 }

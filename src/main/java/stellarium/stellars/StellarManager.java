@@ -3,6 +3,7 @@ package stellarium.stellars;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
+import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.StellarAPIReference;
@@ -99,6 +100,10 @@ public final class StellarManager extends WorldSavedData {
 		this.celestialManager = manager;
 		manager.initializeCommon(this.settings);
 		StellarSky.logger.info("Common Initialization Ended.");
+		
+		StellarSky.logger.info("Starting Initial Update...");
+		this.update(0.0);
+		StellarSky.logger.info("Initial Update Ended.");
 	}
 	
 	public CommonSettings getSettings() {
@@ -113,13 +118,16 @@ public final class StellarManager extends WorldSavedData {
 		return currentTick + (settings.yearOffset * settings.year + settings.dayOffset)
 				* settings.day + settings.tickOffset;
 	}
+
+	public CelestialPeriod getYearPeriod() {
+		return new CelestialPeriod("Year", 2 * Math.PI / settings.day / settings.year,
+				(settings.dayOffset + settings.tickOffset / settings.day) / settings.year);
+	}
 	
-	private boolean updated = false;
 	
 	public void update(double time){
 		time = this.getSkyTime(time);
 		celestialManager.update(time / settings.day / settings.year);
-		this.updated = true;
 	}
 	
 	public void updateClient(ClientSettings clientSettings) {
@@ -127,12 +135,7 @@ public final class StellarManager extends WorldSavedData {
 		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
 		IViewScope scope = StellarAPIReference.getScope(StellarSky.proxy.getDefViewerEntity());
 		
-		if(coordinate != null && sky != null)
-			celestialManager.updateClient(clientSettings, coordinate, sky, scope);
-	}
-	
-	public boolean updated() {
-		return this.updated;
+		celestialManager.updateClient(clientSettings, coordinate, sky, scope);
 	}
 	
 	public void setLocked(boolean locked) {

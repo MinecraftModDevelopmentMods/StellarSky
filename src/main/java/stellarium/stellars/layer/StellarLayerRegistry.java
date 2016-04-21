@@ -18,53 +18,53 @@ import stellarium.stellars.system.LayerSolarSystem;
 import stellarium.stellars.system.SolarSystemClientSettings;
 import stellarium.stellars.system.SolarSystemSettings;
 
-public class CelestialLayerRegistry {
+public class StellarLayerRegistry {
 	
-	private static CelestialLayerRegistry INSTANCE;
+	private static StellarLayerRegistry INSTANCE;
 	
-	public static CelestialLayerRegistry getInstance() {
+	public static StellarLayerRegistry getInstance() {
 		if(INSTANCE == null)
-			INSTANCE = new CelestialLayerRegistry();
+			INSTANCE = new StellarLayerRegistry();
 		return INSTANCE;
 	}
 	
-	private List<RegistryDelegateCommon> registeredCommonLayers = Lists.newArrayList();
+	private List<RegistryDelegate> registeredLayers = Lists.newArrayList();
 	private Map<Class, String> layerNameMap = Maps.newHashMap();
 	
-	public CelestialLayerRegistry() {
-		this.registerCommonLayer(LayerBrStar.class, null, null, null);
-		this.registerCommonLayer(LayerMilkyway.class, "MilkyWay", null, MilkywaySettings.class);
-		this.registerCommonLayer(LayerSolarSystem.class, "SolarSystem", SolarSystemSettings.class, SolarSystemClientSettings.class);
+	public StellarLayerRegistry() {
+		this.registerLayer(new LayerBrStar(), null, null, null);
+		this.registerLayer(new LayerMilkyway(), "MilkyWay", null, MilkywaySettings.class);
+		this.registerLayer(new LayerSolarSystem(), "SolarSystem", SolarSystemSettings.class, SolarSystemClientSettings.class);
 	}
 	
-	public String getConfigName(ICelestialLayer layer) {
-		return layerNameMap.get(layer.getClass());
-	}
-	
-	public void registerCommonLayer(Class<? extends ICelestialLayer> layerClass, String configName, Class<? extends INBTConfig> commonConfigClass, Class<? extends IConfigHandler> clientConfigClass)
+	public void registerLayer(IStellarLayerType layer, String configName, Class<? extends INBTConfig> commonConfigClass, Class<? extends IConfigHandler> clientConfigClass)
 	{
-		RegistryDelegateCommon delegate = new RegistryDelegateCommon();
-		delegate.commonLayerClass = layerClass;
+		RegistryDelegate delegate = new RegistryDelegate();
+		delegate.layer = layer;
 		delegate.commonConfigClass = commonConfigClass;
 		delegate.clientConfigClass = clientConfigClass;
 		delegate.configName = configName;
-		
-		layerNameMap.put(layerClass, configName);
-		
-		registeredCommonLayers.add(delegate);
+				
+		registeredLayers.add(delegate);
 	}
 	
-	public void composeCommonLayer(List<ICelestialLayer> list) {
-		for(RegistryDelegateCommon delegate : this.registeredCommonLayers)
+	public void registerRenderers() {
+		// TODO prevent duplication from inherited renderers
+		for(RegistryDelegate delegate : this.registeredLayers)
+			delegate.layer.registerRenderers();
+	}
+	
+	public void composeLayer(boolean isRemote, List<StellarObjectContainer> list) {
+		for(RegistryDelegate delegate : this.registeredLayers)
 			try {
-				list.add(delegate.commonLayerClass.newInstance());
+				list.add(new StellarObjectContainer(isRemote, delegate.layer, delegate.configName));
 			} catch (Exception e) {
 				Throwables.propagateIfPossible(e);
 			}
 	}
 	
 	public void composeSettings(CommonSettings settings) {
-		for(RegistryDelegateCommon delegate : this.registeredCommonLayers)
+		for(RegistryDelegate delegate : this.registeredLayers)
 			if(delegate.commonConfigClass != null) {
 				try {
 					settings.putSubConfig(delegate.configName, delegate.commonConfigClass.newInstance());
@@ -75,7 +75,7 @@ public class CelestialLayerRegistry {
 	}
 	
 	public void composeSettings(ClientSettings settings) {
-		for(RegistryDelegateCommon delegate : this.registeredCommonLayers)
+		for(RegistryDelegate delegate : this.registeredLayers)
 			if(delegate.clientConfigClass != null) {
 				try {
 					settings.putSubConfig(delegate.configName, delegate.clientConfigClass.newInstance());
@@ -85,14 +85,14 @@ public class CelestialLayerRegistry {
 			}
 	}
 	
-	private class RegistryDelegateCommon {
-		private Class<? extends ICelestialLayer> commonLayerClass;
+	private class RegistryDelegate {
+		private IStellarLayerType layer;
 		private Class<? extends IConfigHandler> clientConfigClass;
 		private Class<? extends INBTConfig> commonConfigClass;
 		private String configName;
 		
 		public int hashCode() {
-			return commonLayerClass.hashCode();
+			return layer.hashCode();
 		}
 	}
 

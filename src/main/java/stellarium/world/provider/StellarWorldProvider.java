@@ -1,4 +1,4 @@
-package stellarium.world;
+package stellarium.world.provider;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

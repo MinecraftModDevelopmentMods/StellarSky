@@ -3,28 +3,32 @@ package stellarium.stellars.star.brstar;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
-import cpw.mods.fml.relauncher.Side;
 import stellarapi.api.celestials.EnumCelestialCollectionType;
 import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
-import stellarium.stellars.layer.CelestialObject;
+import stellarium.stellars.layer.IPerWorldImage;
+import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
+import stellarium.stellars.star.StarRenderCache;
+import stellarium.stellars.star.StarWorldImage;
 import stellarium.util.math.StellarMath;
 
-public class LayerBrStar extends LayerBgStar {
+public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	
 	//constants
 	public static final int NumStar=9110;
@@ -46,24 +50,31 @@ public class LayerBrStar extends LayerBgStar {
 	
 	//stars
 	private List<BgStar> stars = Lists.newArrayList();
-
-	@Override
-	public List<? extends CelestialObject> getObjectList() {
-		return this.stars;
-	}
 	
 	@Override
-	public void initializeClient(boolean isRemote, IConfigHandler config) throws IOException {
-		this.loadStarData(isRemote, StellarSky.proxy.getClientSettings().mag_Limit);
+	public void initializeClient(IConfigHandler config,
+			StellarObjectContainer<BgStar, IConfigHandler> container) throws IOException {
+		this.loadStarData(StellarSky.proxy.getClientSettings().mag_Limit);
 	}
 
 	@Override
-	public void initializeCommon(boolean isRemote, INBTConfig config) throws IOException {
+	public void initializeCommon(INBTConfig config,
+			StellarObjectContainer<BgStar, IConfigHandler> container) throws IOException {
 		if(!this.IsInitialized)
-			this.loadStarData(isRemote, 6.0);
+			this.loadStarData(4.0);
+		
+		for(BgStar star : this.stars)
+		{
+			container.loadObject("Star", star);
+			container.addRenderCache(star, new StarRenderCache());
+			
+			//Delayed till there is code to select important stars
+			// TODO select stars
+			//container.addImageType(star, StarWorldImage.class);
+		}
 	}
 	
-	private void loadStarData(boolean isRemote, double magLimit) throws IOException {
+	private void loadStarData(double magLimit) throws IOException {
 		//Counter Variable
 		int i, j, k;
 		
@@ -96,6 +107,8 @@ public class LayerBrStar extends LayerBgStar {
 			if(star_value[103]==' ')
 				continue;
 			
+			String name = new String(star_value).substring(4, 14);
+			
 			double mag=StellarMath.sgnize(star_value[102],
 					(float)StellarMath.btoi(star_value, 103, 1)
 					+StellarMath.btoi(star_value, 105, 2)*0.01f);
@@ -123,7 +136,7 @@ public class LayerBrStar extends LayerBgStar {
 			
 			star_value=null;
 			
-	    	stars.add(new BgStar(isRemote, mag, B_V, pos));
+	    	stars.add(new BgStar(name, mag, B_V, pos));
 	    }
 	    
 	    str=null;
@@ -139,24 +152,6 @@ public class LayerBrStar extends LayerBgStar {
 	}
 
 	@Override
-	public Set<ICelestialObject> getObjects() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<ICelestialObject> getObjectInRange(SpCoord pos, double radius) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ICelestialObject getNearerObject(SpCoord pos, ICelestialObject obj1, ICelestialObject obj2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public int searchOrder() {
 		return 1;
 	}
@@ -169,6 +164,21 @@ public class LayerBrStar extends LayerBgStar {
 	@Override
 	public EnumCelestialCollectionType getCollectionType() {
 		return EnumCelestialCollectionType.Stars;
+	}
+
+	@Override
+	public Comparator<ICelestialObject> getDistanceComparator(SpCoord pos) {
+		return null;
+	}
+
+	@Override
+	public Predicate<ICelestialObject> conditionInRange(SpCoord pos, double radius) {
+		return null;
+	}
+
+	@Override
+	public Map<BgStar, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
+		return null;
 	}
 
 }

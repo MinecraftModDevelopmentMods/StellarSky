@@ -1,4 +1,4 @@
-package stellarium.stellars.view;
+package stellarium.world;
 
 import javafx.scene.transform.Rotate;
 import net.minecraft.world.World;

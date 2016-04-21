@@ -1,4 +1,4 @@
-package stellarium.stellars.view;
+package stellarium.world;
 
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.common.CommonSettings;

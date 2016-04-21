@@ -5,35 +5,35 @@ import java.util.List;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import stellarapi.api.lib.config.IConfigHandler;
-import stellarapi.api.lib.config.INBTConfig;
-import stellarium.stellars.layer.CelestialObject;
-import stellarium.stellars.layer.ICelestialLayer;
+import stellarium.stellars.layer.StellarLayerRegistry;
+import stellarium.stellars.layer.StellarObject;
+import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.layer.IStellarLayerType;
+import stellarium.stellars.layer.IRenderCache;
 
 @SideOnly(Side.CLIENT)
 public class CelestialRenderer {
 	
-	public void refreshRenderer(List<ICelestialLayer> layers) {
+	public void refreshRenderer() {
 		CelestialRenderingRegistry.getInstance().refresh();
-		for(ICelestialLayer layer : layers)
-			layer.registerRenderers();
+		StellarLayerRegistry.getInstance().registerRenderers();
 	}
 	
-	public void render(StellarRenderInfo info, List<ICelestialLayer> layers) {
-		for(ICelestialLayer<? extends INBTConfig, ? extends IConfigHandler> layer : layers) {
+	public void render(StellarRenderInfo info, List<StellarObjectContainer> layers) {
+		for(StellarObjectContainer<StellarObject, IConfigHandler> layer : layers) {
 			ICelestialLayerRenderer layerRenderer = null;
 			
-			if(layer.getLayerRendererIndex() != -1)
-				layerRenderer = CelestialRenderingRegistry.getInstance().getLayerRenderer(layer.getLayerRendererIndex());
+			int rendererId = layer.getType().getLayerRendererIndex();
+			if(rendererId != -1)
+				layerRenderer = CelestialRenderingRegistry.getInstance().getLayerRenderer(rendererId);
 			
 			if(layerRenderer != null)
 				layerRenderer.preRender(info);
 			
-			for(CelestialObject object : layer.getObjectList())
+			for(IRenderCache cache : layer.getRenderCacheList())
 			{
-				if(object.getRenderId() != -1) {
-					ICelestialObjectRenderer objRenderer = CelestialRenderingRegistry.getInstance().getObjectRenderer(object.getRenderId());
-					objRenderer.render(info, object.getRenderCache());
-				}
+				ICelestialObjectRenderer objRenderer = CelestialRenderingRegistry.getInstance().getObjectRenderer(cache.getRenderId());
+				objRenderer.render(info, cache);
 			}
 			
 			if(layerRenderer != null)

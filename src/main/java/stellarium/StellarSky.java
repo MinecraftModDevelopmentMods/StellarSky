@@ -21,8 +21,8 @@ import stellarium.render.SkyRenderTypeOverworld;
 import stellarium.sync.StellarNetworkEventHandler;
 import stellarium.sync.StellarNetworkFMLEventHandler;
 import stellarium.sync.StellarNetworkManager;
-import stellarium.world.DefaultWorldProviderReplacer;
-import stellarium.world.EndReplacer;
+import stellarium.world.provider.DefaultWorldProviderReplacer;
+import stellarium.world.provider.EndReplacer;
 
 @Mod(modid=StellarSky.modid, version=StellarSky.version,
 	dependencies="required-after:StellarAPI@[0.0.1.2, 0.0.2.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
