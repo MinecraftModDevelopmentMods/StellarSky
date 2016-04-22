@@ -13,7 +13,7 @@ import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.world.IStellarSkySet;
 
-public class MilkywayCache implements IRenderCache<Milkyway, MilkywaySettings> {
+public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySettings> {
 	
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
@@ -29,7 +29,7 @@ public class MilkywayCache implements IRenderCache<Milkyway, MilkywaySettings> {
 	protected float brightness;
 
 	@Override
-	public void initialize(ClientSettings settings, MilkywaySettings specificSettings) {
+	public void initialize(ClientSettings settings, MilkywaySettings specificSettings, Milkyway dummy) {
 		this.latn = specificSettings.imgFracMilkyway;
 		this.longn = 2*specificSettings.imgFracMilkyway;
 		this.milkywayvec = new Vector3d[longn][latn+1];

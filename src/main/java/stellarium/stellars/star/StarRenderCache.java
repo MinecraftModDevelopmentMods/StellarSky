@@ -23,7 +23,7 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 	protected float multiplier;
 	
 	@Override
-	public void initialize(ClientSettings settings, IConfigHandler config) { }
+	public void initialize(ClientSettings settings, IConfigHandler config, BgStar star) { }
 
 	@Override
 	public void updateCache(ClientSettings settings, IConfigHandler config, BgStar object,

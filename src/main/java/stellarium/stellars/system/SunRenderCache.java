@@ -17,7 +17,7 @@ public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
 	protected double size;
 
 	@Override
-	public void initialize(ClientSettings settings, IConfigHandler config) { }
+	public void initialize(ClientSettings settings, IConfigHandler config, Sun sun) { }
 
 	@Override
 	public void updateCache(ClientSettings settings, IConfigHandler config, Sun object,

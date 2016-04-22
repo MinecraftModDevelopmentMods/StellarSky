@@ -1,4 +1,4 @@
-package stellarium.stellars.display;
+package stellarium.stellars.display.horcoord;
 
 import org.lwjgl.opengl.GL11;
 
@@ -8,11 +8,11 @@ import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
 
-public class DisplayRenderer implements ICelestialObjectRenderer<DisplayRenderCache> {
+public class DisplayHorCoordRenderer implements ICelestialObjectRenderer<DisplayHorCoordCache> {
 
 	@Override
-	public void render(StellarRenderInfo info, DisplayRenderCache cache) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, info.weathereff);
+	public void render(StellarRenderInfo info, DisplayHorCoordCache cache) {
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		
 		if(!cache.enabled)
 			return;

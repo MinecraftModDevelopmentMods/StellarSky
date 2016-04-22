@@ -127,8 +127,8 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	
 	public void reloadClientSettings(ClientSettings settings, ClientConfig specificSettings) {
 		this.initialized = true;
-		for(IRenderCache cache : renderCacheMap.values())
-			cache.initialize(settings, specificSettings);
+		for(Map.Entry<Obj, IRenderCache> entry : renderCacheMap.entrySet())
+			entry.getValue().initialize(settings, specificSettings, entry.getKey());
 	}
 
 	public void updateClient(ClientSettings settings, ClientConfig specificSettings,

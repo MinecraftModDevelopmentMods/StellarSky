@@ -25,7 +25,7 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 	protected float multiplier;
 
 	@Override
-	public void initialize(ClientSettings settings, SolarSystemClientSettings specificSettings) {
+	public void initialize(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon moon) {
 		this.appCoord = new SpCoord();
 		this.latn = specificSettings.imgFrac;
 		this.longn = 2*specificSettings.imgFrac;

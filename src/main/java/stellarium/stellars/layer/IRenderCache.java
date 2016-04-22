@@ -8,7 +8,7 @@ import stellarium.client.ClientSettings;
 
 public interface IRenderCache<Obj extends StellarObject, Config extends IConfigHandler> {
 	
-	public void initialize(ClientSettings settings, Config specificSettings);
+	public void initialize(ClientSettings settings, Config specificSettings, Obj object);
 	
 	public void updateCache(ClientSettings settings, Config specificSettings, Obj object,
 			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope);

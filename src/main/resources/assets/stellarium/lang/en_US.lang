@@ -98,20 +98,38 @@ config.property.client.milkywayfrac.tooltip=Milky way is drawn with fragments. L
 config.category.display=Display Option Configurations
 config.category.display.tooltip=Configurations for additional display.
 
-config.property.display.enabled=Enable display: Horizontal Coordinate
-config.property.display.enabled.tooltip=Enable display of horizontal coordinate grid.
+config.property.display.enabled=Enable this display
+config.property.display.enabled.tooltip=Enable rendering of this display.
 
-config.property.display.alpha=Alpha of Horizontal Coordinate
-config.property.display.alpha.tooltip=Alpha(Brightness) of the display of horizontal coordinate.
+config.property.display.alpha=Alpha of this display
+config.property.display.alpha.tooltip=Alpha(Brightness) of this display.
 
-config.property.display.fragments=Fragment number of Horizontal Coordinate
-config.property.display.fragments.tooltip=Number of fragments of horizontal coordinate grids in horizontal direction.
+////Display/Equatorial Coordinate Grid
+config.category.display.eqcoord=Equatorial Coordinate Grid
+config.category.display.eqcoord.tooltip=Configurations for the display element: Equatorial Coodrinate Grid.
 
-config.property.display.color.latitude=Latitude color of Horizontal Coordinate
-config.property.display.color.latitude.tooltip=Color factor for latitude, the grid tends to have this color when latitude gets bigger.
+config.property.display.eqcoord.fragments=Fragment number
+config.property.display.eqcoord.fragments.tooltip=Number of fragments of equatorial coordinate grids in direction of latitude.
 
-config.property.display.color.longitude=Longitude color of Horizontal Coordinate
-config.property.display.color.longitude.tooltip=Color factor for longitude, the grid tends to have this color when longitude gets bigger.
+config.property.display.eqcoord.color.latitude=Latitude color of Horizontal Coordinate
+config.property.display.eqcoord.color.latitude.tooltip=Color factor for latitude, the grid tends to have this color when latitude gets bigger.
+
+config.property.display.eqcoord.color.longitude=Longitude color of Horizontal Coordinate
+config.property.display.eqcoord.color.longitude.tooltip=Color factor for longitude, the grid tends to have this color when longitude gets bigger.
+
+////Display/Horizontal Coordinate Grid
+config.category.display.horcoord=Horizontal Coordinate Grid
+config.category.display.horcoord.tooltip=Configurations for the display element: Horizontal Coodrinate Grid.
+
+config.property.display.horcoord.fragments=Fragment number
+config.property.display.horcoord.fragments.tooltip=Number of fragments of equatorial coordinate grids in direction of height.
+
+config.property.display.horcoord.color.height=Height color of Horizontal Coordinate
+config.property.display.horcoord.color.height.tooltip=Color factor for height, the grid tends to have this color when height gets bigger.
+
+config.property.display.horcoord.color.azimuth=Azimuth color of Horizontal Coordinate
+config.property.display.horcoord.color.azimuth.tooltip=Color factor for azimuth(horizontal position), the grid tends to have this color when azimuth gets bigger.
+
 
 
 ///Dimension

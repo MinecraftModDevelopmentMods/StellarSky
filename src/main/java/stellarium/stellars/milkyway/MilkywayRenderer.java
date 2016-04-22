@@ -8,10 +8,10 @@ import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
 
-public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayCache> {
+public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRenderCache> {
 
 	@Override
-	public void render(StellarRenderInfo info, MilkywayCache cache) {
+	public void render(StellarRenderInfo info, MilkywayRenderCache cache) {
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, info.weathereff);
 
 		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceMilkyway.getLocation());

@@ -24,22 +24,27 @@ import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.IStellarLayerType;
 
-public class LayerDisplay implements IStellarLayerType<Display, IConfigHandler, INBTConfig> {
-	
-	public static int displayRenderId;
+public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySettings, INBTConfig> {
+		
+	public List<DisplayElement> displayElements = Lists.newArrayList();
 
 	@Override
-	public void initializeClient(IConfigHandler config, StellarObjectContainer container) throws IOException { }
-	
-	@Override
-	public void initializeCommon(INBTConfig config, StellarObjectContainer container) throws IOException {
-		Display display = new Display();
-		container.loadObject("Display", display);
-		container.addRenderCache(display, new DisplayRenderCache());
+	public void initializeClient(DisplaySettings config, StellarObjectContainer container) throws IOException {
+		this.displayElements = config.getDisplayElements();
 	}
 	
 	@Override
-	public void updateLayer(StellarObjectContainer<Display, IConfigHandler> container, double year) { }
+	public void initializeCommon(INBTConfig config, StellarObjectContainer container) throws IOException {
+		for(DisplayElement element : this.displayElements)
+		{
+			DisplayElement copied = element.copy();
+			container.loadObject("Display", copied);
+			container.addRenderCache(copied, element.generateCache());
+		}
+	}
+	
+	@Override
+	public void updateLayer(StellarObjectContainer<DisplayElement, DisplaySettings> container, double year) { }
 
 	@Override
 	public int getLayerRendererIndex() {
@@ -49,17 +54,22 @@ public class LayerDisplay implements IStellarLayerType<Display, IConfigHandler, 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderers() {
-		displayRenderId = CelestialRenderingRegistry.getInstance().registerObjectRenderer(new DisplayRenderer());
+		for(DisplayElement element : displayElements)
+		{
+			int id = CelestialRenderingRegistry.getInstance().registerObjectRenderer(element.getRenderer());
+			element.setRenderID(id);
+		}
 	}
 
 	@Override
 	public String getName() {
-		return "Milkyway";
+		return "Display";
 	}
 
 	@Override
 	public int searchOrder() {
-		return 2;
+		// Will never search this element.
+		return 100;
 	}
 
 	@Override
@@ -83,17 +93,17 @@ public class LayerDisplay implements IStellarLayerType<Display, IConfigHandler, 
 	}
 
 	@Override
-	public Map<Display, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
+	public Map<DisplayElement, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
 		return null;
 	}
 
 	@Override
-	public Collection<Display> getSuns(StellarObjectContainer container) {
+	public Collection<DisplayElement> getSuns(StellarObjectContainer container) {
 		return null;
 	}
 
 	@Override
-	public Collection<Display> getMoons(StellarObjectContainer container) {
+	public Collection<DisplayElement> getMoons(StellarObjectContainer container) {
 		return null;
 	}
 }

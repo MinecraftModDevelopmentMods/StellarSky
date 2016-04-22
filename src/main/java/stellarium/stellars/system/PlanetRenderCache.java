@@ -13,7 +13,7 @@ import stellarium.stellars.Optics;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.world.IStellarSkySet;
 
-public class PlanetRenderCache implements IRenderCache<SolarObject, IConfigHandler> {
+public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 	
 	protected boolean shouldRender;
 	protected SpCoord appCoord = new SpCoord();
@@ -22,10 +22,10 @@ public class PlanetRenderCache implements IRenderCache<SolarObject, IConfigHandl
 	protected float multiplier;
 	
 	@Override
-	public void initialize(ClientSettings settings, IConfigHandler config) { }
+	public void initialize(ClientSettings settings, IConfigHandler config, Planet planet) { }
 
 	@Override
-	public void updateCache(ClientSettings settings, IConfigHandler config, SolarObject object,
+	public void updateCache(ClientSettings settings, IConfigHandler config, Planet object,
 			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
 		Vector3d ref = new Vector3d(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);

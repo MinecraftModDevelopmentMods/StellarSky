@@ -35,7 +35,7 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 	public void initializeCommon(INBTConfig config, StellarObjectContainer container) throws IOException {
 		Milkyway milkyway = new Milkyway();
 		container.loadObject("Milkyway", milkyway);
-		container.addRenderCache(milkyway, new MilkywayCache());
+		container.addRenderCache(milkyway, new MilkywayRenderCache());
 		container.addImageType(milkyway, MilkywayImage.class);
 	}
 	
