@@ -1,29 +1,45 @@
 package stellarium.sync;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarDimensionManager;
 
-public class StellarNetworkManager {
+public final class StellarNetworkManager {
 	
 	private SimpleNetworkWrapper wrapper;
-	protected String id = "stellarskychannel";
+	private String id = "stellarskychannel";
 	
 	public StellarNetworkManager() {
 		this.wrapper = NetworkRegistry.INSTANCE.newSimpleChannel(this.id);
 		
-		wrapper.registerMessage(MessageSyncCommon.MessageSyncCommonHandler.class,
-				MessageSyncCommon.class, 0, Side.CLIENT);
+		wrapper.registerMessage(MessageInfoSync.MessageInfoSyncHandler.class,
+				MessageInfoSync.class, 0, Side.CLIENT);
+		wrapper.registerMessage(MessageInfoQuery.MessageInfoQueryHandler.class,
+				MessageInfoQuery.class, 1, Side.SERVER);
+	}
+
+	public void queryInformation(World world) {
+		wrapper.sendToServer(new MessageInfoQuery(world.provider.dimensionId));
 	}
 	
-	public void onSetManager(EntityPlayerMP player, World world) {
+	public String getID() {
+		return this.id;
+	}
+	
+	public void sendSyncInformation(EntityPlayerMP player) {
+		wrapper.sendTo(this.onQueryInformation(player.dimension), player);
+	}
+
+	public MessageInfoSync onQueryInformation(int dimensionId) {
+		WorldServer world = MinecraftServer.getServer().worldServerForDimension(dimensionId);
+		
 		StellarManager manager = StellarManager.getManager(false);
 		StellarDimensionManager dimManager = StellarDimensionManager.get(world);
 		
@@ -34,7 +50,7 @@ public class StellarNetworkManager {
 		if(dimManager != null)
 			dimManager.writeToNBT(dimComp);
 		
-		wrapper.sendTo(new MessageSyncCommon(compound, dimComp), player);
+		return new MessageInfoSync(compound, dimComp);
 	}
 
 }

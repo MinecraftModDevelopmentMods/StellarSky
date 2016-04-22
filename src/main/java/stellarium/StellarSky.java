@@ -19,8 +19,6 @@ import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.render.SkyRenderTypeEnd;
 import stellarium.render.SkyRenderTypeOverworld;
-import stellarium.sync.StellarNetworkEventHandler;
-import stellarium.sync.StellarNetworkFMLEventHandler;
 import stellarium.sync.StellarNetworkManager;
 import stellarium.world.provider.DefaultWorldProviderReplacer;
 import stellarium.world.provider.EndReplacer;
@@ -61,10 +59,7 @@ public class StellarSky {
     		MinecraftForge.EVENT_BUS.register(this.eventHook);
     		FMLCommonHandler.instance().bus().register(this.tickHandler);
     		FMLCommonHandler.instance().bus().register(this.fmlEventHook);
-    		
-    		MinecraftForge.EVENT_BUS.register(new StellarNetworkEventHandler(this.networkManager));
-    		FMLCommonHandler.instance().bus().register(new StellarNetworkFMLEventHandler(this.networkManager));
-    		
+    		    		
     		StellarAPIReference.getEventBus().register(new StellarAPIEventHook());
     		
     		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());

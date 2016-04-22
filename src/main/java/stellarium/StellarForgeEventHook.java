@@ -50,15 +50,18 @@ public class StellarForgeEventHook {
 			setupManager(e.world, manager);
 		
 		String dimName = e.world.provider.getDimensionName();
-		if(!e.world.isRemote || !manager.getSettings().serverEnabled)
+		if(!e.world.isRemote || !StellarSky.proxy.commonSettings.serverEnabled)
 			if(StellarSky.proxy.dimensionSettings.hasSubConfig(dimName)) {
 				StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(e.world, manager, dimName);
 				setupDimension(e.world, manager, dimManager);
 			}
 		
-		if(e.world.isRemote && mark) {
-			handleNotHaveModOnServer(e.world);
-			mark = false;
+		if(e.world.isRemote) {
+			if(mark) {
+				handleNotHaveModOnServer(e.world);
+				mark = false;
+			} else if(StellarSky.proxy.commonSettings.serverEnabled)
+				StellarSky.instance.getNetworkManager().queryInformation(e.world);
 		}
 	}
 	

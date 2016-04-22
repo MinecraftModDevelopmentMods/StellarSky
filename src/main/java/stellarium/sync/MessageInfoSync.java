@@ -12,14 +12,14 @@ import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarDimensionManager;
 
-public class MessageSyncCommon implements IMessage {
+public class MessageInfoSync implements IMessage {
 
 	private NBTTagCompound compoundInfo;
 	private NBTTagCompound dimensionInfo;
 	
-	public MessageSyncCommon() { }
+	public MessageInfoSync() { }
 	
-	public MessageSyncCommon(NBTTagCompound commonInfo, NBTTagCompound dimInfo) {
+	public MessageInfoSync(NBTTagCompound commonInfo, NBTTagCompound dimInfo) {
 		this.compoundInfo = commonInfo;
 		this.dimensionInfo = dimInfo;
 	}
@@ -36,15 +36,16 @@ public class MessageSyncCommon implements IMessage {
 		ByteBufUtils.writeTag(buf, this.compoundInfo);
 	}
 	
-	public static class MessageSyncCommonHandler implements IMessageHandler<MessageSyncCommon, IMessage> {
+	public static class MessageInfoSyncHandler implements IMessageHandler<MessageInfoSync, IMessage> {
 
 		@Override
-		public IMessage onMessage(MessageSyncCommon message, MessageContext ctx) {
+		public IMessage onMessage(MessageInfoSync message, MessageContext ctx) {
+			World world = StellarSky.proxy.getDefWorld();
+			
 			StellarManager manager = StellarManager.getManager(true);
+			
 			if(!message.compoundInfo.hasNoTags())
 				manager.syncFromNBT(message.compoundInfo, true);
-			
-			World world = StellarSky.proxy.getDefWorld();
 			
 			StellarDimensionManager dimManager = null;
 			
