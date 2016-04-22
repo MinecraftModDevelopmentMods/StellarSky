@@ -75,7 +75,8 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		
 		//-Moon
 		StellarSky.logger.info("Initializing Moon...");
-		moon.albedo=0.12 * settings.propMoonBrightness.getDouble();
+		moon.albedo=0.12;
+		moon.brightnessFactor = settings.propMoonBrightness.getDouble();
 		moon.a0=0.00257184;
 		moon.e0=0.0549006;
 		moon.I0=5.14;
@@ -120,6 +121,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		mercury.initialize();
 		container.loadObject("System", mercury);
 		container.addRenderCache(mercury, new PlanetRenderCache());
+		container.addImageType(mercury, PlanetImage.class);
 		
 		//Venus
 		StellarSky.logger.info("Initizlizing Venus...");
@@ -143,6 +145,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		venus.initialize();
 		container.loadObject("System", venus);
 		container.addRenderCache(venus, new PlanetRenderCache());
+		container.addImageType(venus, PlanetImage.class);
 		
 		//Mars
 		StellarSky.logger.info("Initializing Mars...");
@@ -166,7 +169,8 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		mars.initialize();
 		container.loadObject("System", mars);
 		container.addRenderCache(mars, new PlanetRenderCache());
-
+		container.addImageType(mars, PlanetImage.class);
+		
 		//Jupiter
 		StellarSky.logger.info("Initializing Jupiter...");
 		Planet jupiter = new Planet("Jupiter", sun);
@@ -193,7 +197,8 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		jupiter.initialize();
 		container.loadObject("System", jupiter);
 		container.addRenderCache(jupiter, new PlanetRenderCache());
-
+		container.addImageType(jupiter, PlanetImage.class);
+		
 		//Saturn
 		StellarSky.logger.info("Initializing Saturn...");
 		Planet saturn = new Planet("Saturn", sun);
@@ -220,6 +225,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		saturn.initialize();
 		container.loadObject("System", saturn);
 		container.addRenderCache(saturn, new PlanetRenderCache());
+		container.addImageType(saturn, PlanetImage.class);
 
 		//Uranus
 		StellarSky.logger.info("Initializing Uranus...");
@@ -247,6 +253,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		uranus.initialize();
 		container.loadObject("System", uranus);
 		container.addRenderCache(uranus, new PlanetRenderCache());
+		container.addImageType(uranus, PlanetImage.class);
 
 		//Neptune
 		StellarSky.logger.info("Initializing Neptune...");
@@ -273,8 +280,9 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		
 		neptune.initialize();
 		container.loadObject("System", neptune);
-		container.addRenderCache(uranus, new PlanetRenderCache());
-		
+		container.addRenderCache(neptune, new PlanetRenderCache());
+		container.addImageType(neptune, PlanetImage.class);
+
 		StellarSky.logger.info("Solar System Initialized!");
 	}
 

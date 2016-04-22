@@ -24,6 +24,8 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	
 	private double axialTilt, precession;
 	
+	private double zeroTime;
+	
 	private CelestialPeriod dayPeriod;
 	private CelestialPeriod yearPeriod;
 	
@@ -36,13 +38,15 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		this.axialTilt = Spmath.Radians(commonSettings.propAxialTilt.getDouble());
 		this.precession = Spmath.Radians(commonSettings.propPrecession.getDouble());
 		
+		this.zeroTime = (commonSettings.yearOffset * commonSettings.year + commonSettings.dayOffset) * commonSettings.day + commonSettings.tickOffset;
+		
 		double fixedDaylength = this.dayLength * this.yearLength / (this.yearLength + 1);
 		this.dayPeriod = new CelestialPeriod("Celestial Day", fixedDaylength,
-				commonSettings.tickOffset / fixedDaylength - this.longitude / 360.0);
+				Spmath.fmod(this.zeroTime / fixedDaylength - this.longitude / 2 / Math.PI - 0.25, 1.0));
 		
 		double fixedYearLength = this.dayLength * this.yearLength / (1.0 - this.precession / 2 / Math.PI);
 		this.yearPeriod = new CelestialPeriod("Celestial Year", fixedYearLength,
-				(commonSettings.dayOffset * commonSettings.day + commonSettings.tickOffset) / fixedYearLength - this.longitude / 360.0);
+				Spmath.fmod(this.zeroTime / fixedYearLength - this.longitude / 2 / Math.PI - 0.25, 1.0));
 		
 		EqtoEc.set(new AxisAngle4d(1.0, 0.0, 0.0, -this.axialTilt));
 		EctoEq.set(new AxisAngle4d(1.0, 0.0, 0.0, this.axialTilt));
@@ -153,14 +157,14 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	}
 	
 	@Override
-	public double calculateInitialOffset(Vector3d initialAbsPos) {
+	public double calculateInitialOffset(Vector3d initialAbsPos, double periodLength) {
 		Vector3d eqrPos = new Vector3d(initialAbsPos);
 		projectionEq.transform(eqrPos);
 		
 		SpCoord coord = new SpCoord();
 		coord.setWithVec(eqrPos);
 		
-		return Spmath.fmod((this.longitude-coord.x) / 360.0 + 0.5, 1.0);
+		return Spmath.fmod(this.zeroTime / periodLength - this.longitude / Math.PI - coord.x / 360.0 - 0.25, 1.0);
 	}
 
 	@Override
@@ -197,7 +201,7 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	}
 	
 	private double hourAngleForHeight(double heightAngle, double dec, double lat) {
-		return Math.acos((Spmath.sind(heightAngle) - Math.sin(dec) * Math.sin(lat)) / (Math.cos(dec) * Math.cos(lat)));
+		return Math.acos((- Spmath.sind(heightAngle) + Math.sin(dec) * Math.sin(lat)) / (Math.cos(dec) * Math.cos(lat)));
 	}
 
 }

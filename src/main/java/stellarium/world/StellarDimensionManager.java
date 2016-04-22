@@ -104,13 +104,13 @@ public final class StellarDimensionManager extends WorldSavedData {
 	}
 	
 	public void setup() {
-		StellarSky.logger.info("Initializing Dimension Settings...");
+		StellarSky.logger.info(String.format("Initializing Dimension Settings on Dimension %s...", this.dimensionName));
 		if(settings.allowRefraction())
 			this.skyset = new RefractiveSkySet(this.settings);
 		else this.skyset = new NonRefractiveSkySet(this.settings);
 		this.coordinate = new StellarCoordinate(manager.getSettings(), this.settings);
-		coordinate.update(manager.getSkyTime(0) / manager.getSettings().day / manager.getSettings().year);
-		StellarSky.logger.info("Initialized Dimension Settings.");
+		coordinate.update(manager.getSkyTime(0.0) / manager.getSettings().day / manager.getSettings().year);
+		StellarSky.logger.info(String.format("Initialized Dimension Settings on Dimension %s.", this.dimensionName));
 	}
 	
 	public Collection<StellarCollection> constructCelestials(ICelestialCoordinate coordinate, ISkyEffect sky) {
@@ -134,16 +134,14 @@ public final class StellarDimensionManager extends WorldSavedData {
 		return this.foundMoons;
 	}
 	
-	public void update(World world, double currentTick) {
+	public void update(World world, long currentTick) {
 		double skyTime = manager.getSkyTime(currentTick);
 		coordinate.update(skyTime / manager.getSettings().day / manager.getSettings().year);
-		
-		ISkyEffect skyEffect = StellarAPIReference.getSkyEffect(world);
 		
 		for(int i = 0; i < collections.size(); i++) {
 			StellarCollection collection = collections.get(i);
 			StellarObjectContainer container = manager.getCelestialManager().getLayers().get(i);
-			container.updateCollection(collection);
+			container.updateCollection(collection, StellarSky.proxy.getDefWorld(world.isRemote).getWorldTime());
 		}
 	}
 }

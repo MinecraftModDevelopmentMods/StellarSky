@@ -19,6 +19,8 @@ public class Moon extends SolarObject {
 	protected double rotation;
 	
 	protected double brightness;
+	
+	protected double brightnessFactor;
 		
 	//Moon's Ecliptic Position Vector from Ground
 	//EVector posGround = new EVector(3);
@@ -54,6 +56,12 @@ public class Moon extends SolarObject {
 		PrMer0.scale(-1.0);
 		PrMer0.normalize();
 		East.cross(Pole, PrMer0);
+		
+		this.mean_mot=360.0*Math.sqrt(parent.mass/a)/a;
+	}
+	
+	public double getRevolutionPeriod() {
+		return 360.0 / this.mean_mot;
 	}
 	
 	//Get Ecliptic Position Vector from Earth
@@ -83,7 +91,6 @@ public class Moon extends SolarObject {
 		w=w0+wd*yr;
 		Omega=Omega0+Omegad*yr;
 		M0=M0_0;
-		this.mean_mot=360.0*Math.sqrt(parent.mass/a)/a;
 	}
 	
 	@Override
@@ -122,9 +129,9 @@ public class Moon extends SolarObject {
 		double dist=this.earthPos.length();
 		double distS=this.sunPos.length();
 		double distE=earthFromSun.length();
-		double LvsSun=this.radius*this.radius*this.getPhase()*distE*distE*this.albedo*1.4/(dist*dist*distS*distS);
+		double LvsSun=this.radius*this.radius*this.getPhase()*distE*distE*this.albedo*this.brightnessFactor*1.4/(dist*dist*distS*distS);
 		this.currentMag=-26.74-2.5*Math.log10(LvsSun);
-		this.brightness = distE*distE*this.albedo/(distS*distS)*10;
+		this.brightness = distE*distE*this.albedo * this.brightnessFactor/(distS*distS)*10;
 	}
 	
 	//Illumination of Moon's Local Region (Update Needed)
@@ -146,10 +153,6 @@ public class Moon extends SolarObject {
 		double k=Math.signum(crossed.dot(Pole)) * (1.0 - getPhase());
 		if(k<0) k=k+2;
 		return k/2;
-	}
-
-	public double getPeriod() {
-		return this.a * Math.sqrt(this.a / parent.mass);
 	}
 
 }

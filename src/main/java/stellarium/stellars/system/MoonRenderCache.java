@@ -22,6 +22,7 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 	protected float moonilum[][];
 	protected Vector3d buf = new Vector3d();
 	protected double size, difactor, appMag;
+	protected float multiplier;
 
 	@Override
 	public void initialize(ClientSettings settings, SolarSystemClientSettings specificSettings) {
@@ -73,6 +74,8 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 					moonilum[longc][latc]=0.0f;
 			}
 		}
+		
+		this.multiplier = (float)(scope.getLGP() / (scope.getMP() * scope.getMP()));
 	}
 
 	@Override

@@ -21,13 +21,20 @@ public class MoonImage implements IPerWorldImage<Moon> {
 
 	@Override
 	public void initialize(Moon object, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
-		this.mag = object.currentMag; // TODO this is not enough
-		this.siderealPeriod = this.synodicPeriod = yearPeriod; // TODO why I can't figure it out?
+		this.mag = -12.74 - 2.5 * Math.log(object.brightnessFactor);
 		
 		this.pos = new Vector3d(object.earthPos);
+		
+		double period = object.getRevolutionPeriod();
+		
+		// TODO starting from ascending node
+		this.siderealPeriod = new CelestialPeriod("Sidereal Lunar Month", period, 0.0);
+		this.synodicPeriod = new CelestialPeriod("Lunar Month", 1/(1/period - 1/yearPeriod.getPeriodLength()),
+				object.phase_Time());
+		
 		CelestialPeriod dayPeriod = coordinate.getPeriod();
 		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / synodicPeriod.getPeriodLength());
-		this.horPeriod = new CelestialPeriod("Lunar day", length, coordinate.calculateInitialOffset(this.pos));
+		this.horPeriod = new CelestialPeriod("Lunar day", length, coordinate.calculateInitialOffset(this.pos, length));
 	}
 
 	@Override

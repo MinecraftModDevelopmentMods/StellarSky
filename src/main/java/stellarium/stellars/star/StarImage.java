@@ -26,7 +26,7 @@ public class StarImage implements IPerWorldImage<BgStar> {
 		coord.setWithVec(object.pos);
 		this.horizontalPeriod = new CelestialPeriod(String.format("Day; Star %s", main.name),
 				coordinate.getPeriod().getPeriodLength(),
-				coordinate.calculateInitialOffset(object.pos));
+				coordinate.calculateInitialOffset(object.pos, coordinate.getPeriod().getPeriodLength()));
 	}
 	
 	@Override

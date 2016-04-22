@@ -21,13 +21,19 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 
 	@Override
 	public void initialize(Planet object, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
-		this.mag = object.currentMag; // TODO this is not enough
-		this.siderealPeriod = this.synodicPeriod = yearPeriod; // TODO this is not enough too
+		double LvsSun=object.radius*object.radius*object.albedo*1.4/(object.a0*object.a0*object.a0*object.a0);
+		this.mag=-26.74-2.5*Math.log10(LvsSun);
+		
+		double period = object.getRevolutionPeriod();
+		// TODO starting from ascending node
+		this.siderealPeriod = new CelestialPeriod(String.format("Sidereal Period of %s", object.getID()), period, 0.0);
+		this.synodicPeriod = new CelestialPeriod(String.format("Synodic Period of %s", object.getID()), 1/(1/period - 1/yearPeriod.getPeriodLength()),
+				object.phase_Time());
 		
 		this.pos = new Vector3d(object.earthPos);
 		CelestialPeriod dayPeriod = coordinate.getPeriod();
 		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / synodicPeriod.getPeriodLength());
-		this.horPeriod = new CelestialPeriod(String.format("Sidereal Day for %s", object.getID()), length, coordinate.calculateInitialOffset(this.pos));
+		this.horPeriod = new CelestialPeriod(String.format("Day for %s", object.getID()), length, coordinate.calculateInitialOffset(this.pos, length));
 	}
 
 	@Override

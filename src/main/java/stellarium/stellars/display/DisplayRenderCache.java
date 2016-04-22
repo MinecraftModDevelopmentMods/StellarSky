@@ -1,4 +1,4 @@
-package stellarium.stellars.milkyway;
+package stellarium.stellars.display;
 
 import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Matrix3d;
@@ -13,7 +13,7 @@ import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.world.IStellarSkySet;
 
-public class MilkywayCache implements IRenderCache<Milkyway, MilkywaySettings> {
+public class DisplayRenderCache implements IRenderCache<Display, DisplaySettings> {
 	
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
@@ -24,23 +24,26 @@ public class MilkywayCache implements IRenderCache<Milkyway, MilkywaySettings> {
 	}
 	
 	private Vector3d Buf = new Vector3d();
-	protected Vector3d[][] milkywayvec = null;
+	protected Vector3d[][] displayvec = null;
 	protected int latn, longn;
 	protected float brightness;
 
 	@Override
-	public void initialize(ClientSettings settings, MilkywaySettings specificSettings) {
-		this.latn = specificSettings.imgFracMilkyway;
-		this.longn = 2*specificSettings.imgFracMilkyway;
-		this.milkywayvec = new Vector3d[longn][latn+1];
+	public void initialize(ClientSettings settings, DisplaySettings specificSettings) {
+		this.latn = specificSettings.displayFrag;
+		this.longn = 2*specificSettings.displayFrag;
+		this.displayvec = new Vector3d[longn][latn+1];
+		this.brightness = (float) specificSettings.displayAlpha;
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, MilkywaySettings specificSettings, Milkyway object,
+	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, Display object,
 			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
-				Buf = new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec();
+				Buf = new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
+				SpCoord coord2= new SpCoord();
+				coord2.setWithVec(Buf);
 				EqtoEc.transform(Buf);
 				coordinate.getProjectionToGround().transform(Buf);
 				
@@ -49,18 +52,15 @@ public class MilkywayCache implements IRenderCache<Milkyway, MilkywaySettings> {
 				
 				sky.applyAtmRefraction(coord);
 
-				milkywayvec[longc][latc] = coord.getVec();
-				milkywayvec[longc][latc].scale(50.0);
+				displayvec[longc][latc] = coord.getVec();
+				displayvec[longc][latc].scale(50.0);
 			}
 		}
-		
-		this.brightness = (float) (specificSettings.milkywayBrightness
-				* scope.getLGP() / (scope.getMP() * scope.getMP()));
 	}
 
 	@Override
 	public int getRenderId() {
-		return LayerMilkyway.milkywayRenderId;
+		return LayerDisplay.displayRenderId;
 	}
 
 }

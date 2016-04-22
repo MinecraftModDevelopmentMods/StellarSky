@@ -2,6 +2,7 @@ package stellarium.stellars.milkyway;
 
 import org.lwjgl.opengl.GL11;
 
+import stellarapi.api.lib.math.Spmath;
 import stellarium.StellarSkyResources;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
@@ -14,10 +15,11 @@ public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayCache>
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, info.weathereff);
 
 		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceMilkyway.getLocation());
-		info.tessellator.startDrawingQuads();
 		
 		float Mag = 3.5f;
 		float alpha=Optics.getAlphaForGalaxy(Mag, info.bglight) - (((1-info.weathereff)/1)*20f);
+		
+		info.tessellator.startDrawingQuads();
 		info.tessellator.setColorRGBA_F(1.0f, 1.0f, 1.0f, cache.brightness * alpha);
 
 		for(int longc=0; longc<cache.longn; longc++){
@@ -28,10 +30,10 @@ public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayCache>
 				double longdd=1.0-(double)(longc+1)/(double)cache.longn;
 				double latdd=1.0-(double)(latc+1)/(double)cache.latn;
 
-				info.tessellator.addVertexWithUV(cache.moonvec[longc][latc].x, cache.moonvec[longc][latc].y, cache.moonvec[longc][latc].z, longd, latd);
-				info.tessellator.addVertexWithUV(cache.moonvec[longc][latc+1].x, cache.moonvec[longc][latc+1].y, cache.moonvec[longc][latc+1].z, longd, latdd);
-				info.tessellator.addVertexWithUV(cache.moonvec[longcd][latc+1].x, cache.moonvec[longcd][latc+1].y, cache.moonvec[longcd][latc+1].z, longdd, latdd);
-				info.tessellator.addVertexWithUV(cache.moonvec[longcd][latc].x, cache.moonvec[longcd][latc].y, cache.moonvec[longcd][latc].z, longdd, latd);
+				info.tessellator.addVertexWithUV(cache.milkywayvec[longc][latc].x, cache.milkywayvec[longc][latc].y, cache.milkywayvec[longc][latc].z, longd, latd);
+				info.tessellator.addVertexWithUV(cache.milkywayvec[longc][latc+1].x, cache.milkywayvec[longc][latc+1].y, cache.milkywayvec[longc][latc+1].z, longd, latdd);
+				info.tessellator.addVertexWithUV(cache.milkywayvec[longcd][latc+1].x, cache.milkywayvec[longcd][latc+1].y, cache.milkywayvec[longcd][latc+1].z, longdd, latdd);
+				info.tessellator.addVertexWithUV(cache.milkywayvec[longcd][latc].x, cache.milkywayvec[longcd][latc].y, cache.milkywayvec[longcd][latc].z, longdd, latd);
 			}
 		}
 		info.tessellator.draw();

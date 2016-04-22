@@ -31,7 +31,7 @@ public class CommonSettings extends SimpleHierarchicalNBTConfig {
         this.propYear = new ConfigPropertyDouble("Year_Length", "year", 365.25);
         this.propYearOffset = new ConfigPropertyInteger("Year_Offset", "yearOffset", 0);
         this.propDayOffset = new ConfigPropertyInteger("Day_Offset", "dayOffset", 0);
-        this.propTickOffset = new ConfigPropertyDouble("Tick_Offset", "tickOffset", 5000.0);
+        this.propTickOffset = new ConfigPropertyDouble("Tick_Offset", "tickOffset", 16000.0);
         this.propAxialTilt = new ConfigPropertyDouble("Axial_Tilt", "axialTilt", 23.5);
         this.propPrecession = new ConfigPropertyDouble("Precession", "precession", 0.0);
        	

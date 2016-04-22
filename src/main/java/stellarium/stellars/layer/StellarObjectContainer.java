@@ -30,6 +30,7 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	private Map<Obj, IPerWorldImageType> imageTypeMap = Maps.newHashMap();
 	private Set<Obj> addedSet = Sets.newHashSet();
 	private Set<Obj> removedSet = Sets.newHashSet();
+	private long previousUpdateTick = -1L;
 	
 	public StellarObjectContainer(boolean isRemote, IStellarLayerType type, String configName) {
 		this.isRemote = isRemote;
@@ -104,18 +105,19 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	
 	public void addCollection(StellarCollection image) {
 		image.addImages(imageTypeMap.keySet(), this.imageTypeMap);
-		addedSet.clear();
 	}
 	
-	public void updateCollection(StellarCollection image) {
-		if(!addedSet.isEmpty()) {
-			image.addImages(this.addedSet, this.imageTypeMap);
+	public void updateCollection(StellarCollection image, long currentUniversalTick) {
+		if(this.previousUpdateTick != currentUniversalTick) {
 			addedSet.clear();
-		}
-		if(!removedSet.isEmpty()) {
-			image.removeImages(this.removedSet);
 			removedSet.clear();
+			this.previousUpdateTick = currentUniversalTick;
 		}
+		
+		if(!addedSet.isEmpty())
+			image.addImages(this.addedSet, this.imageTypeMap);
+		if(!removedSet.isEmpty())
+			image.removeImages(this.removedSet);
 		
 		image.update();
 	}

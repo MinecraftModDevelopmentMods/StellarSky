@@ -27,7 +27,7 @@ public class SunImage implements IPerWorldImage<Sun> {
 		this.pos = new Vector3d(object.earthPos);
 		CelestialPeriod dayPeriod = coordinate.getPeriod();
 		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / yearPeriod.getPeriodLength());
-		this.horPeriod = new CelestialPeriod("Day", length, coordinate.calculateInitialOffset(this.pos));
+		this.horPeriod = new CelestialPeriod("Day", length, coordinate.calculateInitialOffset(this.pos, length));
 	}
 
 	@Override

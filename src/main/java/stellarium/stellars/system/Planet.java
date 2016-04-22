@@ -45,5 +45,17 @@ public class Planet extends SolarObject {
 		
 		return StellarMath.GetOrbVec(a, e, M, matrix);
 	}
+	
+	public double phase_Time() {
+		Vector3d crossed = new Vector3d();
+		crossed.cross(this.earthPos, this.sunPos);
+		double k=Math.signum(crossed.dot(new Vector3d(0.0, 0.0, 1.0))) * (1.0 - getPhase());
+		if(k<0) k=k+2;
+		return k/2;
+	}
+	
+	public double getRevolutionPeriod() {
+		return 36000.0 / this.Ld;
+	}
 
 }
