@@ -15,13 +15,14 @@ import com.google.common.collect.Sets;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.config.IConfigHandler;
+import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 
 public class StellarObjectContainer<Obj extends StellarObject, ClientConfig extends IConfigHandler> {
 	
 	private boolean isRemote;
-	private IStellarLayerType type;
+	private IStellarLayerType<Obj, ClientConfig, INBTConfig> type;
 	private String configName;
 	
 	private SetMultimap<String, Obj> loadedObjects = HashMultimap.create();
@@ -31,13 +32,13 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	private Set<Obj> removedSet = Sets.newHashSet();
 	private long previousUpdateTick = -1L;
 	
-	public StellarObjectContainer(boolean isRemote, IStellarLayerType type, String configName) {
+	public StellarObjectContainer(boolean isRemote, IStellarLayerType<Obj, ClientConfig, INBTConfig> type, String configName) {
 		this.isRemote = isRemote;
 		this.type = type;
 		this.configName = configName;
 	}
 	
-	public IStellarLayerType getType() {
+	public IStellarLayerType<Obj, ClientConfig, INBTConfig> getType() {
 		return this.type;
 	}
 	
@@ -149,7 +150,7 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 					public IRenderCache apply(Obj input) {
 						return renderCacheMap.get(input);
 					}
-				});
+		});
 	}
 
 }
