@@ -18,7 +18,7 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
-import stellarium.render.CelestialRenderingRegistry;
+import stellarium.render.StellarRenderingRegistry;
 import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.layer.IPerWorldImage;
@@ -26,22 +26,21 @@ import stellarium.stellars.layer.IStellarLayerType;
 
 public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySettings, INBTConfig> {
 		
-	public List<DisplayElement> displayElements = Lists.newArrayList();
+	public List<DisplayElement> displayElements;
 
 	@Override
 	public void initializeClient(DisplaySettings config, StellarObjectContainer container) throws IOException {
 		this.displayElements = config.getDisplayElements();
+		
+		for(DisplayElement element : this.displayElements)
+		{
+			container.loadObject("Display", element);
+			container.addRenderCache(element, element.getCache());
+		}
 	}
 	
 	@Override
-	public void initializeCommon(INBTConfig config, StellarObjectContainer container) throws IOException {
-		for(DisplayElement element : this.displayElements)
-		{
-			DisplayElement copied = element.copy();
-			container.loadObject("Display", copied);
-			container.addRenderCache(copied, element.generateCache());
-		}
-	}
+	public void initializeCommon(INBTConfig config, StellarObjectContainer container) throws IOException { }
 	
 	@Override
 	public void updateLayer(StellarObjectContainer<DisplayElement, DisplaySettings> container, double year) { }
@@ -54,10 +53,10 @@ public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySe
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderers() {
-		for(DisplayElement element : displayElements)
+		for(DisplayElement element : this.displayElements)
 		{
-			int id = CelestialRenderingRegistry.getInstance().registerObjectRenderer(element.getRenderer());
-			element.setRenderID(id);
+			int id = StellarRenderingRegistry.getInstance().registerObjectRenderer(element.getRenderer());
+			element.setRenderId(id);
 		}
 	}
 

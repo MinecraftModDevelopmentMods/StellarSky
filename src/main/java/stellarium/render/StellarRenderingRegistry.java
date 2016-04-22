@@ -8,13 +8,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class CelestialRenderingRegistry {
+public class StellarRenderingRegistry {
 	
-	private static CelestialRenderingRegistry INSTANCE;
+	private static StellarRenderingRegistry INSTANCE;
 	
-	public static CelestialRenderingRegistry getInstance() {
+	public static StellarRenderingRegistry getInstance() {
 		if(INSTANCE == null)
-			INSTANCE = new CelestialRenderingRegistry();
+			INSTANCE = new StellarRenderingRegistry();
 		return INSTANCE;
 	}
 	

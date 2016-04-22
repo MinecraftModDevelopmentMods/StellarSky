@@ -33,9 +33,9 @@ public class DisplayHorCoordRenderer implements ICelestialObjectRenderer<Display
 						(float)cache.colorvec[longc][latc].y,
 						(float)cache.colorvec[longc][latc].z, cache.brightness);
 				info.tessellator.addVertex(cache.displayvec[longc][latc].x, cache.displayvec[longc][latc].y, cache.displayvec[longc][latc].z);
-				info.tessellator.addVertex(cache.displayvec[longc][latc+1].x, cache.displayvec[longc][latc+1].y, cache.displayvec[longc][latc+1].z);
-				info.tessellator.addVertex(cache.displayvec[longcd][latc+1].x, cache.displayvec[longcd][latc+1].y, cache.displayvec[longcd][latc+1].z);
 				info.tessellator.addVertex(cache.displayvec[longcd][latc].x, cache.displayvec[longcd][latc].y, cache.displayvec[longcd][latc].z);
+				info.tessellator.addVertex(cache.displayvec[longcd][latc+1].x, cache.displayvec[longcd][latc+1].y, cache.displayvec[longcd][latc+1].z);
+				info.tessellator.addVertex(cache.displayvec[longc][latc+1].x, cache.displayvec[longc][latc+1].y, cache.displayvec[longc][latc+1].z);
 			}
 		}
 		

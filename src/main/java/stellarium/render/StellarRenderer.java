@@ -12,10 +12,10 @@ import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.IRenderCache;
 
 @SideOnly(Side.CLIENT)
-public class CelestialRenderer {
+public class StellarRenderer {
 	
 	public void refreshRenderer() {
-		CelestialRenderingRegistry.getInstance().refresh();
+		StellarRenderingRegistry.getInstance().refresh();
 		StellarLayerRegistry.getInstance().registerRenderers();
 	}
 	
@@ -25,14 +25,14 @@ public class CelestialRenderer {
 			
 			int rendererId = layer.getType().getLayerRendererIndex();
 			if(rendererId != -1)
-				layerRenderer = CelestialRenderingRegistry.getInstance().getLayerRenderer(rendererId);
+				layerRenderer = StellarRenderingRegistry.getInstance().getLayerRenderer(rendererId);
 			
 			if(layerRenderer != null)
 				layerRenderer.preRender(info);
 			
 			for(IRenderCache cache : layer.getRenderCacheList())
 			{
-				ICelestialObjectRenderer objRenderer = CelestialRenderingRegistry.getInstance().getObjectRenderer(cache.getRenderId());
+				ICelestialObjectRenderer objRenderer = StellarRenderingRegistry.getInstance().getObjectRenderer(cache.getRenderId());
 				objRenderer.render(info, cache);
 			}
 			

@@ -16,7 +16,7 @@ import stellarapi.api.celestials.EnumCelestialCollectionType;
 import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
-import stellarium.render.CelestialRenderingRegistry;
+import stellarium.render.StellarRenderingRegistry;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.IStellarLayerType;
@@ -306,14 +306,14 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderers() {
-		renderId = CelestialRenderingRegistry.getInstance().registerLayerRenderer(
+		renderId = StellarRenderingRegistry.getInstance().registerLayerRenderer(
 				new LayerSolarSystemRenderer());
 		
-		planetRenderId = CelestialRenderingRegistry.getInstance().registerObjectRenderer(
+		planetRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(
 				new PlanetRenderer());
-		sunRenderId = CelestialRenderingRegistry.getInstance().registerObjectRenderer(
+		sunRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(
 				new SunRenderer());
-		moonRenderId = CelestialRenderingRegistry.getInstance().registerObjectRenderer(
+		moonRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(
 				new MoonRenderer());
 	}
 

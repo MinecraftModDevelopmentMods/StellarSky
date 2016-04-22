@@ -10,11 +10,9 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.display.DisplaySettings;
-import stellarium.stellars.layer.IRenderCache;
-import stellarium.stellars.util.ExtinctionRefraction;
-import stellarium.world.IStellarSkySet;
+import stellarium.stellars.display.IDisplayRenderCache;
 
-public class DisplayEqCoordCache implements IRenderCache<DisplayEqCoord, DisplaySettings> {
+public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> {
 	
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
@@ -32,10 +30,6 @@ public class DisplayEqCoordCache implements IRenderCache<DisplayEqCoord, Display
 	protected float brightness;
 	
 	private int renderId;
-
-	public DisplayEqCoordCache(int renderId) {
-		this.renderId = renderId;
-	}
 
 	@Override
 	public void initialize(ClientSettings settings, DisplaySettings specificSettings, DisplayEqCoord display) {
@@ -86,6 +80,11 @@ public class DisplayEqCoordCache implements IRenderCache<DisplayEqCoord, Display
 	@Override
 	public int getRenderId() {
 		return this.renderId;
+	}
+
+	@Override
+	public void setRenderId(int id) {
+		this.renderId = id;
 	}
 
 }

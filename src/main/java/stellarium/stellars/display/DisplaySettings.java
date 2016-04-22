@@ -8,6 +8,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarium.stellars.display.eqcoord.DisplayEqCoord;
+import stellarium.stellars.display.horcoord.DisplayHorCoord;
 
 public class DisplaySettings implements IConfigHandler {
 	
@@ -15,6 +16,7 @@ public class DisplaySettings implements IConfigHandler {
 	
 	public DisplaySettings() {
 		elements.add(new DisplayEqCoord());
+		elements.add(new DisplayHorCoord());
 	}
 
 	@Override

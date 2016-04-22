@@ -10,7 +10,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.stellars.display.DisplayElement;
-import stellarium.stellars.layer.IRenderCache;
+import stellarium.stellars.display.IDisplayRenderCache;
 
 public class DisplayEqCoord extends DisplayElement {
 
@@ -97,8 +97,8 @@ public class DisplayEqCoord extends DisplayElement {
 	}
 
 	@Override
-	public IRenderCache generateCache() {
-		return new DisplayEqCoordCache(this.renderId);
+	public IDisplayRenderCache generateCache() {
+		return new DisplayEqCoordCache();
 	}
 
 	@SideOnly(Side.CLIENT)

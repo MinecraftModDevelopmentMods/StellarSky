@@ -12,7 +12,7 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
-import stellarium.render.CelestialRenderingRegistry;
+import stellarium.render.StellarRenderingRegistry;
 import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.layer.IStellarLayerType;
@@ -31,7 +31,7 @@ implements IStellarLayerType<BgStar, ClientConfig, CommonConfig> {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderers() {
-		CelestialRenderingRegistry registry = CelestialRenderingRegistry.getInstance();
+		StellarRenderingRegistry registry = StellarRenderingRegistry.getInstance();
 		renderIndex = registry.registerLayerRenderer(new LayerStarRenderer());
 		renderStarIndex = registry.registerObjectRenderer(new StarRenderer());
 	}

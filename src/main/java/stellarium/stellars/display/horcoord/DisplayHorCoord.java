@@ -10,7 +10,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.stellars.display.DisplayElement;
-import stellarium.stellars.layer.IRenderCache;
+import stellarium.stellars.display.IDisplayRenderCache;
 
 public class DisplayHorCoord extends DisplayElement {
 
@@ -53,14 +53,14 @@ public class DisplayHorCoord extends DisplayElement {
         propDisplayLatitudeColor.comment = "Color factor for height, the grid tends to have this color when height gets bigger.";
         propDisplayLatitudeColor.setIsListLengthFixed(true);
         propDisplayLatitudeColor.setRequiresMcRestart(false);
-        propDisplayLatitudeColor.setLanguageKey("config.property.horcoord.display.color.latitude");
+        propDisplayLatitudeColor.setLanguageKey("config.property.horcoord.display.color.height");
         propNameList.add(propDisplayLatitudeColor.getName());
 
         propDisplayLongitudeColor=config.get(category, "Display_Azimuth_Color", new double[] {0.5, 0.0, 0.5});
         propDisplayLatitudeColor.comment = "Color factor for azimuth(horizontal position), the grid tends to have this color when azimuth gets bigger.";
         propDisplayLongitudeColor.setIsListLengthFixed(true);
         propDisplayLongitudeColor.setRequiresMcRestart(false);
-        propDisplayLongitudeColor.setLanguageKey("config.property.horcoord.display.color.longitude");
+        propDisplayLongitudeColor.setLanguageKey("config.property.horcoord.display.color.azimuth");
         propNameList.add(propDisplayLongitudeColor.getName());
         
         config.setCategoryPropertyOrder(category, propNameList);
@@ -97,8 +97,8 @@ public class DisplayHorCoord extends DisplayElement {
 	}
 
 	@Override
-	public IRenderCache generateCache() {
-		return new DisplayHorCoordCache(this.renderId);
+	public IDisplayRenderCache generateCache() {
+		return new DisplayHorCoordCache();
 	}
 
 	@SideOnly(Side.CLIENT)

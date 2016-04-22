@@ -18,7 +18,7 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
-import stellarium.render.CelestialRenderingRegistry;
+import stellarium.render.StellarRenderingRegistry;
 import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.layer.IPerWorldImage;
@@ -50,7 +50,7 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderers() {
-		milkywayRenderId = CelestialRenderingRegistry.getInstance().registerObjectRenderer(new MilkywayRenderer());
+		milkywayRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(new MilkywayRenderer());
 	}
 
 	@Override

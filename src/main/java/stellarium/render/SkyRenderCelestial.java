@@ -19,12 +19,12 @@ import stellarium.world.StellarDimensionManager;
 public class SkyRenderCelestial implements ICelestialRenderer {
 	
 	private ClientSettings settings;
-	private CelestialRenderer renderer;
+	private StellarRenderer renderer;
 	private boolean updated = false;
 	
 	public SkyRenderCelestial() {
 		this.settings = StellarSky.proxy.getClientSettings();
-		this.renderer = new CelestialRenderer();
+		this.renderer = new StellarRenderer();
 		
 		CelestialManager celManager = StellarSky.proxy.getClientCelestialManager();
 		renderer.refreshRenderer();
