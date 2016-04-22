@@ -9,6 +9,7 @@ import java.util.Map;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -360,5 +361,10 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	@Override
 	public Collection<SolarObject> getMoons(StellarObjectContainer container) {
 		return container.getLoadedObjects("Moon");
+	}
+
+	@Override
+	public Ordering<SolarObject> getOrdering() {
+		return null;
 	}
 }

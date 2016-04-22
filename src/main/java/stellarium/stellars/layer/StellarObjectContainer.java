@@ -1,20 +1,19 @@
 package stellarium.stellars.layer;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
-import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
@@ -141,8 +140,16 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 					coordinate, sky, scope);
 	}
 
-	public Iterable<IRenderCache> getRenderCacheList() {
-		return renderCacheMap.values();
+	public Iterable<IRenderCache> getRenderCacheList(Ordering<Obj> ordering) {
+		if(ordering == null)
+			return renderCacheMap.values();
+		return Iterables.transform(ordering.immutableSortedCopy(renderCacheMap.keySet()),
+				new Function<Obj, IRenderCache>() {
+					@Override
+					public IRenderCache apply(Obj input) {
+						return renderCacheMap.get(input);
+					}
+				});
 	}
 
 }

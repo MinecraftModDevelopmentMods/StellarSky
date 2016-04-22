@@ -12,7 +12,7 @@ import stellarium.stellars.display.IDisplayRenderCache;
 
 public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord> {
 	
-	private Vector3d Buf, heightColor, azimuthColor;
+	private Vector3d Buf, baseColor, heightColor, azimuthColor;
 	protected Vector3d[][] displayvec = null;
 	protected Vector3d[][] colorvec = null;
 	protected int latn, longn;
@@ -32,8 +32,11 @@ public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord
 			this.colorvec = new Vector3d[longn][latn+1];
 		}
 		this.brightness = (float) display.displayAlpha;
+		this.baseColor = new Vector3d(display.displayBaseColor);
 		this.heightColor = new Vector3d(display.displayHeightColor);
 		this.azimuthColor = new Vector3d(display.displayAzimuthColor);
+		heightColor.sub(this.baseColor);
+		azimuthColor.sub(this.baseColor);
 	}
 
 	@Override
@@ -47,9 +50,11 @@ public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord
 				displayvec[longc][latc] =  new SpCoord(-longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
 				displayvec[longc][latc].scale(50.0);
 				
+				colorvec[longc][latc] = new Vector3d(this.baseColor);
+				
 				Buf = new Vector3d(this.heightColor);
 				Buf.scale((double)latc/latn);
-				colorvec[longc][latc] = new Vector3d(Buf);
+				colorvec[longc][latc].add(Buf);
 				
 				Buf.set(this.azimuthColor);
 				Buf.scale((double)longc/longn);

@@ -26,6 +26,7 @@ import stellarium.stellars.layer.IStellarLayerType;
 
 public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySettings, INBTConfig> {
 		
+	private int renderId;
 	public List<DisplayElement> displayElements;
 
 	@Override
@@ -47,12 +48,13 @@ public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySe
 
 	@Override
 	public int getLayerRendererIndex() {
-		return -1;
+		return this.renderId;
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderers() {
+		this.renderId = StellarRenderingRegistry.getInstance().registerLayerRenderer(new LayerDisplayRenderer());
 		for(DisplayElement element : this.displayElements)
 		{
 			int id = StellarRenderingRegistry.getInstance().registerObjectRenderer(element.getRenderer());
@@ -104,5 +106,10 @@ public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySe
 	@Override
 	public Collection<DisplayElement> getMoons(StellarObjectContainer container) {
 		return null;
+	}
+
+	@Override
+	public Ordering<DisplayElement> getOrdering() {
+		return Ordering.explicit(this.displayElements).reverse();
 	}
 }

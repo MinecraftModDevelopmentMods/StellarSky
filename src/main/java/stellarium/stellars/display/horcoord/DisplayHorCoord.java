@@ -17,11 +17,12 @@ public class DisplayHorCoord extends DisplayElement {
 	public boolean displayEnabled;
 	public int displayFrag;
 	public double displayAlpha;
+	public double[] displayBaseColor;
 	public double[] displayHeightColor;
 	public double[] displayAzimuthColor;
 	
 	private Property propDisplayEnabled, propDisplayAlpha, propDisplayFrag;
-	private Property propDisplayLatitudeColor, propDisplayLongitudeColor;
+	private Property propDisplayBaseColor, propDisplayHeightColor, propDisplayAzimuthColor;
 	
 	@Override
 	public void setupConfig(Configuration config, String category) {
@@ -37,31 +38,38 @@ public class DisplayHorCoord extends DisplayElement {
         propDisplayEnabled.setLanguageKey("config.property.display.enabled");
         propNameList.add(propDisplayEnabled.getName());
         
-        propDisplayAlpha=config.get(category, "Display_Alpha", 0.2);
+        propDisplayAlpha=config.get(category, "Display_Alpha", 0.1);
         propDisplayAlpha.comment="Alpha(Brightness) of the display.";
         propDisplayAlpha.setRequiresMcRestart(false);
         propDisplayAlpha.setLanguageKey("config.property.display.alpha");
         propNameList.add(propDisplayAlpha.getName());
         
-        propDisplayFrag=config.get(category, "Display_Fragments_Number", 32);
+        propDisplayFrag=config.get(category, "Display_Fragments_Number", 16);
         propDisplayFrag.comment="Number of fragments of display grids in direction of height.";
         propDisplayFrag.setRequiresMcRestart(false);
         propDisplayFrag.setLanguageKey("config.property.display.horcoord.fragments");
         propNameList.add(propDisplayFrag.getName());
         
-        propDisplayLatitudeColor=config.get(category, "Display_Height_Color", new double[] {0.0, 0.5, 0.5});
-        propDisplayLatitudeColor.comment = "Color factor for height, the grid tends to have this color when height gets bigger.";
-        propDisplayLatitudeColor.setIsListLengthFixed(true);
-        propDisplayLatitudeColor.setRequiresMcRestart(false);
-        propDisplayLatitudeColor.setLanguageKey("config.property.horcoord.display.color.height");
-        propNameList.add(propDisplayLatitudeColor.getName());
+        propDisplayBaseColor=config.get(category, "Display_Base_Color", new double[] {0.25, 0.25, 0.5});
+        propDisplayBaseColor.comment = "Base color factor, the grid tends to have this color as base.";
+        propDisplayBaseColor.setIsListLengthFixed(true);
+        propDisplayBaseColor.setRequiresMcRestart(false);
+        propDisplayBaseColor.setLanguageKey("config.property.display.horcoord.color.base");
+        propNameList.add(propDisplayBaseColor.getName());
+        
+        propDisplayHeightColor=config.get(category, "Display_Height_Color", new double[] {0.0, 0.0, 1.0});
+        propDisplayHeightColor.comment = "Color factor for height, the grid tends to have this color when height gets bigger.";
+        propDisplayHeightColor.setIsListLengthFixed(true);
+        propDisplayHeightColor.setRequiresMcRestart(false);
+        propDisplayHeightColor.setLanguageKey("config.property.display.horcoord.color.height");
+        propNameList.add(propDisplayHeightColor.getName());
 
-        propDisplayLongitudeColor=config.get(category, "Display_Azimuth_Color", new double[] {0.5, 0.0, 0.5});
-        propDisplayLatitudeColor.comment = "Color factor for azimuth(horizontal position), the grid tends to have this color when azimuth gets bigger.";
-        propDisplayLongitudeColor.setIsListLengthFixed(true);
-        propDisplayLongitudeColor.setRequiresMcRestart(false);
-        propDisplayLongitudeColor.setLanguageKey("config.property.horcoord.display.color.azimuth");
-        propNameList.add(propDisplayLongitudeColor.getName());
+        propDisplayAzimuthColor=config.get(category, "Display_Azimuth_Color", new double[] {0.5, 0.5, 0.0});
+        propDisplayAzimuthColor.comment = "Color factor for azimuth(horizontal position), the grid tends to have this color when azimuth gets bigger.";
+        propDisplayAzimuthColor.setIsListLengthFixed(true);
+        propDisplayAzimuthColor.setRequiresMcRestart(false);
+        propDisplayAzimuthColor.setLanguageKey("config.property.display.horcoord.color.azimuth");
+        propNameList.add(propDisplayAzimuthColor.getName());
         
         config.setCategoryPropertyOrder(category, propNameList);
 	}
@@ -71,8 +79,9 @@ public class DisplayHorCoord extends DisplayElement {
 		this.displayEnabled = propDisplayEnabled.getBoolean();
 		this.displayAlpha = propDisplayAlpha.getDouble();
 		this.displayFrag = propDisplayFrag.getInt();
-		this.displayHeightColor = propDisplayLatitudeColor.getDoubleList();
-		this.displayAzimuthColor = propDisplayLongitudeColor.getDoubleList();
+		this.displayBaseColor = propDisplayBaseColor.getDoubleList();
+		this.displayHeightColor = propDisplayHeightColor.getDoubleList();
+		this.displayAzimuthColor = propDisplayAzimuthColor.getDoubleList();
 	}
 
 	@Override
@@ -83,17 +92,6 @@ public class DisplayHorCoord extends DisplayElement {
 	@Override
 	public String getID() {
 		return "Horizontal_Coordinate_Grid";
-	}
-
-	@Override
-	public DisplayElement copy() {
-		DisplayHorCoord copied = new DisplayHorCoord();
-		copied.displayAlpha = this.displayAlpha;
-		copied.displayEnabled = this.displayEnabled;
-		copied.displayFrag = this.displayFrag;
-		copied.displayHeightColor = this.displayHeightColor;
-		copied.displayAzimuthColor = this.displayAzimuthColor;
-		return copied;
 	}
 
 	@Override

@@ -1,7 +1,5 @@
-package stellarium.stellars.display.eqcoord;
+package stellarium.stellars.display.eccoord;
 
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
 import stellarapi.api.ICelestialCoordinate;
@@ -12,17 +10,9 @@ import stellarium.client.ClientSettings;
 import stellarium.stellars.display.DisplaySettings;
 import stellarium.stellars.display.IDisplayRenderCache;
 
-public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> {
+public class DisplayEcCoordCache implements IDisplayRenderCache<DisplayEcCoord> {
 	
-	//Zero-time axial tilt
-	public static final double e=0.4090926;
-	public static final Matrix3d EqtoEc = new Matrix3d();
-	
-	static {
-		EqtoEc.set(new AxisAngle4d(1.0, 0.0, 0.0, -e));
-	}
-	
-	private Vector3d Buf, baseColor, decColor, RAColor;
+	private Vector3d Buf, baseColor, latitudeColor, longitudeColor;
 	protected Vector3d[][] displayvec = null;
 	protected Vector3d[][] colorvec = null;
 	protected int latn, longn;
@@ -32,7 +22,7 @@ public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> 
 	private int renderId;
 
 	@Override
-	public void initialize(ClientSettings settings, DisplaySettings specificSettings, DisplayEqCoord display) {
+	public void initialize(ClientSettings settings, DisplaySettings specificSettings, DisplayEcCoord display) {
 		this.latn = display.displayFrag;
 		this.longn = 2*display.displayFrag;
 		this.enabled = display.displayEnabled;
@@ -43,39 +33,31 @@ public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> 
 		}
 		this.brightness = (float) display.displayAlpha;
 		this.baseColor = new Vector3d(display.displayBaseColor);
-		this.decColor = new Vector3d(display.displayDecColor);
-		this.RAColor = new Vector3d(display.displayRAColor);
-		decColor.sub(this.baseColor);
-		RAColor.sub(this.baseColor);
+		this.latitudeColor = new Vector3d(display.displayHeightColor);
+		this.longitudeColor = new Vector3d(display.displayAzimuthColor);
+		latitudeColor.sub(this.baseColor);
+		longitudeColor.sub(this.baseColor);
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayEqCoord object,
+	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayEcCoord object,
 			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
 		if(!this.enabled)
 			return;
 		
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
-				Buf = new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
-				EqtoEc.transform(Buf);
-				coordinate.getProjectionToGround().transform(Buf);
-				
-				SpCoord coord = new SpCoord();
-				coord.setWithVec(Buf);
-				
-				sky.applyAtmRefraction(coord);
-
-				displayvec[longc][latc] = coord.getVec();
+				displayvec[longc][latc] =  new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
+				coordinate.getProjectionToGround().transform(this.displayvec[longc][latc]);
 				displayvec[longc][latc].scale(50.0);
 				
 				colorvec[longc][latc] = new Vector3d(this.baseColor);
 				
-				Buf = new Vector3d(this.decColor);
+				Buf = new Vector3d(this.latitudeColor);
 				Buf.scale((double)latc/latn);
 				colorvec[longc][latc].add(Buf);
 				
-				Buf.set(this.RAColor);
+				Buf.set(this.longitudeColor);
 				Buf.scale((double)longc/longn);
 				colorvec[longc][latc].add(Buf);
 			}

@@ -14,6 +14,7 @@ import javax.vecmath.Vector3d;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 
 import stellarapi.api.celestials.EnumCelestialCollectionType;
 import stellarapi.api.celestials.ICelestialObject;
@@ -169,6 +170,11 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 
 	@Override
 	public Map<BgStar, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
+		return null;
+	}
+
+	@Override
+	public Ordering<BgStar> getOrdering() {
 		return null;
 	}
 

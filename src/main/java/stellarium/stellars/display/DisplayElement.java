@@ -23,8 +23,6 @@ public abstract class DisplayElement extends StellarObject implements IConfigHan
 	@SideOnly(Side.CLIENT)
 	public abstract ICelestialObjectRenderer getRenderer();
 
-	public abstract DisplayElement copy();
-
 	public void setRenderId(int id) {
 		currentCache.setRenderId(id);
 		this.renderId = id;

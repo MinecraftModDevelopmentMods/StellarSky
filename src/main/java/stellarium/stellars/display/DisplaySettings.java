@@ -5,8 +5,8 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import stellarapi.api.lib.config.IConfigHandler;
+import stellarium.stellars.display.eccoord.DisplayEcCoord;
 import stellarium.stellars.display.eqcoord.DisplayEqCoord;
 import stellarium.stellars.display.horcoord.DisplayHorCoord;
 
@@ -15,8 +15,9 @@ public class DisplaySettings implements IConfigHandler {
 	private List<DisplayElement> elements = Lists.newArrayList();
 	
 	public DisplaySettings() {
-		elements.add(new DisplayEqCoord());
 		elements.add(new DisplayHorCoord());
+		elements.add(new DisplayEqCoord());
+		elements.add(new DisplayEcCoord());
 	}
 
 	@Override

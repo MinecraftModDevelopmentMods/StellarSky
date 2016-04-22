@@ -1,4 +1,4 @@
-package stellarium.stellars.display.eqcoord;
+package stellarium.stellars.display.eccoord;
 
 import org.lwjgl.opengl.GL11;
 
@@ -8,10 +8,12 @@ import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
 
-public class DisplayEqCoordRenderer implements ICelestialObjectRenderer<DisplayEqCoordCache> {
+public class DisplayEcCoordRenderer implements ICelestialObjectRenderer<DisplayEcCoordCache> {
 
 	@Override
-	public void render(StellarRenderInfo info, DisplayEqCoordCache cache) {		
+	public void render(StellarRenderInfo info, DisplayEcCoordCache cache) {
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		
 		if(!cache.enabled)
 			return;
 		

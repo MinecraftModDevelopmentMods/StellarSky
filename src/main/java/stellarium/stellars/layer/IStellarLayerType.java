@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Map;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Ordering;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -49,4 +50,9 @@ public interface IStellarLayerType<Obj extends StellarObject, ClientConfig exten
 	 * Can be null when not supporting temporal loading.
 	 * */
 	public Map<Obj, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius);
+
+	/**
+	 * Can be null when ordering is not needed.
+	 * */
+	public Ordering<Obj> getOrdering();
 }

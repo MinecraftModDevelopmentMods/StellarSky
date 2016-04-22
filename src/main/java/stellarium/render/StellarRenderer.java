@@ -30,7 +30,7 @@ public class StellarRenderer {
 			if(layerRenderer != null)
 				layerRenderer.preRender(info);
 			
-			for(IRenderCache cache : layer.getRenderCacheList())
+			for(IRenderCache cache : layer.getRenderCacheList(layer.getType().getOrdering()))
 			{
 				ICelestialObjectRenderer objRenderer = StellarRenderingRegistry.getInstance().getObjectRenderer(cache.getRenderId());
 				objRenderer.render(info, cache);

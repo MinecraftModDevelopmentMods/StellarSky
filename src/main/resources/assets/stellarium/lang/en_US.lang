@@ -1,4 +1,4 @@
-﻿
+癤�
 //Keys
 key.stellarsky=Stellar Sky
 key.stellarsky.viewmod.description=Change Time Info Text
@@ -104,32 +104,53 @@ config.property.display.enabled.tooltip=Enable rendering of this display.
 config.property.display.alpha=Alpha of this display
 config.property.display.alpha.tooltip=Alpha(Brightness) of this display.
 
-////Display/Equatorial Coordinate Grid
-config.category.display.eqcoord=Equatorial Coordinate Grid
-config.category.display.eqcoord.tooltip=Configurations for the display element: Equatorial Coodrinate Grid.
-
-config.property.display.eqcoord.fragments=Fragment number
-config.property.display.eqcoord.fragments.tooltip=Number of fragments of equatorial coordinate grids in direction of latitude.
-
-config.property.display.eqcoord.color.latitude=Latitude color of Horizontal Coordinate
-config.property.display.eqcoord.color.latitude.tooltip=Color factor for latitude, the grid tends to have this color when latitude gets bigger.
-
-config.property.display.eqcoord.color.longitude=Longitude color of Horizontal Coordinate
-config.property.display.eqcoord.color.longitude.tooltip=Color factor for longitude, the grid tends to have this color when longitude gets bigger.
-
 ////Display/Horizontal Coordinate Grid
 config.category.display.horcoord=Horizontal Coordinate Grid
 config.category.display.horcoord.tooltip=Configurations for the display element: Horizontal Coodrinate Grid.
 
 config.property.display.horcoord.fragments=Fragment number
-config.property.display.horcoord.fragments.tooltip=Number of fragments of equatorial coordinate grids in direction of height.
+config.property.display.horcoord.fragments.tooltip=Number of fragments of Horizontal Coodrinate Grid in direction of height.
 
-config.property.display.horcoord.color.height=Height color of Horizontal Coordinate
+config.property.display.horcoord.color.base=Base color of Hor. Coordinate
+config.property.display.horcoord.color.base.tooltip=Base color factor, the grid tends to have this color as base.
+
+config.property.display.horcoord.color.height=Height color of Hor. Coordinate
 config.property.display.horcoord.color.height.tooltip=Color factor for height, the grid tends to have this color when height gets bigger.
 
-config.property.display.horcoord.color.azimuth=Azimuth color of Horizontal Coordinate
+config.property.display.horcoord.color.azimuth=Azimuth color of Hor. Coordinate
 config.property.display.horcoord.color.azimuth.tooltip=Color factor for azimuth(horizontal position), the grid tends to have this color when azimuth gets bigger.
 
+////Display/Equatorial Coordinate Grid
+config.category.display.eqcoord=Equatorial Coordinate Grid
+config.category.display.eqcoord.tooltip=Configurations for the display element: Equatorial Coodrinate Grid.
+
+config.property.display.eqcoord.fragments=Fragment number
+config.property.display.eqcoord.fragments.tooltip=Number of fragments of Equatorial Coodrinate Grid in direction of declination.
+
+config.property.display.eqcoord.color.base=Base color of Eq. Coordinate
+config.property.display.eqcoord.color.base.tooltip=Base color factor, the grid tends to have this color as base.
+
+config.property.display.eqcoord.color.dec=Declination color of Eq. Coordinate
+config.property.display.eqcoord.color.dec.tooltip=Color factor for declination, the grid tends to have this color when declination gets bigger.
+
+config.property.display.eqcoord.color.ra=Right Ascension color of Eq. Coordinate
+config.property.display.eqcoord.color.ra.tooltip=Color factor for right ascension, the grid tends to have this color when right ascension gets bigger.
+
+////Display/Ecliptic Coordinate Grid
+config.category.display.eccoord=Ecliptic Coordinate Grid
+config.category.display.eccoord.tooltip=Configurations for the display element: Ecliptic Coodrinate Grid.
+
+config.property.display.eccoord.fragments=Fragment number
+config.property.display.eccoord.fragments.tooltip=Number of fragments of Ecliptic Coodrinate Grid in direction of latitude.
+
+config.property.display.eccoord.color.base=Base color of Ec. Coordinate
+config.property.display.eccoord.color.base.tooltip=Base color factor, the grid tends to have this color as base.
+
+config.property.display.eccoord.color.latitude=Latitude color of Ec. Coordinate
+config.property.display.eccoord.color.latitude.tooltip=Color factor for latitude, the grid tends to have this color when latitude gets bigger.
+
+config.property.display.eccoord.color.longitude=Longitude color of Ec. Coordinate
+config.property.display.eccoord.color.longitude.tooltip=Color factor for longitude, the grid tends to have this color when longitude gets bigger.
 
 
 ///Dimension
@@ -172,22 +193,6 @@ config.category.dimension.perdimresource.tooltip=Configuration on resources whic
 
 config.property.dimension.perdimresource.tooltip=If this is not set to 'default', the resource will be replaced by the resource on the described location. Note that resource location is form of '(modid):(actual location)'.
 
-
-///Wake
-config.category.server.wake=Wake Settings
-config.category.server.wake.expl=Configuration for Waking System.
-
-config.property.server.wakemode=Wake Mode
-config.property.server.wakemode.expl=You can choose earliest or latest available wake time among these wake properties.
-
-config.property.server.enablewake=Wake Property Enabled
-config.property.server.enablewake.expl=Enable this wake property.
-
-config.property.server.wakeangle=Solar azimuth for wake
-config.property.server.wakeangle.expl=Solar azimuth(height) angle to wake up. (in degrees)
-
-config.property.server.waketime=Wake Time from midnight
-config.property.server.waketime.expl=Wake-up time from midnight. (in tick)
 
 
 //Commands
