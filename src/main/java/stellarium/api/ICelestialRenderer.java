@@ -15,4 +15,13 @@ public interface ICelestialRenderer {
 	 * @param partialTicks the partial tick on this render tick
 	 * */
 	public void renderCelestial(Minecraft mc, float bglight, float weathereff, float partialTicks);
+	
+	/**
+	 * Renders sunrise/sunset effects.
+	 * @param mc the minecraft instance
+	 * @param colors the array of sunrise sunset colors which represents RGBA,
+	 *  and can be gotten by {@link net.minecraft.}
+	 * @param partialTicks the partial tick on this render tick
+	 * */
+	public void renderSunriseSunsetEffect(Minecraft mc, float[] colors, float partialTicks);
 }
