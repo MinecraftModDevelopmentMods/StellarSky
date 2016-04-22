@@ -14,6 +14,9 @@ public class DisplayRenderer implements ICelestialObjectRenderer<DisplayRenderCa
 	public void render(StellarRenderInfo info, DisplayRenderCache cache) {
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, info.weathereff);
 		
+		if(!cache.enabled)
+			return;
+		
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		
 		info.tessellator.startDrawingQuads();
@@ -26,7 +29,9 @@ public class DisplayRenderer implements ICelestialObjectRenderer<DisplayRenderCa
 				double longdd=(double)(longc+1)/(double)cache.longn;
 				double latdd=(double)(latc+1)/(double)cache.latn;
 
-				info.tessellator.setColorRGBA_F((float)latd, (float)longd, 0.0f, cache.brightness);
+				info.tessellator.setColorRGBA_F((float)cache.colorvec[longc][latc].x,
+						(float)cache.colorvec[longc][latc].y,
+						(float)cache.colorvec[longc][latc].z, cache.brightness);
 				info.tessellator.addVertex(cache.displayvec[longc][latc].x, cache.displayvec[longc][latc].y, cache.displayvec[longc][latc].z);
 				info.tessellator.addVertex(cache.displayvec[longc][latc+1].x, cache.displayvec[longc][latc+1].y, cache.displayvec[longc][latc+1].z);
 				info.tessellator.addVertex(cache.displayvec[longcd][latc+1].x, cache.displayvec[longcd][latc+1].y, cache.displayvec[longcd][latc+1].z);

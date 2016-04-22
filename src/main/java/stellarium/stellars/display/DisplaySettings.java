@@ -13,8 +13,11 @@ public class DisplaySettings implements IConfigHandler {
 	public boolean displayEnabled;
 	public int displayFrag;
 	public double displayAlpha;
+	public double[] displayLatitudeColor;
+	public double[] displayLongitudeColor;
 	
 	private Property propDisplayEnabled, propDisplayAlpha, propDisplayFrag;
+	private Property propDisplayLatitudeColor, propDisplayLongitudeColor;
 
 	@Override
 	public void setupConfig(Configuration config, String category) {
@@ -41,7 +44,21 @@ public class DisplaySettings implements IConfigHandler {
         propDisplayFrag.setRequiresMcRestart(false);
         propDisplayFrag.setLanguageKey("config.property.display.fragments");
         propNameList.add(propDisplayFrag.getName());
+        
+        propDisplayLatitudeColor=config.get(category, "Display_Latitude_Color", new double[] {1.0, 0.0, 0.0});
+        propDisplayLatitudeColor.comment = "Color factor for latitude, the grid tends to have this color when latitude gets bigger.";
+        propDisplayLatitudeColor.setIsListLengthFixed(true);
+        propDisplayLatitudeColor.setRequiresMcRestart(false);
+        propDisplayLatitudeColor.setLanguageKey("config.property.display.color.latitude");
+        propNameList.add(propDisplayLatitudeColor.getName());
 
+        propDisplayLongitudeColor=config.get(category, "Display_Longitude_Color", new double[] {0.0, 1.0, 0.0});
+        propDisplayLatitudeColor.comment = "Color factor for longitude, the grid tends to have this color when longitude gets bigger.";
+        propDisplayLongitudeColor.setIsListLengthFixed(true);
+        propDisplayLongitudeColor.setRequiresMcRestart(false);
+        propDisplayLongitudeColor.setLanguageKey("config.property.display.color.longitude");
+        propNameList.add(propDisplayLongitudeColor.getName());
+        
         config.setCategoryPropertyOrder(category, propNameList);
 	}
 
@@ -50,6 +67,8 @@ public class DisplaySettings implements IConfigHandler {
 		this.displayEnabled = propDisplayEnabled.getBoolean();
 		this.displayAlpha = propDisplayAlpha.getDouble();
 		this.displayFrag = propDisplayFrag.getInt();
+		this.displayLatitudeColor = propDisplayLatitudeColor.getDoubleList();
+		this.displayLongitudeColor = propDisplayLongitudeColor.getDoubleList();
 	}
 
 	@Override
