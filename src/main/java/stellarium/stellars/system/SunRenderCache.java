@@ -6,10 +6,10 @@ import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.layer.IRenderCache;
-import stellarium.util.math.StellarMath;
 
 public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
 	
@@ -21,7 +21,7 @@ public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
 
 	@Override
 	public void updateCache(ClientSettings settings, IConfigHandler config, Sun object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
 		Vector3d ref = new Vector3d(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);

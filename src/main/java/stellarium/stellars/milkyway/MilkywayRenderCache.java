@@ -7,11 +7,11 @@ import javax.vecmath.Vector3d;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.FilterHelper;
+import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.layer.IRenderCache;
-import stellarium.stellars.util.ExtinctionRefraction;
-import stellarium.world.IStellarSkySet;
 
 public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySettings> {
 	
@@ -27,6 +27,7 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 	protected Vector3d[][] milkywayvec = null;
 	protected int latn, longn;
 	protected float brightness;
+	protected double[] color;
 
 	@Override
 	public void initialize(ClientSettings settings, MilkywaySettings specificSettings, Milkyway dummy) {
@@ -37,7 +38,7 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 
 	@Override
 	public void updateCache(ClientSettings settings, MilkywaySettings specificSettings, Milkyway object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				Buf = new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec();
@@ -56,6 +57,7 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 		
 		this.brightness = (float) (specificSettings.milkywayBrightness
 				* scope.getLGP() / (scope.getMP() * scope.getMP()));
+		this.color = FilterHelper.getFilteredRGBBounded(filter, new double[] {1.0, 1.0, 1.0});
 	}
 
 	@Override

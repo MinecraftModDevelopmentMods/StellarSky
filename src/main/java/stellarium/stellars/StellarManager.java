@@ -7,6 +7,7 @@ import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.StellarAPIReference;
+import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
@@ -140,8 +141,9 @@ public final class StellarManager extends WorldSavedData {
 		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(StellarSky.proxy.getDefWorld());
 		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
 		IViewScope scope = StellarAPIReference.getScope(StellarSky.proxy.getDefViewerEntity());
-		
-		celestialManager.updateClient(clientSettings, coordinate, sky, scope);
+		IOpticalFilter filter = StellarAPIReference.getFilter(StellarSky.proxy.getDefViewerEntity());
+				
+		celestialManager.updateClient(clientSettings, coordinate, sky, scope, filter);
 	}
 	
 	public void setLocked(boolean locked) {

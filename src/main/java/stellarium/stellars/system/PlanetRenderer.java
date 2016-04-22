@@ -30,7 +30,7 @@ public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCach
 		info.mc.renderEngine.bindTexture(StellarSkyResources.resourcePlanetSmall.getLocation());
 		
 		info.tessellator.startDrawingQuads();
-		info.tessellator.setColorRGBA_F(1.0f, 1.0f, 1.0f, alpha);
+		info.tessellator.setColorRGBA_F((float)cache.color[0], (float)cache.color[1], (float)cache.color[2], alpha);
 		info.tessellator.addVertexWithUV(pos.x+dif.x, pos.y+dif.y, pos.z+dif.z,0.0,0.0);
 		info.tessellator.addVertexWithUV(pos.x+dif2.x, pos.y+dif2.y, pos.z+dif2.z,1.0,0.0);
 		info.tessellator.addVertexWithUV(pos.x-dif.x, pos.y-dif.y, pos.z-dif.z,1.0,1.0);

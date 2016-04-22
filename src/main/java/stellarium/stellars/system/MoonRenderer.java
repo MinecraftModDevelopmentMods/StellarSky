@@ -30,7 +30,7 @@ public class MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 			float alpha=(float) (Optics.getAlphaFromMagnitude(14.5+cache.appMag-2.5*Math.log10(cache.difactor),info.bglight)*cache.multiplier);
 
 			info.tessellator.startDrawingQuads();
-			info.tessellator.setColorRGBA_F(1.0f, 1.0f, 1.0f, alpha);
+			info.tessellator.setColorRGBA_F((float)cache.color[0], (float)cache.color[1], (float)cache.color[2], alpha);
 			info.tessellator.addVertexWithUV(pos.x+dif.x, pos.y+dif.y, pos.z+dif.z,0.0,0.0);
 			info.tessellator.addVertexWithUV(pos.x+dif2.x, pos.y+dif2.y, pos.z+dif2.z,0.0,1.0);
 			info.tessellator.addVertexWithUV(pos.x-dif.x, pos.y-dif.y, pos.z-dif.z,1.0,1.0);
@@ -55,7 +55,9 @@ public class MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 				double latdd=1.0-(double)(latc+1)/(double)cache.latn;
 
 				float lightlevel = (0.875f*(info.bglight/2.1333334f));
-				info.tessellator.setColorRGBA_F(1.0f - lightlevel, 1.0f - lightlevel, 1.0f - lightlevel, ((info.weathereff*cache.moonilum[longc][latc]*cache.multiplier-0.015f*info.bglight)*2.0f));
+				info.tessellator.setColorRGBA_F((float)cache.color[0] * (1.0f - lightlevel),
+						(float)cache.color[1] * (1.0f - lightlevel),
+						(float)cache.color[2] * (1.0f - lightlevel), ((info.weathereff*cache.moonilum[longc][latc]*cache.multiplier-0.015f*info.bglight)*2.0f));
 				
 				info.tessellator.setNormal((float)cache.moonnormal[longc][latc].x, (float)cache.moonnormal[longc][latc].y, (float)cache.moonnormal[longc][latc].z);
 				info.tessellator.addVertexWithUV(cache.moonPos[longc][latc].x, cache.moonPos[longc][latc].y, cache.moonPos[longc][latc].z, Spmath.fmod(longd+0.5, 1.0), latd);

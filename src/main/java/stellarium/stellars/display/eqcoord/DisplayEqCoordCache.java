@@ -7,6 +7,7 @@ import javax.vecmath.Vector3d;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.display.DisplaySettings;
@@ -51,7 +52,7 @@ public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> 
 
 	@Override
 	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayEqCoord object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
 		if(!this.enabled)
 			return;
 		

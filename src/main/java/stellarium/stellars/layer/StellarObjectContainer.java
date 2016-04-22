@@ -16,6 +16,7 @@ import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 
@@ -132,13 +133,13 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	}
 
 	public void updateClient(ClientSettings settings, ClientConfig specificSettings,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
 		if(!this.initialized)
 			return;
 		
 		for(Map.Entry<Obj, IRenderCache> entry : renderCacheMap.entrySet())
 			entry.getValue().updateCache(settings, specificSettings, entry.getKey(),
-					coordinate, sky, scope);
+					coordinate, sky, scope, filter);
 	}
 
 	public Iterable<IRenderCache> getRenderCacheList(Ordering<Obj> ordering) {

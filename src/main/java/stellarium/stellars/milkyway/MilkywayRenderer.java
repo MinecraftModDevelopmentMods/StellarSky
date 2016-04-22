@@ -20,7 +20,7 @@ public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRender
 		float alpha=Optics.getAlphaForGalaxy(Mag, info.bglight) - (((1-info.weathereff)/1)*20f);
 		
 		info.tessellator.startDrawingQuads();
-		info.tessellator.setColorRGBA_F(1.0f, 1.0f, 1.0f, cache.brightness * alpha);
+		info.tessellator.setColorRGBA_F((float)cache.color[0], (float)cache.color[1], (float)cache.color[2], cache.brightness * alpha);
 
 		for(int longc=0; longc<cache.longn; longc++){
 			for(int latc=0; latc<cache.latn; latc++){

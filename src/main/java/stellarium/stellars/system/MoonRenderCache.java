@@ -5,11 +5,12 @@ import javax.vecmath.Vector3d;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.FilterHelper;
+import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.IRenderCache;
-import stellarium.util.math.StellarMath;
 import stellarium.world.IStellarSkySet;
 
 public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSettings> {
@@ -23,6 +24,7 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 	protected Vector3d buf = new Vector3d();
 	protected double size, difactor, appMag;
 	protected float multiplier;
+	protected double[] color;
 
 	@Override
 	public void initialize(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon moon) {
@@ -37,7 +39,7 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 
 	@Override
 	public void updateCache(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
 		Vector3d ref = new Vector3d(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
@@ -76,6 +78,7 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 		}
 		
 		this.multiplier = (float)(scope.getLGP() / (scope.getMP() * scope.getMP()));
+		this.color = FilterHelper.getFilteredRGBBounded(filter, new double[] {1.0, 1.0, 1.0});
 	}
 
 	@Override

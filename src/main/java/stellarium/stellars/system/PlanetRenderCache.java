@@ -6,6 +6,8 @@ import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.FilterHelper;
+import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
@@ -20,13 +22,14 @@ public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 	protected float appMag;
 	protected float size;
 	protected float multiplier;
+	protected double[] color;
 	
 	@Override
 	public void initialize(ClientSettings settings, IConfigHandler config, Planet planet) { }
 
 	@Override
 	public void updateCache(ClientSettings settings, IConfigHandler config, Planet object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
 		Vector3d ref = new Vector3d(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
@@ -49,6 +52,7 @@ public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 		this.size = (float) (scope.getResolution(Wavelength.visible) / 0.3);
 		this.multiplier = (float)(scope.getLGP() / (this.size * this.size * scope.getMP() * scope.getMP()));
 		this.size *= 0.6f;
+		this.color = FilterHelper.getFilteredRGBBounded(filter, new double[] {1.0, 1.0, 1.0});
 	}
 
 	@Override

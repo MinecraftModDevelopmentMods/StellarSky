@@ -7,8 +7,7 @@ import com.google.common.collect.Lists;
 
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
-import stellarapi.api.lib.config.IConfigHandler;
-import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
@@ -80,12 +79,12 @@ public class CelestialManager {
 	}
 	
 	public void updateClient(ClientSettings settings,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope) {		
+			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {		
 		for(StellarObjectContainer layer : this.layers)
 		{
 			String layerName = layer.getConfigName();
 			layer.updateClient(settings, layerName != null? settings.getSubConfig(layerName) : null,
-					coordinate, sky, scope);
+					coordinate, sky, scope, filter);
 		}
 	}
 

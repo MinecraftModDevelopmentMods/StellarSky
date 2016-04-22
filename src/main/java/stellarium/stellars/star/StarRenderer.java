@@ -30,7 +30,10 @@ public class StarRenderer implements ICelestialObjectRenderer<StarRenderCache> {
 
 		Color c = Color.getColor(B_V);
 		
-		info.tessellator.setColorRGBA(c.r, c.g, c.b, (int)(alpha*255.0));
+		info.tessellator.setColorRGBA_F(c.r * (float)cache.color[0]/ 255.0f,
+				c.g * (float)cache.color[1]/ 255.0f,
+				c.b * (float)cache.color[2]/ 255.0f,
+				alpha);
 		info.tessellator.addVertexWithUV(pos.x+dif.x, pos.y+dif.y, pos.z+dif.z,0.0,0.0);
 		info.tessellator.addVertexWithUV(pos.x+dif2.x, pos.y+dif2.y, pos.z+dif2.z,1.0,0.0);
 		info.tessellator.addVertexWithUV(pos.x-dif.x, pos.y-dif.y, pos.z-dif.z,1.0,1.0);
