@@ -26,7 +26,7 @@ import stellarium.world.provider.DefaultWorldProviderReplacer;
 import stellarium.world.provider.EndReplacer;
 
 @Mod(modid=StellarSky.modid, version=StellarSky.version,
-	dependencies="required-after:StellarAPI@[0.1.1.4, 0.1.2.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
+	dependencies="required-after:StellarAPI@[0.1.1.4c, 0.1.2.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		public static final String modid = "stellarsky";

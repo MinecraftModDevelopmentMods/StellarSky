@@ -25,8 +25,7 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 		this.mag=-26.74-2.5*Math.log10(LvsSun);
 		
 		double period = object.getRevolutionPeriod();
-		// TODO starting from ascending node
-		this.siderealPeriod = new CelestialPeriod(String.format("Sidereal Period of %s", object.getID()), period, 0.0);
+		this.siderealPeriod = new CelestialPeriod(String.format("Sidereal Period of %s", object.getID()), period, (object.L0 - object.wbar0) / 360.0);
 		this.synodicPeriod = new CelestialPeriod(String.format("Synodic Period of %s", object.getID()), 1/(1/period - 1/yearPeriod.getPeriodLength()),
 				object.phase_Time());
 		

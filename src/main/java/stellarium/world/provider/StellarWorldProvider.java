@@ -41,7 +41,7 @@ public class StellarWorldProvider extends WorldProvider {
 	
 	@Override
     public float calculateCelestialAngle(long worldTime, float partialTicks) {
-		return celestialHelper.calculateCelestialAngle(worldTime, partialTicks) + 0.25f;
+		return celestialHelper.calculateCelestialAngle(worldTime, partialTicks);
     }
 	
 	public float getSunHeight(float partialTicks) {
