@@ -28,6 +28,17 @@ minecraft {
     replace "@VERSION@", project.version
 }
 
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
@@ -63,3 +74,10 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+artifacts {
+    archives deobfJar 
+    archives sourceJar
+    archives jar
+}
+
