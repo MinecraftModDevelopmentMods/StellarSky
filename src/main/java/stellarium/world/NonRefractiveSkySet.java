@@ -1,10 +1,10 @@
 package stellarium.world;
 
-import javafx.scene.transform.Rotate;
-import net.minecraft.world.World;
+import com.google.common.collect.ImmutableMap;
+
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.WaveIntensive;
 import stellarapi.api.optics.Wavelength;
-import stellarium.common.CommonSettings;
 import stellarium.stellars.Optics;
 import stellarium.util.math.StellarMath;
 
@@ -13,17 +13,17 @@ public class NonRefractiveSkySet implements IStellarSkySet {
 	private boolean hideObjectsUnderHorizon;
 	private float lightPollutionFactor, dispersionFactor;
 	
-	private Wavelength.WaveInterpolation interpolation;
+	private WaveIntensive interpolation;
 	
 	public NonRefractiveSkySet(PerDimensionSettings settings) {
 		this.hideObjectsUnderHorizon = settings.hideObjectsUnderHorizon();
 		this.dispersionFactor = (float) settings.getSkyDispersionRate();
 		this.lightPollutionFactor = (float) settings.getLightPollutionRate();
 		
-		this.interpolation = new Wavelength.WaveInterpolation(
-				new Wavelength[] {Wavelength.V, Wavelength.B},
-				new double[] {StellarMath.MagToLumWithoutSize(Optics.ext_coeff_V),
-						StellarMath.MagToLumWithoutSize(Optics.ext_coeff_B_V + Optics.ext_coeff_V)});
+		this.interpolation = new WaveIntensive(
+				ImmutableMap.of(Wavelength.V, StellarMath.MagToLumWithoutSize(Optics.ext_coeff_V),
+						Wavelength.B,StellarMath.MagToLumWithoutSize(Optics.ext_coeff_B_V + Optics.ext_coeff_V))
+				);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class NonRefractiveSkySet implements IStellarSkySet {
 
 	@Override
 	public float getExtinctionRate(Wavelength wavelength) {
-		return (float) Math.pow(10.0, -interpolation.getInterpolated(wavelength) / 2.5);
+		return (float) StellarMath.LumToMagWithoutSize(interpolation.apply(wavelength).doubleValue());
 	}
 
 	@Override

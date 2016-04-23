@@ -3,8 +3,6 @@ package stellarium.stellars.star.brstar;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,22 +10,22 @@ import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 
 import stellarapi.api.celestials.EnumCelestialCollectionType;
-import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.WaveExtensive;
+import stellarapi.api.optics.Wavelength;
 import stellarium.StellarSky;
 import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
 import stellarium.stellars.star.StarRenderCache;
-import stellarium.stellars.star.StarImage;
 import stellarium.util.math.StellarMath;
 
 public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
@@ -110,14 +108,29 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 				continue;
 			
 			String name = new String(star_value).substring(4, 14);
+						
+			double mag;
 			
-			double mag=StellarMath.sgnize(star_value[102],
-					(float)StellarMath.btoi(star_value, 103, 1)
-					+StellarMath.btoi(star_value, 105, 2)*0.01f);
-
-			double B_V=StellarMath.sgnize(star_value[109],
-					(float)StellarMath.btoi(star_value, 110, 1)
-					+StellarMath.btoi(star_value, 112, 2)*0.01f);
+			double V=StellarMath.sgnize(star_value[102], StellarMath.btoD(star_value, 103, 4));
+			
+			if(star_value[107] == 'H')
+			{
+				mag = V;
+				V = StellarMath.LumToMagWithoutSize(
+						Wavelength.V.getWidth() / Wavelength.visible.getWidth()
+						* StellarMath.MagToLumWithoutSize(mag));
+			} else {
+				mag = StellarMath.LumToMagWithoutSize(
+						Wavelength.visible.getWidth() / Wavelength.V.getWidth()
+						* StellarMath.MagToLumWithoutSize(V));
+			}
+			
+			double B_V;
+						
+			if(star_value[110] != ' ')
+				B_V=StellarMath.sgnize(star_value[109], StellarMath.btoD(star_value, 110, 4));
+			else B_V = 0.4;
+			
 
 			//J2000
 			double RA=StellarMath.btoi(star_value, 75, 2)*15.0f

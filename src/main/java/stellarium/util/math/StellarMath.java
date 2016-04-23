@@ -11,12 +11,11 @@ public class StellarMath {
 	public static final double infmin=1.0e-2;
 	
 	//extract double from String
-	public static final double StrtoD(String dstr){
-		byte[] dbs=dstr.getBytes();
+	public static final double btoD(byte[] dbs, int start, int size){
 		int i;
 		boolean under=false;
 		double now=0.0, mult=1.0;
-		for(i=0; i<dbs.length; i++){
+		for(i=start; i<start+size; i++){
 			if('0'<=dbs[i] && dbs[i]<='9'){
 				if(!under){
 					now*=10;
@@ -24,7 +23,7 @@ public class StellarMath {
 				}
 				else{
 					mult*=0.1;
-					now+=dbs[i]*mult;
+					now+=(dbs[i]-'0')*mult;
 				}
 			}
 			else if(dbs[i]=='.'){
@@ -110,5 +109,9 @@ public class StellarMath {
 	
 	public static double MagToLumWithoutSize(double Mag){
 		return Math.pow(10.0, - Mag/2.5);
+	}
+	
+	public static double LumToMagWithoutSize(double Lum){
+		return - 2.5 * Math.log10(Lum);
 	}
 }

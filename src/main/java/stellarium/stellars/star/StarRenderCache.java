@@ -13,6 +13,9 @@ import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.IRenderCache;
+import stellarium.stellars.util.OpticalEffect;
+import stellarium.stellars.util.StarColor;
+import stellarium.util.math.StellarMath;
 import stellarium.world.IStellarSkySet;
 
 public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
@@ -20,7 +23,6 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 	protected boolean shouldRender;
 	protected SpCoord appCoord = new SpCoord();
 	protected float appMag;
-	protected float appB_V;
 	protected float size;
 	protected float multiplier;
 	protected double[] color;
@@ -30,31 +32,43 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 
 	@Override
 	public void updateCache(ClientSettings settings, IConfigHandler config, BgStar object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
+			ICelestialCoordinate coordinate, final ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
 		Vector3d ref = new Vector3d(object.pos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
 		double airmass = sky.calculateAirmass(this.appCoord);
 		sky.applyAtmRefraction(this.appCoord);
+		
+		this.size = (float) (scope.getResolution(Wavelength.visible) / 0.3);
+		this.multiplier = (float)(scope.getLGP() / (this.size * this.size * scope.getMP() * scope.getMP()));
 
-		this.appMag = (float) (object.mag + airmass * Optics.ext_coeff_V);
+		this.appMag = (float) (object.mag + airmass * sky.getExtinctionRate(Wavelength.visible)
+			+ StellarMath.LumToMagWithoutSize(this.multiplier));
+		
 		this.shouldRender = true;
 		if(this.appMag > settings.mag_Limit)
 		{
 			this.shouldRender = false;
 			return;
 		}
-		this.appB_V = (float) (object.B_V + airmass * Optics.ext_coeff_B_V);
 		
 		if(appCoord.y < 0.0
 				&& sky instanceof IStellarSkySet
-				&& ((IStellarSkySet) sky).hideObjectsUnderHorizon())
+				&& ((IStellarSkySet) sky).hideObjectsUnderHorizon()) {
 			this.shouldRender = false;
+			return;
+		}
 		
-		this.size = (float) (scope.getResolution(Wavelength.visible) / 0.3);
-		this.multiplier = (float)(scope.getLGP() / (this.size * this.size * scope.getMP() * scope.getMP()));
+		StarColor starColor = StarColor.getColor(object.B_V);
 		this.size *= 0.5f;
-		this.color = FilterHelper.getFilteredRGBBounded(filter, new double[] {1.0, 1.0, 1.0});
+		this.color = FilterHelper.getFilteredRGB(filter,
+					new double[] {
+							starColor.r / 255.0 * StellarMath.MagToLumWithoutSize(airmass * sky.getExtinctionRate(Wavelength.red)),
+							starColor.g / 255.0 * StellarMath.MagToLumWithoutSize(airmass * sky.getExtinctionRate(Wavelength.V)),
+							starColor.b / 255.0 * StellarMath.MagToLumWithoutSize(airmass * sky.getExtinctionRate(Wavelength.B))}
+				);
+		
+		this.color = OpticalEffect.faintToWhite(this.color, Optics.getAlphaFromMagnitude(this.appMag, 0.0f));
 	}
 
 	@Override

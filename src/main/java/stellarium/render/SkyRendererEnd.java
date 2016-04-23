@@ -73,7 +73,7 @@ public class SkyRendererEnd extends IRenderHandler {
         
         GL11.glPushMatrix();
         GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-        celestials.renderCelestial(mc, 0.0f, 1.0f, partialTicks);
+        celestials.renderCelestial(mc, new float[] {0.0f, 0.0f, 0.0f}, 1.0f, partialTicks);
         GL11.glPopMatrix();
         
         GL11.glDepthMask(true);

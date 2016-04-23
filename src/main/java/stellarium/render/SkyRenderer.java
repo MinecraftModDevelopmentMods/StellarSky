@@ -138,7 +138,7 @@ public class SkyRenderer extends IRenderHandler {
             GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
             
-            celestials.renderCelestial(mc, f1+f2+f3, f6, partialTicks);
+            celestials.renderCelestial(mc, new float[] {f1, f2, f3}, f6, partialTicks);
             
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDisable(GL11.GL_BLEND);

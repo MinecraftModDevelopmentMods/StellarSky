@@ -18,7 +18,7 @@ public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCach
 		Vector3d pos = cache.appCoord.getVec();
 		float mag = cache.appMag;
 
-		float alpha=Optics.getAlphaFromMagnitude(mag, info.bglight)*cache.multiplier - (((1-info.weathereff)/1)*20f);
+		float alpha=Optics.getAlphaFromMagnitude(mag, info.bglight) * cache.multiplier - (((1-info.weathereff)/1)*20f);
 		
 		Vector3d dif = new SpCoord(cache.appCoord.x+90, 0.0).getVec();
 		Vector3d dif2 = new SpCoord(cache.appCoord.x, cache.appCoord.y+90).getVec();

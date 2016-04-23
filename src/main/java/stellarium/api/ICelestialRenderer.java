@@ -10,11 +10,11 @@ public interface ICelestialRenderer {
 	/**
 	 * Renders celestial sphere.
 	 * @param mc the minecraft instance
-	 * @param bglight background light; Sky R+G+B on default implementation
+	 * @param skycolor background color of sky
 	 * @param weathereff weather effect; 1-rainstrength on default implementation
 	 * @param partialTicks the partial tick on this render tick
 	 * */
-	public void renderCelestial(Minecraft mc, float bglight, float weathereff, float partialTicks);
+	public void renderCelestial(Minecraft mc, float[] skycolor, float weathereff, float partialTicks);
 	
 	/**
 	 * Renders sunrise/sunset effects.

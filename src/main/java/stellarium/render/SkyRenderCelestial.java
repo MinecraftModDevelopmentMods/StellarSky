@@ -33,7 +33,7 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 		this.onSettingsUpdated(Minecraft.getMinecraft());
 	}
 	
-	public void renderCelestial(Minecraft mc, float bglight, float weathereff, float partialTicks) {
+	public void renderCelestial(Minecraft mc, float[] skycolor, float weathereff, float partialTicks) {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		
 		CelestialManager manager = StellarSky.proxy.getClientCelestialManager();
@@ -47,7 +47,7 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 		if(!this.updated)
 			this.onSettingsUpdated(mc);
 		
-		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, bglight, weathereff, partialTicks), manager.getLayers());
+		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks), manager.getLayers());
 	}
 	
 	private void onSettingsUpdated(Minecraft mc) {

@@ -1,19 +1,19 @@
-package stellarium.util;
+package stellarium.stellars.util;
 
-public class Color {
+public class StarColor {
 	public short r;
 
 	public short g;
 
 	public short b;
 	
-	public Color(short pr, short pg, short pb){
+	public StarColor(short pr, short pg, short pb){
 		r = pr;
 		g = pg;
 		b = pb;
 	}
 	
-	public Color(){
+	public StarColor(){
 		r = 255;
 		g = 255;
 		b = 255;
@@ -70,28 +70,15 @@ public class Color {
 	255,	123,	0,
 	255,	82,	0};
 	
-	public static final Color getColor(double B_V){
+	public static final StarColor getColor(double B_V){
 		int k=(int)((B_V+0.4)*20.0);
 		if(k<0) k=0;
 		if(k>48) k=48;
 		
-		Color c=new Color();
-		c.r=(short) ((color[k*3]+255)/2);
-		c.g=(short) ((color[k*3+1]+255)/2);
-		c.b=(short) ((color[k*3+2]+255)/2);
-		
-		return c;
-	}
-	
-	public static final Color getColor(float B_V){
-		int k=(int)((B_V+0.4)*20.0);
-		if(k<0) k=0;
-		if(k>48) k=48;
-		
-		Color c=new Color();
-		c.r=(short) ((color[k*3]+255)/2);
-		c.g=(short) ((color[k*3+1]+255)/2);
-		c.b=(short) ((color[k*3+2]+255)/2);
+		StarColor c=new StarColor();
+		c.r=(short)(color[k*3]);
+		c.g=(short)(color[k*3+1]);
+		c.b=(short)(color[k*3+2]);
 		
 		return c;
 	}
