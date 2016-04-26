@@ -1,11 +1,10 @@
 package stellarium.stellars.system;
 
-import javax.vecmath.Vector3d;
-
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
@@ -22,12 +21,12 @@ public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
 	@Override
 	public void updateCache(ClientSettings settings, IConfigHandler config, Sun object,
 			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
-		Vector3d ref = new Vector3d(object.earthPos);
+		Vector3 ref = new Vector3(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
 		sky.applyAtmRefraction(this.appCoord);
 		
-		this.size = object.radius / object.earthPos.length()*99.0*20;
+		this.size = object.radius / object.earthPos.size()*99.0*20;
 	}
 
 	@Override

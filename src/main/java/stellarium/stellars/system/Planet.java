@@ -1,11 +1,8 @@
 package stellarium.stellars.system;
 
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix3d;
-import javax.vecmath.Vector3d;
-
+import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.Spmath;
-import stellarium.stellars.layer.IRenderCache;
+import stellarapi.api.lib.math.Vector3;
 import stellarium.util.math.StellarMath;
 
 public class Planet extends SolarObject {
@@ -15,14 +12,14 @@ public class Planet extends SolarObject {
 	protected double ad, ed, Id, Ld, wbard, Omegad;
 	protected double b, c, s, f;
 
-	private Matrix3d roti = new Matrix3d(), rotw = new Matrix3d(), rotom = new Matrix3d();
+	private Matrix3 roti = new Matrix3(), rotw = new Matrix3(), rotom = new Matrix3();
 	
 	public Planet(String name, SolarObject parent) {
 		super(name, parent);
 	}
 
 	@Override
-	public Vector3d getRelativePos(double year) {
+	public Vector3 getRelativePos(double year) {
 		double cen=year/100.0;
 		double a=a0+ad*cen,
 				e=e0+ed*cen,
@@ -33,23 +30,23 @@ public class Planet extends SolarObject {
 		double w=wbar-Omega;
 		double M=L-wbar+b*cen*cen+c*Spmath.cosd(f*cen)+s*Spmath.sind(f*cen);
 		
-		roti.set(new AxisAngle4d(1.0, 0.0, 0.0, -Spmath.Radians(I)));
-		rotw.set(new AxisAngle4d(0.0, 0.0, 1.0, -Spmath.Radians(w)));
-		rotom.set(new AxisAngle4d(0.0, 0.0, 1.0, -Spmath.Radians(Omega)));
+		roti.setAsRotation(1.0, 0.0, 0.0, -Spmath.Radians(I));
+		rotw.setAsRotation(0.0, 0.0, 1.0, -Spmath.Radians(w));
+		rotom.setAsRotation(0.0, 0.0, 1.0, -Spmath.Radians(Omega));
 
-		Matrix3d matrix = new Matrix3d();
+		Matrix3 matrix = new Matrix3();
 		matrix.setIdentity();
-		matrix.mul(this.rotom);
-		matrix.mul(this.roti);
-		matrix.mul(this.rotw);
+		matrix.postMult(this.rotom);
+		matrix.postMult(this.roti);
+		matrix.postMult(this.rotw);
 		
 		return StellarMath.GetOrbVec(a, e, M, matrix);
 	}
 	
 	public double phase_Time() {
-		Vector3d crossed = new Vector3d();
-		crossed.cross(this.earthPos, this.sunPos);
-		double k=Math.signum(crossed.dot(new Vector3d(0.0, 0.0, 1.0))) * (1.0 - getPhase());
+		Vector3 crossed = new Vector3();
+		crossed.setCross(this.earthPos, this.sunPos);
+		double k=Math.signum(crossed.dot(new Vector3(0.0, 0.0, 1.0))) * (1.0 - getPhase());
 		if(k<0) k=k+2;
 		return k/2;
 	}

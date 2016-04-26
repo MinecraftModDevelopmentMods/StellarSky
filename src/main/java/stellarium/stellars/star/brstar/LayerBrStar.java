@@ -6,19 +6,15 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix3d;
-import javax.vecmath.Vector3d;
-
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 
 import stellarapi.api.celestials.EnumCelestialCollectionType;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.optics.WaveExtensive;
+import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.StellarSky;
 import stellarium.stellars.layer.IPerWorldImage;
@@ -36,10 +32,10 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
-	public static final Matrix3d EqtoEc = new Matrix3d();
+	public static final Matrix3 EqtoEc = new Matrix3();
 	
 	static {
-		EqtoEc.set(new AxisAngle4d(1.0, 0.0, 0.0, -e));
+		EqtoEc.setAsRotation(1.0, 0.0, 0.0, -e);
 	}
 
 	//Initialization check
@@ -143,7 +139,7 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 					+StellarMath.btoi(star_value, 86, 2)/60.0f
 					+StellarMath.btoi(star_value, 88, 2)/3600.0f);
 
-			Vector3d pos = new SpCoord(RA, Dec).getVec();
+			Vector3 pos = new SpCoord(RA, Dec).getVec();
 			EqtoEc.transform(pos);
 
 			if(mag > magLimit)

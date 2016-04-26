@@ -1,10 +1,9 @@
 package stellarium.stellars.system;
 
-import javax.vecmath.Vector3d;
-
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.FilterHelper;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
@@ -19,9 +18,9 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 	
 	protected SpCoord appCoord, cache;
 	protected int latn, longn;
-	protected Vector3d moonPos[][], moonnormal[][];
+	protected Vector3 moonPos[][], moonnormal[][];
 	protected float moonilum[][];
-	protected Vector3d buf = new Vector3d();
+	protected Vector3 buf = new Vector3();
 	protected double size, difactor, appMag;
 	protected float multiplier;
 	protected double[] color;
@@ -31,16 +30,16 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 		this.appCoord = new SpCoord();
 		this.latn = specificSettings.imgFrac;
 		this.longn = 2*specificSettings.imgFrac;
-		this.moonPos = new Vector3d[longn][latn+1];
+		this.moonPos = new Vector3[longn][latn+1];
 		this.moonilum = new float[longn][latn+1];
-		this.moonnormal = new Vector3d[longn][latn+1];
+		this.moonnormal = new Vector3[longn][latn+1];
 		this.cache = new SpCoord();
 	}
 
 	@Override
 	public void updateCache(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon object,
 			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
-		Vector3d ref = new Vector3d(object.earthPos);
+		Vector3 ref = new Vector3(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
 		double airmass = sky.calculateAirmass(this.appCoord);
@@ -50,7 +49,7 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 		this.shouldRenderGlow = appCoord.y >= 0 || !(sky instanceof IStellarSkySet)
 				|| !((IStellarSkySet) sky).hideObjectsUnderHorizon();
 		
-		this.size = object.radius/object.earthPos.length();
+		this.size = object.radius/object.earthPos.size();
 		this.difactor = 0.8 / 180.0 * Math.PI / this.size;
 		this.difactor = this.difactor * this.difactor / Math.PI;
 		
@@ -61,7 +60,7 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 			for(latc=0; latc<=latn; latc++){
 				buf.set(object.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0));
 				moonilum[longc][latc]=(float) (object.illumination(buf) * this.difactor * 1.5);
-				moonnormal[longc][latc] = new Vector3d(buf);
+				moonnormal[longc][latc] = new Vector3(buf);
 				buf.set(object.posLocalG(buf));
 				coordinate.getProjectionToGround().transform(buf);
 

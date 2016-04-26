@@ -1,10 +1,8 @@
 package stellarium.util.math;
 
-import javax.vecmath.Matrix3d;
-import javax.vecmath.Vector3d;
-
-import javafx.scene.transform.Rotate;
+import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.Spmath;
+import stellarapi.api.lib.math.Vector3;
 
 public class StellarMath {
 	
@@ -86,11 +84,11 @@ public class StellarMath {
 		return delM/(1.0-e*Spmath.cosd(E));
 	}
 	
-	public static Vector3d GetOrbVec(double a, double e, double M, Matrix3d rotation){
+	public static Vector3 GetOrbVec(double a, double e, double M, Matrix3 rotation){
 		M=Spmath.fmod(M+180.0,360.0)-180.0;
 		double e2=Spmath.Degrees(e);
 		double E=CalEcanomaly(e2, M);
-		Vector3d r = new Vector3d(a*(Spmath.cosd(E)-e), a*Math.sqrt(1-e*e)*Spmath.sind(E), 0.0);
+		Vector3 r = new Vector3(a*(Spmath.cosd(E)-e), a*Math.sqrt(1-e*e)*Spmath.sind(E), 0.0);
 		rotation.transform(r);
 		return r;
 	}

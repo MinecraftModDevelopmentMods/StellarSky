@@ -1,14 +1,11 @@
 package stellarium.world;
 
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix3d;
-import javax.vecmath.Vector3d;
-
-import net.minecraft.world.World;
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
+import stellarapi.api.lib.math.Vector3;
 import stellarium.common.CommonSettings;
 
 public class StellarCoordinate implements ICelestialCoordinate {
@@ -48,8 +45,8 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		this.yearPeriod = new CelestialPeriod("Year", fixedYearLength,
 				Spmath.fmod(this.zeroTime / fixedYearLength - this.longitude / 2 / Math.PI - 0.25, 1.0));
 		
-		EqtoEc.set(new AxisAngle4d(1.0, 0.0, 0.0, -this.axialTilt));
-		EctoEq.set(new AxisAngle4d(1.0, 0.0, 0.0, this.axialTilt));
+		EqtoEc.setAsRotation(1.0, 0.0, 0.0, -this.axialTilt);
+		EctoEq.setAsRotation(1.0, 0.0, 0.0, this.axialTilt);
 	}
 	
 	public CelestialPeriod getYearPeriod() {
@@ -57,34 +54,34 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	}
 	
 	public void update(double year) {
-		ZTEctoNEc.set(new AxisAngle4d(0.0, 0.0, 1.0, -this.precession*year));
-		NEctoZTEc.set(new AxisAngle4d(0.0, 0.0, 1.0, this.precession*year));
-		NEqtoREq.set(new AxisAngle4d(0.0, 0.0, 1.0, -this.rot*year - this.longitude));
-		REqtoNEq.set(new AxisAngle4d(0.0, 0.0, 1.0, this.rot*year + this.longitude));
+		ZTEctoNEc.setAsRotation(0.0, 0.0, 1.0, -this.precession*year);
+		NEctoZTEc.setAsRotation(0.0, 0.0, 1.0, this.precession*year);
+		NEqtoREq.setAsRotation(0.0, 0.0, 1.0, -this.rot*year - this.longitude);
+		REqtoNEq.setAsRotation(0.0, 0.0, 1.0, this.rot*year + this.longitude);
 		
-		REqtoHor.set(new AxisAngle4d(1.0, 0.0, 0.0, this.latitude));
-		HortoREq.set(new AxisAngle4d(1.0, 0.0, 0.0, -this.latitude));
+		REqtoHor.setAsRotation(1.0, 0.0, 0.0, Math.PI / 2 - this.latitude);
+		HortoREq.setAsRotation(1.0, 0.0, 0.0, this.latitude - Math.PI / 2);
 		
-		Vector3d East = new Vector3d(1.0, 0.0, 0.0);
+		Vector3 East = new Vector3(1.0, 0.0, 0.0);
 		invtransform(East);
 		
-		Vector3d North = new Vector3d(0.0, 1.0, 0.0);
+		Vector3 North = new Vector3(0.0, 1.0, 0.0);
 		invtransform(North);
 		
-		this.ZenD = new Vector3d(0.0, 0.0, 1.0);
+		this.ZenD = new Vector3(0.0, 0.0, 1.0);
 		invtransform(ZenD);
 
 		projection.setRow(0, East);
 		projection.setRow(1, North);
 		projection.setRow(2, ZenD);
 		
-		Vector3d EastEq = new Vector3d(1.0, 0.0, 0.0);
+		Vector3 EastEq = new Vector3(1.0, 0.0, 0.0);
 		invtransformEq(EastEq);
 		
-		Vector3d NorthEq = new Vector3d(0.0, 1.0, 0.0);
+		Vector3 NorthEq = new Vector3(0.0, 1.0, 0.0);
 		invtransformEq(NorthEq);
 		
-		Vector3d ZenEq = new Vector3d(0.0,0.0,1.0);
+		Vector3 ZenEq = new Vector3(0.0,0.0,1.0);
 		invtransformEq(ZenEq);
 
 		projectionEq.setRow(0, EastEq);
@@ -94,60 +91,60 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		//Zen.set(VOp.mult(manager.Earth.radius, ZenD));
 	}
 	
-	private void invtransform(Vector3d vec) {
+	private void invtransform(Vector3 vec) {
 		HortoREq.transform(vec);
 		REqtoNEq.transform(vec);
 		EqtoEc.transform(vec);
 		NEctoZTEc.transform(vec);
 	}
 	
-	private void invtransformEq(Vector3d vec) {
+	private void invtransformEq(Vector3 vec) {
 		EqtoEc.transform(vec);
 		NEctoZTEc.transform(vec);
 	}
 	
 	
 	//Direction of Zenith
-	private Vector3d ZenD;
+	private Vector3 ZenD;
 	
 	//Vector from Earth center to Ground
 	@Deprecated
-	private Vector3d Zen = new Vector3d();
+	private Vector3 Zen = new Vector3();
 	
 	
 	//Equatorial to Ecliptic
-	private final Matrix3d EqtoEc = new Matrix3d(); 
+	private final Matrix3 EqtoEc = new Matrix3(); 
 	
 	//Ecliptic to Equatorial
-	private final Matrix3d EctoEq = new Matrix3d(); 
+	private final Matrix3 EctoEq = new Matrix3(); 
 	
 	
 	//Zero Time Ecliptic to Now Ecliptic
-	private Matrix3d ZTEctoNEc = new Matrix3d();
+	private Matrix3 ZTEctoNEc = new Matrix3();
 
 	//Now Ecliptic to Zero Time Ecliptic
-	private Matrix3d NEctoZTEc = new Matrix3d();
+	private Matrix3 NEctoZTEc = new Matrix3();
 
 
 	//Now Equatorial to Rotating Equatorial
-	private Matrix3d NEqtoREq = new Matrix3d();
+	private Matrix3 NEqtoREq = new Matrix3();
 	
 	//Rotating Equatorial to Now Equatorial
-	private Matrix3d REqtoNEq = new Matrix3d();
+	private Matrix3 REqtoNEq = new Matrix3();
 
 	
 	//Rotating Equatorial to Horizontal
-	private Matrix3d REqtoHor = new Matrix3d();
+	private Matrix3 REqtoHor = new Matrix3();
 	
 	//Horizontal to Rotating Equatorial
-	private Matrix3d HortoREq = new Matrix3d();
+	private Matrix3 HortoREq = new Matrix3();
 	
-	private Matrix3d projection = new Matrix3d();
-	private Matrix3d projectionEq = new Matrix3d();
+	private Matrix3 projection = new Matrix3();
+	private Matrix3 projectionEq = new Matrix3();
 
 	
 	@Override
-	public Matrix3d getProjectionToGround() {
+	public Matrix3 getProjectionToGround() {
 		return this.projection;
 	}
 
@@ -157,8 +154,8 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	}
 	
 	@Override
-	public double calculateInitialOffset(Vector3d initialAbsPos, double periodLength) {
-		Vector3d eqrPos = new Vector3d(initialAbsPos);
+	public double calculateInitialOffset(Vector3 initialAbsPos, double periodLength) {
+		Vector3 eqrPos = new Vector3(initialAbsPos);
 		projectionEq.transform(eqrPos);
 		
 		SpCoord coord = new SpCoord();
@@ -168,8 +165,8 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	}
 
 	@Override
-	public double getHighestHeightAngle(Vector3d absPos) {
-		Vector3d eqrPos = new Vector3d(absPos);
+	public double getHighestHeightAngle(Vector3 absPos) {
+		Vector3 eqrPos = new Vector3(absPos);
 		projectionEq.transform(eqrPos);
 		
 		SpCoord coord = new SpCoord();
@@ -179,8 +176,8 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	}
 
 	@Override
-	public double getLowestHeightAngle(Vector3d absPos) {
-		Vector3d eqrPos = new Vector3d(absPos);
+	public double getLowestHeightAngle(Vector3 absPos) {
+		Vector3 eqrPos = new Vector3(absPos);
 		projectionEq.transform(eqrPos);
 		
 		SpCoord coord = new SpCoord();
@@ -190,8 +187,8 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	}
 
 	@Override
-	public double offsetTillObjectReach(Vector3d absPos, double heightAngle) {		
-		Vector3d eqrPos = new Vector3d(absPos);
+	public double offsetTillObjectReach(Vector3 absPos, double heightAngle) {		
+		Vector3 eqrPos = new Vector3(absPos);
 		projectionEq.transform(eqrPos);
 		
 		SpCoord coord = new SpCoord();

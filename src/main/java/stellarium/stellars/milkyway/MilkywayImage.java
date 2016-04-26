@@ -1,15 +1,12 @@
 package stellarium.stellars.milkyway;
 
-import javax.vecmath.Vector3d;
-
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.optics.IViewScope;
+import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
-import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.layer.IPerWorldImage;
 
 public class MilkywayImage implements IPerWorldImage<Milkyway> {
@@ -52,8 +49,8 @@ public class MilkywayImage implements IPerWorldImage<Milkyway> {
 	}
 
 	@Override
-	public Vector3d getCurrentAbsolutePos() {
-		return new Vector3d(1.0, 0.0, 0.0);
+	public Vector3 getCurrentAbsolutePos() {
+		return new Vector3(1.0, 0.0, 0.0);
 	}
 
 	@Override

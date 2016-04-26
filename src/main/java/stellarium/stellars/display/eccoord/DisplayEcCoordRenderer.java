@@ -2,11 +2,8 @@ package stellarium.stellars.display.eccoord;
 
 import org.lwjgl.opengl.GL11;
 
-import stellarapi.api.lib.math.Spmath;
-import stellarium.StellarSkyResources;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
-import stellarium.stellars.Optics;
 
 public class DisplayEcCoordRenderer implements ICelestialObjectRenderer<DisplayEcCoordCache> {
 
@@ -29,13 +26,13 @@ public class DisplayEcCoordRenderer implements ICelestialObjectRenderer<DisplayE
 				double longdd=(double)(longc+1)/(double)cache.longn;
 				double latdd=(double)(latc+1)/(double)cache.latn;
 
-				info.tessellator.setColorRGBA_F((float)cache.colorvec[longc][latc].x,
-						(float)cache.colorvec[longc][latc].y,
-						(float)cache.colorvec[longc][latc].z, cache.brightness);
-				info.tessellator.addVertex(cache.displayvec[longc][latc].x, cache.displayvec[longc][latc].y, cache.displayvec[longc][latc].z);
-				info.tessellator.addVertex(cache.displayvec[longc][latc+1].x, cache.displayvec[longc][latc+1].y, cache.displayvec[longc][latc+1].z);
-				info.tessellator.addVertex(cache.displayvec[longcd][latc+1].x, cache.displayvec[longcd][latc+1].y, cache.displayvec[longcd][latc+1].z);
-				info.tessellator.addVertex(cache.displayvec[longcd][latc].x, cache.displayvec[longcd][latc].y, cache.displayvec[longcd][latc].z);
+				info.tessellator.setColorRGBA_F((float)cache.colorvec[longc][latc].getX(),
+						(float)cache.colorvec[longc][latc].getY(),
+						(float)cache.colorvec[longc][latc].getZ(), cache.brightness);
+				info.tessellator.addVertex(cache.displayvec[longc][latc].getX(), cache.displayvec[longc][latc].getY(), cache.displayvec[longc][latc].getZ());
+				info.tessellator.addVertex(cache.displayvec[longc][latc+1].getX(), cache.displayvec[longc][latc+1].getY(), cache.displayvec[longc][latc+1].getZ());
+				info.tessellator.addVertex(cache.displayvec[longcd][latc+1].getX(), cache.displayvec[longcd][latc+1].getY(), cache.displayvec[longcd][latc+1].getZ());
+				info.tessellator.addVertex(cache.displayvec[longcd][latc].getX(), cache.displayvec[longcd][latc].getY(), cache.displayvec[longcd][latc].getZ());
 			}
 		}
 		

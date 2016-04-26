@@ -1,15 +1,12 @@
 package stellarium.stellars.star;
 
-import javax.vecmath.Vector3d;
-
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.optics.IViewScope;
+import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
-import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.layer.IPerWorldImage;
 
 public class StarImage implements IPerWorldImage<BgStar> {
@@ -31,7 +28,7 @@ public class StarImage implements IPerWorldImage<BgStar> {
 	
 	@Override
 	public void updateCache(BgStar object, ICelestialCoordinate coordinate, ISkyEffect sky) {
-		Vector3d ref = new Vector3d(object.pos);
+		Vector3 ref = new Vector3(object.pos);
 		coordinate.getProjectionToGround().transform(ref);
 		appPos.setWithVec(ref);
 		sky.applyAtmRefraction(this.appPos);
@@ -63,7 +60,7 @@ public class StarImage implements IPerWorldImage<BgStar> {
 	}
 
 	@Override
-	public Vector3d getCurrentAbsolutePos() {
+	public Vector3 getCurrentAbsolutePos() {
 		return main.pos;
 	}
 

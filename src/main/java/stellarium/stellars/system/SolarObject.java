@@ -1,17 +1,15 @@
 package stellarium.stellars.system;
 
-import javax.vecmath.Vector3d;
-
+import stellarapi.api.lib.math.Vector3;
 import stellarium.stellars.layer.StellarObject;
-import stellarium.util.math.StellarMath;
 
 public abstract class SolarObject extends StellarObject {
 	
 	private String name;
 	
-	protected Vector3d relativePos = new Vector3d();
-	protected Vector3d sunPos = new Vector3d();
-	protected Vector3d earthPos = new Vector3d();
+	protected Vector3 relativePos = new Vector3();
+	protected Vector3 sunPos = new Vector3();
+	protected Vector3 earthPos = new Vector3();
 	
 	/**Magnitude from earth without atmosphere*/
 	protected double currentMag;
@@ -48,16 +46,16 @@ public abstract class SolarObject extends StellarObject {
 		return this.name;
 	}
 	
-	public Vector3d positionTo(SolarObject object) {
+	public Vector3 positionTo(SolarObject object) {
 		if(this == object)
-			return new Vector3d(0.0, 0.0, 0.0);
+			return new Vector3(0.0, 0.0, 0.0);
 		try {
 			if(object.level < this.level) {
-				Vector3d vector = parent.positionTo(object);
+				Vector3 vector = parent.positionTo(object);
 				vector.add(this.relativePos);
 				return vector;
 			} else {
-				Vector3d vector = this.positionTo(object.parent);
+				Vector3 vector = this.positionTo(object.parent);
 				vector.sub(object.relativePos);
 				return vector;
 			}
@@ -85,19 +83,19 @@ public abstract class SolarObject extends StellarObject {
 			this.updateMagnitude(earth.sunPos);
 	}
 	
-	protected void updateMagnitude(Vector3d earthFromSun){
-		double dist=earthPos.length();
-		double distS=sunPos.length();
-		double distE=earthFromSun.length();
+	protected void updateMagnitude(Vector3 earthFromSun){
+		double dist=earthPos.size();
+		double distS=sunPos.size();
+		double distE=earthFromSun.size();
 		double LvsSun=this.radius*this.radius*this.getPhase()*distE*distE*this.albedo*1.4/(dist*dist*distS*distS);
 		this.currentMag=-26.74-2.5*Math.log10(LvsSun);
 	}
 	
 	public double getPhase(){
-		return (1+sunPos.dot(this.earthPos)/(sunPos.length()*this.earthPos.length()))/2;
+		return (1+sunPos.dot(this.earthPos)/(sunPos.size()*this.earthPos.size()))/2;
 	}
 	
-	public abstract Vector3d getRelativePos(double year);
+	public abstract Vector3 getRelativePos(double year);
 
 
 }

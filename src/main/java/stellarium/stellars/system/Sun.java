@@ -1,8 +1,6 @@
 package stellarium.stellars.system;
 
-import javax.vecmath.Vector3d;
-
-import stellarium.stellars.layer.IRenderCache;
+import stellarapi.api.lib.math.Vector3;
 
 public class Sun extends SolarObject {
 
@@ -13,11 +11,11 @@ public class Sun extends SolarObject {
 	}
 
 	@Override
-	public Vector3d getRelativePos(double year) {
+	public Vector3 getRelativePos(double year) {
 		return null;
 	}
 	
-	protected void updateMagnitude(Vector3d earthFromSun) { }
+	protected void updateMagnitude(Vector3 earthFromSun) { }
 
 	public double getMagnitude() {
 		return this.currentMag;

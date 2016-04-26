@@ -1,19 +1,18 @@
 package stellarium.stellars.system;
 
-import javax.vecmath.Vector3d;
-
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.stellars.layer.IPerWorldImage;
 
 public class MoonImage implements IPerWorldImage<Moon> {
 
 	private double mag;
-	private Vector3d pos;
+	private Vector3 pos;
 	private SpCoord appCoord = new SpCoord();
 	private double phase;
 	private CelestialPeriod siderealPeriod, synodicPeriod;
@@ -23,7 +22,7 @@ public class MoonImage implements IPerWorldImage<Moon> {
 	public void initialize(Moon object, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
 		this.mag = -12.74 - 2.5 * Math.log(object.brightnessFactor);
 		
-		this.pos = new Vector3d(object.earthPos);
+		this.pos = new Vector3(object.earthPos);
 		
 		double period = object.getRevolutionPeriod();
 		
@@ -38,8 +37,8 @@ public class MoonImage implements IPerWorldImage<Moon> {
 
 	@Override
 	public void updateCache(Moon object, ICelestialCoordinate coordinate, ISkyEffect sky) {
-		this.pos = new Vector3d(object.earthPos);
-		Vector3d ref = new Vector3d(object.earthPos);
+		this.pos = new Vector3(object.earthPos);
+		Vector3 ref = new Vector3(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
 		sky.applyAtmRefraction(this.appCoord);
@@ -72,7 +71,7 @@ public class MoonImage implements IPerWorldImage<Moon> {
 	}
 
 	@Override
-	public Vector3d getCurrentAbsolutePos() {
+	public Vector3 getCurrentAbsolutePos() {
 		return this.pos;
 	}
 

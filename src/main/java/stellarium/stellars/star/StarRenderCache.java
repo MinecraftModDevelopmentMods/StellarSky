@@ -1,11 +1,10 @@
 package stellarium.stellars.star;
 
-import javax.vecmath.Vector3d;
-
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.FilterHelper;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
@@ -33,7 +32,7 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 	@Override
 	public void updateCache(ClientSettings settings, IConfigHandler config, BgStar object,
 			ICelestialCoordinate coordinate, final ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
-		Vector3d ref = new Vector3d(object.pos);
+		Vector3 ref = new Vector3(object.pos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
 		double airmass = sky.calculateAirmass(this.appCoord);

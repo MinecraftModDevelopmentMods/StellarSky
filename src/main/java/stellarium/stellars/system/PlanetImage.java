@@ -1,19 +1,18 @@
 package stellarium.stellars.system;
 
-import javax.vecmath.Vector3d;
-
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.stellars.layer.IPerWorldImage;
 
 public class PlanetImage implements IPerWorldImage<Planet> {
 
 	private double mag;
-	private Vector3d pos;
+	private Vector3 pos;
 	private SpCoord appCoord = new SpCoord();
 	private double phase;
 	private CelestialPeriod siderealPeriod, synodicPeriod;
@@ -29,7 +28,7 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 		this.synodicPeriod = new CelestialPeriod(String.format("Synodic Period of %s", object.getID()), 1/(1/period - 1/yearPeriod.getPeriodLength()),
 				object.phase_Time());
 		
-		this.pos = new Vector3d(object.earthPos);
+		this.pos = new Vector3(object.earthPos);
 		CelestialPeriod dayPeriod = coordinate.getPeriod();
 		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / synodicPeriod.getPeriodLength());
 		this.horPeriod = new CelestialPeriod(String.format("Day for %s", object.getID()), length, coordinate.calculateInitialOffset(this.pos, length));
@@ -37,8 +36,8 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 
 	@Override
 	public void updateCache(Planet object, ICelestialCoordinate coordinate, ISkyEffect sky) {
-		this.pos = new Vector3d(object.earthPos);
-		Vector3d ref = new Vector3d(object.earthPos);
+		this.pos = new Vector3(object.earthPos);
+		Vector3 ref = new Vector3(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
 		sky.applyAtmRefraction(this.appCoord);
@@ -71,7 +70,7 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 	}
 
 	@Override
-	public Vector3d getCurrentAbsolutePos() {
+	public Vector3 getCurrentAbsolutePos() {
 		return this.pos;
 	}
 

@@ -1,10 +1,9 @@
 package stellarium.stellars.display.horcoord;
 
-import javax.vecmath.Vector3d;
-
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
@@ -13,9 +12,9 @@ import stellarium.stellars.display.IDisplayRenderCache;
 
 public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord> {
 	
-	private Vector3d Buf, baseColor, heightColor, azimuthColor;
-	protected Vector3d[][] displayvec = null;
-	protected Vector3d[][] colorvec = null;
+	private Vector3 Buf, baseColor, heightColor, azimuthColor;
+	protected Vector3[][] displayvec = null;
+	protected Vector3[][] colorvec = null;
 	protected int latn, longn;
 	protected boolean enabled;
 	protected float brightness;
@@ -29,13 +28,13 @@ public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord
 		this.enabled = display.displayEnabled;
 		if(this.enabled)
 		{
-			this.displayvec = new Vector3d[longn][latn+1];
-			this.colorvec = new Vector3d[longn][latn+1];
+			this.displayvec = new Vector3[longn][latn+1];
+			this.colorvec = new Vector3[longn][latn+1];
 		}
 		this.brightness = (float) display.displayAlpha;
-		this.baseColor = new Vector3d(display.displayBaseColor);
-		this.heightColor = new Vector3d(display.displayHeightColor);
-		this.azimuthColor = new Vector3d(display.displayAzimuthColor);
+		this.baseColor = new Vector3(display.displayBaseColor);
+		this.heightColor = new Vector3(display.displayHeightColor);
+		this.azimuthColor = new Vector3(display.displayAzimuthColor);
 		heightColor.sub(this.baseColor);
 		azimuthColor.sub(this.baseColor);
 	}
@@ -51,9 +50,9 @@ public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord
 				displayvec[longc][latc] =  new SpCoord(-longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
 				displayvec[longc][latc].scale(50.0);
 				
-				colorvec[longc][latc] = new Vector3d(this.baseColor);
+				colorvec[longc][latc] = new Vector3(this.baseColor);
 				
-				Buf = new Vector3d(this.heightColor);
+				Buf = new Vector3(this.heightColor);
 				Buf.scale((double)latc/latn);
 				colorvec[longc][latc].add(Buf);
 				

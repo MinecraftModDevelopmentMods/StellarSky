@@ -1,19 +1,18 @@
 package stellarium.stellars.system;
 
-import javax.vecmath.Vector3d;
-
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.stellars.layer.IPerWorldImage;
 
 public class SunImage implements IPerWorldImage<Sun> {
 	
 	private double mag;
-	private Vector3d pos;
+	private Vector3 pos;
 	private SpCoord appCoord = new SpCoord();
 	private CelestialPeriod yearPeriod;
 	private CelestialPeriod horPeriod;
@@ -24,7 +23,7 @@ public class SunImage implements IPerWorldImage<Sun> {
 		this.mag = object.getMagnitude();
 		this.yearPeriod = yearPeriod;
 		
-		this.pos = new Vector3d(object.earthPos);
+		this.pos = new Vector3(object.earthPos);
 		CelestialPeriod dayPeriod = coordinate.getPeriod();
 		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / yearPeriod.getPeriodLength());
 		this.horPeriod = new CelestialPeriod("Day", length, coordinate.calculateInitialOffset(this.pos, length));
@@ -32,8 +31,8 @@ public class SunImage implements IPerWorldImage<Sun> {
 
 	@Override
 	public void updateCache(Sun object, ICelestialCoordinate coordinate, ISkyEffect sky) {
-		this.pos = new Vector3d(object.earthPos);
-		Vector3d ref = new Vector3d(object.earthPos);
+		this.pos = new Vector3(object.earthPos);
+		Vector3 ref = new Vector3(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);
 		appCoord.setWithVec(ref);
 		sky.applyAtmRefraction(this.appCoord);
@@ -65,7 +64,7 @@ public class SunImage implements IPerWorldImage<Sun> {
 	}
 
 	@Override
-	public Vector3d getCurrentAbsolutePos() {
+	public Vector3 getCurrentAbsolutePos() {
 		return this.pos;
 	}
 
