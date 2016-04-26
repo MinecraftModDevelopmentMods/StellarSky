@@ -44,8 +44,8 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		this.dayPeriod = new CelestialPeriod("Celestial Day", fixedDaylength,
 				Spmath.fmod(this.zeroTime / fixedDaylength - this.longitude / 2 / Math.PI - 0.25, 1.0));
 		
-		double fixedYearLength = this.dayLength * this.yearLength / (1.0 - this.precession / 2 / Math.PI);
-		this.yearPeriod = new CelestialPeriod("Celestial Year", fixedYearLength,
+		double fixedYearLength = this.dayLength * this.yearLength;
+		this.yearPeriod = new CelestialPeriod("Year", fixedYearLength,
 				Spmath.fmod(this.zeroTime / fixedYearLength - this.longitude / 2 / Math.PI - 0.25, 1.0));
 		
 		EqtoEc.set(new AxisAngle4d(1.0, 0.0, 0.0, -this.axialTilt));

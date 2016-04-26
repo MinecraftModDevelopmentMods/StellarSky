@@ -33,7 +33,7 @@ public class MoonImage implements IPerWorldImage<Moon> {
 		
 		CelestialPeriod dayPeriod = coordinate.getPeriod();
 		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / synodicPeriod.getPeriodLength());
-		this.horPeriod = new CelestialPeriod("Lunar day", length, coordinate.calculateInitialOffset(this.pos, length));
+		this.horPeriod = new CelestialPeriod("Lunar Day", length, coordinate.calculateInitialOffset(this.pos, length));
 	}
 
 	@Override
