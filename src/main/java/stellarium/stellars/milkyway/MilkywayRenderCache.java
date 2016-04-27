@@ -53,8 +53,7 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 			}
 		}
 		
-		this.brightness = (float) (specificSettings.milkywayBrightness
-				* info.lgp / (info.mp * info.mp));
+		this.brightness = (float) (specificSettings.milkywayBrightness * info.lgp / (info.mp * info.mp));
 		this.color = FilterHelper.getFilteredRGBBounded(info.filter, new double[] {1.0, 1.0, 1.0});
 	}
 

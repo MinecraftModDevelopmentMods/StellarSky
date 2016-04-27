@@ -3,6 +3,7 @@ package stellarium.stellars.system;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.optics.EnumRGBA;
 import stellarapi.api.optics.FilterHelper;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
@@ -42,7 +43,7 @@ public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 		if(appCoord.y < 0.0 && info.hideObjectsUnderHorizon)
 			this.shouldRender = false;
 		
-		this.size = (float) (info.resolution.get(Wavelength.visible) / 0.3);
+		this.size = (float) (info.getResolution(EnumRGBA.Alpha) / 0.3);
 		this.multiplier = (float)(info.lgp / (this.size * this.size * info.mp * info.mp));
 		this.size *= 0.6f;
 		this.color = FilterHelper.getFilteredRGBBounded(info.filter, new double[] {1.0, 1.0, 1.0});

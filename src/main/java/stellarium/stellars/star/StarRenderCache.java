@@ -3,6 +3,7 @@ package stellarium.stellars.star;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.optics.EnumRGBA;
 import stellarapi.api.optics.FilterHelper;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
@@ -34,10 +35,10 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 		double airmass = info.calculateAirmass(this.appCoord);
 		info.applyAtmRefraction(this.appCoord);
 		
-		this.size = (float) (info.resolution.get(Wavelength.visible) / 0.3);
+		this.size = (float) (info.getResolution(EnumRGBA.Alpha) / 0.3);
 		this.multiplier = (float)(info.lgp / (this.size * this.size * info.mp * info.mp));
 
-		this.appMag = (float) (object.mag + airmass * info.extinctionRate.get(Wavelength.visible)
+		this.appMag = (float) (object.mag + airmass * info.getExtinctionRate(EnumRGBA.Alpha)
 			+ StellarMath.LumToMagWithoutSize(this.multiplier));
 		
 		this.shouldRender = true;
@@ -56,9 +57,9 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 		this.size *= 0.5f;
 		this.color = FilterHelper.getFilteredRGB(info.filter,
 					new double[] {
-							starColor.r / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.extinctionRate.get(Wavelength.red)),
-							starColor.g / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.extinctionRate.get(Wavelength.V)),
-							starColor.b / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.extinctionRate.get(Wavelength.B))}
+							starColor.r / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.getExtinctionRate(EnumRGBA.Red)),
+							starColor.g / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.getExtinctionRate(EnumRGBA.Green)),
+							starColor.b / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.getExtinctionRate(EnumRGBA.Blue))}
 				);
 		
 		this.color = OpticalEffect.faintToWhite(this.color, Optics.getAlphaFromMagnitude(this.appMag, 0.0f));

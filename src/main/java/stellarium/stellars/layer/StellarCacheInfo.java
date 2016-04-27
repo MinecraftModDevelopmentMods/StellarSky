@@ -1,5 +1,6 @@
 package stellarium.stellars.layer;
 
+import java.util.EnumMap;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
@@ -22,8 +23,8 @@ public final class StellarCacheInfo {
 	
 	public final double lgp, mp;
 	public final boolean hideObjectsUnderHorizon;
-	public final Map<Wavelength, Double> extinctionRate;
-	public final Map<Wavelength, Double> resolution;
+	private final Map<EnumRGBA, Double> extinctionRate;
+	private final Map<EnumRGBA, Double> resolution;
 	
 	private final ISkyEffect sky;
 	
@@ -37,17 +38,14 @@ public final class StellarCacheInfo {
 		this.lgp = scope.getLGP();
 		this.mp = scope.getMP();
 		
-		ImmutableMap.Builder<Wavelength, Double> extinction = ImmutableMap.builder();
-		ImmutableMap.Builder<Wavelength, Double> res = ImmutableMap.builder();
+		this.extinctionRate = Maps.newEnumMap(EnumRGBA.class);
+		this.resolution = Maps.newEnumMap(EnumRGBA.class);
 		
 		for(EnumRGBA color : EnumRGBA.values()) {
 			Wavelength wavelength = Wavelength.colorWaveMap.get(color);
-			extinction.put(wavelength, (double)sky.getExtinctionRate(wavelength));
-			res.put(wavelength, scope.getResolution(wavelength));
+			extinctionRate.put(color, (double)sky.getExtinctionRate(wavelength));
+			resolution.put(color, scope.getResolution(wavelength));
 		}
-		
-		this.extinctionRate = extinction.build();
-		this.resolution = res.build();
 	}
 
 	public double calculateAirmass(SpCoord appCoord) {
@@ -56,6 +54,14 @@ public final class StellarCacheInfo {
 
 	public void applyAtmRefraction(SpCoord appCoord) {
 		sky.applyAtmRefraction(appCoord);
+	}
+	
+	public double getExtinctionRate(EnumRGBA color) {
+		return extinctionRate.get(color);
+	}
+	
+	public double getResolution(EnumRGBA color) {
+		return resolution.get(color);
 	}
 
 }
