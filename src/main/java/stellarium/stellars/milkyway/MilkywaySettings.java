@@ -30,7 +30,7 @@ public class MilkywaySettings implements IConfigHandler {
         propMilkywayBrightness.setLanguageKey("config.property.client.milkywaybrightness");
         propNameList.add(propMilkywayBrightness.getName());
         
-		propMilkywayFrac=config.get(category, "Milkyway_Fragments_Number", 32);
+		propMilkywayFrac=config.get(category, "Milkyway_Fragments_Number", 16);
         propMilkywayFrac.comment="Milky way is drawn with fragments\n" +
         		"Less fragments will increase FPS, but the milky way will become more defective";
         propMilkywayFrac.setRequiresMcRestart(false);
