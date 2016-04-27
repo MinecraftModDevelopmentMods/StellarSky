@@ -9,6 +9,7 @@ import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.layer.IRenderCache;
+import stellarium.stellars.layer.StellarCacheInfo;
 
 public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
 	
@@ -19,12 +20,11 @@ public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
 	public void initialize(ClientSettings settings, IConfigHandler config, Sun sun) { }
 
 	@Override
-	public void updateCache(ClientSettings settings, IConfigHandler config, Sun object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
+	public void updateCache(ClientSettings settings, IConfigHandler config, Sun object, StellarCacheInfo info) {
 		Vector3 ref = new Vector3(object.earthPos);
-		coordinate.getProjectionToGround().transform(ref);
+		info.projectionToGround.transform(ref);
 		appCoord.setWithVec(ref);
-		sky.applyAtmRefraction(this.appCoord);
+		info.applyAtmRefraction(this.appCoord);
 		
 		this.size = object.radius / object.earthPos.size()*99.0*20;
 	}

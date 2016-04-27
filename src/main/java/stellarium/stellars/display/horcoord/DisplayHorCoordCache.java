@@ -9,6 +9,7 @@ import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.display.DisplaySettings;
 import stellarium.stellars.display.IDisplayRenderCache;
+import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.util.math.VectorHelper;
 
 public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord> {
@@ -41,8 +42,7 @@ public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayHorCoord object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
+	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayHorCoord object, StellarCacheInfo info) {
 		if(!this.enabled)
 			return;
 		

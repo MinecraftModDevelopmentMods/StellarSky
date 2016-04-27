@@ -12,12 +12,8 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 
-import stellarapi.api.ICelestialCoordinate;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 
 public class StellarObjectContainer<Obj extends StellarObject, ClientConfig extends IConfigHandler> {
@@ -132,14 +128,12 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 			entry.getValue().initialize(settings, specificSettings, entry.getKey());
 	}
 
-	public void updateClient(ClientSettings settings, ClientConfig specificSettings,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
+	public void updateClient(ClientSettings settings, ClientConfig specificSettings, StellarCacheInfo info) {
 		if(!this.initialized)
 			return;
 		
 		for(Map.Entry<Obj, IRenderCache> entry : renderCacheMap.entrySet())
-			entry.getValue().updateCache(settings, specificSettings, entry.getKey(),
-					coordinate, sky, scope, filter);
+			entry.getValue().updateCache(settings, specificSettings, entry.getKey(), info);
 	}
 
 	public Iterable<IRenderCache> getRenderCacheList(Ordering<Obj> ordering) {

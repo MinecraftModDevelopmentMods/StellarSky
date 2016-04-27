@@ -84,7 +84,7 @@ public class CelestialManager {
 		{
 			String layerName = layer.getConfigName();
 			layer.updateClient(settings, layerName != null? settings.getSubConfig(layerName) : null,
-					coordinate, sky, scope, filter);
+					new StellarCacheInfo(coordinate, sky, scope, filter));
 		}
 	}
 

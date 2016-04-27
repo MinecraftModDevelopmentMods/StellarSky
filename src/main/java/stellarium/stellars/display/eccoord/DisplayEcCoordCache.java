@@ -9,6 +9,7 @@ import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.display.DisplaySettings;
 import stellarium.stellars.display.IDisplayRenderCache;
+import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.util.math.VectorHelper;
 
 public class DisplayEcCoordCache implements IDisplayRenderCache<DisplayEcCoord> {
@@ -41,20 +42,19 @@ public class DisplayEcCoordCache implements IDisplayRenderCache<DisplayEcCoord> 
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayEcCoord object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
+	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayEcCoord object, StellarCacheInfo info) {
 		if(!this.enabled)
 			return;
 		
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				Vector3 Buf = new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
-				coordinate.getProjectionToGround().transform(this.displayvec[longc][latc]);
+				info.projectionToGround.transform(this.displayvec[longc][latc]);
 				
 				SpCoord coord = new SpCoord();
 				coord.setWithVec(Buf);
 				
-				sky.applyAtmRefraction(coord);
+				info.applyAtmRefraction(coord);
 
 				displayvec[longc][latc].set(coord.getVec());
 				displayvec[longc][latc].scale(50.0);

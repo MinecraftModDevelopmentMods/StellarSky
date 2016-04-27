@@ -10,6 +10,7 @@ import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.IRenderCache;
+import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.world.IStellarSkySet;
 
 public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSettings> {
@@ -37,17 +38,15 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
+	public void updateCache(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon object, StellarCacheInfo info) {
 		Vector3 ref = new Vector3(object.earthPos);
-		coordinate.getProjectionToGround().transform(ref);
+		info.projectionToGround.transform(ref);
 		appCoord.setWithVec(ref);
-		double airmass = sky.calculateAirmass(this.appCoord);
+		double airmass = info.calculateAirmass(this.appCoord);
 		this.appMag = object.currentMag + airmass * Optics.ext_coeff_V;
-		sky.applyAtmRefraction(this.appCoord);
+		info.applyAtmRefraction(this.appCoord);
 		
-		this.shouldRenderGlow = appCoord.y >= 0 || !(sky instanceof IStellarSkySet)
-				|| !((IStellarSkySet) sky).hideObjectsUnderHorizon();
+		this.shouldRenderGlow = appCoord.y >= 0 || !info.hideObjectsUnderHorizon;
 		
 		this.size = object.radius/object.earthPos.size();
 		this.difactor = 0.8 / 180.0 * Math.PI / this.size;
@@ -62,22 +61,21 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 				moonilum[longc][latc]=(float) (object.illumination(buf) * this.difactor * 1.5);
 				moonnormal[longc][latc] = new Vector3(buf);
 				buf.set(object.posLocalG(buf));
-				coordinate.getProjectionToGround().transform(buf);
+				info.projectionToGround.transform(buf);
 
 				cache.setWithVec(buf);
-				sky.applyAtmRefraction(this.cache);
+				info.applyAtmRefraction(this.cache);
 
 				moonPos[longc][latc] = cache.getVec();
 				moonPos[longc][latc].scale(98.0);
 
-				if(cache.y < 0 && sky instanceof IStellarSkySet
-						&& ((IStellarSkySet) sky).hideObjectsUnderHorizon())
+				if(cache.y < 0 && info.hideObjectsUnderHorizon)
 					moonilum[longc][latc]=0.0f;
 			}
 		}
 		
-		this.multiplier = (float)(scope.getLGP() / (scope.getMP() * scope.getMP()));
-		this.color = FilterHelper.getFilteredRGBBounded(filter, new double[] {1.0, 1.0, 1.0});
+		this.multiplier = (float)(info.lgp / (info.mp*info.mp));
+		this.color = FilterHelper.getFilteredRGBBounded(info.filter, new double[] {1.0, 1.0, 1.0});
 	}
 
 	@Override

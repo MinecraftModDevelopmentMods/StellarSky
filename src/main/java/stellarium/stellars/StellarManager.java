@@ -142,7 +142,7 @@ public final class StellarManager extends WorldSavedData {
 		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
 		IViewScope scope = StellarAPIReference.getScope(StellarSky.proxy.getDefViewerEntity());
 		IOpticalFilter filter = StellarAPIReference.getFilter(StellarSky.proxy.getDefViewerEntity());
-				
+		
 		celestialManager.updateClient(clientSettings, coordinate, sky, scope, filter);
 	}
 	

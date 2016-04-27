@@ -1,17 +1,14 @@
 package stellarium.stellars.system;
 
-import stellarapi.api.ICelestialCoordinate;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.FilterHelper;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.IRenderCache;
+import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.world.IStellarSkySet;
 
 public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
@@ -27,13 +24,12 @@ public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 	public void initialize(ClientSettings settings, IConfigHandler config, Planet planet) { }
 
 	@Override
-	public void updateCache(ClientSettings settings, IConfigHandler config, Planet object,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
+	public void updateCache(ClientSettings settings, IConfigHandler config, Planet object, StellarCacheInfo info) {
 		Vector3 ref = new Vector3(object.earthPos);
-		coordinate.getProjectionToGround().transform(ref);
+		info.projectionToGround.transform(ref);
 		appCoord.setWithVec(ref);
-		double airmass = sky.calculateAirmass(this.appCoord);
-		sky.applyAtmRefraction(this.appCoord);
+		double airmass = info.calculateAirmass(this.appCoord);
+		info.applyAtmRefraction(this.appCoord);
 
 		this.appMag = (float) (object.currentMag + airmass * Optics.ext_coeff_V);
 		this.shouldRender = true;
@@ -43,15 +39,13 @@ public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 			return;
 		}
 		
-		if(appCoord.y < 0.0
-				&& sky instanceof IStellarSkySet
-				&& ((IStellarSkySet) sky).hideObjectsUnderHorizon())
+		if(appCoord.y < 0.0 && info.hideObjectsUnderHorizon)
 			this.shouldRender = false;
 		
-		this.size = (float) (scope.getResolution(Wavelength.visible) / 0.3);
-		this.multiplier = (float)(scope.getLGP() / (this.size * this.size * scope.getMP() * scope.getMP()));
+		this.size = (float) (info.resolution.get(Wavelength.visible) / 0.3);
+		this.multiplier = (float)(info.lgp / (this.size * this.size * info.mp * info.mp));
 		this.size *= 0.6f;
-		this.color = FilterHelper.getFilteredRGBBounded(filter, new double[] {1.0, 1.0, 1.0});
+		this.color = FilterHelper.getFilteredRGBBounded(info.filter, new double[] {1.0, 1.0, 1.0});
 	}
 
 	@Override
