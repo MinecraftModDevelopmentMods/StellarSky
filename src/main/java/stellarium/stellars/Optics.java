@@ -1,12 +1,11 @@
 package stellarium.stellars;
 
-import java.util.Random;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
+import stellarium.util.math.CachedGaussianRandom;
 
 public class Optics implements IConfigHandler {
 	
@@ -24,7 +23,7 @@ public class Optics implements IConfigHandler {
 	private float magCompression;
 	private float magContrast;
 	
-	private static Random randomTurbulance = new Random(3L);
+	private static CachedGaussianRandom randomTurbulance = new CachedGaussianRandom(100, 3L);
 	
 	public static final Optics instance = new Optics();
 	public static ClientSettings settings;
