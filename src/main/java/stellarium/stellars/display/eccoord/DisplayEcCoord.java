@@ -38,7 +38,7 @@ public class DisplayEcCoord extends DisplayElement {
         propDisplayEnabled.setLanguageKey("config.property.display.enabled");
         propNameList.add(propDisplayEnabled.getName());
         
-        propDisplayAlpha=config.get(category, "Display_Alpha", 0.1);
+        propDisplayAlpha=config.get(category, "Display_Alpha", 0.05);
         propDisplayAlpha.comment="Alpha(Brightness) of the display.";
         propDisplayAlpha.setRequiresMcRestart(false);
         propDisplayAlpha.setLanguageKey("config.property.display.alpha");
@@ -61,14 +61,14 @@ public class DisplayEcCoord extends DisplayElement {
         propDisplayLatitudeColor.comment = "Color factor for latitude, the grid tends to have this color when latitude gets bigger.";
         propDisplayLatitudeColor.setIsListLengthFixed(true);
         propDisplayLatitudeColor.setRequiresMcRestart(false);
-        propDisplayLatitudeColor.setLanguageKey("config.property.eccoord.display.color.latitude");
+        propDisplayLatitudeColor.setLanguageKey("config.property.display.eccoord.color.latitude");
         propNameList.add(propDisplayLatitudeColor.getName());
 
         propDisplayLongitudeColor=config.get(category, "Display_Longitude_Color", new double[] {0.0, 1.0, 0.0});
         propDisplayLongitudeColor.comment = "Color factor for longitude, the grid tends to have this color when longitude gets bigger.";
         propDisplayLongitudeColor.setIsListLengthFixed(true);
         propDisplayLongitudeColor.setRequiresMcRestart(false);
-        propDisplayLongitudeColor.setLanguageKey("config.property.eccoord.display.color.longitude");
+        propDisplayLongitudeColor.setLanguageKey("config.property.display.eccoord.color.longitude");
         propNameList.add(propDisplayLongitudeColor.getName());
         
         config.setCategoryPropertyOrder(category, propNameList);

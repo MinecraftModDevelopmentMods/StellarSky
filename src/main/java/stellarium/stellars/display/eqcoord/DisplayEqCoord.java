@@ -38,7 +38,7 @@ public class DisplayEqCoord extends DisplayElement {
         propDisplayEnabled.setLanguageKey("config.property.display.enabled");
         propNameList.add(propDisplayEnabled.getName());
         
-        propDisplayAlpha=config.get(category, "Display_Alpha", 0.08);
+        propDisplayAlpha=config.get(category, "Display_Alpha", 0.05);
         propDisplayAlpha.comment="Alpha(Brightness) of the display.";
         propDisplayAlpha.setRequiresMcRestart(false);
         propDisplayAlpha.setLanguageKey("config.property.display.alpha");
@@ -64,7 +64,7 @@ public class DisplayEqCoord extends DisplayElement {
         propDisplayDecColor.setLanguageKey("config.property.display.eqcoord.color.dec");
         propNameList.add(propDisplayDecColor.getName());
 
-        propDisplayRAColor=config.get(category, "Display_Right_Ascension_Color", new double[] {0.5, 0.0, 0.0});
+        propDisplayRAColor=config.get(category, "Display_Right_Ascension_Color", new double[] {1.0, 0.0, 0.0});
         propDisplayRAColor.comment = "Color factor for right ascension, the grid tends to have this color when right ascension gets bigger.";
         propDisplayRAColor.setIsListLengthFixed(true);
         propDisplayRAColor.setRequiresMcRestart(false);

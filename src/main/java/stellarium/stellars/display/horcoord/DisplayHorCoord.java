@@ -38,7 +38,7 @@ public class DisplayHorCoord extends DisplayElement {
         propDisplayEnabled.setLanguageKey("config.property.display.enabled");
         propNameList.add(propDisplayEnabled.getName());
         
-        propDisplayAlpha=config.get(category, "Display_Alpha", 0.1);
+        propDisplayAlpha=config.get(category, "Display_Alpha", 0.05);
         propDisplayAlpha.comment="Alpha(Brightness) of the display.";
         propDisplayAlpha.setRequiresMcRestart(false);
         propDisplayAlpha.setLanguageKey("config.property.display.alpha");

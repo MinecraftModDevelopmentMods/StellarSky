@@ -114,6 +114,10 @@ public final class StellarDimensionManager extends WorldSavedData {
 	}
 	
 	public Collection<StellarCollection> constructCelestials(ICelestialCoordinate coordinate, ISkyEffect sky) {
+		collections.clear();
+		foundSuns.clear();
+		foundMoons.clear();
+		
 		for(StellarObjectContainer container : manager.getCelestialManager().getLayers()) {
 			StellarCollection collection = new StellarCollection(container, coordinate, sky,
 					this.coordinate.getYearPeriod());
