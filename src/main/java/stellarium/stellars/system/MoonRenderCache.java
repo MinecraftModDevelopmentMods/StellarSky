@@ -4,6 +4,7 @@ import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.optics.EnumRGBA;
 import stellarapi.api.optics.FilterHelper;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
@@ -43,7 +44,7 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 		info.projectionToGround.transform(ref);
 		appCoord.setWithVec(ref);
 		double airmass = info.calculateAirmass(this.appCoord);
-		this.appMag = object.currentMag + airmass * Optics.ext_coeff_V;
+		this.appMag = object.currentMag + airmass * info.getExtinctionRate(EnumRGBA.Alpha);
 		info.applyAtmRefraction(this.appCoord);
 		
 		this.shouldRenderGlow = appCoord.y >= 0 || !info.hideObjectsUnderHorizon;
