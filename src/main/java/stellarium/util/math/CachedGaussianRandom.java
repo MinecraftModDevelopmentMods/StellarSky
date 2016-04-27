@@ -24,6 +24,7 @@ public class CachedGaussianRandom {
 	}
 
 	public double nextGaussian() {
+		this.currentIndex = (this.currentIndex + 1) % randomValues.length;
 		return randomValues[this.currentIndex++];
 	}
 

@@ -10,6 +10,7 @@ import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.layer.IRenderCache;
+import stellarium.util.math.VectorHelper;
 
 public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySettings> {
 	
@@ -21,7 +22,6 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 		EqtoEc.setAsRotation(1.0, 0.0, 0.0, -e);
 	}
 	
-	private Vector3 Buf = new Vector3();
 	protected Vector3[][] milkywayvec = null;
 	protected int latn, longn;
 	protected float brightness;
@@ -31,7 +31,7 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 	public void initialize(ClientSettings settings, MilkywaySettings specificSettings, Milkyway dummy) {
 		this.latn = specificSettings.imgFracMilkyway;
 		this.longn = 2*specificSettings.imgFracMilkyway;
-		this.milkywayvec = new Vector3[longn][latn+1];
+		this.milkywayvec = VectorHelper.createAndInitialize(longn, latn+1);
 	}
 
 	@Override
@@ -39,16 +39,16 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
-				Buf = new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec();
+				Vector3 Buf = new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec();
 				EqtoEc.transform(Buf);
 				coordinate.getProjectionToGround().transform(Buf);
-				
+
 				SpCoord coord = new SpCoord();
 				coord.setWithVec(Buf);
-				
+
 				sky.applyAtmRefraction(coord);
 
-				milkywayvec[longc][latc] = coord.getVec();
+				milkywayvec[longc][latc].set(coord.getVec());
 				milkywayvec[longc][latc].scale(50.0);
 			}
 		}

@@ -10,6 +10,7 @@ import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.display.DisplaySettings;
 import stellarium.stellars.display.IDisplayRenderCache;
+import stellarium.util.math.VectorHelper;
 
 public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> {
 	
@@ -21,7 +22,7 @@ public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> 
 		EqtoEc.setAsRotation(1.0, 0.0, 0.0, -e);
 	}
 	
-	private Vector3 Buf, baseColor, decColor, RAColor;
+	private Vector3 baseColor, decColor, RAColor;
 	protected Vector3[][] displayvec = null;
 	protected Vector3[][] colorvec = null;
 	protected int latn, longn;
@@ -37,8 +38,8 @@ public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> 
 		this.enabled = display.displayEnabled;
 		if(this.enabled)
 		{
-			this.displayvec = new Vector3[longn][latn+1];
-			this.colorvec = new Vector3[longn][latn+1];
+			this.displayvec = VectorHelper.createAndInitialize(longn, latn+1);
+			this.colorvec = VectorHelper.createAndInitialize(longn, latn+1);
 		}
 		this.brightness = (float) display.displayAlpha;
 		this.baseColor = new Vector3(display.displayBaseColor);
@@ -56,7 +57,7 @@ public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> 
 		
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
-				Buf = new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
+				Vector3 Buf = new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
 				EqtoEc.transform(Buf);
 				coordinate.getProjectionToGround().transform(Buf);
 				
@@ -65,12 +66,12 @@ public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> 
 				
 				sky.applyAtmRefraction(coord);
 
-				displayvec[longc][latc] = coord.getVec();
+				displayvec[longc][latc].set(coord.getVec());
 				displayvec[longc][latc].scale(50.0);
 				
-				colorvec[longc][latc] = new Vector3(this.baseColor);
+				colorvec[longc][latc].set(this.baseColor);
 				
-				Buf = new Vector3(this.decColor);
+				Buf.set(this.decColor);
 				Buf.scale((double)latc/latn);
 				colorvec[longc][latc].add(Buf);
 				
