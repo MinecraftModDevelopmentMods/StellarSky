@@ -47,7 +47,7 @@ public class DisplayEcCoordCache implements IDisplayRenderCache<DisplayEcCoordSe
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				Vector3 Buf = new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
-				info.projectionToGround.transform(this.displayvec[longc][latc]);
+				info.projectionToGround.transform(Buf);
 				
 				SpCoord coord = new SpCoord();
 				coord.setWithVec(Buf);
