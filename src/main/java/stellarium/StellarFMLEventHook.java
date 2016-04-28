@@ -4,6 +4,7 @@ import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -30,7 +31,7 @@ public class StellarFMLEventHook {
 	public void handleNotHave(FMLNetworkEvent.CustomPacketRegistrationEvent event) {
 		if(event.operation.equals("REGISTER") && !event.registrations.contains(
 				StellarSky.instance.getNetworkManager().getID())
-				&& event.handler instanceof NetHandlerPlayClient)
+				&& event.side.isClient())
 			this.handleNotHave();
 	}
 	

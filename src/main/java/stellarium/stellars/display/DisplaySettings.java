@@ -2,22 +2,19 @@ package stellarium.stellars.display;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import net.minecraftforge.common.config.Configuration;
-import stellarapi.api.lib.config.IConfigHandler;
-import stellarium.stellars.display.eccoord.DisplayEcCoord;
-import stellarium.stellars.display.eqcoord.DisplayEqCoord;
-import stellarium.stellars.display.horcoord.DisplayHorCoord;
+import stellarapi.api.lib.config.SimpleHierarchicalConfig;
 
-public class DisplaySettings implements IConfigHandler {
+public class DisplaySettings extends SimpleHierarchicalConfig {
 	
-	private List<DisplayElement> elements = Lists.newArrayList();
+	private LayerDisplay display;
 	
-	public DisplaySettings() {
-		elements.add(new DisplayHorCoord());
-		elements.add(new DisplayEqCoord());
-		elements.add(new DisplayEcCoord());
+	public DisplaySettings(LayerDisplay display) {
+		this.display = display;
+		
+		for(LayerDisplay.DisplayDelegate delegate : display.displayElementDelegates) {
+			this.putSubConfig(delegate.type.getName(), delegate.type.generateSettings());
+		}
 	}
 
 	@Override
@@ -26,24 +23,7 @@ public class DisplaySettings implements IConfigHandler {
 		config.setCategoryLanguageKey(category, "config.category.display");
 		config.setCategoryRequiresMcRestart(category, false);
 		
-		for(DisplayElement element : elements)
-			element.setupConfig(config, category + Configuration.CATEGORY_SPLITTER + element.getID());
-	}
-
-	@Override
-	public void loadFromConfig(Configuration config, String category) {
-		for(DisplayElement element : elements)
-			element.loadFromConfig(config, category + Configuration.CATEGORY_SPLITTER + element.getID());
-	}
-
-	@Override
-	public void saveToConfig(Configuration config, String category) {
-		for(DisplayElement element : elements)
-			element.saveToConfig(config, category + Configuration.CATEGORY_SPLITTER + element.getID());
-	}
-
-	protected List<DisplayElement> getDisplayElements() {
-		return this.elements;
+		super.setupConfig(config, category);
 	}
 
 }

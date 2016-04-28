@@ -9,10 +9,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.render.ICelestialObjectRenderer;
-import stellarium.stellars.display.DisplayElement;
+import stellarium.stellars.display.DisplayElementSettings;
 import stellarium.stellars.display.IDisplayRenderCache;
 
-public class DisplayEcCoord extends DisplayElement {
+public class DisplayEcCoordSettings extends DisplayElementSettings {
 
 	public boolean displayEnabled;
 	public int displayFrag;
@@ -29,6 +29,8 @@ public class DisplayEcCoord extends DisplayElement {
 		config.setCategoryComment(category, "Configurations for Display of Horizontal Coordinate Grid.");
 		config.setCategoryLanguageKey(category, "config.category.display.eccoord");
 		config.setCategoryRequiresMcRestart(category, false);
+		
+		super.setupConfig(config, category);
 		
 		List<String> propNameList = Lists.newArrayList();
 		
@@ -87,22 +89,6 @@ public class DisplayEcCoord extends DisplayElement {
 	@Override
 	public void saveToConfig(Configuration config, String category) {
 		// TODO save to configuration; not done till now		
-	}
-	
-	@Override
-	public String getID() {
-		return "Ecliptic_Coordinate_Grid";
-	}
-
-	@Override
-	public IDisplayRenderCache generateCache() {
-		return new DisplayEcCoordCache();
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public ICelestialObjectRenderer getRenderer() {
-		return new DisplayEcCoordRenderer();
 	}
 
 }

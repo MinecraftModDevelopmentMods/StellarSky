@@ -1,19 +1,14 @@
 package stellarium.stellars.display.eqcoord;
 
-import stellarapi.api.ICelestialCoordinate;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
-import stellarium.stellars.display.DisplaySettings;
 import stellarium.stellars.display.IDisplayRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.util.math.VectorHelper;
 
-public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> {
+public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoordSettings> {
 	
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
@@ -29,29 +24,27 @@ public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> 
 	protected int latn, longn;
 	protected boolean enabled;
 	protected float brightness;
-	
-	private int renderId;
 
 	@Override
-	public void initialize(ClientSettings settings, DisplaySettings specificSettings, DisplayEqCoord display) {
-		this.latn = display.displayFrag;
-		this.longn = 2*display.displayFrag;
-		this.enabled = display.displayEnabled;
+	public void initialize(ClientSettings settings, DisplayEqCoordSettings specificSettings) {
+		this.latn = specificSettings.displayFrag;
+		this.longn = 2*specificSettings.displayFrag;
+		this.enabled = specificSettings.displayEnabled;
 		if(this.enabled)
 		{
 			this.displayvec = VectorHelper.createAndInitialize(longn, latn+1);
 			this.colorvec = VectorHelper.createAndInitialize(longn, latn+1);
 		}
-		this.brightness = (float) display.displayAlpha;
-		this.baseColor = new Vector3(display.displayBaseColor);
-		this.decColor = new Vector3(display.displayDecColor);
-		this.RAColor = new Vector3(display.displayRAColor);
+		this.brightness = (float) specificSettings.displayAlpha;
+		this.baseColor = new Vector3(specificSettings.displayBaseColor);
+		this.decColor = new Vector3(specificSettings.displayDecColor);
+		this.RAColor = new Vector3(specificSettings.displayRAColor);
 		decColor.sub(this.baseColor);
 		RAColor.sub(this.baseColor);
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayEqCoord object, StellarCacheInfo info) {
+	public void updateCache(ClientSettings settings, DisplayEqCoordSettings specificSettings, StellarCacheInfo info) {
 		if(!this.enabled)
 			return;
 		
@@ -81,15 +74,4 @@ public class DisplayEqCoordCache implements IDisplayRenderCache<DisplayEqCoord> 
 			}
 		}
 	}
-
-	@Override
-	public int getRenderId() {
-		return this.renderId;
-	}
-
-	@Override
-	public void setRenderId(int id) {
-		this.renderId = id;
-	}
-
 }

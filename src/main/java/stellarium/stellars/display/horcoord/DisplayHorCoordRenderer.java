@@ -2,13 +2,13 @@ package stellarium.stellars.display.horcoord;
 
 import org.lwjgl.opengl.GL11;
 
-import stellarapi.api.lib.math.Spmath;
-import stellarium.StellarSkyResources;
-import stellarium.render.ICelestialObjectRenderer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import stellarium.render.StellarRenderInfo;
-import stellarium.stellars.Optics;
+import stellarium.stellars.display.IDisplayRenderer;
 
-public class DisplayHorCoordRenderer implements ICelestialObjectRenderer<DisplayHorCoordCache> {
+@SideOnly(Side.CLIENT)
+public class DisplayHorCoordRenderer implements IDisplayRenderer<DisplayHorCoordCache> {
 
 	@Override
 	public void render(StellarRenderInfo info, DisplayHorCoordCache cache) {

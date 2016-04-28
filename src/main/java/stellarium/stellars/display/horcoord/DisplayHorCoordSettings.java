@@ -9,10 +9,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.render.ICelestialObjectRenderer;
-import stellarium.stellars.display.DisplayElement;
+import stellarium.stellars.display.DisplayElementSettings;
 import stellarium.stellars.display.IDisplayRenderCache;
 
-public class DisplayHorCoord extends DisplayElement {
+public class DisplayHorCoordSettings extends DisplayElementSettings {
 
 	public boolean displayEnabled;
 	public int displayFrag;
@@ -87,22 +87,6 @@ public class DisplayHorCoord extends DisplayElement {
 	@Override
 	public void saveToConfig(Configuration config, String category) {
 		// TODO save to configuration; not done till now		
-	}
-	
-	@Override
-	public String getID() {
-		return "Horizontal_Coordinate_Grid";
-	}
-
-	@Override
-	public IDisplayRenderCache generateCache() {
-		return new DisplayHorCoordCache();
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public ICelestialObjectRenderer getRenderer() {
-		return new DisplayHorCoordRenderer();
 	}
 
 }

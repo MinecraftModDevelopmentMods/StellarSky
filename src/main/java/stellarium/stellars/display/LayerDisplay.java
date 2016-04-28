@@ -5,9 +5,12 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
@@ -19,24 +22,39 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.render.StellarRenderingRegistry;
-import stellarium.stellars.layer.StellarObject;
-import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.display.eccoord.DisplayEcCoordType;
+import stellarium.stellars.display.eqcoord.DisplayEqCoordType;
+import stellarium.stellars.display.horcoord.DisplayHorCoordType;
 import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.IStellarLayerType;
+import stellarium.stellars.layer.StellarObjectContainer;
 
-public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySettings, INBTConfig> {
-		
+public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySettings, INBTConfig>, Callable<IConfigHandler> {
+	
 	private int renderId;
-	public List<DisplayElement> displayElements;
+	private Ordering<IDisplayElementType> displayOrdering;
+	ImmutableList<DisplayDelegate> displayElementDelegates;
+	
+	private static List<IDisplayElementType> listDisplayType = Lists.newArrayList(
+			new DisplayHorCoordType(),
+			new DisplayEqCoordType(),
+			new DisplayEcCoordType());
+	
+	public LayerDisplay() {
+		this.displayOrdering = Ordering.explicit(listDisplayType).reverse();
+		ImmutableList.Builder<DisplayDelegate> builder = ImmutableList.builder();
+		for(IDisplayElementType type : listDisplayType)
+			builder.add(new DisplayDelegate(type));
+		this.displayElementDelegates = builder.build();
+	}
 
 	@Override
-	public void initializeClient(DisplaySettings config, StellarObjectContainer container) throws IOException {
-		this.displayElements = config.getDisplayElements();
-		
-		for(DisplayElement element : this.displayElements)
+	public void initializeClient(DisplaySettings config, StellarObjectContainer container) throws IOException {		
+		for(DisplayDelegate delegate : this.displayElementDelegates)
 		{
+			DisplayElement element = new DisplayElement(delegate);
 			container.loadObject("Display", element);
-			container.addRenderCache(element, element.getCache());
+			container.addRenderCache(element, new WrappedDisplayRenderCache(delegate));
 		}
 	}
 	
@@ -55,10 +73,11 @@ public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySe
 	@Override
 	public void registerRenderers() {
 		this.renderId = StellarRenderingRegistry.getInstance().registerLayerRenderer(new LayerDisplayRenderer());
-		for(DisplayElement element : this.displayElements)
+		for(DisplayDelegate delegate : this.displayElementDelegates)
 		{
-			int id = StellarRenderingRegistry.getInstance().registerObjectRenderer(element.getRenderer());
-			element.setRenderId(id);
+			int id = StellarRenderingRegistry.getInstance().registerObjectRenderer(
+					new WrappedDisplayRenderer(delegate));
+			delegate.renderId = id;
 		}
 	}
 
@@ -110,6 +129,26 @@ public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySe
 
 	@Override
 	public Ordering<DisplayElement> getOrdering() {
-		return Ordering.explicit(this.displayElements).reverse();
+		return this.displayOrdering.onResultOf(new Function<DisplayElement, IDisplayElementType>() {
+					@Override
+					public IDisplayElementType apply(DisplayElement input) {
+						return input.getType();
+					}
+				});
+	}
+	
+
+	@Override
+	public IConfigHandler call() throws Exception {
+		return new DisplaySettings(this);
+	}
+	
+	static class DisplayDelegate {
+		private DisplayDelegate(IDisplayElementType input) {
+			this.type = input;
+		}
+		
+		int renderId = -1;
+		IDisplayElementType type;
 	}
 }

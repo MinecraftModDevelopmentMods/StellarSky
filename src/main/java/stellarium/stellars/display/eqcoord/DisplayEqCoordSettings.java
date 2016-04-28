@@ -9,10 +9,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.render.ICelestialObjectRenderer;
-import stellarium.stellars.display.DisplayElement;
+import stellarium.stellars.display.DisplayElementSettings;
 import stellarium.stellars.display.IDisplayRenderCache;
 
-public class DisplayEqCoord extends DisplayElement {
+public class DisplayEqCoordSettings extends DisplayElementSettings {
 
 	public boolean displayEnabled;
 	public int displayFrag;
@@ -89,20 +89,4 @@ public class DisplayEqCoord extends DisplayElement {
 		// TODO save to configuration; not done till now		
 	}
 	
-	@Override
-	public String getID() {
-		return "Equatorial_Coordinate_Grid";
-	}
-
-	@Override
-	public IDisplayRenderCache generateCache() {
-		return new DisplayEqCoordCache();
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public ICelestialObjectRenderer getRenderer() {
-		return new DisplayEqCoordRenderer();
-	}
-
 }

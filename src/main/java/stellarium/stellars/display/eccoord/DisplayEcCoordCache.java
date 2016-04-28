@@ -12,7 +12,7 @@ import stellarium.stellars.display.IDisplayRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.util.math.VectorHelper;
 
-public class DisplayEcCoordCache implements IDisplayRenderCache<DisplayEcCoord> {
+public class DisplayEcCoordCache implements IDisplayRenderCache<DisplayEcCoordSettings> {
 	
 	private Vector3 baseColor, latitudeColor, longitudeColor;
 	protected Vector3[][] displayvec = null;
@@ -21,28 +21,26 @@ public class DisplayEcCoordCache implements IDisplayRenderCache<DisplayEcCoord> 
 	protected boolean enabled;
 	protected float brightness;
 	
-	private int renderId;
-
 	@Override
-	public void initialize(ClientSettings settings, DisplaySettings specificSettings, DisplayEcCoord display) {
-		this.latn = display.displayFrag;
-		this.longn = 2*display.displayFrag;
-		this.enabled = display.displayEnabled;
+	public void initialize(ClientSettings settings, DisplayEcCoordSettings specificSettings) {
+		this.latn = specificSettings.displayFrag;
+		this.longn = 2*specificSettings.displayFrag;
+		this.enabled = specificSettings.displayEnabled;
 		if(this.enabled)
 		{
 			this.displayvec = VectorHelper.createAndInitialize(longn, latn+1);
 			this.colorvec = VectorHelper.createAndInitialize(longn, latn+1);
 		}
-		this.brightness = (float) display.displayAlpha;
-		this.baseColor = new Vector3(display.displayBaseColor);
-		this.latitudeColor = new Vector3(display.displayHeightColor);
-		this.longitudeColor = new Vector3(display.displayAzimuthColor);
+		this.brightness = (float) specificSettings.displayAlpha;
+		this.baseColor = new Vector3(specificSettings.displayBaseColor);
+		this.latitudeColor = new Vector3(specificSettings.displayHeightColor);
+		this.longitudeColor = new Vector3(specificSettings.displayAzimuthColor);
 		latitudeColor.sub(this.baseColor);
 		longitudeColor.sub(this.baseColor);
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayEcCoord object, StellarCacheInfo info) {
+	public void updateCache(ClientSettings settings, DisplayEcCoordSettings specificSettings, StellarCacheInfo info) {
 		if(!this.enabled)
 			return;
 		
@@ -70,16 +68,6 @@ public class DisplayEcCoordCache implements IDisplayRenderCache<DisplayEcCoord> 
 				colorvec[longc][latc].add(Buf);
 			}
 		}
-	}
-
-	@Override
-	public int getRenderId() {
-		return this.renderId;
-	}
-
-	@Override
-	public void setRenderId(int id) {
-		this.renderId = id;
 	}
 
 }

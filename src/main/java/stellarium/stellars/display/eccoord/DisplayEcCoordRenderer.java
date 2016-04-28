@@ -2,10 +2,13 @@ package stellarium.stellars.display.eccoord;
 
 import org.lwjgl.opengl.GL11;
 
-import stellarium.render.ICelestialObjectRenderer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import stellarium.render.StellarRenderInfo;
+import stellarium.stellars.display.IDisplayRenderer;
 
-public class DisplayEcCoordRenderer implements ICelestialObjectRenderer<DisplayEcCoordCache> {
+@SideOnly(Side.CLIENT)
+public class DisplayEcCoordRenderer implements IDisplayRenderer<DisplayEcCoordCache> {
 
 	@Override
 	public void render(StellarRenderInfo info, DisplayEcCoordCache cache) {

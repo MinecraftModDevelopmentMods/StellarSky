@@ -1,18 +1,14 @@
 package stellarium.stellars.display.horcoord;
 
-import stellarapi.api.ICelestialCoordinate;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.display.DisplaySettings;
 import stellarium.stellars.display.IDisplayRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.util.math.VectorHelper;
 
-public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord> {
+public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoordSettings> {
 	
 	private Vector3 baseColor, heightColor, azimuthColor;
 	protected Vector3[][] displayvec = null;
@@ -24,25 +20,25 @@ public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord
 	private int renderId;
 
 	@Override
-	public void initialize(ClientSettings settings, DisplaySettings specificSettings, DisplayHorCoord display) {
-		this.latn = display.displayFrag;
-		this.longn = 2*display.displayFrag;
-		this.enabled = display.displayEnabled;
+	public void initialize(ClientSettings settings, DisplayHorCoordSettings specificSettings) {
+		this.latn = specificSettings.displayFrag;
+		this.longn = 2*specificSettings.displayFrag;
+		this.enabled = specificSettings.displayEnabled;
 		if(this.enabled)
 		{
 			this.displayvec = VectorHelper.createAndInitialize(longn, latn+1);
 			this.colorvec = VectorHelper.createAndInitialize(longn, latn+1);
 		}
-		this.brightness = (float) display.displayAlpha;
-		this.baseColor = new Vector3(display.displayBaseColor);
-		this.heightColor = new Vector3(display.displayHeightColor);
-		this.azimuthColor = new Vector3(display.displayAzimuthColor);
+		this.brightness = (float) specificSettings.displayAlpha;
+		this.baseColor = new Vector3(specificSettings.displayBaseColor);
+		this.heightColor = new Vector3(specificSettings.displayHeightColor);
+		this.azimuthColor = new Vector3(specificSettings.displayAzimuthColor);
 		heightColor.sub(this.baseColor);
 		azimuthColor.sub(this.baseColor);
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayHorCoord object, StellarCacheInfo info) {
+	public void updateCache(ClientSettings settings, DisplayHorCoordSettings specificSettings, StellarCacheInfo info) {
 		if(!this.enabled)
 			return;
 		
@@ -62,16 +58,6 @@ public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord
 				colorvec[longc][latc].add(Buf);
 			}
 		}
-	}
-
-	@Override
-	public int getRenderId() {
-		return this.renderId;
-	}
-
-	@Override
-	public void setRenderId(int id) {
-		this.renderId = id;
 	}
 
 }

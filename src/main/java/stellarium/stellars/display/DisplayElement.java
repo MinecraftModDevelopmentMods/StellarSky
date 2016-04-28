@@ -7,24 +7,21 @@ import stellarium.render.ICelestialObjectRenderer;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarObject;
 
-public abstract class DisplayElement extends StellarObject implements IConfigHandler {
+public class DisplayElement extends StellarObject {
 
-	private int renderId;
-	private IDisplayRenderCache currentCache;
+	private final IDisplayElementType type;
 	
-	public IDisplayRenderCache getCache() {
-		if(this.currentCache == null)
-			this.currentCache = this.generateCache();
-		return this.currentCache;
+	public DisplayElement(LayerDisplay.DisplayDelegate delegate) {
+		this.type = delegate.type;
 	}
 	
-	protected abstract IDisplayRenderCache generateCache();
+	public IDisplayElementType getType() {
+		return this.type;
+	}
 
-	@SideOnly(Side.CLIENT)
-	public abstract ICelestialObjectRenderer getRenderer();
-
-	public void setRenderId(int id) {
-		currentCache.setRenderId(id);
-		this.renderId = id;
-	}	
+	@Override
+	public String getID() {
+		return type.getName();
+	}
+	
 }
