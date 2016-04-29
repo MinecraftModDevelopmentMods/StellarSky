@@ -17,10 +17,8 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 	private ConfigPropertyDouble propMagLimit, propTurb;
 	private ConfigPropertyDouble propMinuteLength;
 	private ConfigPropertyInteger propHourToMinute;
-	private ConfigPropertyString propViewMode;
 	private ConfigPropertyString propLockBtnPosition;
 	
-	private EnumViewMode viewMode = EnumViewMode.EMPTY;
 	private EnumLockBtnPosition btnPosition = EnumLockBtnPosition.UPRIGHT;
 	
 	private boolean isDirty = false;
@@ -32,14 +30,12 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 		this.propTurb = new ConfigPropertyDouble("Twinkling(Turbulance)", "", 1.0);
 		this.propMinuteLength = new ConfigPropertyDouble("Minute_Length", "", 16.666);
 		this.propHourToMinute = new ConfigPropertyInteger("Hour_Length", "", 60);
-		this.propViewMode = new ConfigPropertyString("Mode_HUD_Time_View", "", viewMode.getName());
 		this.propLockBtnPosition = new ConfigPropertyString("Lock_Button_Position", "", btnPosition.getName());
 		
 		this.addConfigProperty(this.propMagLimit);
 		this.addConfigProperty(this.propTurb);
 		this.addConfigProperty(this.propMinuteLength);
 		this.addConfigProperty(this.propHourToMinute);
-		this.addConfigProperty(this.propViewMode);
 		this.addConfigProperty(this.propLockBtnPosition);
 	}
 	
@@ -73,13 +69,6 @@ public class ClientSettings extends SimpleHierarchicalConfig {
         propHourToMinute.setComment("Number of minutes in an hour. (The minute & hour is displayed on HUD as HH:MM format)");
         propHourToMinute.setRequiresMcRestart(false);
         propHourToMinute.setLanguageKey("config.property.client.hourlength");
-
-        propViewMode.setValidValues(EnumViewMode.names);
-        propViewMode.setComment("Mode for HUD time view.\n"
-        		+ " 3 modes available: empty, hhmm, tick.\n"
-        		+ "Can also be changed in-game using key.");
-        propViewMode.setRequiresMcRestart(false);
-        propViewMode.setLanguageKey("config.property.client.modeview");
         
         propLockBtnPosition.setValidValues(EnumLockBtnPosition.names);
         propLockBtnPosition.setComment("Position of sky lock button.\n"
@@ -96,7 +85,6 @@ public class ClientSettings extends SimpleHierarchicalConfig {
         this.minuteLength = propMinuteLength.getDouble();
         this.anHourToMinute = propHourToMinute.getInt();
         
-        this.setViewMode(EnumViewMode.getModeForName(propViewMode.getString()));
         this.btnPosition = EnumLockBtnPosition.getModeForName(propLockBtnPosition.getString());
         
         this.isDirty = true;
@@ -104,7 +92,6 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 	
 	@Override
 	public void saveToConfig(Configuration config, String category) {
-		propViewMode.setString(viewMode.getName());
 		propLockBtnPosition.setString(btnPosition.getName());
 		super.saveToConfig(config, category);
 	}
@@ -117,19 +104,6 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 		boolean flag = this.isDirty;
 		this.isDirty = false;
 		return flag;
-	}
-	
-	public void incrementViewMode() {
-		this.setViewMode(viewMode.nextMode());
-		StellarSky.proxy.getCfgManager().syncFromFields();
-	}
-	
-	public EnumViewMode getViewMode() {
-		return this.viewMode;
-	}
-	
-	private void setViewMode(EnumViewMode mode) {
-		this.viewMode = mode;
 	}
 	
 	public EnumLockBtnPosition getBtnPosition() {

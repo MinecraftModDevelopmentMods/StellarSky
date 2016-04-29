@@ -10,15 +10,16 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import stellarium.StellarSky;
+import stellarium.StellarSkyReferences;
 
 public class StellarConfigScreen extends GuiConfig {
 
 	public StellarConfigScreen(GuiScreen parentScreen) {
-		super(parentScreen, getConfigElement(), StellarSky.modid, false, false, "Stellar Sky");
+		super(parentScreen, getConfigElement(), StellarSkyReferences.modid, false, false, "Stellar Sky");
 	}
 	
 	private static List<IConfigElement> getConfigElement() {
-		Configuration config = StellarSky.proxy.getConfig();
+		Configuration config = StellarSky.instance.getCelestialConfigManager().getConfig();
 		
 		List<IConfigElement> retList = Lists.newArrayList();
 		for(String category : config.getCategoryNames())

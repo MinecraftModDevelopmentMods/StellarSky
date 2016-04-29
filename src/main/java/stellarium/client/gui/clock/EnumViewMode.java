@@ -1,16 +1,15 @@
-package stellarium.client;
+package stellarium.client.gui.clock;
 
 public enum EnumViewMode {
 	
 	HHMM("hhmm", true, false),
-	EMPTY("empty", false, false),
 	TICK("tick", true, true);
 	
 	private String name;
 	private boolean showOnHUD;
 	private boolean showTick;
 	
-	public static String[] names = {"hhmm", "empty", "tick"};
+	public static String[] names = {"hhmm", "tick"};
 	
 	EnumViewMode(String name, boolean showOnHUD, boolean showTick) {
 		this.name = name;

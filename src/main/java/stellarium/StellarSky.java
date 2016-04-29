@@ -14,7 +14,9 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.StellarAPIReference;
+import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.render.SkyRenderTypeEnd;
@@ -23,15 +25,12 @@ import stellarium.sync.StellarNetworkManager;
 import stellarium.world.provider.DefaultWorldProviderReplacer;
 import stellarium.world.provider.EndReplacer;
 
-@Mod(modid=StellarSky.modid, version=StellarSky.version,
+@Mod(modid=StellarSkyReferences.modid, version=StellarSkyReferences.version,
 	dependencies="required-after:StellarAPI@[0.1.1.4d, 0.1.2.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
-		public static final String modid = "stellarsky";
-		public static final String version = "@VERSION@";
-
-        // The instance of Stellarium
-        @Instance(StellarSky.modid)
+		// The instance of Stellarium
+        @Instance(StellarSkyReferences.modid)
         public static StellarSky instance;
         
         @SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
@@ -39,6 +38,7 @@ public class StellarSky {
         
         public static Logger logger;
         
+        private ConfigManager celestialConfigManager;
         private StellarForgeEventHook eventHook = new StellarForgeEventHook();
         private StellarTickHandler tickHandler = new StellarTickHandler();
         private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
@@ -48,10 +48,19 @@ public class StellarSky {
         	return this.networkManager;
         }
         
+		public ConfigManager getCelestialConfigManager() {
+			return this.celestialConfigManager;
+		}
+        
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) { 
         	logger = event.getModLog();
         	
+        	this.celestialConfigManager = new ConfigManager(
+        			StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
+        					StellarSkyReferences.celestialSettings));
+        	
+            proxy.setupCelestialConfigManager(this.celestialConfigManager);
         	proxy.preInit(event);
         	
         	this.networkManager = new StellarNetworkManager();
@@ -59,7 +68,7 @@ public class StellarSky {
     		MinecraftForge.EVENT_BUS.register(this.eventHook);
     		FMLCommonHandler.instance().bus().register(this.tickHandler);
     		FMLCommonHandler.instance().bus().register(this.fmlEventHook);
-    		    		
+    		
     		StellarAPIReference.getEventBus().register(new StellarAPIEventHook());
     		
     		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
@@ -73,6 +82,7 @@ public class StellarSky {
         
         @EventHandler
         public void load(FMLInitializationEvent event) throws IOException {
+        	celestialConfigManager.syncFromFile();
         	proxy.load(event);
         }
         

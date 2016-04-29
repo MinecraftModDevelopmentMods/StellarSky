@@ -18,66 +18,6 @@ import stellarium.stellars.StellarManager;
 import stellarium.world.StellarDimensionManager;
 
 public class StellarSkyClientHandler {
-		
-	@SubscribeEvent
-	public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
-		if(event.type == RenderGameOverlayEvent.ElementType.ALL) {
-			ClientSettings setting = StellarSky.proxy.getClientSettings();
-			EnumViewMode viewMode = setting.getViewMode();
-			if(!viewMode.showOnHUD())
-				return;
-			
-			FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-			StellarManager manager = StellarManager.getManager(true);
-			StellarDimensionManager dimManager = StellarDimensionManager.get(Minecraft.getMinecraft().theWorld);
-			
-			if(dimManager == null)
-				return;
-			
-			double currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
-			double time = manager.getSkyTime(currentTick) + 1000.0;
-			double daylength = manager.getSettings().day;
-			double yearlength = manager.getSettings().year;
-			double date = time / daylength + dimManager.getSettings().longitude / 180.0;
-			double year = date / yearlength;
-			
-			int yr = (int)Math.floor(year);
-			int day = (int)Math.floor(date - Math.floor(yr * yearlength));
-			int tick = (int)Math.floor((date - Math.floor(yr * yearlength) - day)*daylength);
-			
-			IHourProvider provider = StellarSkyAPI.getCurrentHourProvider();
-			
-			int hour = provider.getCurrentHour(daylength, tick);
-			int minute = provider.getCurrentMinute(daylength, tick, hour);
-			
-			int totalhour = provider.getTotalHour(daylength);
-			int totalminute = provider.getTotalMinute(daylength, totalhour);
-			int restMinuteInDay = provider.getRestMinuteInDay(daylength, totalhour);
-			
-			int yOffset = 0;
-			
-			this.drawString(fontRenderer, "hud.text.year", 5, 10*(yOffset++)+5,
-					String.format("%d", yr));
-			this.drawString(fontRenderer, "hud.text.day", 5, 10*(yOffset++)+5,
-					String.format("%7d", day),
-					String.format("%.2f", yearlength));
-			
-			if(viewMode.showTick())
-				this.drawString(fontRenderer, "hud.text.tick", 5, 10*(yOffset++)+5,
-						String.format("%-6d", tick),
-						String.format("%.2f", daylength));
-			else this.drawString(fontRenderer, "hud.text.time", 5, 10*(yOffset++)+5,
-					String.format("%3d", hour), 
-					String.format("%02d", minute),
-					String.format("%3d", totalhour),
-					String.format("%02d", restMinuteInDay),
-					String.format("%02d", totalminute));
-		}
-	}
-	
-	private void drawString(FontRenderer fontRenderer, String str, int x, int y, String... obj) {
-		fontRenderer.drawString(I18n.format(str, (Object[])obj), x, y, 0xff888888);
-	}
 	
 	@SubscribeEvent
 	public void onInitGui(InitGuiEvent.Post event) {

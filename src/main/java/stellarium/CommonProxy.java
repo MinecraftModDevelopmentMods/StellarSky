@@ -18,40 +18,25 @@ import stellarium.stellars.layer.CelestialManager;
 
 public class CommonProxy implements IProxy {
 
-	protected Configuration config;
-	protected ConfigManager cfgManager;
 	public CommonSettings commonSettings = new CommonSettings();
 	public DimensionSettings dimensionSettings = new DimensionSettings();
 	
 	private static final String serverConfigCategory = "serverconfig";
 	private static final String serverConfigDimensionCategory = "serverconfig.dimension";
-	private static final String serverConfigWakeCategory = "serverconfig.wake";
 	
 	@Override
-	public void preInit(FMLPreInitializationEvent event) {		
-		this.setupConfigManager(event.getSuggestedConfigurationFile());
-	}
+	public void preInit(FMLPreInitializationEvent event) { }
 
 	@Override
-	public void load(FMLInitializationEvent event) throws IOException {
-        cfgManager.syncFromFile();
-	}
+	public void load(FMLInitializationEvent event) throws IOException { }
 
 	@Override
-	public void postInit(FMLPostInitializationEvent event) {
-		
-	}
+	public void postInit(FMLPostInitializationEvent event) { }
 	
-	public void setupConfigManager(File file) {
-		config = new Configuration(file);
-        cfgManager = new ConfigManager(config);
-        
-        cfgManager.register(serverConfigCategory, this.commonSettings);
-        cfgManager.register(serverConfigDimensionCategory, this.dimensionSettings);
-	}
-	
-	public ConfigManager getCfgManager() {
-		return this.cfgManager;
+	@Override
+	public void setupCelestialConfigManager(ConfigManager manager) {
+		manager.register(serverConfigCategory, this.commonSettings);
+		manager.register(serverConfigDimensionCategory, this.dimensionSettings);
 	}
 	
 	@Override
@@ -67,10 +52,6 @@ public class CommonProxy implements IProxy {
 	@Override
 	public ClientSettings getClientSettings() {
 		return null;
-	}
-
-	public Configuration getConfig() {
-		return this.config;
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package stellarium;
 
-import java.io.File;
 import java.io.IOException;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -11,11 +10,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.DefaultHourProvider;
-import stellarium.client.StellarKeyHook;
+import stellarium.client.StellarClientFMLHook;
 import stellarium.client.StellarSkyClientHandler;
+import stellarium.client.gui.OverlayHandler;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.CelestialManager;
 
@@ -26,6 +27,8 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	
 	private ClientSettings clientSettings = new ClientSettings();
 	
+	private ConfigManager guiConfig;
+	private OverlayHandler overlay;
 	private CelestialManager celestialManager = new CelestialManager(true);
 	
 	public ClientSettings getClientSettings() {
@@ -38,11 +41,16 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	@Override
-	public void preInit(FMLPreInitializationEvent event) {		
-        this.setupConfigManager(event.getSuggestedConfigurationFile());
-        
+	public void preInit(FMLPreInitializationEvent event) {
+		this.guiConfig = new ConfigManager(
+				StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
+						StellarSkyReferences.guiSettings));
+		
 		MinecraftForge.EVENT_BUS.register(new StellarSkyClientHandler());
-		FMLCommonHandler.instance().bus().register(new StellarKeyHook());
+		
+		MinecraftForge.EVENT_BUS.register(this.overlay = new OverlayHandler(this.guiConfig));
+		
+		FMLCommonHandler.instance().bus().register(new StellarClientFMLHook(this.overlay));
 		
 		StellarSkyAPI.registerHourProvider(new DefaultHourProvider(this.clientSettings));
 	}
@@ -50,6 +58,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	@Override
 	public void load(FMLInitializationEvent event) throws IOException {
 		super.load(event);
+		guiConfig.syncFromFile();
+
+		overlay.initialize(Minecraft.getMinecraft());
 		
     	celestialManager.initializeClient(this.clientSettings);
 	}
@@ -60,10 +71,10 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	@Override
-	public void setupConfigManager(File file) {
-		super.setupConfigManager(file);
-		cfgManager.register(clientConfigCategory, this.clientSettings);
-		cfgManager.register(clientConfigOpticsCategory, Optics.instance);
+	public void setupCelestialConfigManager(ConfigManager manager) {
+		super.setupCelestialConfigManager(manager);
+		manager.register(clientConfigCategory, this.clientSettings);
+		manager.register(clientConfigOpticsCategory, Optics.instance);
 	}
 	
 	@Override

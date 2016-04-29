@@ -7,6 +7,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+import stellarapi.api.lib.config.ConfigManager;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.layer.CelestialManager;
 
@@ -25,6 +26,8 @@ public interface IProxy {
     
     public ClientSettings getClientSettings();
     
-    public CelestialManager getClientCelestialManager();
+	public void setupCelestialConfigManager(ConfigManager manager);
+
+	public CelestialManager getClientCelestialManager();
 
 }

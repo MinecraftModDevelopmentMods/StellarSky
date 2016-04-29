@@ -12,8 +12,8 @@ public class StellarFMLEventHook {
 	@SubscribeEvent
 	public void onSyncConfig(ConfigChangedEvent.OnConfigChangedEvent event)
 	{
-		if(event.modID == StellarSky.modid)
-			StellarSky.proxy.getCfgManager().syncFromGUI();
+		if(event.modID == StellarSkyReferences.modid)
+			StellarSky.instance.getCelestialConfigManager().syncFromGUI();
 	}
 	
 	@SubscribeEvent

@@ -1,7 +1,8 @@
 癤�
 //Keys
 key.stellarsky=Stellar Sky
-key.stellarsky.viewmod.description=Change Time Info Text
+key.stellarsky.focusgui.description=Focus Stellar Sky Settings
+key.stellarsky.customizegui.description=Customize Settings GUI
 
 //HUD Texts
 hud.text.year=Year %1$s
