@@ -23,7 +23,7 @@ public class GuiOverlayClockSettings extends GuiOverlayElementSettings {
 
 	@Override
 	public void setupConfig(Configuration config, String category) {
-		config.setCategoryComment(category, "Clock Overlay Settings");
+		config.setCategoryComment(category, "Clock Overlay Settings.");
 		config.setCategoryLanguageKey(category, "config.category.gui.clock");
 		config.setCategoryRequiresMcRestart(category, false);
 		

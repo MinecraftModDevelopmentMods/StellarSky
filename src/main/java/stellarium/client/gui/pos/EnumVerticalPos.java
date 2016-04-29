@@ -6,8 +6,10 @@ public enum EnumVerticalPos {
 	CENTER(0.5),
 	DOWN(1.0);
 	
-	private double ratio;
+	public static final String[] names = {UP.name(), CENTER.name(), DOWN.name()};
 	
+	private double ratio;
+		
 	EnumVerticalPos(double ratio) {
 		this.ratio = ratio;
 	}

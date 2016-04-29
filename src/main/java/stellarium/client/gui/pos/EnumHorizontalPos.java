@@ -6,6 +6,8 @@ public enum EnumHorizontalPos {
 	CENTER(0.5),
 	RIGHT(1.0);
 	
+	public static final String[] names = {LEFT.name(), CENTER.name(), RIGHT.name()};
+	
 	private double ratio;
 	
 	EnumHorizontalPos(double ratio) {

@@ -87,7 +87,6 @@ public class GuiOverlayClock implements IGuiOverlayElement<GuiOverlayClockSettin
 		if(!currentMode.focused())
 			return false;
 		
-		Minecraft mc = Minecraft.getMinecraft();
 		if(buttonFix.mousePressed(mc, mouseX, mouseY))
 		{
 			settings.isFixed = !settings.isFixed;
@@ -117,22 +116,19 @@ public class GuiOverlayClock implements IGuiOverlayElement<GuiOverlayClockSettin
 
 	@Override
 	public boolean keyTyped(EnumKey key, char eventChar) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		if(currentMode.focused()) {
-			Minecraft mc = Minecraft.getMinecraft();
-
 			buttonFix.drawButton(mc, mouseX, mouseY);
 			buttonToggle.drawButton(mc, mouseX, mouseY);
 		}
 		
 		ClientSettings setting = StellarSky.proxy.getClientSettings();
 
-		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+		FontRenderer fontRenderer = mc.fontRenderer;
 		StellarManager manager = StellarManager.getManager(true);
 		StellarDimensionManager dimManager = StellarDimensionManager.get(Minecraft.getMinecraft().theWorld);
 

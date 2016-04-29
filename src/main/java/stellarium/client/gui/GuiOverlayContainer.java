@@ -1,10 +1,10 @@
 package stellarium.client.gui;
 
-import java.util.Set;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import stellarapi.api.lib.config.ConfigManager;
@@ -13,6 +13,10 @@ import stellarium.client.gui.clock.GuiOverlayClock;
 import stellarium.client.gui.clock.GuiOverlayClockSettings;
 import stellarium.client.gui.clock.GuiOverlayClockType;
 import stellarium.client.gui.pos.ElementPos;
+import stellarium.client.gui.pos.EnumHorizontalPos;
+import stellarium.client.gui.pos.EnumVerticalPos;
+import stellarium.client.gui.pos.GuiOverlayPosCfgType;
+import stellarium.client.gui.pos.GuiOverlayPosConfigurator;
 
 public class GuiOverlayContainer {
 	
@@ -21,28 +25,49 @@ public class GuiOverlayContainer {
 	
 	private ConfigManager guiConfig;
 	private EnumGuiOverlayMode currentMode = EnumGuiOverlayMode.OVERLAY;
-	private Set<Delegate> elementSet = Sets.newHashSet();
+	private List<Delegate> elementList = Lists.newArrayList();
 	
-	private class Delegate<Element extends IGuiOverlayElement<Settings>, Settings extends GuiOverlayElementSettings> {
+	public class Delegate<Element extends IGuiOverlayElement<Settings>, Settings extends GuiOverlayElementSettings> {
 		ElementPos pos;
-		IGuiOverlayType type;
-		Element element;
-		Settings settings;
+		final IGuiOverlayType type;
+		final Element element;
+		final Settings settings;
 		
-		Delegate(IGuiOverlayType<Element, Settings> type) {
+		private Delegate(IGuiOverlayType<Element, Settings> type) {
 			this.type = type;
-			this.pos = new ElementPos(type.defaultHorizontalPos(), type.defaultVerticalPos());
 			this.element = type.generateElement();
 			this.settings = type.generateSettings();
+			settings.initializeSetttings(type.defaultHorizontalPos(), type.defaultVerticalPos());
 		}
 		
-		public void initialize(Minecraft mc) {
+		private void initialize(Minecraft mc) {
 			element.initialize(mc, this.settings);
+			this.pos = new ElementPos(settings.horizontal, settings.vertical);
 		}
 		
-		@Override
-		public int hashCode() {
-			return pos.hashCode();
+		public boolean canSetPos(EnumHorizontalPos horizontal, EnumVerticalPos vertical) {
+			if(!type.accepts(horizontal) || !type.accepts(vertical))
+				return false;
+			
+			ElementPos pos = new ElementPos(horizontal, vertical);
+			for(Delegate delegate : elementList) {
+				if(delegate.equals(pos))
+					return false;
+			}
+			
+			return true;
+		}
+		
+		public boolean trySetPos(EnumHorizontalPos horizontal, EnumVerticalPos vertical) {
+			if(!canSetPos(horizontal, vertical))
+				return false;
+			
+			ElementPos pos = new ElementPos(horizontal, vertical);
+			
+			settings.horizontal = pos.getHorizontalPos();
+			settings.vertical = pos.getVerticalPos();
+			this.pos = pos;
+			return true;
 		}
 		
 		@Override
@@ -59,14 +84,22 @@ public class GuiOverlayContainer {
 	public GuiOverlayContainer(ConfigManager guiConfig) {
 		this.guiConfig = guiConfig;
 		
-		elementSet.add(new Delegate<GuiOverlayClock, GuiOverlayClockSettings>(new GuiOverlayClockType()));
+		this.register(new GuiOverlayPosCfgType(this));
+		this.register(new GuiOverlayClockType());
 		
-		for(Delegate delegate : this.elementSet)
+		for(Delegate delegate : this.elementList)
 			guiConfig.register(delegate.type.getName(), delegate.settings);
 	}
 	
+	public <
+	Element extends IGuiOverlayElement<Settings>,
+	Settings extends GuiOverlayElementSettings
+	> void register(IGuiOverlayType<Element, Settings> type) {
+		elementList.add(new Delegate(type));
+	}
+	
 	public void initialize(Minecraft mc) {
-		for(Delegate delegate : this.elementSet)
+		for(Delegate delegate : this.elementList)
 			delegate.initialize(mc);
 	}
 	
@@ -76,18 +109,18 @@ public class GuiOverlayContainer {
 	}
 
 	public void switchMode(EnumGuiOverlayMode mode) {
-		for(Delegate delegate : this.elementSet)
+		for(Delegate delegate : this.elementList)
 			delegate.element.switchMode(mode);
 	}
 	
 	public void updateOverlay() {
-		for(Delegate delegate : this.elementSet)
+		for(Delegate delegate : this.elementList)
 			delegate.element.updateOverlay();
 	}
 	
 	public void mouseClicked(int mouseX, int mouseY, int eventButton) {
 		boolean changed = false;
-		for(Delegate delegate : this.elementSet)
+		for(Delegate delegate : this.elementList)
 		{
 			ElementPos pos = delegate.pos;
 			IGuiOverlayElement element = delegate.element;
@@ -107,7 +140,7 @@ public class GuiOverlayContainer {
 	
 	public void mouseMovedOrUp(int mouseX, int mouseY, int eventButton) {
 		boolean changed = false;
-		for(Delegate delegate : this.elementSet)
+		for(Delegate delegate : this.elementList)
 		{
 			ElementPos pos = delegate.pos;
 			IGuiOverlayElement element = delegate.element;
@@ -128,7 +161,7 @@ public class GuiOverlayContainer {
 	public void keyTyped(EnumKey key, char eventChar) {
 		boolean changed = false;
 		
-		for(Delegate delegate : this.elementSet)
+		for(Delegate delegate : this.elementList)
 			changed = delegate.element.keyTyped(key, eventChar) || changed;
 		
 		if(changed)
@@ -136,7 +169,7 @@ public class GuiOverlayContainer {
 	}
 	
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		for(Delegate delegate : this.elementSet)
+		for(Delegate delegate : this.elementList)
 		{
 			ElementPos pos = delegate.pos;
 			IGuiOverlayElement element = delegate.element;
