@@ -1,9 +1,8 @@
 package stellarium.client.gui.clock;
 
-import com.ibm.icu.text.Normalizer.Mode;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import stellarium.StellarSky;
@@ -13,14 +12,12 @@ import stellarium.client.ClientSettings;
 import stellarium.client.EnumKey;
 import stellarium.client.gui.EnumOverlayMode;
 import stellarium.client.gui.IGuiOverlay;
-import stellarium.client.gui.pos.EnumHorizontalPos;
-import stellarium.client.gui.pos.EnumVerticalPos;
+import stellarium.client.gui.content.GuiButtonColorable;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarDimensionManager;
 
 public class OverlayClock implements IGuiOverlay<ClockSettings> {
 	
-	private static final int WIDTH = 160;
 	private static final int HEIGHT = 36;
 	private static final int ADDITIONAL_HEIGHT = 20;
 	private static final int ANIMATION_DURATION = 10;
@@ -30,12 +27,12 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 	private EnumOverlayMode currentMode = EnumOverlayMode.OVERLAY;
 
 	private ClockSettings settings;
-	private GuiButton buttonFix;
-	private GuiButton buttonToggle;
+	private GuiButtonColorable buttonFix;
+	private GuiButtonColorable buttonToggle;
 	
 	@Override
 	public int getWidth() {
-		return WIDTH;
+		return settings.viewMode.getGuiWidth();
 	}
 
 	@Override
@@ -48,8 +45,12 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		this.mc = mc;
 		this.settings = settings;
 		
-		this.buttonFix = new GuiButton(0, 0, HEIGHT, 80, 20, settings.isFixed? "Unfix" : "Fix");
-		this.buttonToggle = new GuiButton(1, 80, HEIGHT, 80, 20, settings.viewMode.getName());
+		this.buttonFix = new GuiButtonColorable(0, 0, HEIGHT, 80, 20, settings.isFixed? "Unfix" : "Fix");
+		this.buttonToggle = new GuiButtonColorable(1, 80, HEIGHT, 80, 20, settings.viewMode.getName());
+		buttonToggle.xPosition = buttonToggle.width = buttonFix.width = this.getWidth() / 2;
+		buttonFix.xPosition = 0;
+		buttonFix.alpha = 0.5f;
+		buttonToggle.alpha = 0.5f;
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 
 	@Override
 	public void switchMode(EnumOverlayMode mode) {
-		if(mode != this.currentMode)
+		if(mode.displayed() != currentMode.displayed())
 		{
 			if(!settings.isFixed && mode.displayed())
 				this.animationTick = ANIMATION_DURATION;
@@ -102,6 +103,8 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		if(buttonToggle.mousePressed(mc, mouseX, mouseY)) {
 			settings.viewMode = settings.viewMode.nextMode();
 			buttonToggle.displayString = settings.viewMode.getName();
+			buttonToggle.xPosition = buttonToggle.width = buttonFix.width = this.getWidth() / 2;
+			buttonFix.xPosition = 0;
 			return true;
 		}
 		
@@ -139,6 +142,8 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 
 		if(dimManager == null)
 			return;
+		
+		Gui.drawRect(0, 0, this.getWidth(), HEIGHT, 0x77333333);
 
 		double currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
 		double time = manager.getSkyTime(currentTick) + 1000.0;
@@ -165,7 +170,7 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		this.drawString(fontRenderer, "hud.text.year", 5, 10*(yOffset++)+5,
 				String.format("%d", yr));
 		this.drawString(fontRenderer, "hud.text.day", 5, 10*(yOffset++)+5,
-				String.format("%7d", day),
+				String.format("%-7d", day),
 				String.format("%.2f", yearlength));
 
 		if(settings.viewMode.showTick())
@@ -173,7 +178,7 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 					String.format("%-6d", tick),
 					String.format("%.2f", daylength));
 		else this.drawString(fontRenderer, "hud.text.time", 5, 10*(yOffset++)+5,
-				String.format("%3d", hour), 
+				String.format("%2d", hour), 
 				String.format("%02d", minute),
 				String.format("%3d", totalhour),
 				String.format("%02d", restMinuteInDay),

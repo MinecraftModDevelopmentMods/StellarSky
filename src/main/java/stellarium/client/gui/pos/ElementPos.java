@@ -2,8 +2,8 @@ package stellarium.client.gui.pos;
 
 public class ElementPos {
 
-	private EnumHorizontalPos horizontalPos;
-	private EnumVerticalPos verticalPos;
+	private final EnumHorizontalPos horizontalPos;
+	private final EnumVerticalPos verticalPos;
 	
 	public ElementPos(EnumHorizontalPos hor, EnumVerticalPos ver) {
 		this.horizontalPos = hor;

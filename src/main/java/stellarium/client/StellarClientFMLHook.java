@@ -13,7 +13,7 @@ import stellarium.client.gui.OverlayHandler;
 
 public class StellarClientFMLHook {
 	
-	private KeyBinding focusGuiKey = new KeyBinding("key.stellarsky.focusgui.description", Keyboard.KEY_Y, "key.stellarsky");
+	private KeyBinding focusGuiKey = new KeyBinding("key.stellarsky.focusgui.description", Keyboard.KEY_U, "key.stellarsky");
 	
 	private OverlayHandler overlay;
 	

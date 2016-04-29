@@ -2,6 +2,7 @@ package stellarium.client.gui;
 
 import java.util.Map;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -31,14 +32,8 @@ public class GuiScreenOverlay extends GuiScreen {
     public void initGui() {
 		ScaledResolution resolution = new ScaledResolution(
 				this.mc, mc.displayWidth, mc.displayHeight);
-    	container.setSize(resolution);
+    	container.setResolution(resolution);
     }
-	
-	
-	@Override
-	public void updateScreen() {
-		container.updateOverlay();
-	}
 	
 	@Override
 	public void mouseClicked(int mouseX, int mouseY, int eventButton) {
@@ -52,7 +47,7 @@ public class GuiScreenOverlay extends GuiScreen {
 	
 	@Override
 	public void keyTyped(char eventChar, int eventKey) {
-        if (eventKey == 1 || eventKey == focusGuiKey.getKeyCode())
+        if (eventKey == Keyboard.KEY_ESCAPE || eventKey == focusGuiKey.getKeyCode())
         {
             this.mc.displayGuiScreen((GuiScreen)null);
             this.mc.setIngameFocus();
@@ -65,11 +60,6 @@ public class GuiScreenOverlay extends GuiScreen {
 				break;
 			}
 	}
-	
-	@Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-    	container.render(mouseX, mouseY, partialTicks);
-    }
 	
 	@Override
     public boolean doesGuiPauseGame() {

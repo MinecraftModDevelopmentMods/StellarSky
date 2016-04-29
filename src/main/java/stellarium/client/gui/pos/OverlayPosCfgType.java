@@ -3,18 +3,13 @@ package stellarium.client.gui.pos;
 import stellarium.client.gui.OverlayContainer;
 import stellarium.client.gui.PerOverlaySettings;
 import stellarium.client.gui.IGuiOverlayType;
+import stellarium.client.gui.IRawHandler;
 
 public class OverlayPosCfgType implements IGuiOverlayType<OverlayPosCfg, PerOverlaySettings> {
-
-	private OverlayContainer container;
-	
-	public OverlayPosCfgType(OverlayContainer container) {
-		this.container = container;
-	}
 	
 	@Override
 	public OverlayPosCfg generateElement() {
-		return new OverlayPosCfg(this.container);
+		return new OverlayPosCfg();
 	}
 
 	@Override
@@ -38,13 +33,14 @@ public class OverlayPosCfgType implements IGuiOverlayType<OverlayPosCfg, PerOver
 	}
 
 	@Override
-	public boolean accepts(EnumHorizontalPos pos) {
-		return pos == EnumHorizontalPos.RIGHT;
+	public boolean accepts(EnumHorizontalPos horizontal, EnumVerticalPos vertical) {
+		return horizontal == EnumHorizontalPos.RIGHT && vertical == EnumVerticalPos.CENTER;
 	}
 
+	
 	@Override
-	public boolean accepts(EnumVerticalPos pos) {
-		return pos == EnumVerticalPos.CENTER;
+	public IRawHandler<OverlayPosCfg> generateRawHandler() {
+		return new OverlayPosHandler();
 	}
 
 }

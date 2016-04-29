@@ -12,7 +12,9 @@ public interface IGuiOverlayType<Element extends IGuiOverlay<Settings>, Settings
 	public EnumHorizontalPos defaultHorizontalPos();
 	public EnumVerticalPos defaultVerticalPos();
 
-	public boolean accepts(EnumHorizontalPos pos);
-	public boolean accepts(EnumVerticalPos pos);
+	public boolean accepts(EnumHorizontalPos horizontal, EnumVerticalPos vertical);
+	
+	/**Can be null*/
+	public IRawHandler<Element> generateRawHandler();
 
 }

@@ -11,19 +11,21 @@ import stellarium.client.EnumKey;
 public class OverlayHandler {
 	
 	private OverlayContainer container;
+	private Minecraft mc;
 	
 	public OverlayHandler(ConfigManager guiConfig) {
 		this.container = new OverlayContainer(guiConfig);
 	}
 	
 	public void initialize(Minecraft mc) {
+		this.mc = mc;
 		container.initialize(mc);
 	}
 	
 	@SubscribeEvent
 	public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
 		if(event.type == RenderGameOverlayEvent.ElementType.ALL) {
-			container.setSize(event.resolution);
+			container.setResolution(event.resolution);
 			container.render(event.mouseX, event.mouseY, event.partialTicks);
 		}
 	}

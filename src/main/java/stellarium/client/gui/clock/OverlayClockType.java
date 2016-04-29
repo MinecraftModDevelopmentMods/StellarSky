@@ -1,6 +1,7 @@
 package stellarium.client.gui.clock;
 
 import stellarium.client.gui.IGuiOverlayType;
+import stellarium.client.gui.IRawHandler;
 import stellarium.client.gui.pos.EnumHorizontalPos;
 import stellarium.client.gui.pos.EnumVerticalPos;
 
@@ -33,13 +34,14 @@ public class OverlayClockType implements IGuiOverlayType<OverlayClock, ClockSett
 
 
 	@Override
-	public boolean accepts(EnumHorizontalPos pos) {
-		return true;
+	public boolean accepts(EnumHorizontalPos horizontal, EnumVerticalPos vertical) {
+		return vertical == EnumVerticalPos.UP;
 	}
+	
 
 	@Override
-	public boolean accepts(EnumVerticalPos pos) {
-		return pos == EnumVerticalPos.UP;
+	public IRawHandler generateRawHandler() {
+		return null;
 	}
 
 }

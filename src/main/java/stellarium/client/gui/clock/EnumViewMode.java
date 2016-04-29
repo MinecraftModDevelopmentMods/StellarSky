@@ -2,19 +2,21 @@ package stellarium.client.gui.clock;
 
 public enum EnumViewMode {
 	
-	HHMM("hhmm", true, false),
-	TICK("tick", true, true);
+	HHMM("hhmm", true, false, 200),
+	TICK("tick", true, true, 150);
 	
 	private String name;
 	private boolean showOnHUD;
 	private boolean showTick;
+	private int guiWidth;
 	
 	public static String[] names = {"hhmm", "tick"};
 	
-	EnumViewMode(String name, boolean showOnHUD, boolean showTick) {
+	EnumViewMode(String name, boolean showOnHUD, boolean showTick, int guiWidth) {
 		this.name = name;
 		this.showOnHUD = showOnHUD;
 		this.showTick = showTick;
+		this.guiWidth = guiWidth;
 	}
 	
 	public String getName() {
@@ -27,6 +29,10 @@ public enum EnumViewMode {
 	
 	public boolean showTick() {
 		return this.showTick;
+	}
+	
+	public int getGuiWidth() {
+		return this.guiWidth;
 	}
 	
 	public EnumViewMode nextMode() {

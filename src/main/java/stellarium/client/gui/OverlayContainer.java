@@ -25,28 +25,32 @@ public class OverlayContainer {
 	private ConfigManager guiConfig;
 	private EnumOverlayMode currentMode = EnumOverlayMode.OVERLAY;
 	private List<Delegate> elementList = Lists.newArrayList();
-	private ScaledResolution resolution;
 	
 	public class Delegate<Element extends IGuiOverlay<Settings>, Settings extends PerOverlaySettings> {
 		ElementPos pos;
 		final IGuiOverlayType<Element, Settings> type;
 		final Element element;
 		final Settings settings;
+		final IRawHandler<Element> handler;
 		
 		private Delegate(IGuiOverlayType<Element, Settings> type) {
 			this.type = type;
 			this.element = type.generateElement();
 			this.settings = type.generateSettings();
+			this.handler = type.generateRawHandler();
 			settings.initializeSetttings(type.defaultHorizontalPos(), type.defaultVerticalPos());
 		}
 		
 		private void initialize(Minecraft mc) {
 			element.initialize(mc, this.settings);
-			this.pos = new ElementPos(settings.horizontal, settings.vertical);
+			if(this.handler != null)
+				handler.initialize(mc, OverlayContainer.this, this.element);
+			
+			this.pos = new ElementPos(settings.getHorizontal(), settings.getVertical());
 		}
 		
 		public boolean canSetPos(EnumHorizontalPos horizontal, EnumVerticalPos vertical) {
-			if(!type.accepts(horizontal) || !type.accepts(vertical))
+			if(!type.accepts(horizontal, vertical))
 				return false;
 			
 			ElementPos pos = new ElementPos(horizontal, vertical);
@@ -64,10 +68,22 @@ public class OverlayContainer {
 			
 			ElementPos pos = new ElementPos(horizontal, vertical);
 			
-			settings.horizontal = pos.getHorizontalPos();
-			settings.vertical = pos.getVerticalPos();
+			settings.setHorizontal(pos.getHorizontalPos());
+			settings.setVertical(pos.getVerticalPos());
 			this.pos = pos;
 			return true;
+		}
+		
+		public int getWidth() {
+			return element.getWidth();
+		}
+		
+		public int getHeight() {
+			return element.getHeight();
+		}
+		
+		public ElementPos getCurrentPos() {
+			return this.pos;
 		}
 		
 		@Override
@@ -84,7 +100,7 @@ public class OverlayContainer {
 	public OverlayContainer(ConfigManager guiConfig) {
 		this.guiConfig = guiConfig;
 		
-		this.register(new OverlayPosCfgType(this));
+		this.register(new OverlayPosCfgType());
 		this.register(new OverlayClockType());
 		
 		for(Delegate delegate : this.elementList)
@@ -100,10 +116,9 @@ public class OverlayContainer {
 			delegate.initialize(mc);
 	}
 	
-	public void setSize(ScaledResolution resolution) {
+	public void setResolution(ScaledResolution resolution) {
 		this.width = resolution.getScaledWidth();
 		this.height = resolution.getScaledHeight();
-		this.resolution = resolution;
 	}
 
 	public void switchMode(EnumOverlayMode mode) {
@@ -130,6 +145,9 @@ public class OverlayContainer {
 			scaledMouseY -= element.animationOffsetY(0.0f);
 			
 			changed = element.mouseClicked(scaledMouseX, scaledMouseY, eventButton) || changed;
+			
+			if(delegate.handler != null)
+				changed = delegate.handler.mouseClicked(mouseX, mouseY, eventButton) || changed;
 		}
 		
 		if(changed)
@@ -150,6 +168,9 @@ public class OverlayContainer {
 			scaledMouseY -= element.animationOffsetY(0.0f);
 			
 			changed = element.mouseMovedOrUp(scaledMouseX, scaledMouseY, eventButton) || changed;
+			
+			if(delegate.handler != null)
+				changed = delegate.handler.mouseMovedOrUp(mouseX, mouseY, eventButton) || changed;
 		}
 		
 		if(changed)
@@ -160,7 +181,12 @@ public class OverlayContainer {
 		boolean changed = false;
 		
 		for(Delegate delegate : this.elementList)
+		{
 			changed = delegate.element.keyTyped(key, eventChar) || changed;
+			
+			if(delegate.handler != null)
+				changed = delegate.handler.keyTyped(key, eventChar) || changed;
+		}
 		
 		if(changed)
 			guiConfig.syncFromFields();
@@ -182,12 +208,37 @@ public class OverlayContainer {
 			scaledMouseY -= animationOffsetY;
 			
 			GL11.glPushMatrix();
-			GL11.glTranslatef((pos.getHorizontalPos().getOffset(this.width, width) + animationOffsetX) * resolution.getScaleFactor(),
-					(pos.getVerticalPos().getOffset(this.width, width) + animationOffsetY) * resolution.getScaleFactor(),
+			GL11.glTranslatef((pos.getHorizontalPos().getOffset(this.width, width) + animationOffsetX),
+					(pos.getVerticalPos().getOffset(this.height, height) + animationOffsetY),
 					0.0f);
 			
 			element.render(scaledMouseX, scaledMouseY, partialTicks);
 			GL11.glPopMatrix();
+			
+			if(delegate.handler != null)
+				delegate.handler.render(mouseX, mouseY, partialTicks);
 		}
+	}
+
+	
+	public OverlayContainer.Delegate getElement(int mouseX, int mouseY) {
+		for(Delegate delegate : this.elementList) {
+			int elementWidth = delegate.getWidth();
+			int elementHeight = delegate.getHeight();
+			
+			if(delegate.pos.getHorizontalPos().inRange(mouseX, this.width, elementWidth))
+				if(delegate.pos.getVerticalPos().inRange(mouseY, this.height, elementHeight))
+					return delegate;
+		}
+		
+		return null;
+	}
+	
+	public int getWidth() {
+		return this.width;
+	}
+	
+	public int getHeight() {
+		return this.height;
 	}
 }

@@ -9,15 +9,15 @@ import stellarium.client.gui.pos.EnumVerticalPos;
 
 public class PerOverlaySettings extends SimpleConfigHandler {
 	
-	EnumHorizontalPos horizontal;
-	EnumVerticalPos vertical;
+	private EnumHorizontalPos horizontal;
+	private EnumVerticalPos vertical;
 	
 	private ConfigPropertyString propHorizontal;
 	private ConfigPropertyString propVertical;
 	
 	void initializeSetttings(EnumHorizontalPos horizontal, EnumVerticalPos vertical) {
-		this.horizontal = horizontal;
-		this.vertical = vertical;
+		this.setHorizontal(horizontal);
+		this.setVertical(vertical);
 		
 		this.propHorizontal = new ConfigPropertyString("Horizontal_Position", "", horizontal.name());
 		this.propVertical = new ConfigPropertyString("Vertical_Position", "", vertical.name());
@@ -44,15 +44,31 @@ public class PerOverlaySettings extends SimpleConfigHandler {
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
 		super.loadFromConfig(config, category);
-		this.horizontal = EnumHorizontalPos.valueOf(propHorizontal.getString());
-		this.vertical = EnumVerticalPos.valueOf(propVertical.getString());
+		this.setHorizontal(EnumHorizontalPos.valueOf(propHorizontal.getString()));
+		this.setVertical(EnumVerticalPos.valueOf(propVertical.getString()));
 	}
 
 	@Override
 	public void saveToConfig(Configuration config, String category) {
-		propHorizontal.setString(horizontal.name());
-		propVertical.setString(vertical.name());
+		propHorizontal.setString(getHorizontal().name());
+		propVertical.setString(getVertical().name());
 		super.saveToConfig(config, category);
+	}
+
+	public EnumHorizontalPos getHorizontal() {
+		return horizontal;
+	}
+
+	void setHorizontal(EnumHorizontalPos horizontal) {
+		this.horizontal = horizontal;
+	}
+
+	public EnumVerticalPos getVertical() {
+		return vertical;
+	}
+
+	void setVertical(EnumVerticalPos vertical) {
+		this.vertical = vertical;
 	}
 
 }

@@ -1,38 +1,33 @@
 package stellarium.client.gui.pos;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import stellarium.client.EnumKey;
 import stellarium.client.gui.EnumOverlayMode;
+import stellarium.client.gui.IGuiOverlay;
 import stellarium.client.gui.OverlayContainer;
 import stellarium.client.gui.PerOverlaySettings;
-import stellarium.client.gui.IGuiOverlay;
+import stellarium.client.gui.content.GuiButtonColorable;
 
 public class OverlayPosCfg implements IGuiOverlay<PerOverlaySettings> {
 
 	private static final int WIDTH = 60;
 	private static final int HEIGHT = 20;
-	private static final int ANIMATION_DURATION = 20;
+	private static final int ANIMATION_DURATION = 10;
 	
 	private Minecraft mc;
-	private EnumOverlayMode currentMode = EnumOverlayMode.OVERLAY;
-	private OverlayContainer container;
+	EnumOverlayMode currentMode = EnumOverlayMode.OVERLAY;
 	
-	private GuiButton button;
+	private GuiButtonColorable button;
 	private int animationTick = 0;
 	
-	public OverlayPosCfg(OverlayContainer container) {
-		this.container = container;
-	}
+	boolean markForUpdate = false;
 	
 	@Override
 	public void initialize(Minecraft mc, PerOverlaySettings settings) {
 		this.mc = mc;
 		
-		this.button = new GuiButton(0, 0, 0, WIDTH, HEIGHT,
-				currentMode == EnumOverlayMode.CUSTOMIZE? "Stop Customizing" : "Customize");
+		this.button = new GuiButtonColorable(0, 0, 0, WIDTH, HEIGHT,
+				currentMode == EnumOverlayMode.CUSTOMIZE? "Stop" : "Position");
 	}
 
 	@Override
@@ -64,26 +59,21 @@ public class OverlayPosCfg implements IGuiOverlay<PerOverlaySettings> {
 		}
 		this.currentMode = mode;
 		
-		button.displayString = (currentMode == EnumOverlayMode.CUSTOMIZE)? "Stop Customizing" : "Customize";
+		button.displayString = currentMode == EnumOverlayMode.CUSTOMIZE? "Stop" : "Position";
 	}
 
 	@Override
 	public void updateOverlay() {
-		if(this.animationTick > 0 && currentMode.displayed())
+		if(this.animationTick > 0 && !currentMode.displayed())
 			this.animationTick--;
-		else if(this.animationTick < ANIMATION_DURATION && !currentMode.displayed())
+		else if(this.animationTick < ANIMATION_DURATION && currentMode.displayed())
 			this.animationTick++;
 	}
 
 	@Override
 	public boolean mouseClicked(int mouseX, int mouseY, int eventButton) {
 		if(currentMode.displayed() && button.mousePressed(this.mc, mouseX, mouseY))
-		{
-			if(this.currentMode == EnumOverlayMode.FOCUS)
-				container.switchMode(EnumOverlayMode.CUSTOMIZE);
-			else if(this.currentMode == EnumOverlayMode.CUSTOMIZE)
-				container.switchMode(EnumOverlayMode.FOCUS);
-		}
+			this.markForUpdate = true;
 		
 		return false;
 	}
@@ -97,13 +87,16 @@ public class OverlayPosCfg implements IGuiOverlay<PerOverlaySettings> {
 
 	@Override
 	public boolean keyTyped(EnumKey key, char eventChar) {
+		if(key == EnumKey.SWITCH_CUSTOMIZE_GUI)
+			this.markForUpdate = true;
+		
 		return false;
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		partialTicks = currentMode.displayed()? partialTicks : -partialTicks;
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, (this.animationTick + partialTicks) / ANIMATION_DURATION);
+		button.alpha = (this.animationTick + partialTicks) / ANIMATION_DURATION;
 		button.drawButton(this.mc, mouseX, mouseY);
 	}
 
