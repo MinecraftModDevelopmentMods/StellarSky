@@ -4,12 +4,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import stellarium.render.ICelestialObjectRenderer;
 
-public interface IDisplayElementType {
-	public DisplayElementSettings generateSettings();
-	public IDisplayRenderCache generateCache();
+public interface IDisplayElementType<Cfg extends PerDisplaySettings, Cache extends IDisplayRenderCache<Cfg>> {
+	public Cfg generateSettings();
+	public Cache generateCache();
 	
 	@SideOnly(Side.CLIENT)
-	public IDisplayRenderer getRenderer();
+	public IDisplayRenderer<Cache> getRenderer();
 	
 	public String getName();
 }

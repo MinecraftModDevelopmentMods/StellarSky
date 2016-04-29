@@ -5,15 +5,15 @@ import java.util.List;
 import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.SimpleHierarchicalConfig;
 
-public class DisplaySettings extends SimpleHierarchicalConfig {
+public class DisplayOverallSettings extends SimpleHierarchicalConfig {
 	
 	private LayerDisplay display;
 	
-	public DisplaySettings(LayerDisplay display) {
+	public DisplayOverallSettings(LayerDisplay display) {
 		this.display = display;
 		
-		for(LayerDisplay.DisplayDelegate delegate : display.displayElementDelegates) {
-			this.putSubConfig(delegate.type.getName(), delegate.type.generateSettings());
+		for(DisplayRegistry.Delegate delegate : display.getDelegates()) {
+			this.putSubConfig(delegate.getType().getName(), delegate.getType().generateSettings());
 		}
 	}
 

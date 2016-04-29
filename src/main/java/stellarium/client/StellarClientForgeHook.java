@@ -17,7 +17,7 @@ import stellarium.command.CommandLock;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarDimensionManager;
 
-public class StellarSkyClientHandler {
+public class StellarClientForgeHook {
 	
 	@SubscribeEvent
 	public void onInitGui(InitGuiEvent.Post event) {

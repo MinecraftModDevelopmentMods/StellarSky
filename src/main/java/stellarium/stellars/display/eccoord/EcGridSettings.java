@@ -9,10 +9,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import stellarium.render.ICelestialObjectRenderer;
-import stellarium.stellars.display.DisplayElementSettings;
+import stellarium.stellars.display.PerDisplaySettings;
 import stellarium.stellars.display.IDisplayRenderCache;
 
-public class DisplayEcCoordSettings extends DisplayElementSettings {
+public class EcGridSettings extends PerDisplaySettings {
 
 	public boolean displayEnabled;
 	public int displayFrag;

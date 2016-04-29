@@ -3,9 +3,9 @@ package stellarium.client.gui.clock;
 import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
 import stellarapi.api.lib.config.property.ConfigPropertyString;
-import stellarium.client.gui.GuiOverlayElementSettings;
+import stellarium.client.gui.PerOverlaySettings;
 
-public class GuiOverlayClockSettings extends GuiOverlayElementSettings {
+public class ClockSettings extends PerOverlaySettings {
 	
 	boolean isFixed = false;
 	EnumViewMode viewMode = EnumViewMode.HHMM;
@@ -13,7 +13,7 @@ public class GuiOverlayClockSettings extends GuiOverlayElementSettings {
 	private ConfigPropertyBoolean propFixed;
 	private ConfigPropertyString propViewMode;
 	
-	public GuiOverlayClockSettings() {
+	public ClockSettings() {
 		this.propFixed = new ConfigPropertyBoolean("Fixed", "", this.isFixed);
 		this.propViewMode = new ConfigPropertyString("Mode_HUD_Time_View", "", viewMode.getName());
 		

@@ -4,16 +4,16 @@ import stellarium.client.gui.IGuiOverlayType;
 import stellarium.client.gui.pos.EnumHorizontalPos;
 import stellarium.client.gui.pos.EnumVerticalPos;
 
-public class GuiOverlayClockType implements IGuiOverlayType<GuiOverlayClock, GuiOverlayClockSettings> {
+public class OverlayClockType implements IGuiOverlayType<OverlayClock, ClockSettings> {
 
 	@Override
-	public GuiOverlayClock generateElement() {
-		return new GuiOverlayClock();
+	public OverlayClock generateElement() {
+		return new OverlayClock();
 	}
 
 	@Override
-	public GuiOverlayClockSettings generateSettings() {
-		return new GuiOverlayClockSettings();
+	public ClockSettings generateSettings() {
+		return new ClockSettings();
 	}
 
 	@Override

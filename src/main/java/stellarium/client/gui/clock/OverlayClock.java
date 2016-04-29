@@ -1,5 +1,7 @@
 package stellarium.client.gui.clock;
 
+import com.ibm.icu.text.Normalizer.Mode;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -9,14 +11,14 @@ import stellarium.api.IHourProvider;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.EnumKey;
-import stellarium.client.gui.EnumGuiOverlayMode;
-import stellarium.client.gui.IGuiOverlayElement;
+import stellarium.client.gui.EnumOverlayMode;
+import stellarium.client.gui.IGuiOverlay;
 import stellarium.client.gui.pos.EnumHorizontalPos;
 import stellarium.client.gui.pos.EnumVerticalPos;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarDimensionManager;
 
-public class GuiOverlayClock implements IGuiOverlayElement<GuiOverlayClockSettings> {
+public class OverlayClock implements IGuiOverlay<ClockSettings> {
 	
 	private static final int WIDTH = 160;
 	private static final int HEIGHT = 36;
@@ -25,9 +27,9 @@ public class GuiOverlayClock implements IGuiOverlayElement<GuiOverlayClockSettin
 	
 	private Minecraft mc;
 	private int animationTick = 0;
-	private EnumGuiOverlayMode currentMode = EnumGuiOverlayMode.OVERLAY;
+	private EnumOverlayMode currentMode = EnumOverlayMode.OVERLAY;
 
-	private GuiOverlayClockSettings settings;
+	private ClockSettings settings;
 	private GuiButton buttonFix;
 	private GuiButton buttonToggle;
 	
@@ -42,7 +44,7 @@ public class GuiOverlayClock implements IGuiOverlayElement<GuiOverlayClockSettin
 	}
 	
 	@Override
-	public void initialize(Minecraft mc, GuiOverlayClockSettings settings) {
+	public void initialize(Minecraft mc, ClockSettings settings) {
 		this.mc = mc;
 		this.settings = settings;
 		
@@ -57,14 +59,15 @@ public class GuiOverlayClock implements IGuiOverlayElement<GuiOverlayClockSettin
 
 	@Override
 	public float animationOffsetY(float partialTicks) {
-		return - this.getHeight() * this.animationTick / (float)ANIMATION_DURATION;
+		partialTicks = settings.isFixed? 0.0f : currentMode.displayed()? -partialTicks : partialTicks;
+		return -this.getHeight() * Math.max((this.animationTick + partialTicks) / ANIMATION_DURATION, 0.0f);
 	}
 
 	@Override
-	public void switchMode(EnumGuiOverlayMode mode) {
+	public void switchMode(EnumOverlayMode mode) {
 		if(mode != this.currentMode)
 		{
-			if(!settings.isFixed && mode.focused())
+			if(!settings.isFixed && mode.displayed())
 				this.animationTick = ANIMATION_DURATION;
 			else this.animationTick = 0;
 		}
@@ -73,13 +76,15 @@ public class GuiOverlayClock implements IGuiOverlayElement<GuiOverlayClockSettin
 
 	@Override
 	public void updateOverlay() {
-		if(this.animationTick > 0 && currentMode.focused())
-			this.animationTick--;
-		else if(this.animationTick < ANIMATION_DURATION && !currentMode.focused())
-			this.animationTick++;
-		
-		if(settings.isFixed)
+		if(settings.isFixed) {
 			this.animationTick = 0;
+			return;
+		}
+		
+		if(this.animationTick > 0 && currentMode.displayed())
+			this.animationTick--;
+		else if(this.animationTick < ANIMATION_DURATION && !currentMode.displayed())
+			this.animationTick++;
 	}
 
 	@Override

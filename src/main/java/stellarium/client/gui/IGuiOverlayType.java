@@ -3,7 +3,7 @@ package stellarium.client.gui;
 import stellarium.client.gui.pos.EnumHorizontalPos;
 import stellarium.client.gui.pos.EnumVerticalPos;
 
-public interface IGuiOverlayType<Element extends IGuiOverlayElement<Settings>, Settings extends GuiOverlayElementSettings> {
+public interface IGuiOverlayType<Element extends IGuiOverlay<Settings>, Settings extends PerOverlaySettings> {
 	
 	public Element generateElement();
 	public Settings generateSettings();

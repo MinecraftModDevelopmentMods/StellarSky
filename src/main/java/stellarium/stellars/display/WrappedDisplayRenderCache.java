@@ -4,32 +4,33 @@ import stellarium.client.ClientSettings;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 
-public class WrappedDisplayRenderCache implements IRenderCache<DisplayElement, DisplaySettings> {
+public class WrappedDisplayRenderCache<Cfg extends PerDisplaySettings,
+Cache extends IDisplayRenderCache<Cfg>> implements IRenderCache<DisplayElement, DisplayOverallSettings> {
 
-	IDisplayRenderCache internal;
+	Cache internal;
 	private String id;
-	private LayerDisplay.DisplayDelegate delegate;
+	private DisplayRegistry.Delegate delegate;
 
-	public WrappedDisplayRenderCache(LayerDisplay.DisplayDelegate delegate) {
+	public WrappedDisplayRenderCache(DisplayRegistry.Delegate<Cfg, Cache> delegate) {
 		this.delegate = delegate;
-		this.internal = delegate.type.generateCache();
-		this.id = delegate.type.getName();
+		this.internal = delegate.getType().generateCache();
+		this.id = delegate.getType().getName();
 	}
 
 	@Override
-	public void initialize(ClientSettings settings, DisplaySettings specificSettings, DisplayElement object) {
-		internal.initialize(settings, (DisplayElementSettings)specificSettings.getSubConfig(this.id));
+	public void initialize(ClientSettings settings, DisplayOverallSettings specificSettings, DisplayElement object) {
+		internal.initialize(settings, (Cfg)specificSettings.getSubConfig(this.id));
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, DisplaySettings specificSettings, DisplayElement object,
+	public void updateCache(ClientSettings settings, DisplayOverallSettings specificSettings, DisplayElement object,
 			StellarCacheInfo info) {
-		internal.updateCache(settings, (DisplayElementSettings)specificSettings.getSubConfig(this.id), info);
+		internal.updateCache(settings, (Cfg)specificSettings.getSubConfig(this.id), info);
 	}
 
 	@Override
 	public int getRenderId() {
-		return delegate.renderId;
+		return delegate.getRenderId();
 	}
 
 }

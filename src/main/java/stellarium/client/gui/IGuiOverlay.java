@@ -5,7 +5,7 @@ import stellarium.client.EnumKey;
 import stellarium.client.gui.pos.EnumHorizontalPos;
 import stellarium.client.gui.pos.EnumVerticalPos;
 
-public interface IGuiOverlayElement<Settings extends GuiOverlayElementSettings> {
+public interface IGuiOverlay<Settings extends PerOverlaySettings> {
 	
 	public void initialize(Minecraft mc, Settings settings);
 	
@@ -15,7 +15,7 @@ public interface IGuiOverlayElement<Settings extends GuiOverlayElementSettings> 
 	public float animationOffsetX(float partialTicks);
 	public float animationOffsetY(float partialTicks);
 	
-	public void switchMode(EnumGuiOverlayMode mode);
+	public void switchMode(EnumOverlayMode mode);
 	
 	public void updateOverlay();
 	

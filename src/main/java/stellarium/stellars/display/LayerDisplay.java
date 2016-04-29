@@ -22,39 +22,33 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.render.StellarRenderingRegistry;
-import stellarium.stellars.display.eccoord.DisplayEcCoordType;
-import stellarium.stellars.display.eqcoord.DisplayEqCoordType;
-import stellarium.stellars.display.horcoord.DisplayHorCoordType;
+import stellarium.stellars.display.eccoord.EcGridType;
+import stellarium.stellars.display.eqcoord.EqGridType;
+import stellarium.stellars.display.horcoord.HorGridType;
 import stellarium.stellars.layer.IPerWorldImage;
+import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;
 
-public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySettings, INBTConfig>, Callable<IConfigHandler> {
+public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplayOverallSettings, INBTConfig>, Callable<IConfigHandler> {
 	
 	private int renderId;
 	private Ordering<IDisplayElementType> displayOrdering;
-	ImmutableList<DisplayDelegate> displayElementDelegates;
-	
-	private static List<IDisplayElementType> listDisplayType = Lists.newArrayList(
-			new DisplayHorCoordType(),
-			new DisplayEqCoordType(),
-			new DisplayEcCoordType());
+	private ImmutableList<DisplayRegistry.Delegate> displayElementDelegates;
 	
 	public LayerDisplay() {
-		this.displayOrdering = Ordering.explicit(listDisplayType).reverse();
-		ImmutableList.Builder<DisplayDelegate> builder = ImmutableList.builder();
-		for(IDisplayElementType type : listDisplayType)
-			builder.add(new DisplayDelegate(type));
-		this.displayElementDelegates = builder.build();
+		DisplayRegistry registry = DisplayRegistry.getInstance();
+		this.displayOrdering = registry.generateOrdering();
+		this.displayElementDelegates = registry.generateList();
 	}
 
 	@Override
-	public void initializeClient(DisplaySettings config, StellarObjectContainer container) throws IOException {		
-		for(DisplayDelegate delegate : this.displayElementDelegates)
+	public void initializeClient(DisplayOverallSettings config, StellarObjectContainer container) throws IOException {		
+		for(DisplayRegistry.Delegate delegate : this.displayElementDelegates)
 		{
 			DisplayElement element = new DisplayElement(delegate);
 			container.loadObject("Display", element);
-			container.addRenderCache(element, new WrappedDisplayRenderCache(delegate));
+			container.addRenderCache(element, delegate.getWrappedCache());
 		}
 	}
 	
@@ -62,7 +56,7 @@ public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySe
 	public void initializeCommon(INBTConfig config, StellarObjectContainer container) throws IOException { }
 	
 	@Override
-	public void updateLayer(StellarObjectContainer<DisplayElement, DisplaySettings> container, double year) { }
+	public void updateLayer(StellarObjectContainer<DisplayElement, DisplayOverallSettings> container, double year) { }
 
 	@Override
 	public int getLayerRendererIndex() {
@@ -73,11 +67,11 @@ public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySe
 	@Override
 	public void registerRenderers() {
 		this.renderId = StellarRenderingRegistry.getInstance().registerLayerRenderer(new LayerDisplayRenderer());
-		for(DisplayDelegate delegate : this.displayElementDelegates)
+		for(DisplayRegistry.Delegate delegate : this.displayElementDelegates)
 		{
 			int id = StellarRenderingRegistry.getInstance().registerObjectRenderer(
 					new WrappedDisplayRenderer(delegate));
-			delegate.renderId = id;
+			delegate.setRenderId(id);
 		}
 	}
 
@@ -140,15 +134,10 @@ public class LayerDisplay implements IStellarLayerType<DisplayElement, DisplaySe
 
 	@Override
 	public IConfigHandler call() throws Exception {
-		return new DisplaySettings(this);
+		return new DisplayOverallSettings(this);
 	}
 	
-	static class DisplayDelegate {
-		private DisplayDelegate(IDisplayElementType input) {
-			this.type = input;
-		}
-		
-		int renderId = -1;
-		IDisplayElementType type;
+	public List<DisplayRegistry.Delegate> getDelegates() {
+		return this.displayElementDelegates;
 	}
 }

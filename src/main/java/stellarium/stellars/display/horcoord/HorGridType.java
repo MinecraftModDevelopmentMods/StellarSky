@@ -2,27 +2,27 @@ package stellarium.stellars.display.horcoord;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import stellarium.stellars.display.DisplayElementSettings;
+import stellarium.stellars.display.PerDisplaySettings;
 import stellarium.stellars.display.IDisplayElementType;
 import stellarium.stellars.display.IDisplayRenderCache;
 import stellarium.stellars.display.IDisplayRenderer;
 
-public class DisplayHorCoordType implements IDisplayElementType {
+public class HorGridType implements IDisplayElementType<HorGridSettings, HorGridCache> {
 
 	@Override
-	public DisplayElementSettings generateSettings() {
-		return new DisplayHorCoordSettings();
+	public HorGridSettings generateSettings() {
+		return new HorGridSettings();
 	}
 
 	@Override
-	public IDisplayRenderCache generateCache() {
-		return new DisplayHorCoordCache();
+	public HorGridCache generateCache() {
+		return new HorGridCache();
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IDisplayRenderer getRenderer() {
-		return new DisplayHorCoordRenderer();
+		return new HorGridRenderer();
 	}
 
 	@Override

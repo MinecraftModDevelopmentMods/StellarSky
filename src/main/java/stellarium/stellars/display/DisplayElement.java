@@ -11,8 +11,8 @@ public class DisplayElement extends StellarObject {
 
 	private final IDisplayElementType type;
 	
-	public DisplayElement(LayerDisplay.DisplayDelegate delegate) {
-		this.type = delegate.type;
+	public DisplayElement(DisplayRegistry.Delegate delegate) {
+		this.type = delegate.getType();
 	}
 	
 	public IDisplayElementType getType() {

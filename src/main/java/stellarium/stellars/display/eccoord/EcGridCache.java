@@ -1,26 +1,28 @@
-package stellarium.stellars.display.horcoord;
+package stellarium.stellars.display.eccoord;
 
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.optics.IOpticalFilter;
+import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
-import stellarium.stellars.display.DisplaySettings;
+import stellarium.stellars.display.DisplayOverallSettings;
 import stellarium.stellars.display.IDisplayRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.util.math.VectorHelper;
 
-public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoordSettings> {
+public class EcGridCache implements IDisplayRenderCache<EcGridSettings> {
 	
-	private Vector3 baseColor, heightColor, azimuthColor;
+	private Vector3 baseColor, latitudeColor, longitudeColor;
 	protected Vector3[][] displayvec = null;
 	protected Vector3[][] colorvec = null;
 	protected int latn, longn;
 	protected boolean enabled;
 	protected float brightness;
 	
-	private int renderId;
-
 	@Override
-	public void initialize(ClientSettings settings, DisplayHorCoordSettings specificSettings) {
+	public void initialize(ClientSettings settings, EcGridSettings specificSettings) {
 		this.latn = specificSettings.displayFrag;
 		this.longn = 2*specificSettings.displayFrag;
 		this.enabled = specificSettings.displayEnabled;
@@ -31,29 +33,37 @@ public class DisplayHorCoordCache implements IDisplayRenderCache<DisplayHorCoord
 		}
 		this.brightness = (float) specificSettings.displayAlpha;
 		this.baseColor = new Vector3(specificSettings.displayBaseColor);
-		this.heightColor = new Vector3(specificSettings.displayHeightColor);
-		this.azimuthColor = new Vector3(specificSettings.displayAzimuthColor);
-		heightColor.sub(this.baseColor);
-		azimuthColor.sub(this.baseColor);
+		this.latitudeColor = new Vector3(specificSettings.displayHeightColor);
+		this.longitudeColor = new Vector3(specificSettings.displayAzimuthColor);
+		latitudeColor.sub(this.baseColor);
+		longitudeColor.sub(this.baseColor);
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, DisplayHorCoordSettings specificSettings, StellarCacheInfo info) {
+	public void updateCache(ClientSettings settings, EcGridSettings specificSettings, StellarCacheInfo info) {
 		if(!this.enabled)
 			return;
 		
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
-				displayvec[longc][latc].set(new SpCoord(-longc*360.0/longn, latc*180.0/latn - 90.0).getVec());
+				Vector3 Buf = new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
+				info.projectionToGround.transform(Buf);
+				
+				SpCoord coord = new SpCoord();
+				coord.setWithVec(Buf);
+				
+				info.applyAtmRefraction(coord);
+
+				displayvec[longc][latc].set(coord.getVec());
 				displayvec[longc][latc].scale(50.0);
 				
 				colorvec[longc][latc].set(this.baseColor);
 				
-				Vector3 Buf = new Vector3(this.heightColor);
+				Buf.set(this.latitudeColor);
 				Buf.scale((double)latc/latn);
 				colorvec[longc][latc].add(Buf);
 				
-				Buf.set(this.azimuthColor);
+				Buf.set(this.longitudeColor);
 				Buf.scale((double)longc/longn);
 				colorvec[longc][latc].add(Buf);
 			}

@@ -3,27 +3,27 @@ package stellarium.stellars.display.eccoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import stellarium.render.ICelestialObjectRenderer;
-import stellarium.stellars.display.DisplayElementSettings;
+import stellarium.stellars.display.PerDisplaySettings;
 import stellarium.stellars.display.IDisplayElementType;
 import stellarium.stellars.display.IDisplayRenderCache;
 import stellarium.stellars.display.IDisplayRenderer;
 
-public class DisplayEcCoordType implements IDisplayElementType {
+public class EcGridType implements IDisplayElementType<EcGridSettings, EcGridCache> {
 
 	@Override
-	public DisplayElementSettings generateSettings() {
-		return new DisplayEcCoordSettings();
+	public EcGridSettings generateSettings() {
+		return new EcGridSettings();
 	}
 
 	@Override
-	public IDisplayRenderCache generateCache() {
-		return new DisplayEcCoordCache();
+	public EcGridCache generateCache() {
+		return new EcGridCache();
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IDisplayRenderer getRenderer() {
-		return new DisplayEcCoordRenderer();
+		return new EcGridRenderer();
 	}
 
 	@Override

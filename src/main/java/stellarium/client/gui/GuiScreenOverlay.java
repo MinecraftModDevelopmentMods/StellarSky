@@ -5,30 +5,33 @@ import java.util.Map;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.KeyBinding;
 import stellarium.client.EnumKey;
 import stellarium.client.gui.pos.ElementPos;
 
-public class GuiOverlayScreen extends GuiScreen {
+public class GuiScreenOverlay extends GuiScreen {
 	
-	private GuiOverlayContainer container;
+	private OverlayContainer container;
 	private KeyBinding focusGuiKey;
 	
-	public GuiOverlayScreen(GuiOverlayContainer container, KeyBinding focusGuiKey) {
+	public GuiScreenOverlay(OverlayContainer container, KeyBinding focusGuiKey) {
 		this.container = container;
 		this.focusGuiKey = focusGuiKey;
 		
-		container.switchMode(EnumGuiOverlayMode.FOCUS);
+		container.switchMode(EnumOverlayMode.FOCUS);
 	}
 	
 	@Override
     public void onGuiClosed() {
-    	container.switchMode(EnumGuiOverlayMode.OVERLAY);
+    	container.switchMode(EnumOverlayMode.OVERLAY);
     }
 	
 	@Override
     public void initGui() {
-    	container.setSize(this.width, this.height);
+		ScaledResolution resolution = new ScaledResolution(
+				this.mc, mc.displayWidth, mc.displayHeight);
+    	container.setSize(resolution);
     }
 	
 	

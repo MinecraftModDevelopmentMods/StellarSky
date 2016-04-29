@@ -1,21 +1,19 @@
-package stellarium.stellars.display.eqcoord;
+package stellarium.stellars.display.eccoord;
 
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import stellarapi.api.lib.math.Spmath;
-import stellarium.StellarSkyResources;
-import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
-import stellarium.stellars.Optics;
 import stellarium.stellars.display.IDisplayRenderer;
 
 @SideOnly(Side.CLIENT)
-public class DisplayEqCoordRenderer implements IDisplayRenderer<DisplayEqCoordCache> {
+public class EcGridRenderer implements IDisplayRenderer<EcGridCache> {
 
 	@Override
-	public void render(StellarRenderInfo info, DisplayEqCoordCache cache) {		
+	public void render(StellarRenderInfo info, EcGridCache cache) {
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		
 		if(!cache.enabled)
 			return;
 		

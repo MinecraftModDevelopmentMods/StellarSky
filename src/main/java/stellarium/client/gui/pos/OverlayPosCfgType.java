@@ -1,25 +1,25 @@
 package stellarium.client.gui.pos;
 
-import stellarium.client.gui.GuiOverlayContainer;
-import stellarium.client.gui.GuiOverlayElementSettings;
+import stellarium.client.gui.OverlayContainer;
+import stellarium.client.gui.PerOverlaySettings;
 import stellarium.client.gui.IGuiOverlayType;
 
-public class GuiOverlayPosCfgType implements IGuiOverlayType<GuiOverlayPosConfigurator, GuiOverlayElementSettings> {
+public class OverlayPosCfgType implements IGuiOverlayType<OverlayPosCfg, PerOverlaySettings> {
+
+	private OverlayContainer container;
 	
-	private GuiOverlayContainer container;
-		
-	public GuiOverlayPosCfgType(GuiOverlayContainer container) {
+	public OverlayPosCfgType(OverlayContainer container) {
 		this.container = container;
 	}
-
+	
 	@Override
-	public GuiOverlayPosConfigurator generateElement() {
-		return new GuiOverlayPosConfigurator(this.container);
+	public OverlayPosCfg generateElement() {
+		return new OverlayPosCfg(this.container);
 	}
 
 	@Override
-	public GuiOverlayElementSettings generateSettings() {
-		return new GuiOverlayElementSettings();
+	public PerOverlaySettings generateSettings() {
+		return new PerOverlaySettings();
 	}
 
 	@Override

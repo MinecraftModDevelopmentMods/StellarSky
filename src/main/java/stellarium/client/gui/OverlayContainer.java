@@ -7,29 +7,29 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarium.client.EnumKey;
-import stellarium.client.gui.clock.GuiOverlayClock;
-import stellarium.client.gui.clock.GuiOverlayClockSettings;
-import stellarium.client.gui.clock.GuiOverlayClockType;
+import stellarium.client.gui.clock.OverlayClockType;
 import stellarium.client.gui.pos.ElementPos;
 import stellarium.client.gui.pos.EnumHorizontalPos;
 import stellarium.client.gui.pos.EnumVerticalPos;
-import stellarium.client.gui.pos.GuiOverlayPosCfgType;
-import stellarium.client.gui.pos.GuiOverlayPosConfigurator;
+import stellarium.client.gui.pos.OverlayPosCfgType;
 
-public class GuiOverlayContainer {
+public class OverlayContainer {
 	
 	private int width;
 	private int height;
+	private double scale;
 	
 	private ConfigManager guiConfig;
-	private EnumGuiOverlayMode currentMode = EnumGuiOverlayMode.OVERLAY;
+	private EnumOverlayMode currentMode = EnumOverlayMode.OVERLAY;
 	private List<Delegate> elementList = Lists.newArrayList();
+	private ScaledResolution resolution;
 	
-	public class Delegate<Element extends IGuiOverlayElement<Settings>, Settings extends GuiOverlayElementSettings> {
+	public class Delegate<Element extends IGuiOverlay<Settings>, Settings extends PerOverlaySettings> {
 		ElementPos pos;
-		final IGuiOverlayType type;
+		final IGuiOverlayType<Element, Settings> type;
 		final Element element;
 		final Settings settings;
 		
@@ -81,21 +81,18 @@ public class GuiOverlayContainer {
 		}
 	}
 	
-	public GuiOverlayContainer(ConfigManager guiConfig) {
+	public OverlayContainer(ConfigManager guiConfig) {
 		this.guiConfig = guiConfig;
 		
-		this.register(new GuiOverlayPosCfgType(this));
-		this.register(new GuiOverlayClockType());
+		this.register(new OverlayPosCfgType(this));
+		this.register(new OverlayClockType());
 		
 		for(Delegate delegate : this.elementList)
 			guiConfig.register(delegate.type.getName(), delegate.settings);
 	}
 	
-	public <
-	Element extends IGuiOverlayElement<Settings>,
-	Settings extends GuiOverlayElementSettings
-	> void register(IGuiOverlayType<Element, Settings> type) {
-		elementList.add(new Delegate(type));
+	public <E extends IGuiOverlay<S>, S extends PerOverlaySettings> void register(IGuiOverlayType<E, S> type) {
+		elementList.add(new Delegate<E, S>(type));
 	}
 	
 	public void initialize(Minecraft mc) {
@@ -103,12 +100,13 @@ public class GuiOverlayContainer {
 			delegate.initialize(mc);
 	}
 	
-	public void setSize(int width, int height) {
-		this.width = width;
-		this.height = height;
+	public void setSize(ScaledResolution resolution) {
+		this.width = resolution.getScaledWidth();
+		this.height = resolution.getScaledHeight();
+		this.resolution = resolution;
 	}
 
-	public void switchMode(EnumGuiOverlayMode mode) {
+	public void switchMode(EnumOverlayMode mode) {
 		for(Delegate delegate : this.elementList)
 			delegate.element.switchMode(mode);
 	}
@@ -123,7 +121,7 @@ public class GuiOverlayContainer {
 		for(Delegate delegate : this.elementList)
 		{
 			ElementPos pos = delegate.pos;
-			IGuiOverlayElement element = delegate.element;
+			IGuiOverlay element = delegate.element;
 			int width = element.getWidth();
 			int height = element.getHeight();
 			int scaledMouseX = pos.getHorizontalPos().translateInto(mouseX, this.width, width);
@@ -143,7 +141,7 @@ public class GuiOverlayContainer {
 		for(Delegate delegate : this.elementList)
 		{
 			ElementPos pos = delegate.pos;
-			IGuiOverlayElement element = delegate.element;
+			IGuiOverlay element = delegate.element;
 			int width = element.getWidth();
 			int height = element.getHeight();
 			int scaledMouseX = pos.getHorizontalPos().translateInto(mouseX, this.width, width);
@@ -172,7 +170,7 @@ public class GuiOverlayContainer {
 		for(Delegate delegate : this.elementList)
 		{
 			ElementPos pos = delegate.pos;
-			IGuiOverlayElement element = delegate.element;
+			IGuiOverlay element = delegate.element;
 			int width = element.getWidth();
 			int height = element.getHeight();
 			float animationOffsetX = element.animationOffsetX(partialTicks);
@@ -184,8 +182,8 @@ public class GuiOverlayContainer {
 			scaledMouseY -= animationOffsetY;
 			
 			GL11.glPushMatrix();
-			GL11.glTranslatef(pos.getHorizontalPos().getOffset(this.width, width) + animationOffsetX,
-					pos.getVerticalPos().getOffset(this.width, width) + animationOffsetY,
+			GL11.glTranslatef((pos.getHorizontalPos().getOffset(this.width, width) + animationOffsetX) * resolution.getScaleFactor(),
+					(pos.getVerticalPos().getOffset(this.width, width) + animationOffsetY) * resolution.getScaleFactor(),
 					0.0f);
 			
 			element.render(scaledMouseX, scaledMouseY, partialTicks);

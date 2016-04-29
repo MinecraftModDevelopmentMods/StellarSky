@@ -12,7 +12,7 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarium.client.ClientSettings;
 import stellarium.common.CommonSettings;
-import stellarium.stellars.display.DisplaySettings;
+import stellarium.stellars.display.DisplayOverallSettings;
 import stellarium.stellars.display.LayerDisplay;
 import stellarium.stellars.milkyway.LayerMilkyway;
 import stellarium.stellars.milkyway.MilkywaySettings;

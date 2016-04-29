@@ -1,4 +1,4 @@
-package stellarium.stellars.display.eccoord;
+package stellarium.stellars.display.horcoord;
 
 import org.lwjgl.opengl.GL11;
 
@@ -8,10 +8,10 @@ import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.display.IDisplayRenderer;
 
 @SideOnly(Side.CLIENT)
-public class DisplayEcCoordRenderer implements IDisplayRenderer<DisplayEcCoordCache> {
+public class HorGridRenderer implements IDisplayRenderer<HorGridCache> {
 
 	@Override
-	public void render(StellarRenderInfo info, DisplayEcCoordCache cache) {
+	public void render(StellarRenderInfo info, HorGridCache cache) {
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		
 		if(!cache.enabled)
@@ -33,9 +33,9 @@ public class DisplayEcCoordRenderer implements IDisplayRenderer<DisplayEcCoordCa
 						(float)cache.colorvec[longc][latc].getY(),
 						(float)cache.colorvec[longc][latc].getZ(), cache.brightness);
 				info.tessellator.addVertex(cache.displayvec[longc][latc].getX(), cache.displayvec[longc][latc].getY(), cache.displayvec[longc][latc].getZ());
-				info.tessellator.addVertex(cache.displayvec[longc][latc+1].getX(), cache.displayvec[longc][latc+1].getY(), cache.displayvec[longc][latc+1].getZ());
-				info.tessellator.addVertex(cache.displayvec[longcd][latc+1].getX(), cache.displayvec[longcd][latc+1].getY(), cache.displayvec[longcd][latc+1].getZ());
 				info.tessellator.addVertex(cache.displayvec[longcd][latc].getX(), cache.displayvec[longcd][latc].getY(), cache.displayvec[longcd][latc].getZ());
+				info.tessellator.addVertex(cache.displayvec[longcd][latc+1].getX(), cache.displayvec[longcd][latc+1].getY(), cache.displayvec[longcd][latc+1].getZ());
+				info.tessellator.addVertex(cache.displayvec[longc][latc+1].getX(), cache.displayvec[longc][latc+1].getY(), cache.displayvec[longc][latc+1].getZ());
 			}
 		}
 		

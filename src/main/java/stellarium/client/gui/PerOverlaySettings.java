@@ -7,7 +7,7 @@ import stellarium.client.gui.clock.EnumViewMode;
 import stellarium.client.gui.pos.EnumHorizontalPos;
 import stellarium.client.gui.pos.EnumVerticalPos;
 
-public class GuiOverlayElementSettings extends SimpleConfigHandler {
+public class PerOverlaySettings extends SimpleConfigHandler {
 	
 	EnumHorizontalPos horizontal;
 	EnumVerticalPos vertical;
@@ -21,6 +21,9 @@ public class GuiOverlayElementSettings extends SimpleConfigHandler {
 		
 		this.propHorizontal = new ConfigPropertyString("Horizontal_Position", "", horizontal.name());
 		this.propVertical = new ConfigPropertyString("Vertical_Position", "", vertical.name());
+		
+		this.addConfigProperty(this.propHorizontal);
+		this.addConfigProperty(this.propVertical);
 	}
 	
 	@Override

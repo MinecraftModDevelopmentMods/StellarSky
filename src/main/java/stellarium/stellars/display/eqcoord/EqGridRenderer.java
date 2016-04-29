@@ -1,19 +1,21 @@
-package stellarium.stellars.display.horcoord;
+package stellarium.stellars.display.eqcoord;
 
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import stellarapi.api.lib.math.Spmath;
+import stellarium.StellarSkyResources;
+import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
+import stellarium.stellars.Optics;
 import stellarium.stellars.display.IDisplayRenderer;
 
 @SideOnly(Side.CLIENT)
-public class DisplayHorCoordRenderer implements IDisplayRenderer<DisplayHorCoordCache> {
+public class EqGridRenderer implements IDisplayRenderer<EqGridCache> {
 
 	@Override
-	public void render(StellarRenderInfo info, DisplayHorCoordCache cache) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		
+	public void render(StellarRenderInfo info, EqGridCache cache) {		
 		if(!cache.enabled)
 			return;
 		
@@ -33,9 +35,9 @@ public class DisplayHorCoordRenderer implements IDisplayRenderer<DisplayHorCoord
 						(float)cache.colorvec[longc][latc].getY(),
 						(float)cache.colorvec[longc][latc].getZ(), cache.brightness);
 				info.tessellator.addVertex(cache.displayvec[longc][latc].getX(), cache.displayvec[longc][latc].getY(), cache.displayvec[longc][latc].getZ());
-				info.tessellator.addVertex(cache.displayvec[longcd][latc].getX(), cache.displayvec[longcd][latc].getY(), cache.displayvec[longcd][latc].getZ());
-				info.tessellator.addVertex(cache.displayvec[longcd][latc+1].getX(), cache.displayvec[longcd][latc+1].getY(), cache.displayvec[longcd][latc+1].getZ());
 				info.tessellator.addVertex(cache.displayvec[longc][latc+1].getX(), cache.displayvec[longc][latc+1].getY(), cache.displayvec[longc][latc+1].getZ());
+				info.tessellator.addVertex(cache.displayvec[longcd][latc+1].getX(), cache.displayvec[longcd][latc+1].getY(), cache.displayvec[longcd][latc+1].getZ());
+				info.tessellator.addVertex(cache.displayvec[longcd][latc].getX(), cache.displayvec[longcd][latc].getY(), cache.displayvec[longcd][latc].getZ());
 			}
 		}
 		

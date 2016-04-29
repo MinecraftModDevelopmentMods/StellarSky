@@ -15,7 +15,7 @@ import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.DefaultHourProvider;
 import stellarium.client.StellarClientFMLHook;
-import stellarium.client.StellarSkyClientHandler;
+import stellarium.client.StellarClientForgeHook;
 import stellarium.client.gui.OverlayHandler;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.CelestialManager;
@@ -46,7 +46,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 				StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
 						StellarSkyReferences.guiSettings));
 		
-		MinecraftForge.EVENT_BUS.register(new StellarSkyClientHandler());
+		MinecraftForge.EVENT_BUS.register(new StellarClientForgeHook());
 		
 		MinecraftForge.EVENT_BUS.register(this.overlay = new OverlayHandler(this.guiConfig));
 		
