@@ -1,5 +1,7 @@
 package stellarium.client.gui.content;
 
+import net.minecraft.util.MathHelper;
+
 public class RectangleBound implements IRectangleBound {
 	
 	public float posX, posY, width, height;
@@ -65,6 +67,16 @@ public class RectangleBound implements IRectangleBound {
 	@Override
 	public boolean isEmpty() {
 		return this.width <= 0.0 || this.height <= 0.0;
+	}
+
+	@Override
+	public float getRatioX(float x) {
+		return MathHelper.clamp_float((x - this.posX) / this.width, 0.0f, 1.0f);
+	}
+
+	@Override
+	public float getRatioY(float y) {
+		return MathHelper.clamp_float((y - this.posY) / this.height, 0.0f, 1.0f);
 	}
 
 }

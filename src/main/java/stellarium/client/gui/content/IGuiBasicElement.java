@@ -9,15 +9,17 @@ public interface IGuiBasicElement<C extends IElementController> {
 
 	public void updateElement();
 
-	/**Return true to update settings*/
-	public boolean mouseClicked(float mouseX, float mouseY, int eventButton);
+	public void mouseClicked(float mouseX, float mouseY, int eventButton);
+	public void mouseMovedOrUp(float mouseX, float mouseY, int eventButton);
 
-	/**Return true to update settings*/
-	public boolean mouseMovedOrUp(float mouseX, float mouseY, int eventButton);
-
-	/**Return true to update settings*/
-	public boolean keyTyped(EnumKey key, char eventChar);
-
-	public void render(IRenderer renderer, float mouseX, float mouseY);
+	public void keyTyped(EnumKey key, char eventChar);
+	
+	/**
+	 * Called before rendering passes to check mouse position.
+	 * Bounds can be differ here.
+	 * */
+	public void checkMousePosition(float mouseX, float mouseY);
+	
+	public void render(IRenderer renderer);
 
 }

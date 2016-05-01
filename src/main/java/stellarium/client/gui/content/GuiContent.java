@@ -8,6 +8,9 @@ import stellarium.client.EnumKey;
 
 public class GuiContent {
 	
+	/**
+	 * Basic GUI elements collected by depth-first traversal.
+	 * */
 	private List<IGuiBasicElement> elements = Lists.newArrayList();
 	private IRenderer renderer;
 	
@@ -20,36 +23,27 @@ public class GuiContent {
 			element.updateElement();
 	}
 	
-	/**Return true to update settings*/
-	public boolean mouseClicked(float mouseX, float mouseY, int eventButton) {
+	public void mouseClicked(float mouseX, float mouseY, int eventButton) {
 		for(IGuiBasicElement element : this.elements)
-			if(element.mouseClicked(mouseX, mouseY, eventButton))
-				return true;
-		
-		return false;
+			element.mouseClicked(mouseX, mouseY, eventButton);
 	}
 
-	/**Return true to update settings*/
-	public boolean mouseMovedOrUp(float mouseX, float mouseY, int eventButton) {
+	public void mouseMovedOrUp(float mouseX, float mouseY, int eventButton) {
 		for(IGuiBasicElement element : this.elements)
-			if(element.mouseMovedOrUp(mouseX, mouseY, eventButton))
-				return true;
-		
-		return false;
-		
+			element.mouseMovedOrUp(mouseX, mouseY, eventButton);
 	}
 
-	/**Return true to update settings*/
-	public boolean keyTyped(EnumKey key, char eventChar) {
-		boolean check = false;
+	public void keyTyped(EnumKey key, char eventChar) {
 		for(IGuiBasicElement element : this.elements)
-			check = element.keyTyped(key, eventChar) || check;
-		return check;
+			element.keyTyped(key, eventChar);
 	}
 
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		for(IGuiBasicElement element : this.elements)
-			element.render(this.renderer, mouseX, mouseY);
+			element.checkMousePosition(mouseX, mouseY);
+		
+		for(IGuiBasicElement element : this.elements)
+			element.render(this.renderer);
 	}
 
 }
