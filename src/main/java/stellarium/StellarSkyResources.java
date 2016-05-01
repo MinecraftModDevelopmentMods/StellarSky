@@ -12,22 +12,22 @@ public class StellarSkyResources {
 	
 	
 	public static final PerDimensionResource resourceMilkyway =
-			new PerDimensionResource("Milkyway", new ResourceLocation("stellarium", "stellar/milkyway.png"));
+			new PerDimensionResource("Milkyway", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/milkyway.png"));
 	
 	public static final PerDimensionResource resourceStar =
-			new PerDimensionResource("Star", new ResourceLocation("stellarium", "stellar/star.png"));
+			new PerDimensionResource("Star", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/star.png"));
 
 	public static final PerDimensionResource resourceSunHalo =
-			new PerDimensionResource("Sun_Halo", new ResourceLocation("stellarium", "stellar/halo.png"));
+			new PerDimensionResource("Sun_Halo", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/halo.png"));
 	
 	public static final PerDimensionResource resourceMoonSurface = 
-			new PerDimensionResource("Moon_Surface", new ResourceLocation("stellarium", "stellar/lune.png"));
+			new PerDimensionResource("Moon_Surface", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/lune.png"));
 	
 	public static final PerDimensionResource resourceMoonHalo =
-			new PerDimensionResource("Moon_Halo", new ResourceLocation("stellarium", "stellar/haloLune.png"));
+			new PerDimensionResource("Moon_Halo", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/haloLune.png"));
 	
 	public static final PerDimensionResource resourcePlanetSmall =
-			new PerDimensionResource("Planet_Small", new ResourceLocation("stellarium", "stellar/star.png"));
+			new PerDimensionResource("Planet_Small", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/star.png"));
 	
 	public static void init() {
 		PerDimensionResourceRegistry.getInstance().registerResourceId("End_Sky");
@@ -38,4 +38,8 @@ public class StellarSkyResources {
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Halo");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Planet_Small");
 	}
+	
+	
+	public static final ResourceLocation unroll =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/unroll.png");
 }

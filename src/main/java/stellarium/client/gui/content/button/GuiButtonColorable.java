@@ -1,4 +1,4 @@
-package stellarium.client.gui.content;
+package stellarium.client.gui.content.button;
 
 import org.lwjgl.opengl.GL11;
 

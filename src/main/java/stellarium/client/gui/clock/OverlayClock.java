@@ -3,22 +3,25 @@ package stellarium.client.gui.clock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
+import stellarapi.api.CelestialPeriod;
+import stellarapi.api.PeriodHelper;
+import stellarapi.api.lib.math.Spmath;
 import stellarium.StellarSky;
+import stellarium.StellarSkyResources;
 import stellarium.api.IHourProvider;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.EnumKey;
 import stellarium.client.gui.EnumOverlayMode;
 import stellarium.client.gui.IGuiOverlay;
-import stellarium.client.gui.content.GuiButtonColorable;
-import stellarium.stellars.StellarManager;
-import stellarium.world.StellarDimensionManager;
+import stellarium.client.gui.content.button.GuiButtonColorable;
+import stellarium.client.gui.content.button.GuiButtonTextured;
 
 public class OverlayClock implements IGuiOverlay<ClockSettings> {
 	
 	private static final int HEIGHT = 36;
+	private static final int ADDBTN_HEIGHT = 10;
 	private static final int ADDITIONAL_HEIGHT = 20;
 	private static final int ANIMATION_DURATION = 10;
 	
@@ -27,8 +30,10 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 	private EnumOverlayMode currentMode = EnumOverlayMode.OVERLAY;
 
 	private ClockSettings settings;
-	private GuiButtonColorable buttonFix;
-	private GuiButtonColorable buttonToggle;
+	private GuiButtonTextured buttonScroll;
+	private GuiButtonColorable buttonFix, buttonToggle;
+	
+	private boolean scroll = false;
 	
 	@Override
 	public int getWidth() {
@@ -37,7 +42,7 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 
 	@Override
 	public int getHeight() {
-		return currentMode.focused()? HEIGHT + ADDITIONAL_HEIGHT : HEIGHT;
+		return currentMode.focused()? HEIGHT + ADDBTN_HEIGHT + (this.scroll? ADDITIONAL_HEIGHT : 0) : HEIGHT;
 	}
 	
 	@Override
@@ -45,10 +50,14 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		this.mc = mc;
 		this.settings = settings;
 		
-		this.buttonFix = new GuiButtonColorable(0, 0, HEIGHT, 80, 20, settings.isFixed? "Unfix" : "Fix");
-		this.buttonToggle = new GuiButtonColorable(1, 80, HEIGHT, 80, 20, settings.viewMode.getName());
+		this.buttonScroll = new GuiButtonTextured(0, 0, HEIGHT, 160, ADDBTN_HEIGHT, StellarSkyResources.unroll);
+		this.buttonFix = new GuiButtonColorable(1, 0, HEIGHT + ADDBTN_HEIGHT, 80, ADDITIONAL_HEIGHT, settings.isFixed? "Unfix" : "Fix");
+		this.buttonToggle = new GuiButtonColorable(2, 80, HEIGHT + ADDBTN_HEIGHT, 80, ADDITIONAL_HEIGHT, settings.viewMode.getName());
+		
+		buttonScroll.width = this.getWidth();
 		buttonToggle.xPosition = buttonToggle.width = buttonFix.width = this.getWidth() / 2;
 		buttonFix.xPosition = 0;
+		buttonScroll.alpha = 0.5f;
 		buttonFix.alpha = 0.5f;
 		buttonToggle.alpha = 0.5f;
 	}
@@ -93,16 +102,23 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		if(!currentMode.focused())
 			return false;
 		
-		if(buttonFix.mousePressed(mc, mouseX, mouseY))
+		if(buttonScroll.mousePressed(mc, mouseX, mouseY))
+		{
+			this.scroll = !this.scroll;
+			buttonScroll.displayString = this.scroll? "Roll" : "Unroll";
+		}
+		
+		if(this.scroll && buttonFix.mousePressed(mc, mouseX, mouseY))
 		{
 			settings.isFixed = !settings.isFixed;
 			buttonFix.displayString = settings.isFixed? "Unfix" : "Fix";
 			return true;
 		}
 
-		if(buttonToggle.mousePressed(mc, mouseX, mouseY)) {
+		if(this.scroll && buttonToggle.mousePressed(mc, mouseX, mouseY)) {
 			settings.viewMode = settings.viewMode.nextMode();
 			buttonToggle.displayString = settings.viewMode.getName();
+			buttonScroll.width = this.getWidth();
 			buttonToggle.xPosition = buttonToggle.width = buttonFix.width = this.getWidth() / 2;
 			buttonFix.xPosition = 0;
 			return true;
@@ -116,8 +132,10 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		if(!currentMode.focused())
 			return false;
 		
-		buttonFix.mouseReleased(mouseX, mouseY);
-		buttonToggle.mouseReleased(mouseX, mouseY);
+		if(this.scroll) {
+			buttonFix.mouseReleased(mouseX, mouseY);
+			buttonToggle.mouseReleased(mouseX, mouseY);
+		}
 
 		return false;
 	}
@@ -129,33 +147,38 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
+		CelestialPeriod periodDay = PeriodHelper.getDayPeriod(Minecraft.getMinecraft().theWorld);
+		CelestialPeriod periodYear = PeriodHelper.getYearPeriod(Minecraft.getMinecraft().theWorld);
+		if(periodDay == null || periodYear == null)
+			return;
+		
 		if(currentMode.focused()) {
-			buttonFix.drawButton(mc, mouseX, mouseY);
-			buttonToggle.drawButton(mc, mouseX, mouseY);
+			buttonScroll.drawButton(mc, mouseX, mouseY);
+			if(this.scroll) {
+				buttonFix.drawButton(mc, mouseX, mouseY);
+				buttonToggle.drawButton(mc, mouseX, mouseY);
+			}
 		}
 		
 		ClientSettings setting = StellarSky.proxy.getClientSettings();
 
 		FontRenderer fontRenderer = mc.fontRenderer;
-		StellarManager manager = StellarManager.getManager(true);
-		StellarDimensionManager dimManager = StellarDimensionManager.get(Minecraft.getMinecraft().theWorld);
-
-		if(dimManager == null)
-			return;
 		
 		Gui.drawRect(0, 0, this.getWidth(), HEIGHT, 0x77333333);
+		
+		long currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
+		
+		double dayOffset = periodDay.getOffset(currentTick, partialTicks);
+		double yearOffset = Spmath.fmod(periodYear.getOffset(currentTick, partialTicks)+0.25, 1.0);
+		
+		double daylength = periodDay.getPeriodLength();
+		double yearlength = periodYear.getPeriodLength();
+		double year = currentTick / yearlength;
 
-		double currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
-		double time = manager.getSkyTime(currentTick) + 1000.0;
-		double daylength = manager.getSettings().day;
-		double yearlength = manager.getSettings().year;
-		double date = time / daylength + dimManager.getSettings().longitude / 180.0;
-		double year = date / yearlength;
-
-		int yr = (int)Math.floor(year);
-		int day = (int)Math.floor(date - Math.floor(yr * yearlength));
-		int tick = (int)Math.floor((date - Math.floor(yr * yearlength) - day)*daylength);
-
+		int yr = (int)Math.floor(year) + 1;
+		int day = (int)Math.floor(yearOffset * yearlength / daylength - dayOffset) + 1;
+		int tick = (int)Math.floor(dayOffset * daylength);
+		
 		IHourProvider provider = StellarSkyAPI.getCurrentHourProvider();
 
 		int hour = provider.getCurrentHour(daylength, tick);
@@ -170,8 +193,8 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		this.drawString(fontRenderer, "hud.text.year", 5, 10*(yOffset++)+5,
 				String.format("%d", yr));
 		this.drawString(fontRenderer, "hud.text.day", 5, 10*(yOffset++)+5,
-				String.format("%-7d", day),
-				String.format("%.2f", yearlength));
+				String.format("%-5d", day),
+				String.format("%.2f", yearlength/daylength));
 
 		if(settings.viewMode.showTick())
 			this.drawString(fontRenderer, "hud.text.tick", 5, 10*(yOffset++)+5,
@@ -186,6 +209,6 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 	}
 	
 	private void drawString(FontRenderer fontRenderer, String str, int x, int y, String... obj) {
-		fontRenderer.drawString(I18n.format(str, (Object[])obj), x, y, 0xff888888);
+		fontRenderer.drawString(I18n.format(str, (Object[])obj), x, y, 0xffaaaaaa);
 	}
 }

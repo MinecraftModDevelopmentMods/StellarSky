@@ -6,7 +6,7 @@ import stellarium.client.gui.EnumOverlayMode;
 import stellarium.client.gui.IGuiOverlay;
 import stellarium.client.gui.OverlayContainer;
 import stellarium.client.gui.PerOverlaySettings;
-import stellarium.client.gui.content.GuiButtonColorable;
+import stellarium.client.gui.content.button.GuiButtonColorable;
 
 public class OverlayPosCfg implements IGuiOverlay<PerOverlaySettings> {
 
