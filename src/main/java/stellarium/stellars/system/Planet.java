@@ -11,6 +11,7 @@ public class Planet extends SolarObject {
 	protected double a0, e0, I0, L0, wbar0, Omega0;
 	protected double ad, ed, Id, Ld, wbard, Omegad;
 	protected double b, c, s, f;
+	private double currentOffsetAngle;
 
 	private Matrix3 roti = new Matrix3(), rotw = new Matrix3(), rotom = new Matrix3();
 	
@@ -28,7 +29,8 @@ public class Planet extends SolarObject {
 				wbar=wbar0+wbard*cen,
 				Omega=Omega0+Omegad*cen;
 		double w=wbar-Omega;
-		double M=L-wbar+b*cen*cen+c*Spmath.cosd(f*cen)+s*Spmath.sind(f*cen);
+		double M = L-wbar+b*cen*cen+c*Spmath.cosd(f*cen)+s*Spmath.sind(f*cen);
+		this.currentOffsetAngle = M + w;
 		
 		roti.setAsRotation(1.0, 0.0, 0.0, -Spmath.Radians(I));
 		rotw.setAsRotation(0.0, 0.0, 1.0, -Spmath.Radians(w));
@@ -43,12 +45,9 @@ public class Planet extends SolarObject {
 		return StellarMath.GetOrbVec(a, e, M, matrix);
 	}
 	
-	public double phase_Time() {
-		Vector3 crossed = new Vector3();
-		crossed.setCross(this.earthPos, this.sunPos);
-		double k=Math.signum(crossed.dot(new Vector3(0.0, 0.0, 1.0))) * (1.0 - getPhase());
-		if(k<0) k=k+2;
-		return k/2;
+	@Override
+	public double absoluteOffset() {
+		return this.currentOffsetAngle / 360.0;
 	}
 	
 	public double getRevolutionPeriod() {

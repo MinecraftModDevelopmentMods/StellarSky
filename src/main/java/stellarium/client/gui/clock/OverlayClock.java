@@ -173,10 +173,13 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		
 		double daylength = periodDay.getPeriodLength();
 		double yearlength = periodYear.getPeriodLength();
-		double year = currentTick / yearlength;
-
-		int yr = (int)Math.floor(year) + 1;
-		int day = (int)Math.floor(yearOffset * yearlength / daylength - dayOffset) + 1;
+		double yearToDay = yearlength / daylength;
+		
+		double fixedYearOffset = Spmath.fmod(yearOffset - dayOffset / yearToDay, 1.0);
+		double year = currentTick / yearlength - fixedYearOffset;
+		
+		int yr = (int)Math.floor(year) + 2;
+		int day = (int)Math.floor(fixedYearOffset * yearToDay) + 1;
 		int tick = (int)Math.floor(dayOffset * daylength);
 		
 		IHourProvider provider = StellarSkyAPI.getCurrentHourProvider();
@@ -194,7 +197,7 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 				String.format("%d", yr));
 		this.drawString(fontRenderer, "hud.text.day", 5, 10*(yOffset++)+5,
 				String.format("%-5d", day),
-				String.format("%.2f", yearlength/daylength));
+				String.format("%.2f", yearToDay));
 
 		if(settings.viewMode.showTick())
 			this.drawString(fontRenderer, "hud.text.tick", 5, 10*(yOffset++)+5,

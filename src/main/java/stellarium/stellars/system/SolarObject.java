@@ -91,8 +91,18 @@ public abstract class SolarObject extends StellarObject {
 		this.currentMag=-26.74-2.5*Math.log10(LvsSun);
 	}
 	
+	public abstract double absoluteOffset();
+	
 	public double getPhase(){
 		return (1+sunPos.dot(this.earthPos)/(sunPos.size()*this.earthPos.size()))/2;
+	}
+	
+	public double phaseOffset() {
+		Vector3 crossed = new Vector3();
+		crossed.setCross(this.earthPos, this.sunPos);
+		double k=Math.signum(crossed.dot(new Vector3(0.0, 0.0, 1.0))) * (1.0 - getPhase());
+		if(k<0) k=k+2;
+		return k/2;
 	}
 	
 	public abstract Vector3 getRelativePos(double year);

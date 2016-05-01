@@ -21,7 +21,7 @@ public class SunImage implements IPerWorldImage<Sun> {
 	public void initialize(Sun object, ICelestialCoordinate coordinate, ISkyEffect sky,
 			CelestialPeriod yearPeriod) {
 		this.mag = object.getMagnitude();
-		this.yearPeriod = yearPeriod;
+		this.yearPeriod = new CelestialPeriod("Year", yearPeriod.getPeriodLength(), object.absoluteOffset());
 		
 		this.pos = new Vector3(object.earthPos);
 		CelestialPeriod dayPeriod = coordinate.getPeriod();

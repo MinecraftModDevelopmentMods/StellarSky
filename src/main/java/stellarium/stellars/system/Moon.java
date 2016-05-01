@@ -18,6 +18,8 @@ public class Moon extends SolarObject {
 	protected double brightness;
 	
 	protected double brightnessFactor;
+	
+	private double currentOffsetAngle;
 		
 	//Moon's Ecliptic Position Vector from Ground
 	//EVector posGround = new EVector(3);
@@ -66,6 +68,7 @@ public class Moon extends SolarObject {
 		this.updateOrbE(yr);
 		this.rotation = mean_mot * yr;
 		double M = this.M0 + this.rotation;
+		this.currentOffsetAngle = M + w;
 		
 		ri.setAsRotation(1.0, 0.0, 0.0, -Spmath.Radians(I));
 		rw.setAsRotation(0.0, 0.0, 1.0, -Spmath.Radians(w));
@@ -137,6 +140,11 @@ public class Moon extends SolarObject {
 		return -this.sunPos.dot(p)/(this.sunPos.size()*p.size())*this.brightness;
 	}
 	
+	@Override
+	public double absoluteOffset() {
+		return this.currentOffsetAngle / 360.0;
+	}
+	
 	//Phase of the Moon(Update Needed)
 	@Override
 	public double getPhase(){
@@ -144,7 +152,8 @@ public class Moon extends SolarObject {
 	}
 	
 	//Time phase for moon
-	public double phase_Time(){
+	@Override
+	public double phaseOffset(){
 		Vector3 crossed = new Vector3();
 		crossed.setCross(this.earthPos, this.sunPos);
 		double k=Math.signum(crossed.dot(Pole)) * (1.0 - getPhase());

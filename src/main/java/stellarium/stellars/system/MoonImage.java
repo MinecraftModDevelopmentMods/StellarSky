@@ -26,9 +26,9 @@ public class MoonImage implements IPerWorldImage<Moon> {
 		
 		double period = object.getRevolutionPeriod();
 		
-		this.siderealPeriod = new CelestialPeriod("Sidereal Lunar Month", period, object.M0_0 / 360.0);
+		this.siderealPeriod = new CelestialPeriod("Sidereal Lunar Month", period, object.absoluteOffset());
 		this.synodicPeriod = new CelestialPeriod("Lunar Month", 1/(1/period - 1/yearPeriod.getPeriodLength()),
-				object.phase_Time());
+				object.phaseOffset());
 		
 		CelestialPeriod dayPeriod = coordinate.getPeriod();
 		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / synodicPeriod.getPeriodLength());
