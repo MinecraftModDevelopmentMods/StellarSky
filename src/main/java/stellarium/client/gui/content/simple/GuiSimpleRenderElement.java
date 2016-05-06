@@ -1,17 +1,20 @@
 package stellarium.client.gui.content.simple;
 
-import stellarium.client.EnumKey;
-import stellarium.client.gui.content.IElementController;
-import stellarium.client.gui.content.IGuiBasicElement;
+import stellarium.client.PressedKey;
+import stellarium.client.gui.content.GuiPositionHierarchy;
+import stellarium.client.gui.content.IGuiElementType;
+import stellarium.client.gui.content.IGuiPosition;
 import stellarium.client.gui.content.IRectangleBound;
 import stellarium.client.gui.content.IRenderer;
 
-public class GuiSimpleRenderElement implements IGuiBasicElement<ISimpleController> {
+public class GuiSimpleRenderElement implements IGuiElementType<ISimpleRenderController> {
 
-	private ISimpleController controller;
+	private IGuiPosition position;
+	private ISimpleRenderController controller;
 	
 	@Override
-	public void initialize(ISimpleController controller) {
+	public void initialize(GuiPositionHierarchy positions, ISimpleRenderController controller) {
+		this.position = positions.getPosition();
 		this.controller = controller;
 	}
 
@@ -25,19 +28,21 @@ public class GuiSimpleRenderElement implements IGuiBasicElement<ISimpleControlle
 	public void mouseMovedOrUp(float mouseX, float mouseY, int eventButton) { }
 
 	@Override
-	public void keyTyped(EnumKey key, char eventChar) { }
+	public void keyTyped(PressedKey key) { }
 
 	@Override
 	public void checkMousePosition(float mouseX, float mouseY) { }
 	
 	@Override
 	public void render(IRenderer renderer) {
-		IRectangleBound clipBound = controller.getClipBound();
+		IRectangleBound clipBound = position.getClipBound();
 		if(clipBound.isEmpty())
 			return;
 		
+		renderer.startRender();
 		String model = controller.setupRenderer(renderer);
-		renderer.render(model, controller.getElementBound(), clipBound);
+		renderer.render(model, position.getElementBound(), clipBound);
+		renderer.endRender();
 	}
 
 }

@@ -40,8 +40,9 @@ public class StellarClientFMLHook {
 		else {
 			for(EnumKey key : EnumKey.values()) {
 				if(key.isPressed()) {
+					int eventKey = Keyboard.getEventKey();
 					char eventChar = Keyboard.getEventCharacter();
-					overlay.keyTyped(key, eventChar);
+					overlay.keyTyped(new PressedKey(key, eventKey, eventChar));
 				}
 			}
 		}

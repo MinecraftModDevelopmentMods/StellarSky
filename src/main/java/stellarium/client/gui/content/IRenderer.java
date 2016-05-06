@@ -9,8 +9,17 @@ public interface IRenderer {
 	 * */
 	public void bindModel(IRenderModel model);
 
+	public void pushMatrixTillNextRender();
 	public void translate(float posX, float posY);
+
+	/**
+	 * Rotation around the center.
+	 * */
 	public void rotate(float angle, float x, float y, float z);
+	
+	/**
+	 * Scale around the center.
+	 * */
 	public void scale(float scaleX, float scaleY);
 	public void color(float red, float green, float blue, float alpha);
 

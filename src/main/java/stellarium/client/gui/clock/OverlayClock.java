@@ -1,5 +1,7 @@
 package stellarium.client.gui.clock;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -8,15 +10,18 @@ import stellarapi.api.CelestialPeriod;
 import stellarapi.api.PeriodHelper;
 import stellarapi.api.lib.math.Spmath;
 import stellarium.StellarSky;
-import stellarium.StellarSkyResources;
 import stellarium.api.IHourProvider;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
-import stellarium.client.EnumKey;
+import stellarium.client.PressedKey;
 import stellarium.client.gui.EnumOverlayMode;
 import stellarium.client.gui.IGuiOverlay;
-import stellarium.client.gui.content.button.GuiButtonColorable;
-import stellarium.client.gui.content.button.GuiButtonTextured;
+import stellarium.client.gui.content.GuiContent;
+import stellarium.client.gui.content.GuiRenderer;
+import stellarium.client.gui.content.IGuiPosition;
+import stellarium.client.gui.content.IRectangleBound;
+import stellarium.client.gui.content.RectangleBound;
+import stellarium.client.gui.content.util.GuiUtil;
 
 public class OverlayClock implements IGuiOverlay<ClockSettings> {
 	
@@ -30,10 +35,9 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 	private EnumOverlayMode currentMode = EnumOverlayMode.OVERLAY;
 
 	private ClockSettings settings;
-	private GuiButtonTextured buttonScroll;
-	private GuiButtonColorable buttonFix, buttonToggle;
-	
-	private boolean scroll = false;
+		
+	private GuiContent content;
+	private OverlayClockControllers controllers;
 	
 	@Override
 	public int getWidth() {
@@ -42,7 +46,7 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 
 	@Override
 	public int getHeight() {
-		return currentMode.focused()? HEIGHT + ADDBTN_HEIGHT + (this.scroll? ADDITIONAL_HEIGHT : 0) : HEIGHT;
+		return HEIGHT;
 	}
 	
 	@Override
@@ -50,16 +54,40 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		this.mc = mc;
 		this.settings = settings;
 		
-		this.buttonScroll = new GuiButtonTextured(0, 0, HEIGHT, 160, ADDBTN_HEIGHT, StellarSkyResources.unroll);
-		this.buttonFix = new GuiButtonColorable(1, 0, HEIGHT + ADDBTN_HEIGHT, 80, ADDITIONAL_HEIGHT, settings.isFixed? "Unfix" : "Fix");
-		this.buttonToggle = new GuiButtonColorable(2, 80, HEIGHT + ADDBTN_HEIGHT, 80, ADDITIONAL_HEIGHT, settings.viewMode.getName());
-		
-		buttonScroll.width = this.getWidth();
-		buttonToggle.xPosition = buttonToggle.width = buttonFix.width = this.getWidth() / 2;
-		buttonFix.xPosition = 0;
-		buttonScroll.alpha = 0.5f;
-		buttonFix.alpha = 0.5f;
-		buttonToggle.alpha = 0.5f;
+		this.controllers = new OverlayClockControllers(settings);
+		this.content = new GuiContent(new GuiRenderer(mc),
+				controllers.generateElement(this.getWidth(), ADDBTN_HEIGHT+ADDITIONAL_HEIGHT),
+				new IGuiPosition() {
+			public RectangleBound theBound;
+
+			@Override
+			public IRectangleBound getElementBound() {
+				return this.theBound;
+			}
+
+			@Override
+			public IRectangleBound getClipBound() {
+				return this.theBound;
+			}
+
+			@Override
+			public IRectangleBound getAdditionalBound(String boundName) {
+				return null;
+			}
+
+			@Override
+			public void initializeBounds() {
+				this.theBound = new RectangleBound(0.0f, getHeight(), getWidth(), ADDITIONAL_HEIGHT);
+			}
+
+			@Override
+			public void updateBounds() {
+				theBound.set(0.0f, getHeight(), getWidth(), ADDITIONAL_HEIGHT);
+			}
+
+			@Override
+			public void updateAnimation(float partialTicks) { }
+		});
 	}
 
 	@Override
@@ -80,12 +108,18 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 			if(!settings.isFixed && mode.displayed())
 				this.animationTick = ANIMATION_DURATION;
 			else this.animationTick = 0;
+			
+			if(!mode.displayed())
+				controllers.setRollWithForce(true);
 		}
+		
 		this.currentMode = mode;
 	}
 
 	@Override
 	public void updateOverlay() {
+		content.updateTick();
+
 		if(settings.isFixed) {
 			this.animationTick = 0;
 			return;
@@ -102,29 +136,9 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		if(!currentMode.focused())
 			return false;
 		
-		if(buttonScroll.mousePressed(mc, mouseX, mouseY))
-		{
-			this.scroll = !this.scroll;
-			buttonScroll.displayString = this.scroll? "Roll" : "Unroll";
-		}
+		content.mouseClicked(mouseX, mouseY, eventButton);
 		
-		if(this.scroll && buttonFix.mousePressed(mc, mouseX, mouseY))
-		{
-			settings.isFixed = !settings.isFixed;
-			buttonFix.displayString = settings.isFixed? "Unfix" : "Fix";
-			return true;
-		}
-
-		if(this.scroll && buttonToggle.mousePressed(mc, mouseX, mouseY)) {
-			settings.viewMode = settings.viewMode.nextMode();
-			buttonToggle.displayString = settings.viewMode.getName();
-			buttonScroll.width = this.getWidth();
-			buttonToggle.xPosition = buttonToggle.width = buttonFix.width = this.getWidth() / 2;
-			buttonFix.xPosition = 0;
-			return true;
-		}
-		
-		return false;
+		return controllers.checkDirty();
 	}
 
 	@Override
@@ -132,17 +146,18 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		if(!currentMode.focused())
 			return false;
 		
-		if(this.scroll) {
-			buttonFix.mouseReleased(mouseX, mouseY);
-			buttonToggle.mouseReleased(mouseX, mouseY);
-		}
+		content.mouseMovedOrUp(mouseX, mouseY, eventButton);
 
-		return false;
+		return controllers.checkDirty();
 	}
 
 	@Override
-	public boolean keyTyped(EnumKey key, char eventChar) {
-		return false;
+	public boolean keyTyped(PressedKey key) {
+		if(!currentMode.focused())
+			return false;
+		
+		content.keyTyped(key);
+		return controllers.checkDirty();
 	}
 
 	@Override
@@ -152,19 +167,15 @@ public class OverlayClock implements IGuiOverlay<ClockSettings> {
 		if(periodDay == null || periodYear == null)
 			return;
 		
-		if(currentMode.focused()) {
-			buttonScroll.drawButton(mc, mouseX, mouseY);
-			if(this.scroll) {
-				buttonFix.drawButton(mc, mouseX, mouseY);
-				buttonToggle.drawButton(mc, mouseX, mouseY);
-			}
-		}
+		if(currentMode.focused())
+			content.render(mouseX, mouseY, partialTicks);
 		
 		ClientSettings setting = StellarSky.proxy.getClientSettings();
 
 		FontRenderer fontRenderer = mc.fontRenderer;
 		
-		Gui.drawRect(0, 0, this.getWidth(), HEIGHT, 0x77333333);
+		GL11.glColor4f(0.3f, 0.3f, 0.3f, settings.alpha);
+		GuiUtil.drawRectSimple(0, 0, this.getWidth(), HEIGHT);
 		
 		long currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
 		

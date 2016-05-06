@@ -13,11 +13,22 @@ public class RectangleBound implements IRectangleBound {
 		this.height = height;
 	}
 	
+	public RectangleBound(IRectangleBound bound) {
+		this.set(bound);
+	}
+
 	public void set(float posX, float posY, float width, float height) {
 		this.posX = posX;
 		this.posY = posY;
 		this.width = width;
 		this.height = height;
+	}
+	
+	public void set(IRectangleBound bound) {
+		this.posX = bound.getLeftX();
+		this.posY = bound.getUpY();
+		this.width = bound.getWidth();
+		this.height = bound.getHeight();
 	}
 	
 	public void setAsIntersection(IRectangleBound outer) {
@@ -27,6 +38,13 @@ public class RectangleBound implements IRectangleBound {
 		this.posY = Math.max(this.posY, outer.getUpY());
 		this.width = Math.min(rightX, outer.getRightX()) - this.posX;
 		this.height = Math.min(downY, outer.getDownY()) - this.posY;
+	}
+	
+	public void extend(float leftX, float upY, float rightX, float downY) {
+		this.posX -= leftX;
+		this.posY -= upY;
+		this.width += (leftX + rightX);
+		this.height += (upY + downY);
 	}
 
 	@Override
@@ -77,6 +95,16 @@ public class RectangleBound implements IRectangleBound {
 	@Override
 	public float getRatioY(float y) {
 		return MathHelper.clamp_float((y - this.posY) / this.height, 0.0f, 1.0f);
+	}
+
+	@Override
+	public float getMainX(float ratioX) {
+		return this.posX + ratioX * this.width;
+	}
+
+	@Override
+	public float getMainY(float ratioY) {
+		return this.posY + ratioY * this.height;
 	}
 
 }

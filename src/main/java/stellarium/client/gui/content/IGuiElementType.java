@@ -1,18 +1,20 @@
 package stellarium.client.gui.content;
 
-import net.minecraft.client.Minecraft;
-import stellarium.client.EnumKey;
+import stellarium.client.PressedKey;
 
-public interface IGuiBasicElement<C extends IElementController> {
+public interface IGuiElementType<C extends IElementController> {
 
-	public void initialize(C controller);
+	/**
+	 * Initialize with certain position and the controller for the element.
+	 * */
+	public void initialize(GuiPositionHierarchy positions, C controller);
 
 	public void updateElement();
 
 	public void mouseClicked(float mouseX, float mouseY, int eventButton);
 	public void mouseMovedOrUp(float mouseX, float mouseY, int eventButton);
 
-	public void keyTyped(EnumKey key, char eventChar);
+	public void keyTyped(PressedKey key);
 	
 	/**
 	 * Called before rendering passes to check mouse position.

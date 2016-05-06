@@ -42,4 +42,31 @@ public class StellarSkyResources {
 	
 	public static final ResourceLocation unroll =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/unroll.png");
+
+	public static final ResourceLocation clicked = 
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/clicked.png");
+	
+	public static final ResourceLocation fix = 
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/fix.png");
+	
+	public static final ResourceLocation hhmm = 
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/hhmm.png");
+	
+	public static final ResourceLocation tick = 
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/tick.png");
+
+	public static final ResourceLocation round =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/round.png");
+	
+	public static final ResourceLocation parallel =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/parallel.png");
+	
+	public static final ResourceLocation scroll =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/scroll.png");
+	
+	public static final ResourceLocation scrollbtn =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/scrollbtn.png");
+	
+	public static final ResourceLocation scrollregion =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/scrollregion.png");
 }

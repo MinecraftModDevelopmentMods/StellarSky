@@ -1,11 +1,10 @@
 package stellarium.client.gui.pos;
 
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import stellarium.client.EnumKey;
+import stellarium.client.PressedKey;
 import stellarium.client.gui.EnumOverlayMode;
 import stellarium.client.gui.IRawHandler;
 import stellarium.client.gui.OverlayContainer;
@@ -63,7 +62,7 @@ public class OverlayPosHandler implements IRawHandler<OverlayPosCfg> {
 	}
 
 	@Override
-	public boolean keyTyped(EnumKey key, char eventChar) {
+	public boolean keyTyped(PressedKey key) {
 		return false;
 	}
 

@@ -1,7 +1,7 @@
 package stellarium.client.gui;
 
 import net.minecraft.client.Minecraft;
-import stellarium.client.EnumKey;
+import stellarium.client.PressedKey;
 
 public interface IRawHandler<Element extends IGuiOverlay> {
 	
@@ -23,7 +23,7 @@ public interface IRawHandler<Element extends IGuiOverlay> {
 	 * Return true to update settings.
 	 * Checked after element.
 	 * */
-	public boolean keyTyped(EnumKey key, char eventChar);
+	public boolean keyTyped(PressedKey key);
 
 	public void render(int mouseX, int mouseY, float partialTicks);
 

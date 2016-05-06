@@ -6,7 +6,7 @@ import stellarium.client.gui.content.IRenderer;
 public interface IButtonController extends IElementController {
 
 	public boolean canClick(int eventButton);
-		
+	
 	public void onClicked(int eventButton);
 	public void onClickEnded(int eventButton);
 	

@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarium.client.EnumKey;
+import stellarium.client.PressedKey;
 import stellarium.client.gui.clock.OverlayClockType;
 import stellarium.client.gui.pos.ElementPos;
 import stellarium.client.gui.pos.EnumHorizontalPos;
@@ -177,15 +178,15 @@ public class OverlayContainer {
 			guiConfig.syncFromFields();
 	}
 	
-	public void keyTyped(EnumKey key, char eventChar) {
+	public void keyTyped(PressedKey key) {
 		boolean changed = false;
 		
 		for(Delegate delegate : this.elementList)
 		{
-			changed = delegate.element.keyTyped(key, eventChar) || changed;
+			changed = delegate.element.keyTyped(key) || changed;
 			
 			if(delegate.handler != null)
-				changed = delegate.handler.keyTyped(key, eventChar) || changed;
+				changed = delegate.handler.keyTyped(key) || changed;
 		}
 		
 		if(changed)

@@ -1,9 +1,7 @@
 package stellarium.client.gui;
 
 import net.minecraft.client.Minecraft;
-import stellarium.client.EnumKey;
-import stellarium.client.gui.pos.EnumHorizontalPos;
-import stellarium.client.gui.pos.EnumVerticalPos;
+import stellarium.client.PressedKey;
 
 public interface IGuiOverlay<Settings extends PerOverlaySettings> {
 	
@@ -26,7 +24,7 @@ public interface IGuiOverlay<Settings extends PerOverlaySettings> {
 	public boolean mouseMovedOrUp(int mouseX, int mouseY, int eventButton);
 	
 	/**Return true to update settings*/
-	public boolean keyTyped(EnumKey key, char eventChar);
+	public boolean keyTyped(PressedKey key);
 	
 	public void render(int mouseX, int mouseY, float partialTicks);
 	

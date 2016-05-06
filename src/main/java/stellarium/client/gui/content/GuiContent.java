@@ -1,49 +1,42 @@
 package stellarium.client.gui.content;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
-import stellarium.client.EnumKey;
+import stellarium.client.PressedKey;
 
 public class GuiContent {
-	
-	/**
-	 * Basic GUI elements collected by depth-first traversal.
-	 * */
-	private List<IGuiBasicElement> elements = Lists.newArrayList();
 	private IRenderer renderer;
+	private GuiElement element;
+	private GuiPositionHierarchy positions;
 	
-	public GuiContent(IRenderer renderer) {
+	public GuiContent(IRenderer renderer, GuiElement element, IGuiPosition position) {
 		this.renderer = renderer;
+		this.element = element;
+		this.positions = new GuiPositionHierarchy(position);
+		
+		element.initialize(this.positions);
+		positions.initializeBounds();
 	}
 	
 	public void updateTick() {
-		for(IGuiBasicElement element : this.elements)
-			element.updateElement();
+		positions.updateBounds();
+		element.getType().updateElement();
 	}
 	
 	public void mouseClicked(float mouseX, float mouseY, int eventButton) {
-		for(IGuiBasicElement element : this.elements)
-			element.mouseClicked(mouseX, mouseY, eventButton);
+		element.getType().mouseClicked(mouseX, mouseY, eventButton);
 	}
 
 	public void mouseMovedOrUp(float mouseX, float mouseY, int eventButton) {
-		for(IGuiBasicElement element : this.elements)
-			element.mouseMovedOrUp(mouseX, mouseY, eventButton);
+		element.getType().mouseMovedOrUp(mouseX, mouseY, eventButton);
 	}
 
-	public void keyTyped(EnumKey key, char eventChar) {
-		for(IGuiBasicElement element : this.elements)
-			element.keyTyped(key, eventChar);
+	public void keyTyped(PressedKey key) {
+		element.getType().keyTyped(key);
 	}
 
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		for(IGuiBasicElement element : this.elements)
-			element.checkMousePosition(mouseX, mouseY);
-		
-		for(IGuiBasicElement element : this.elements)
-			element.render(this.renderer);
+		element.getType().checkMousePosition(mouseX, mouseY);
+		positions.updateAnimation(partialTicks);
+		element.getType().render(this.renderer);
 	}
 
 }

@@ -2,11 +2,10 @@ package stellarium.client.gui;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import stellarapi.api.lib.config.ConfigManager;
-import stellarium.client.EnumKey;
+import stellarium.client.PressedKey;
 
 public class OverlayHandler {
 	
@@ -38,7 +37,7 @@ public class OverlayHandler {
 		mc.displayGuiScreen(new GuiScreenOverlay(this.container, focusGuiKey));
 	}
 	
-	public void keyTyped(EnumKey key, char eventChar) {
-		container.keyTyped(key, eventChar);
+	public void keyTyped(PressedKey key) {
+		container.keyTyped(key);
 	}
 }

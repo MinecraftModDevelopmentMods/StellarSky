@@ -88,7 +88,7 @@ public class EcGridSettings extends PerDisplaySettings {
 
 	@Override
 	public void saveToConfig(Configuration config, String category) {
-		// TODO save to configuration; not done till now		
+		// TODO save to configuration; not done till now
 	}
 
 }

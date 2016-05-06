@@ -2,9 +2,9 @@ package stellarium.client.gui.pos;
 
 import net.minecraft.client.Minecraft;
 import stellarium.client.EnumKey;
+import stellarium.client.PressedKey;
 import stellarium.client.gui.EnumOverlayMode;
 import stellarium.client.gui.IGuiOverlay;
-import stellarium.client.gui.OverlayContainer;
 import stellarium.client.gui.PerOverlaySettings;
 import stellarium.client.gui.content.button.GuiButtonColorable;
 
@@ -86,8 +86,8 @@ public class OverlayPosCfg implements IGuiOverlay<PerOverlaySettings> {
 	}
 
 	@Override
-	public boolean keyTyped(EnumKey key, char eventChar) {
-		if(key == EnumKey.SWITCH_CUSTOMIZE_GUI)
+	public boolean keyTyped(PressedKey key) {
+		if(key.identifier == EnumKey.SWITCH_CUSTOMIZE_GUI)
 			this.markForUpdate = true;
 		
 		return false;

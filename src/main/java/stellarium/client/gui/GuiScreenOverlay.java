@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.KeyBinding;
 import stellarium.client.EnumKey;
+import stellarium.client.PressedKey;
 import stellarium.client.gui.pos.ElementPos;
 
 public class GuiScreenOverlay extends GuiScreen {
@@ -56,7 +57,8 @@ public class GuiScreenOverlay extends GuiScreen {
 		for(EnumKey key : EnumKey.values())
 			if(key.isThisKey(eventKey))
 			{
-				container.keyTyped(key, eventChar);
+				
+				container.keyTyped(new PressedKey(key, eventKey, eventChar));
 				break;
 			}
 	}
