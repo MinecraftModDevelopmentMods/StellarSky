@@ -47,6 +47,8 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		
 		EqtoEc.setAsRotation(1.0, 0.0, 0.0, -this.axialTilt);
 		EctoEq.setAsRotation(1.0, 0.0, 0.0, this.axialTilt);
+		REqtoHor.setAsRotation(1.0, 0.0, 0.0, Math.PI / 2 - this.latitude);
+		HortoREq.setAsRotation(1.0, 0.0, 0.0, this.latitude - Math.PI / 2);
 	}
 	
 	public CelestialPeriod getYearPeriod() {
@@ -58,9 +60,6 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		NEctoZTEc.setAsRotation(0.0, 0.0, 1.0, this.precession*year);
 		NEqtoREq.setAsRotation(0.0, 0.0, 1.0, -this.rot*year - this.longitude);
 		REqtoNEq.setAsRotation(0.0, 0.0, 1.0, this.rot*year + this.longitude);
-		
-		REqtoHor.setAsRotation(1.0, 0.0, 0.0, Math.PI / 2 - this.latitude);
-		HortoREq.setAsRotation(1.0, 0.0, 0.0, this.latitude - Math.PI / 2);
 		
 		Vector3 East = new Vector3(1.0, 0.0, 0.0);
 		invtransform(East);
@@ -74,20 +73,20 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		projection.setRow(0, East);
 		projection.setRow(1, North);
 		projection.setRow(2, ZenD);
-		
+
 		Vector3 EastEq = new Vector3(1.0, 0.0, 0.0);
 		invtransformEq(EastEq);
-		
+
 		Vector3 NorthEq = new Vector3(0.0, 1.0, 0.0);
 		invtransformEq(NorthEq);
-		
+
 		Vector3 ZenEq = new Vector3(0.0,0.0,1.0);
 		invtransformEq(ZenEq);
 
 		projectionEq.setRow(0, EastEq);
 		projectionEq.setRow(1, NorthEq);
 		projectionEq.setRow(2, ZenEq);
-		
+
 		//Zen.set(VOp.mult(manager.Earth.radius, ZenD));
 	}
 	

@@ -22,6 +22,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	private ConfigPropertyDouble propSunlightMultiplier;
 	private ConfigPropertyDouble propSkyDispersionRate;
 	private ConfigPropertyDouble propLightPollutionRate;
+	private ConfigPropertyDouble propMinimumSkyRenderBrightness;
 	private ConfigPropertyString propRenderType;
 	
 	public PerDimensionSettings(String dimensionName) {
@@ -39,6 +40,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	this.propSunlightMultiplier = new ConfigPropertyDouble("SunLight_Multiplier", "sunlightMultiplier", 1.0);
        	this.propSkyDispersionRate = new ConfigPropertyDouble("Sky_Dispersion_Rate", "skyDispersionRate", 1.0);
        	this.propLightPollutionRate = new ConfigPropertyDouble("Light_Pollution_Rate", "lightPollutionRate", 1.0);
+       	this.propMinimumSkyRenderBrightness = new ConfigPropertyDouble("Minimum_Sky_Render_Brightness", "minimumSkyRenderBrightness", 0.2);
        	
        	this.addConfigProperty(this.propPatchProvider);
        	this.addConfigProperty(this.propRenderType);
@@ -49,6 +51,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	this.addConfigProperty(this.propSunlightMultiplier);
        	this.addConfigProperty(this.propSkyDispersionRate);
        	this.addConfigProperty(this.propLightPollutionRate);
+       	this.addConfigProperty(this.propMinimumSkyRenderBrightness);
 	}
 
 	@Override
@@ -99,6 +102,10 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
         		+ "Only affects the sky color and visibility of stars/milky way.");
         propLightPollutionRate.setRequiresWorldRestart(true);
         propLightPollutionRate.setLanguageKey("config.property.dimension.lightpollutionrate");
+        
+        propMinimumSkyRenderBrightness.setComment("Minimum brightness of skylight which (only) affects the rendering.");
+        propMinimumSkyRenderBrightness.setRequiresWorldRestart(true);
+        propMinimumSkyRenderBrightness.setLanguageKey("config.property.dimension.minimumskybrightness");
 	}
 
 	@Override
@@ -148,6 +155,10 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	public double getLightPollutionRate() {
 		return propLightPollutionRate.getDouble();
+	}
+	
+	public double getMinimumSkyRenderBrightness() {
+		return propMinimumSkyRenderBrightness.getDouble();
 	}
 	
 	public String getSkyRendererType() {

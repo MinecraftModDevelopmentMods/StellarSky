@@ -53,29 +53,16 @@ public class StellarWorldProviderEnd extends WorldProviderEnd {
     @SideOnly(Side.CLIENT)
     public float getSunBrightness(float par1)
     {
-        float f2 = 1.0F - (celestialHelper.getSunlightFactor(EnumRGBA.Alpha, par1) * celestialHelper.getSkyTransmissionFactor(par1)-0.3f);
-
-        if (f2 < 0.0F)
-        {
-            f2 = 0.0F;
-        }
-
-        if (f2 > 1.0F)
-        {
-            f2 = 1.0F;
-        }
-
-        f2 = 1.0F - f2;
+        float f2 = (celestialHelper.getSunlightRenderBrightnessFactor(par1));
+        f2 *= celestialHelper.getSkyTransmissionFactor(par1);
         f2 = (float)((double)f2 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
         f2 = (float)((double)f2 * (1.0D - (double)(worldObj.getWeightedThunderStrength(par1) * 5.0F) / 16.0D));
-        return f2 * 0.8F + 0.2F;
+        return f2 + celestialHelper.minimumSkyRenderBrightness() * (1.0f - f2);
     }
 	
 	@Override
 	public float getSunBrightnessFactor(float par1) {
-        float f1 = 1.0F - celestialHelper.getSunlightFactor(EnumRGBA.Alpha, par1) * celestialHelper.getSkyTransmissionFactor(par1);
-        f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
-        f1 = 1.0F - f1;
+        float f1 = celestialHelper.getSunlightFactor(EnumRGBA.Alpha, par1) * celestialHelper.getSkyTransmissionFactor(par1);
         f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
         f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getWeightedThunderStrength(par1) * 5.0F) / 16.0D));
         return f1;
@@ -463,8 +450,8 @@ public class StellarWorldProviderEnd extends WorldProviderEnd {
     @SideOnly(Side.CLIENT)
     public float getStarBrightness(float par1)
     {
-        float f2 = 1.0F - (celestialHelper.getSunlightFactor(EnumRGBA.Alpha, par1)
-        		* celestialHelper.getDispersionFactor(EnumRGBA.Alpha, par1)-0.25f);
+        float f2 = 1.0F - (celestialHelper.getSunlightRenderBrightnessFactor( par1)
+        		* celestialHelper.getDispersionFactor(EnumRGBA.Alpha, par1));
 
         if (f2 < 0.0F)
         {

@@ -26,7 +26,7 @@ public class StellarAPIEventHook {
 			event.getCollections().addAll(dimManager.constructCelestials(coordinate, sky));
 			event.getEffectors(IEffectorType.Light).addAll(dimManager.getSuns());
 			event.getEffectors(IEffectorType.Tide).addAll(dimManager.getMoons());
-		} //else event.setCanceled(true);
+		} else event.setCanceled(true);
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGH)
@@ -34,7 +34,7 @@ public class StellarAPIEventHook {
 		StellarDimensionManager dimManager = StellarDimensionManager.get(event.getWorld());
 		if(dimManager != null)
 			event.setCoordinate(dimManager.getCoordinate());
-		//else event.setCanceled(true);
+		else event.setCanceled(true);
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGH)
@@ -42,6 +42,6 @@ public class StellarAPIEventHook {
 		StellarDimensionManager dimManager = StellarDimensionManager.get(event.getWorld());
 		if(dimManager != null)
 			event.setSkyEffect(dimManager.getSkySet());
-		//else event.setCanceled(true);
+		else event.setCanceled(true);
 	}
 }

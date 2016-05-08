@@ -10,6 +10,8 @@ hud.text.day=Day  #%1$s (/%2$s)
 hud.text.tick=Tick  #%1$s (/%2$s)
 hud.text.time=Time %1$s:%2$s (/%3$s:%4$s) (1 hour=%5$s min.)
 
+hud.overlay.stellarsky=Stellar Sky
+
 
 //Client Configs
 config.category.client=Client Configurations
@@ -187,6 +189,9 @@ config.property.dimension.skydispersionrate.tooltip=Relative strength of sky dis
 
 config.property.dimension.lightpollutionrate=Light Pollution Rate
 config.property.dimension.lightpollutionrate.tooltip=Relative strength of light pollution on the dimension. Only affects the sky color and visibility of stars/milky way.
+
+config.property.dimension.minimumskybrightness=Minimum Sky Brightness
+config.property.dimension.minimumskybrightness.tooltip=Minimum brightness of skylight which (only) affects the rendering.
 
 ////Dimension Resources
 config.category.dimension.perdimresource=Per Dimension Resources

@@ -10,13 +10,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.DefaultHourProvider;
 import stellarium.client.StellarClientFMLHook;
 import stellarium.client.StellarClientForgeHook;
-import stellarium.client.gui.OverlayHandler;
+import stellarium.client.overlay.StellarSkyOverlays;
+import stellarium.client.overlay.clock.OverlayClockType;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.CelestialManager;
 
@@ -28,7 +30,6 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	private ClientSettings clientSettings = new ClientSettings();
 	
 	private ConfigManager guiConfig;
-	private OverlayHandler overlay;
 	private CelestialManager celestialManager = new CelestialManager(true);
 	
 	public ClientSettings getClientSettings() {
@@ -47,20 +48,19 @@ public class ClientProxy extends CommonProxy implements IProxy {
 						StellarSkyReferences.guiSettings));
 		
 		MinecraftForge.EVENT_BUS.register(new StellarClientForgeHook());
-		
-		MinecraftForge.EVENT_BUS.register(this.overlay = new OverlayHandler(this.guiConfig));
-		
-		FMLCommonHandler.instance().bus().register(new StellarClientFMLHook(this.overlay));
+				
+		FMLCommonHandler.instance().bus().register(new StellarClientFMLHook());
 		
 		StellarSkyAPI.registerHourProvider(new DefaultHourProvider(this.clientSettings));
+		
+		OverlayRegistry.registerOverlaySet("stellarsky", new StellarSkyOverlays());
+		OverlayRegistry.registerOverlay("clock", new OverlayClockType(), this.guiConfig);
 	}
 
 	@Override
 	public void load(FMLInitializationEvent event) throws IOException {
 		super.load(event);
 		guiConfig.syncFromFile();
-
-		overlay.initialize(Minecraft.getMinecraft());
 		
     	celestialManager.initializeClient(this.clientSettings);
 	}

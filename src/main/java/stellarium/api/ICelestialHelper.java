@@ -1,5 +1,6 @@
 package stellarium.api;
 
+import net.minecraft.util.MathHelper;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.optics.EnumRGBA;
 import stellarapi.api.optics.Wavelength;
@@ -27,6 +28,12 @@ public interface ICelestialHelper {
 	 * @param partialTicks the partial tick
 	 * */
 	public float getSunlightFactor(EnumRGBA color, float partialTicks);
+	
+	/**
+	 * Gets current sunlight factor which affects rendering of the sky.
+	 * @param partialTicks the partial tick
+	 * */
+	public float getSunlightRenderBrightnessFactor(float partialTicks);
 
 	/**
 	 * Gets current sky transmission factor.
@@ -62,5 +69,8 @@ public interface ICelestialHelper {
 	 * Gets current moon phase factor. <p>
 	 * */
 	public float getCurrentMoonPhaseFactor();
+	
+	
+	public float minimumSkyRenderBrightness();
 
 }

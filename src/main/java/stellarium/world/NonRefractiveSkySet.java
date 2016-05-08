@@ -11,7 +11,7 @@ import stellarium.util.math.StellarMath;
 public class NonRefractiveSkySet implements IStellarSkySet {
 	
 	private boolean hideObjectsUnderHorizon;
-	private float lightPollutionFactor, dispersionFactor;
+	private float lightPollutionFactor, dispersionFactor, minimumSkyRenderBrightness;
 	
 	private WaveIntensive interpolation;
 	
@@ -19,6 +19,7 @@ public class NonRefractiveSkySet implements IStellarSkySet {
 		this.hideObjectsUnderHorizon = settings.hideObjectsUnderHorizon();
 		this.dispersionFactor = (float) settings.getSkyDispersionRate();
 		this.lightPollutionFactor = (float) settings.getLightPollutionRate();
+		this.minimumSkyRenderBrightness = (float) settings.getMinimumSkyRenderBrightness();
 		
 		this.interpolation = new WaveIntensive(
 				ImmutableMap.of(Wavelength.V, StellarMath.MagToLumWithoutSize(Optics.ext_coeff_V),
@@ -66,6 +67,11 @@ public class NonRefractiveSkySet implements IStellarSkySet {
 	@Override
 	public double getSeeing(Wavelength wavelength) {
 		return 0.02;
+	}
+
+	@Override
+	public float minimumSkyRenderBrightness() {
+		return this.minimumSkyRenderBrightness;
 	}
 
 }
