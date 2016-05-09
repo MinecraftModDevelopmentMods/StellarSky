@@ -2,7 +2,6 @@ package stellarium.stellars.star;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 import com.google.common.base.Predicate;
 
@@ -13,9 +12,8 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.render.StellarRenderingRegistry;
-import stellarium.stellars.layer.StellarObject;
-import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.layer.IStellarLayerType;
+import stellarium.stellars.layer.StellarObjectContainer;
 
 public abstract class LayerBgStar<ClientConfig extends IConfigHandler, CommonConfig extends INBTConfig> 
 implements IStellarLayerType<BgStar, ClientConfig, CommonConfig> {

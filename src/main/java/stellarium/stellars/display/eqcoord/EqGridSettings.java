@@ -4,13 +4,9 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import stellarium.render.ICelestialObjectRenderer;
 import stellarium.stellars.display.PerDisplaySettings;
-import stellarium.stellars.display.IDisplayRenderCache;
 
 public class EqGridSettings extends PerDisplaySettings {
 

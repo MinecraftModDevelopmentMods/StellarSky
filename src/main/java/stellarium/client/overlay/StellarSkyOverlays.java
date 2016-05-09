@@ -2,7 +2,6 @@ package stellarium.client.overlay;
 
 import stellarapi.api.gui.overlay.IOverlaySetType;
 import stellarapi.api.gui.overlay.IRawOverlayElement;
-import stellarium.StellarSky;
 import stellarium.StellarSkyReferences;
 
 public class StellarSkyOverlays implements IOverlaySetType {

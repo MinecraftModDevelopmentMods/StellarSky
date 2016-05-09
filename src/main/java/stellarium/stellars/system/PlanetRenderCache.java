@@ -4,13 +4,11 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EnumRGBA;
-import stellarapi.api.optics.FilterHelper;
-import stellarapi.api.optics.Wavelength;
+import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
-import stellarium.world.IStellarSkySet;
 
 public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 	
@@ -19,7 +17,7 @@ public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 	protected float appMag;
 	protected float size;
 	protected float multiplier;
-	protected double[] color;
+	protected double[] color = new double[4];
 	
 	@Override
 	public void initialize(ClientSettings settings, IConfigHandler config, Planet planet) { }
@@ -46,7 +44,9 @@ public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 		this.size = (float) (info.getResolution(EnumRGBA.Alpha) / 0.3);
 		this.multiplier = (float)(info.lgp / (this.size * this.size * info.mp * info.mp));
 		this.size *= 0.6f;
-		this.color = FilterHelper.getFilteredRGBBounded(info.filter, new double[] {1.0, 1.0, 1.0});
+		System.arraycopy(
+				EyeDetector.getInstance().process(this.multiplier, info.filter, new double[] {1.0, 1.0, 1.0, 0.1}),
+				0, this.color, 0, color.length);
 	}
 
 	@Override

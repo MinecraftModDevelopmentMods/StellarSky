@@ -1,13 +1,8 @@
 package stellarium.stellars.display.eccoord;
 
-import stellarapi.api.ICelestialCoordinate;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
 import stellarium.client.ClientSettings;
-import stellarium.stellars.display.DisplayOverallSettings;
 import stellarium.stellars.display.IDisplayRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.util.math.VectorHelper;

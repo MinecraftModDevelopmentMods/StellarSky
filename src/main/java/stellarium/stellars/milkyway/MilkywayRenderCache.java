@@ -1,13 +1,9 @@
 package stellarium.stellars.milkyway;
 
-import stellarapi.api.ICelestialCoordinate;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.FilterHelper;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
+import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
@@ -25,8 +21,7 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 	
 	protected Vector3[][] milkywayvec = null;
 	protected int latn, longn;
-	protected float brightness;
-	protected double[] color;
+	protected double[] color = new double[4];
 
 	@Override
 	public void initialize(ClientSettings settings, MilkywaySettings specificSettings, Milkyway dummy) {
@@ -53,8 +48,10 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 			}
 		}
 		
-		this.brightness = (float) (specificSettings.milkywayBrightness * info.lgp / (info.mp * info.mp));
-		this.color = FilterHelper.getFilteredRGBBounded(info.filter, new double[] {1.0, 1.0, 1.0});
+		double multiplier = info.lgp / (info.mp * info.mp);
+		double[] result = EyeDetector.getInstance().process(multiplier, info.filter, new double[] {1.0, 1.0, 1.0, specificSettings.milkywayBrightness*0.0002});
+		System.arraycopy(result, 0, this.color, 0, color.length);
+		color[3]/=0.0002;
 	}
 
 	@Override

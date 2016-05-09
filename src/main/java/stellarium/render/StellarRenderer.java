@@ -5,11 +5,10 @@ import java.util.List;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import stellarapi.api.lib.config.IConfigHandler;
+import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarLayerRegistry;
 import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.layer.StellarObjectContainer;
-import stellarium.stellars.layer.IStellarLayerType;
-import stellarium.stellars.layer.IRenderCache;
 
 @SideOnly(Side.CLIENT)
 public class StellarRenderer {

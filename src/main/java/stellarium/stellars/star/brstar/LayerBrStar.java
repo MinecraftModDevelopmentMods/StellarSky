@@ -104,7 +104,8 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 				continue;
 			
 			String name = new String(star_value).substring(4, 14);
-						
+			int saoNumber = StellarMath.btoi(star_value, 31, 6);
+			
 			double mag;
 			
 			double V=StellarMath.sgnize(star_value[102], StellarMath.btoD(star_value, 103, 4));
@@ -147,7 +148,7 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 			
 			star_value=null;
 			
-	    	stars.add(new BgStar(name, mag, B_V, pos));
+	    	stars.add(new BgStar(name, saoNumber, mag, B_V, pos));
 	    }
 	    
 	    str=null;

@@ -1,7 +1,5 @@
 package stellarium.stellars.layer;
 
-import stellarapi.api.celestials.ICelestialObject;
-
 public abstract class StellarObject {
 	public abstract String getID();
 	

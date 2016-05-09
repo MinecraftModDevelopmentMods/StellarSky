@@ -1,21 +1,15 @@
 package stellarium.client;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import stellarium.StellarSky;
-import stellarium.api.IHourProvider;
-import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.stellars.StellarManager;
-import stellarium.world.StellarDimensionManager;
 
 public class StellarClientForgeHook {
 	

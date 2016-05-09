@@ -3,7 +3,6 @@ package stellarium.stellars.display.horcoord;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
-import stellarium.stellars.display.DisplayOverallSettings;
 import stellarium.stellars.display.IDisplayRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.util.math.VectorHelper;

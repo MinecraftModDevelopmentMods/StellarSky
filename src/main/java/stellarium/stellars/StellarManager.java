@@ -20,8 +20,7 @@ public final class StellarManager extends WorldSavedData {
 		
 	private CommonSettings settings;
 	private CelestialManager celestialManager;
-	private boolean locked = false;
-	private boolean setup = false;
+	private boolean locked = false, setup = false;
 	
 	public StellarManager(String id) {
 		super(id);

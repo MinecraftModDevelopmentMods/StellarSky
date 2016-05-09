@@ -3,7 +3,6 @@ package stellarium;
 import net.minecraft.util.ResourceLocation;
 import stellarapi.api.perdimres.PerDimensionResource;
 import stellarapi.feature.perdimres.PerDimensionResourceRegistry;
-import stellarium.api.StellarSkyAPI;
 
 public class StellarSkyResources {
 	

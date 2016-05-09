@@ -21,12 +21,13 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 	private ClientSettings settings;
 	private StellarRenderer renderer;
 	private boolean updated = false;
+	private CelestialManager celManager;
 	
-	public SkyRenderCelestial() {
+	public SkyRenderCelestial(StellarManager manager) {
 		this.settings = StellarSky.proxy.getClientSettings();
 		this.renderer = new StellarRenderer();
+		this.celManager = manager.getCelestialManager();
 		
-		CelestialManager celManager = StellarSky.proxy.getClientCelestialManager();
 		renderer.refreshRenderer();
 		settings.checkDirty();
 		celManager.reloadClientSettings(this.settings);
@@ -36,18 +37,16 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 	public void renderCelestial(Minecraft mc, float[] skycolor, float weathereff, float partialTicks) {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		
-		CelestialManager manager = StellarSky.proxy.getClientCelestialManager();
-
 		if(settings.checkDirty())
 		{
-			manager.reloadClientSettings(this.settings);
+			celManager.reloadClientSettings(this.settings);
 			this.updated = false;
 		}
 		
 		if(!this.updated)
 			this.onSettingsUpdated(mc);
 		
-		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks), manager.getLayers());
+		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks), celManager.getLayers());
 	}
 	
 	private void onSettingsUpdated(Minecraft mc) {

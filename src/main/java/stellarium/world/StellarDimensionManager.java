@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
-import stellarapi.api.StellarAPIReference;
 import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarium.StellarSky;

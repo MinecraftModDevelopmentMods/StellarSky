@@ -1,11 +1,7 @@
 package stellarium.render;
 
-import com.google.common.collect.ImmutableMap;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import stellarapi.api.optics.WaveExtensive;
-import stellarapi.api.optics.Wavelength;
 
 public class StellarRenderInfo {
 	public final Minecraft mc;

@@ -2,10 +2,7 @@ package stellarium.stellars.display.eccoord;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import stellarium.render.ICelestialObjectRenderer;
-import stellarium.stellars.display.PerDisplaySettings;
 import stellarium.stellars.display.IDisplayElementType;
-import stellarium.stellars.display.IDisplayRenderCache;
 import stellarium.stellars.display.IDisplayRenderer;
 
 public class EcGridType implements IDisplayElementType<EcGridSettings, EcGridCache> {

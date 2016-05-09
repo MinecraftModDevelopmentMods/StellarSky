@@ -11,7 +11,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
 import cpw.mods.fml.relauncher.Side;
@@ -22,11 +21,7 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.render.StellarRenderingRegistry;
-import stellarium.stellars.display.eccoord.EcGridType;
-import stellarium.stellars.display.eqcoord.EqGridType;
-import stellarium.stellars.display.horcoord.HorGridType;
 import stellarium.stellars.layer.IPerWorldImage;
-import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;
 

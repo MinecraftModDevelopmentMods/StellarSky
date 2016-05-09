@@ -1,9 +1,6 @@
 package stellarium.api;
 
-import net.minecraft.util.MathHelper;
-import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.optics.EnumRGBA;
-import stellarapi.api.optics.Wavelength;
 
 public interface ICelestialHelper {
 	

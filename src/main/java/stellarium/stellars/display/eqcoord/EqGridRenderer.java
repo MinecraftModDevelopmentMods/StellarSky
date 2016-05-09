@@ -4,11 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import stellarapi.api.lib.math.Spmath;
-import stellarium.StellarSkyResources;
-import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
-import stellarium.stellars.Optics;
 import stellarium.stellars.display.IDisplayRenderer;
 
 @SideOnly(Side.CLIENT)

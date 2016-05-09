@@ -1,7 +1,5 @@
 package stellarium.stellars.display;
 
-import java.util.List;
-
 import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.SimpleHierarchicalConfig;
 

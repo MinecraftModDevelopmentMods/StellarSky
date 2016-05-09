@@ -2,7 +2,9 @@ package stellarium.stellars.layer;
 
 import java.util.List;
 
+import com.google.common.base.Function;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import stellarapi.api.ICelestialCoordinate;
@@ -15,8 +17,10 @@ import stellarium.common.CommonSettings;
 
 public class CelestialManager {
 
-	private boolean isRemote;
+	private boolean isRemote, commonInitialized;
 	private List<StellarObjectContainer> layers = Lists.newArrayList();
+	
+	private CelestialManager() { }
 	
 	public CelestialManager(boolean isRemote) {
 		this.isRemote = isRemote;
@@ -59,6 +63,7 @@ public class CelestialManager {
 			Throwables.propagate(exception);
 		}
     	StellarSky.logger.info("Successfully initialized Celestial Layers with Common Settings!");
+    	this.commonInitialized = true;
 	}
 	
 	public void reloadClientSettings(ClientSettings settings) {
@@ -86,6 +91,26 @@ public class CelestialManager {
 			layer.updateClient(settings, layerName != null? settings.getSubConfig(layerName) : null,
 					new StellarCacheInfo(coordinate, sky, scope, filter));
 		}
+	}
+	
+
+	public CelestialManager copy() {
+		CelestialManager copied = new CelestialManager();
+		copied.isRemote = this.isRemote;
+		copied.layers = Lists.newArrayList(
+				Iterables.transform(this.layers,
+						new Function<StellarObjectContainer, StellarObjectContainer>() {
+							@Override
+							public StellarObjectContainer apply(StellarObjectContainer input) {
+								return input.copy();
+							}
+				}));
+		
+		return copied;
+	}
+	
+	public boolean commonInitialized() {
+		return this.commonInitialized;
 	}
 
 }

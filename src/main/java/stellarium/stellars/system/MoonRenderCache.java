@@ -1,18 +1,13 @@
 package stellarium.stellars.system;
 
-import stellarapi.api.ICelestialCoordinate;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EnumRGBA;
-import stellarapi.api.optics.FilterHelper;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
+import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
-import stellarium.stellars.Optics;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
-import stellarium.world.IStellarSkySet;
+import stellarium.util.math.VectorHelper;
 
 public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSettings> {
 	
@@ -25,24 +20,24 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 	protected Vector3 buf = new Vector3();
 	protected double size, difactor, appMag;
 	protected float multiplier;
-	protected double[] color;
+	protected double[] color = new double[4];
 
 	@Override
 	public void initialize(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon moon) {
 		this.appCoord = new SpCoord();
 		this.latn = specificSettings.imgFrac;
 		this.longn = 2*specificSettings.imgFrac;
-		this.moonPos = new Vector3[longn][latn+1];
+		this.moonPos = VectorHelper.createAndInitialize(longn, latn+1);
 		this.moonilum = new float[longn][latn+1];
-		this.moonnormal = new Vector3[longn][latn+1];
+		this.moonnormal = VectorHelper.createAndInitialize(longn, latn+1);
 		this.cache = new SpCoord();
 	}
 
 	@Override
 	public void updateCache(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon object, StellarCacheInfo info) {
-		Vector3 ref = new Vector3(object.earthPos);
-		info.projectionToGround.transform(ref);
-		appCoord.setWithVec(ref);
+		buf.set(object.earthPos);
+		info.projectionToGround.transform(this.buf);
+		appCoord.setWithVec(this.buf);
 		double airmass = info.calculateAirmass(this.appCoord);
 		this.appMag = object.currentMag + airmass * info.getExtinctionRate(EnumRGBA.Alpha);
 		info.applyAtmRefraction(this.appCoord);
@@ -60,14 +55,15 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 			for(latc=0; latc<=latn; latc++){
 				buf.set(object.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0));
 				moonilum[longc][latc]=(float) (object.illumination(buf) * this.difactor * 1.5);
-				moonnormal[longc][latc] = new Vector3(buf);
+				moonnormal[longc][latc].set(object.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0));
+				moonnormal[longc][latc].scale(-10000.0);
 				buf.set(object.posLocalG(buf));
 				info.projectionToGround.transform(buf);
 
 				cache.setWithVec(buf);
 				info.applyAtmRefraction(this.cache);
 
-				moonPos[longc][latc] = cache.getVec();
+				moonPos[longc][latc].set(cache.getVec());
 				moonPos[longc][latc].scale(98.0);
 
 				if(cache.y < 0 && info.hideObjectsUnderHorizon)
@@ -76,7 +72,10 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 		}
 		
 		this.multiplier = (float)(info.lgp / (info.mp*info.mp));
-		this.color = FilterHelper.getFilteredRGBBounded(info.filter, new double[] {1.0, 1.0, 1.0});
+		System.arraycopy(
+				EyeDetector.getInstance().process(this.multiplier, info.filter, new double[] {1.0, 1.0, 1.0, object.brightness}),
+				0, this.color, 0, color.length);
+		color[3] /= object.brightness;
 	}
 
 	@Override

@@ -3,12 +3,9 @@ package stellarium.stellars.system;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
 import cpw.mods.fml.relauncher.Side;
@@ -18,9 +15,9 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
 import stellarium.render.StellarRenderingRegistry;
-import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.IStellarLayerType;
+import stellarium.stellars.layer.StellarObjectContainer;
 
 public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSystemClientSettings, SolarSystemSettings> {
 	

@@ -17,18 +17,18 @@ import stellarapi.api.lib.config.INBTConfig;
 import stellarium.client.ClientSettings;
 
 public class StellarObjectContainer<Obj extends StellarObject, ClientConfig extends IConfigHandler> {
-	
+
 	private boolean isRemote;
 	private IStellarLayerType<Obj, ClientConfig, INBTConfig> type;
 	private String configName;
-	
+
 	private SetMultimap<String, Obj> loadedObjects = HashMultimap.create();
 	private Map<Obj, IRenderCache> renderCacheMap = Maps.newHashMap();
 	private Map<Obj, IPerWorldImageType> imageTypeMap = Maps.newHashMap();
 	private Set<Obj> addedSet = Sets.newHashSet();
 	private Set<Obj> removedSet = Sets.newHashSet();
 	private long previousUpdateTick = -1L;
-	
+
 	public StellarObjectContainer(boolean isRemote, IStellarLayerType<Obj, ClientConfig, INBTConfig> type, String configName) {
 		this.isRemote = isRemote;
 		this.type = type;
@@ -58,6 +58,8 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	
 	
 	public void loadObject(String identifier, Obj object) {
+		/*if(loadedObjects.containsEntry(identifier, object))
+			loadedObjects.remove(identifier, object);*/
 		loadedObjects.put(identifier, object);
 	}
 	
@@ -118,10 +120,10 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 		
 		image.update();
 	}
-	
-	
+
+
 	private boolean initialized = false;
-	
+
 	public void reloadClientSettings(ClientSettings settings, ClientConfig specificSettings) {
 		this.initialized = true;
 		for(Map.Entry<Obj, IRenderCache> entry : renderCacheMap.entrySet())
@@ -148,4 +150,13 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 		});
 	}
 
+	
+	public StellarObjectContainer<Obj, ClientConfig> copy() {
+		StellarObjectContainer copied = new StellarObjectContainer(this.isRemote, this.type, this.configName);
+		copied.loadedObjects = HashMultimap.create(copied.loadedObjects);
+		copied.renderCacheMap = Maps.newHashMap(this.renderCacheMap);
+		copied.imageTypeMap = Maps.newHashMap(this.imageTypeMap);
+		
+		return copied;
+	}
 }

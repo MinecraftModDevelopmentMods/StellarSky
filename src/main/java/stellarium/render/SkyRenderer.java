@@ -1,12 +1,9 @@
 package stellarium.render;
 
 
-import java.util.List;
 import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
-
-import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,18 +13,9 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import net.minecraftforge.client.IRenderHandler;
-import stellarium.StellarSky;
 import stellarium.api.ICelestialRenderer;
-import stellarium.client.ClientSettings;
-import stellarium.stellars.StellarManager;
-import stellarium.stellars.layer.CelestialManager;
-import stellarium.world.StellarDimensionManager;
 
 public class SkyRenderer extends IRenderHandler {
 

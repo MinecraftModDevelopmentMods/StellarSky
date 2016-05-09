@@ -1,6 +1,5 @@
 package stellarium;
 
-import java.io.File;
 import java.io.IOException;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -9,7 +8,6 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarium.client.ClientSettings;
 import stellarium.common.CommonSettings;

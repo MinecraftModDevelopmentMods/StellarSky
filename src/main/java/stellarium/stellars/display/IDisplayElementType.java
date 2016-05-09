@@ -2,7 +2,6 @@ package stellarium.stellars.display;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import stellarium.render.ICelestialObjectRenderer;
 
 public interface IDisplayElementType<Cfg extends PerDisplaySettings, Cache extends IDisplayRenderCache<Cfg>> {
 	public Cfg generateSettings();

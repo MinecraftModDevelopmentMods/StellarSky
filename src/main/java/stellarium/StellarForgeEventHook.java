@@ -67,7 +67,7 @@ public class StellarForgeEventHook {
 	
 	public static void setupManager(World world, StellarManager manager) {
 		if(world.isRemote)
-			manager.setup(StellarSky.proxy.getClientCelestialManager());
+			manager.setup(StellarSky.proxy.getClientCelestialManager().copy());
 		else manager.setup(new CelestialManager(false));
 	}
 	
@@ -89,7 +89,7 @@ public class StellarForgeEventHook {
 		
 		if(world.isRemote)
 		{
-			IRenderHandler renderer = StellarSkyAPI.getRendererFor(dimManager.getSettings().getSkyRendererType(), new SkyRenderCelestial());
+			IRenderHandler renderer = StellarSkyAPI.getRendererFor(dimManager.getSettings().getSkyRendererType(), new SkyRenderCelestial(manager));
 			world.provider.setSkyRenderer(renderer);
 		}
 	}

@@ -1,9 +1,7 @@
 package stellarium.stellars.layer;
 
-import java.util.EnumMap;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import stellarapi.api.ICelestialCoordinate;

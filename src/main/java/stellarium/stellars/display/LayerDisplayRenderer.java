@@ -2,7 +2,6 @@ package stellarium.stellars.display;
 
 import org.lwjgl.opengl.GL11;
 
-import stellarium.StellarSkyResources;
 import stellarium.render.ICelestialLayerRenderer;
 import stellarium.render.StellarRenderInfo;
 

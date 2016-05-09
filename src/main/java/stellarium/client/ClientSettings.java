@@ -5,7 +5,6 @@ import stellarapi.api.lib.config.SimpleHierarchicalConfig;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarapi.api.lib.config.property.ConfigPropertyInteger;
 import stellarapi.api.lib.config.property.ConfigPropertyString;
-import stellarium.StellarSky;
 import stellarium.stellars.layer.StellarLayerRegistry;
 
 public class ClientSettings extends SimpleHierarchicalConfig {

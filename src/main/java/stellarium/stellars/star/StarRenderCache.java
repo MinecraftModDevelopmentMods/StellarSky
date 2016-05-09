@@ -4,8 +4,7 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EnumRGBA;
-import stellarapi.api.optics.FilterHelper;
-import stellarapi.api.optics.Wavelength;
+import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.IRenderCache;
@@ -13,7 +12,6 @@ import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.stellars.util.OpticalEffect;
 import stellarium.stellars.util.StarColor;
 import stellarium.util.math.StellarMath;
-import stellarium.world.IStellarSkySet;
 
 public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 	
@@ -22,7 +20,7 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 	protected float appMag;
 	protected float size;
 	protected float multiplier;
-	protected double[] color;
+	protected double[] color = new double[4];
 	
 	@Override
 	public void initialize(ClientSettings settings, IConfigHandler config, BgStar star) { }
@@ -40,7 +38,7 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 
 		this.appMag = (float) (object.mag + airmass * info.getExtinctionRate(EnumRGBA.Alpha)
 			+ StellarMath.LumToMagWithoutSize(this.multiplier));
-		
+
 		this.shouldRender = true;
 		if(this.appMag > settings.mag_Limit)
 		{
@@ -55,14 +53,17 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 		
 		StarColor starColor = StarColor.getColor(object.B_V);
 		this.size *= 0.5f;
-		this.color = FilterHelper.getFilteredRGB(info.filter,
-					new double[] {
-							starColor.r / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.getExtinctionRate(EnumRGBA.Red)),
-							starColor.g / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.getExtinctionRate(EnumRGBA.Green)),
-							starColor.b / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.getExtinctionRate(EnumRGBA.Blue))}
-				);
 		
-		this.color = OpticalEffect.faintToWhite(this.color, Optics.getAlphaFromMagnitude(this.appMag, 0.0f));
+		double alpha = Optics.getAlphaFromMagnitude(object.mag + airmass * info.getExtinctionRate(EnumRGBA.Alpha), 0.0f) * 0.0005;
+		
+		System.arraycopy(EyeDetector.getInstance().process(this.multiplier, info.filter,
+				new double[] {
+						starColor.r / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.getExtinctionRate(EnumRGBA.Red)),
+						starColor.g / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.getExtinctionRate(EnumRGBA.Green)),
+						starColor.b / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.getExtinctionRate(EnumRGBA.Blue)),
+						alpha}
+			), 0, this.color, 0, color.length);
+		this.color[3] /= (alpha * this.multiplier);
 	}
 
 	@Override

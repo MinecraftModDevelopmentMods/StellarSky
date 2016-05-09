@@ -1,5 +1,7 @@
 package stellarium.world.provider;
 
+import java.lang.reflect.Field;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
@@ -16,6 +18,7 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IRenderHandler;
 import stellarapi.api.optics.EnumRGBA;
 import stellarium.api.ICelestialHelper;
+import stellarium.api.ICelestialRenderer;
 import stellarium.render.SkyRenderer;
 import stellarium.render.SkyRendererEnd;
 
@@ -601,10 +604,9 @@ public class StellarWorldProvider extends WorldProvider {
     
     @Override
     @SideOnly(Side.CLIENT)
-    public void setSkyRenderer(IRenderHandler skyRenderer)
-    {
-    	if(!(skyRenderer instanceof SkyRenderer) && !(skyRenderer instanceof SkyRendererEnd))
-    		return;
-    	super.setSkyRenderer(skyRenderer);
+    public void setSkyRenderer(IRenderHandler skyRenderer) {
+    	for(Field field : skyRenderer.getClass().getDeclaredFields())
+    		if(ICelestialRenderer.class.isAssignableFrom(field.getDeclaringClass()))
+    			super.setSkyRenderer(skyRenderer);
     }
 }

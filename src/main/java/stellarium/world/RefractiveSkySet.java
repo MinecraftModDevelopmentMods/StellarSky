@@ -1,7 +1,6 @@
 package stellarium.world;
 
 import stellarapi.api.lib.math.SpCoord;
-import stellarium.common.CommonSettings;
 import stellarium.stellars.util.ExtinctionRefraction;
 
 public class RefractiveSkySet extends NonRefractiveSkySet implements IStellarSkySet {

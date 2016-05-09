@@ -14,7 +14,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.StellarAPIReference;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.StellarSkyAPI;
@@ -26,7 +25,7 @@ import stellarium.world.provider.DefaultWorldProviderReplacer;
 import stellarium.world.provider.EndReplacer;
 
 @Mod(modid=StellarSkyReferences.modid, version=StellarSkyReferences.version,
-	dependencies="required-after:StellarAPI@[0.1.2.0, 0.1.3.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
+	dependencies="required-after:StellarAPI@[0.1.3.0, 0.1.4.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		// The instance of Stellarium
