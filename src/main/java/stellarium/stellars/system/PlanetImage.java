@@ -23,7 +23,7 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 		double LvsSun=object.radius*object.radius*object.albedo*1.4/(object.a0*object.a0*object.a0*object.a0);
 		this.mag=-26.74-2.5*Math.log10(LvsSun);
 		
-		double period = object.getRevolutionPeriod();
+		double period = object.getRevolutionPeriod() * yearPeriod.getPeriodLength();
 		this.siderealPeriod = new CelestialPeriod(String.format("Sidereal Period of %s", object.getID()), period, object.absoluteOffset());
 		this.synodicPeriod = new CelestialPeriod(String.format("Synodic Period of %s", object.getID()), 1/(1/period - 1/yearPeriod.getPeriodLength()),
 				object.phaseOffset());
