@@ -37,6 +37,10 @@ public class StellarMath {
 		int cnt=0;
 		for(i=start; i<start+size; i++){
 			cnt*=10;
+			
+			if(b[i] == ' ')
+				continue;
+			
 			cnt+=(b[i]-'0');
 		}
 		
@@ -85,7 +89,7 @@ public class StellarMath {
 	}
 	
 	public static Vector3 GetOrbVec(double a, double e, double M, Matrix3 rotation){
-		M=Spmath.fmod(M+180.0,360.0)-180.0;
+		M=(M+180.0)%360.0-180.0;
 		double e2=Spmath.Degrees(e);
 		double E=CalEcanomaly(e2, M);
 		Vector3 r = new Vector3(a*(Spmath.cosd(E)-e), a*Math.sqrt(1-e*e)*Spmath.sind(E), 0.0);

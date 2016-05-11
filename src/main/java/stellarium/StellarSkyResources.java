@@ -54,6 +54,7 @@ public class StellarSkyResources {
 	public static final ResourceLocation tick = 
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/tick.png");
 
+	
 	public static final ResourceLocation round =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/round.png");
 	
@@ -63,9 +64,76 @@ public class StellarSkyResources {
 	public static final ResourceLocation scroll =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/scroll.png");
 	
+	
+	public static final ResourceLocation background =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/background.png");
+	
+	public static final ResourceLocation rollround =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/rollround.png");
+	
+	public static final ResourceLocation rollparallel =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/rollparallel.png");
+	
+	public static final ResourceLocation rollscroll =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/rollscroll.png");
+	
+	
 	public static final ResourceLocation scrollbtn =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/scrollbtn.png");
 	
 	public static final ResourceLocation scrollregion =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/scrollregion.png");
+	
+	
+	public static final ResourceLocation lock =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/lock.png");
+	
+	public static final ResourceLocation unlock =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/unlock.png");
+	
+	
+	public static final ResourceLocation horizontal =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/horizontal.png");
+	
+	public static final ResourceLocation equatorial =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/equatorial.png");
+	
+	public static final ResourceLocation ecliptic =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/ecliptic.png");
+	
+	public static final ResourceLocation display =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/display.png");
+	
+	public static final ResourceLocation alpha =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/alpha.png");
+	
+	public static final ResourceLocation fragment =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/fragments.png");
+	
+	
+	public static final ResourceLocation optics =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/optics.png");
+	
+	public static final ResourceLocation turbulance =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/turbulance.png");
+	
+	public static final ResourceLocation brcontrast =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/brcontrast.png");
+	
+	
+	public static final ResourceLocation solarsystem =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/solarsystem.png");
+
+	public static final ResourceLocation moonfrag =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/moonfrag.png");
+	
+	
+	public static final ResourceLocation milkywaycategory =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/milkyway.png");
+	
+	public static final ResourceLocation milkywayfrag =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/milkywayfrag.png");
+	
+	public static final ResourceLocation milkywaybrightness =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/milkywaybrightness.png");
 }

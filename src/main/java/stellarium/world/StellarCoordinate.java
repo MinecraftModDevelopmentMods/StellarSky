@@ -39,11 +39,11 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		
 		double fixedDaylength = this.dayLength * this.yearLength / (this.yearLength + 1);
 		this.dayPeriod = new CelestialPeriod("Celestial Day", fixedDaylength,
-				Spmath.fmod(this.zeroTime / fixedDaylength - this.longitude / 2 / Math.PI - 0.25, 1.0));
+				(this.zeroTime / fixedDaylength - this.longitude / 2 / Math.PI - 0.25)%1.0);
 		
 		double fixedYearLength = this.dayLength * this.yearLength;
 		this.yearPeriod = new CelestialPeriod("Year", fixedYearLength,
-				Spmath.fmod(this.zeroTime / fixedYearLength - this.longitude / 2 / Math.PI - 0.25, 1.0));
+				(this.zeroTime / fixedYearLength - this.longitude / 2 / Math.PI - 0.25)%1.0);
 		
 		EqtoEc.setAsRotation(1.0, 0.0, 0.0, -this.axialTilt);
 		EctoEq.setAsRotation(1.0, 0.0, 0.0, this.axialTilt);
@@ -160,7 +160,7 @@ public class StellarCoordinate implements ICelestialCoordinate {
 		SpCoord coord = new SpCoord();
 		coord.setWithVec(eqrPos);
 		
-		return Spmath.fmod(this.zeroTime / periodLength - this.longitude / Math.PI - coord.x / 360.0 - 0.25, 1.0);
+		return (this.zeroTime / periodLength - this.longitude / 2.0 / Math.PI - coord.x / 360.0 - 0.25)%1.0;
 	}
 
 	@Override

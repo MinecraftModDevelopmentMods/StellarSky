@@ -3,6 +3,7 @@ package stellarium.stellars.milkyway;
 import org.lwjgl.opengl.GL11;
 
 import stellarium.StellarSkyResources;
+import stellarium.render.EnumRenderPass;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
@@ -11,6 +12,9 @@ public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRender
 
 	@Override
 	public void render(StellarRenderInfo info, MilkywayRenderCache cache) {
+		if(info.pass != EnumRenderPass.DeepScattering)
+			return;
+		
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, info.weathereff);
 
 		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceMilkyway.getLocation());

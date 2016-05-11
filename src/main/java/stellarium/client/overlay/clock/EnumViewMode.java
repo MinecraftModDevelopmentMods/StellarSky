@@ -2,7 +2,7 @@ package stellarium.client.overlay.clock;
 
 public enum EnumViewMode {
 	
-	HHMM("hhmm", true, false, 200),
+	HHMM("hhmm", true, false, 135),
 	TICK("tick", true, true, 150);
 	
 	private String name;

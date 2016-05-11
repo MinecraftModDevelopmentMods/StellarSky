@@ -6,9 +6,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
-import stellarium.stellars.display.eccoord.EcGridType;
-import stellarium.stellars.display.eqcoord.EqGridType;
-import stellarium.stellars.display.horcoord.HorGridType;
+import stellarium.stellars.display.ecgrid.EcGridType;
+import stellarium.stellars.display.eqgrid.EqGridType;
+import stellarium.stellars.display.horgrid.HorGridType;
 import stellarium.stellars.layer.IRenderCache;
 
 public class DisplayRegistry {

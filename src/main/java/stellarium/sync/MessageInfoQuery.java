@@ -30,7 +30,9 @@ public class MessageInfoQuery implements IMessage {
 
 		@Override
 		public IMessage onMessage(MessageInfoQuery message, MessageContext ctx) {
-			return StellarSky.instance.getNetworkManager().onQueryInformation(message.dimensionId);
+			return StellarSky.instance.getNetworkManager().onQueryInformation(
+					ctx.getServerHandler().playerEntity.mcServer,
+					message.dimensionId);
 		}
 		
 	}

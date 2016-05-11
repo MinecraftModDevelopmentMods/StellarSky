@@ -21,6 +21,7 @@ import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
+import stellarium.stellars.star.StarImage;
 import stellarium.stellars.star.StarRenderCache;
 import stellarium.util.math.StellarMath;
 
@@ -64,9 +65,8 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 			container.loadObject("Star", star);
 			container.addRenderCache(star, new StarRenderCache());
 			
-			//Delayed till there is code to select important stars
-			// TODO select stars
-			//container.addImageType(star, StarWorldImage.class);
+			if(!star.getName().trim().isEmpty())
+				container.addImageType(star, StarImage.class);
 		}
 	}
 	
@@ -104,7 +104,7 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 				continue;
 			
 			String name = new String(star_value).substring(4, 14);
-			int saoNumber = StellarMath.btoi(star_value, 31, 6);
+			int number = StellarMath.btoi(star_value, 0, 5);
 			
 			double mag;
 			
@@ -148,7 +148,7 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 			
 			star_value=null;
 			
-	    	stars.add(new BgStar(name, saoNumber, mag, B_V, pos));
+	    	stars.add(new BgStar(name, number, mag, B_V, pos));
 	    }
 	    
 	    str=null;

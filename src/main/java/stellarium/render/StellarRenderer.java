@@ -26,9 +26,12 @@ public class StellarRenderer {
 			if(rendererId != -1)
 				layerRenderer = StellarRenderingRegistry.getInstance().getLayerRenderer(rendererId);
 			
+			if(layerRenderer != null && !layerRenderer.acceptPass(info.pass))
+				continue;
+			
 			if(layerRenderer != null)
 				layerRenderer.preRender(info);
-			
+						
 			for(IRenderCache cache : layer.getRenderCacheList(layer.getType().getOrdering()))
 			{
 				ICelestialObjectRenderer objRenderer = StellarRenderingRegistry.getInstance().getObjectRenderer(cache.getRenderId());

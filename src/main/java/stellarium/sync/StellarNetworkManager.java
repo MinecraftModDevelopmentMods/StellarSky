@@ -23,6 +23,8 @@ public final class StellarNetworkManager {
 				MessageInfoSync.class, 0, Side.CLIENT);
 		wrapper.registerMessage(MessageInfoQuery.MessageInfoQueryHandler.class,
 				MessageInfoQuery.class, 1, Side.SERVER);
+		wrapper.registerMessage(MessageLockSync.MessageLockSyncHandler.class,
+				MessageLockSync.class, 2, Side.CLIENT);
 	}
 
 	public void queryInformation(World world) {
@@ -34,13 +36,13 @@ public final class StellarNetworkManager {
 	}
 	
 	public void sendSyncInformation(EntityPlayerMP player) {
-		wrapper.sendTo(this.onQueryInformation(player.dimension), player);
+		wrapper.sendTo(this.onQueryInformation(player.mcServer, player.dimension), player);
 	}
 
-	public MessageInfoSync onQueryInformation(int dimensionId) {
-		WorldServer world = MinecraftServer.getServer().worldServerForDimension(dimensionId);
+	public MessageInfoSync onQueryInformation(MinecraftServer server, int dimensionId) {
+		WorldServer world = server.worldServerForDimension(dimensionId);
 		
-		StellarManager manager = StellarManager.getManager(false);
+		StellarManager manager = StellarManager.getServerManager(server);
 		StellarDimensionManager dimManager = StellarDimensionManager.get(world);
 		
 		NBTTagCompound compound = new NBTTagCompound();
@@ -51,6 +53,10 @@ public final class StellarNetworkManager {
 			dimManager.writeToNBT(dimComp);
 		
 		return new MessageInfoSync(compound, dimComp);
+	}
+
+	public void sendLockInformation(boolean lock) {
+		wrapper.sendToAll(new MessageLockSync(lock));
 	}
 
 }

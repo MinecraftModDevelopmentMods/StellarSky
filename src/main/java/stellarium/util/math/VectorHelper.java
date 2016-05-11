@@ -11,5 +11,12 @@ public class VectorHelper {
 				vector[i][j] = new Vector3();
 		return vector;
 	}
+	
+	public static Vector3[] createAndInitialize(int n) {
+		Vector3[] vector = new Vector3[n];
+		for(int i = 0; i < n; i++)
+			vector[i] = new Vector3();
+		return vector;
+	}
 
 }

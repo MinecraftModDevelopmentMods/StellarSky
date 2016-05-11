@@ -1,41 +1,53 @@
 package stellarium.client.overlay.clock;
 
-import org.lwjgl.opengl.GL11;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.PeriodHelper;
 import stellarapi.api.gui.overlay.EnumOverlayMode;
 import stellarapi.api.gui.overlay.IOverlayElement;
-import stellarapi.api.lib.math.Spmath;
 import stellarapi.lib.gui.GuiContent;
+import stellarapi.lib.gui.GuiElement;
 import stellarapi.lib.gui.GuiRenderer;
+import stellarapi.lib.gui.IFontHelper;
 import stellarapi.lib.gui.IGuiPosition;
-import stellarapi.lib.gui.IRectangleBound;
+import stellarapi.lib.gui.IRenderer;
+import stellarapi.lib.gui.PositionSimple;
 import stellarapi.lib.gui.RectangleBound;
-import stellarapi.lib.gui.util.GuiUtil;
-import stellarium.StellarSky;
-import stellarium.api.IHourProvider;
-import stellarium.api.StellarSkyAPI;
-import stellarium.client.ClientSettings;
+import stellarapi.lib.gui.dynamic.GuiDynamic;
+import stellarapi.lib.gui.dynamic.IDynamicController;
+import stellarapi.lib.gui.dynamic.tooltip.GuiHasTooltip;
+import stellarapi.lib.gui.dynamic.tooltip.ITooltipController;
+import stellarapi.lib.gui.dynamic.tooltip.StringFormat;
+import stellarapi.lib.gui.list.GuiHasFixedList;
+import stellarapi.lib.gui.list.IHasFixedListController;
+import stellarapi.lib.gui.model.basic.ModelSimpleRect;
+import stellarapi.lib.gui.model.font.ModelFont;
 
 public class OverlayClock implements IOverlayElement<ClockSettings> {
 	
-	private static final int HEIGHT = 36;
+	private static final int HEIGHT = 40;
 	private static final int ADDBTN_HEIGHT = 10;
-	private static final int ADDITIONAL_HEIGHT = 20;
+	private static final int ADDITIONAL_HEIGHT = 65;
 	private static final int ANIMATION_DURATION = 10;
 	
 	private Minecraft mc;
 	private int animationTick = 0;
 	private EnumOverlayMode currentMode = EnumOverlayMode.OVERLAY;
+	private boolean needUpdate;
+	private boolean controlEnabled;
 
 	private ClockSettings settings;
-		
+	
 	private GuiContent content;
+	private OverlayClockTexts texts;
 	private OverlayClockControllers controllers;
+	
+	private ModelFont font = new ModelFont(false);
 	
 	@Override
 	public int getWidth() {
@@ -53,39 +65,136 @@ public class OverlayClock implements IOverlayElement<ClockSettings> {
 		this.settings = settings;
 		
 		this.controllers = new OverlayClockControllers(settings);
+		this.texts = new OverlayClockTexts(settings);
+		
 		this.content = new GuiContent(new GuiRenderer(mc),
-				controllers.generateElement(this.getWidth(), ADDBTN_HEIGHT+ADDITIONAL_HEIGHT),
-				new IGuiPosition() {
-			public RectangleBound theBound;
-
+				this.generateElement(),
+				new PositionSimple() {
 			@Override
-			public IRectangleBound getElementBound() {
-				return this.theBound;
+			public RectangleBound getBound() {
+				return new RectangleBound(0.0f, 0.0f, getWidth(),
+						controlEnabled? HEIGHT + ADDITIONAL_HEIGHT : HEIGHT);
 			}
 
 			@Override
-			public IRectangleBound getClipBound() {
-				return this.theBound;
+			public void updateBound(RectangleBound bound) {
+				bound.set(0.0f, 0.0f, getWidth(),
+						controlEnabled? HEIGHT + ADDITIONAL_HEIGHT : HEIGHT);
 			}
-
-			@Override
-			public IRectangleBound getAdditionalBound(String boundName) {
-				return null;
-			}
-
-			@Override
-			public void initializeBounds() {
-				this.theBound = new RectangleBound(0.0f, getHeight(), getWidth(), ADDITIONAL_HEIGHT);
-			}
-
-			@Override
-			public void updateBounds() {
-				theBound.set(0.0f, getHeight(), getWidth(), ADDITIONAL_HEIGHT);
-			}
-
-			@Override
-			public void updateAnimation(float partialTicks) { }
 		});
+	}
+	
+	public GuiElement generateElement() {
+		GuiHasTooltip tooltipRegistry = new GuiHasTooltip();
+		GuiElement theContent = new GuiElement<IDynamicController>(new GuiDynamic(),
+				new DynamicController(tooltipRegistry));
+		
+		tooltipRegistry.setWrappedGui(theContent);
+		return new GuiElement<ITooltipController>(tooltipRegistry, new TooltipController());
+	}
+	
+	public class DynamicController implements IDynamicController {
+		private GuiHasTooltip registry;
+		private GuiElement textElement, conElement;
+
+		public DynamicController(GuiHasTooltip registry) {
+			this.registry = registry;
+			this.textElement = texts.generateElement(this.registry);
+			this.conElement = controllers.generateElement(this.registry);
+		}
+
+		@Override
+		public boolean needUpdate() {
+			boolean flag = needUpdate;
+			needUpdate = false;
+			return flag;
+		}
+
+		@Override
+		public GuiElement generateElement() {
+			if(!currentMode.focused())
+				return this.textElement;
+
+			GuiElement combined = new GuiElement<IHasFixedListController>(
+					new GuiHasFixedList(this.conElement, this.textElement, HEIGHT),
+					new ListController());
+			return combined;
+		}
+	}
+	
+	public class ListController implements IHasFixedListController {
+		@Override
+		public boolean isHorizontal() {
+			return false;
+		}
+		@Override
+		public String setupRenderer(IRenderer renderer) {
+			return null;
+		}
+		@Override
+		public boolean isModifiableFirst() {
+			return false;
+		}
+		@Override
+		public IGuiPosition wrapFixedPosition(IGuiPosition position, IGuiPosition listPos) {
+			return position;
+		}
+		@Override
+		public IGuiPosition wrapModifiablePosition(IGuiPosition position, IGuiPosition listPos) {
+			return position;
+		}
+	}
+	
+	public class TooltipController implements ITooltipController {
+		@Override
+		public boolean hasClip() {
+			return false;
+		}
+
+		@Override
+		public IFontHelper lineSpecificFont(String lineContext) {
+			return font;
+		}
+
+		@Override
+		public String setupBackground(StringFormat info, IRenderer renderer) {
+			renderer.bindModel(ModelSimpleRect.getInstance());
+			renderer.pushSettingTillNextRender();
+			renderer.color(0.2f, 0.2f, 0.2f, 0.2f + 0.6f * settings.alpha);
+			return "";
+		}
+
+		@Override
+		public List<String> getLineContext(StringFormat info) {
+			String[] args = info.getMain().split("\\\n");
+			List<String> arglist = Lists.newArrayList();
+			for(String arg : args)
+				arglist.add(I18n.format(arg));
+			
+			return arglist;
+		}
+
+		@Override
+		public void setupTooltip(String context, IRenderer renderer) {
+			renderer.bindModel(font);
+			renderer.pushSettingTillNextRender();
+			renderer.color(0.8f, 0.8f, 0.8f, 1.0f);
+		}
+
+		@Override
+		public float getSpacingX() {
+			return 2.0f;
+		}
+
+		@Override
+		public float getSpacingY() {
+			return 2.0f;
+		}
+
+		@Override
+		public String toRenderableText(String context) {
+			return context;
+		}
 	}
 
 	@Override
@@ -111,12 +220,20 @@ public class OverlayClock implements IOverlayElement<ClockSettings> {
 				controllers.setRollWithForce(true);
 		}
 		
+		if(mode.focused() != currentMode.focused()) {
+			texts.setFocused(mode.focused());
+			this.needUpdate = true;
+		}
+		
 		this.currentMode = mode;
 	}
 
 	@Override
 	public void updateOverlay() {
 		content.updateTick();
+		texts.update(0.0f);
+		
+		this.controlEnabled = currentMode.focused();
 
 		if(settings.isFixed) {
 			this.animationTick = 0;
@@ -135,8 +252,7 @@ public class OverlayClock implements IOverlayElement<ClockSettings> {
 			return false;
 		
 		content.mouseClicked(mouseX, mouseY, eventButton);
-		
-		return controllers.checkDirty();
+		return controllers.checkDirty() || texts.checkDirty();
 	}
 
 	@Override
@@ -145,8 +261,7 @@ public class OverlayClock implements IOverlayElement<ClockSettings> {
 			return false;
 		
 		content.mouseMovedOrUp(mouseX, mouseY, eventButton);
-
-		return controllers.checkDirty();
+		return controllers.checkDirty() || texts.checkDirty();
 	}
 
 	@Override
@@ -155,7 +270,7 @@ public class OverlayClock implements IOverlayElement<ClockSettings> {
 			return false;
 		
 		content.keyTyped(eventChar, eventKey);
-		return controllers.checkDirty();
+		return controllers.checkDirty() || texts.checkDirty();
 	}
 
 	@Override
@@ -165,62 +280,6 @@ public class OverlayClock implements IOverlayElement<ClockSettings> {
 		if(periodDay == null || periodYear == null)
 			return;
 		
-		if(currentMode.focused())
-			content.render(mouseX, mouseY, partialTicks);
-		
-		ClientSettings setting = StellarSky.proxy.getClientSettings();
-
-		FontRenderer fontRenderer = mc.fontRenderer;
-		
-		GL11.glColor4f(0.3f, 0.3f, 0.3f, settings.alpha);
-		GuiUtil.drawRectSimple(0, 0, this.getWidth(), HEIGHT);
-		
-		long currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
-		
-		double dayOffset = periodDay.getOffset(currentTick, partialTicks);
-		double yearOffset = Spmath.fmod(periodYear.getOffset(currentTick, partialTicks)+0.25, 1.0);
-		
-		double daylength = periodDay.getPeriodLength();
-		double yearlength = periodYear.getPeriodLength();
-		double yearToDay = yearlength / daylength;
-		
-		double fixedYearOffset = Spmath.fmod(yearOffset - dayOffset / yearToDay, 1.0);
-		double year = currentTick / yearlength - fixedYearOffset;
-		
-		int yr = (int)Math.floor(year) + 2;
-		int day = (int)Math.floor(fixedYearOffset * yearToDay) + 1;
-		int tick = (int)Math.floor(dayOffset * daylength);
-		
-		IHourProvider provider = StellarSkyAPI.getCurrentHourProvider();
-
-		int hour = provider.getCurrentHour(daylength, tick);
-		int minute = provider.getCurrentMinute(daylength, tick, hour);
-
-		int totalhour = provider.getTotalHour(daylength);
-		int totalminute = provider.getTotalMinute(daylength, totalhour);
-		int restMinuteInDay = provider.getRestMinuteInDay(daylength, totalhour);
-
-		int yOffset = 0;
-
-		this.drawString(fontRenderer, "hud.text.year", 5, 10*(yOffset++)+5,
-				String.format("%d", yr));
-		this.drawString(fontRenderer, "hud.text.day", 5, 10*(yOffset++)+5,
-				String.format("%-5d", day),
-				String.format("%.2f", yearToDay));
-
-		if(settings.viewMode.showTick())
-			this.drawString(fontRenderer, "hud.text.tick", 5, 10*(yOffset++)+5,
-					String.format("%-6d", tick),
-					String.format("%.2f", daylength));
-		else this.drawString(fontRenderer, "hud.text.time", 5, 10*(yOffset++)+5,
-				String.format("%2d", hour), 
-				String.format("%02d", minute),
-				String.format("%3d", totalhour),
-				String.format("%02d", restMinuteInDay),
-				String.format("%02d", totalminute));
-	}
-	
-	private void drawString(FontRenderer fontRenderer, String str, int x, int y, String... obj) {
-		fontRenderer.drawString(I18n.format(str, (Object[])obj), x, y, 0xffaaaaaa);
+		content.render(mouseX, mouseY, partialTicks);
 	}
 }

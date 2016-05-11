@@ -48,7 +48,7 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 		this.difactor = 0.8 / 180.0 * Math.PI / this.size;
 		this.difactor = this.difactor * this.difactor / Math.PI;
 		
-		this.size *= (98.0*5.0);
+		this.size *= (90.0*5.0);
 		
 		int latc, longc;
 		for(longc=0; longc<longn; longc++){
@@ -60,11 +60,12 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 				buf.set(object.posLocalG(buf));
 				info.projectionToGround.transform(buf);
 
+				double size = buf.size();
 				cache.setWithVec(buf);
 				info.applyAtmRefraction(this.cache);
 
 				moonPos[longc][latc].set(cache.getVec());
-				moonPos[longc][latc].scale(98.0);
+				moonPos[longc][latc].scale(size/object.earthPos.size()*98.0);
 
 				if(cache.y < 0 && info.hideObjectsUnderHorizon)
 					moonilum[longc][latc]=0.0f;

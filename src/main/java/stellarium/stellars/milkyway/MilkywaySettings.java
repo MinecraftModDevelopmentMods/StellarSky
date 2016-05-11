@@ -28,6 +28,7 @@ public class MilkywaySettings implements IConfigHandler {
         		+ "For real world it should be 1.0 or lower, but default is set to 1.5 for visual effect.";
         propMilkywayBrightness.setRequiresMcRestart(false);
         propMilkywayBrightness.setLanguageKey("config.property.client.milkywaybrightness");
+        propMilkywayBrightness.setMinValue(0.0).setMaxValue(3.0);
         propNameList.add(propMilkywayBrightness.getName());
         
 		propMilkywayFrac=config.get(category, "Milkyway_Fragments_Number", 16);
@@ -35,6 +36,7 @@ public class MilkywaySettings implements IConfigHandler {
         		"Less fragments will increase FPS, but the milky way will become more defective";
         propMilkywayFrac.setRequiresMcRestart(false);
         propMilkywayFrac.setLanguageKey("config.property.client.milkywayfrac");
+        propMilkywayFrac.setMinValue(4).setMaxValue(64);
         propNameList.add(propMilkywayFrac.getName());
 
         config.setCategoryPropertyOrder(category, propNameList);

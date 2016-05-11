@@ -10,27 +10,11 @@ import net.minecraftforge.client.IRenderHandler;
 
 public class StellarSkyAPI {
 	
-	private IHourProvider hourProvider;
 	private List<IWorldProviderReplacer> worldProviderReplacers = Lists.newArrayList();
 	private IWorldProviderReplacer defaultReplacer;
 	private List<ISkyRendererType> rendererTypes = Lists.newArrayList();
 	
 	private static StellarSkyAPI INSTANCE = new StellarSkyAPI();
-	
-	/**
-	 * Registers hour provider. <p>
-	 * Currently hour provider only have effect on client. <p>
-	 * You can manually create an wrapper for previous provider.
-	 * @param provider the hour provider to register
-	 * */
-	public static void registerHourProvider(IHourProvider provider) {
-		INSTANCE.hourProvider = provider;
-	}
-	
-	/** Gets current hour provider. */
-	public static IHourProvider getCurrentHourProvider() {
-		return INSTANCE.hourProvider;
-	}
 	
 	/**
 	 * Registers world provider replacer.

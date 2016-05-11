@@ -1,6 +1,7 @@
 package stellarium.stellars;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import stellarapi.api.CelestialPeriod;
@@ -26,10 +27,15 @@ public final class StellarManager extends WorldSavedData {
 		super(id);
 	}
 	
-	public static StellarManager loadOrCreateManager(World world) {
-		if(!world.isRemote && StellarSky.proxy.getDefWorld(world.isRemote) != null)
-			world = StellarSky.proxy.getDefWorld(world.isRemote);
-		
+	public static StellarManager loadOrCreateClientManager(World world) {
+		return loadOrCreateManager(world);
+	}
+	
+	public static StellarManager loadOrCreateServerManager(MinecraftServer server) {
+		return loadOrCreateManager(server.getEntityWorld());
+	}
+	
+	private static StellarManager loadOrCreateManager(World world) {		
 		WorldSavedData data = world.mapStorage.loadData(StellarManager.class, ID);
 		
 		if(!(data instanceof StellarManager))
@@ -45,15 +51,31 @@ public final class StellarManager extends WorldSavedData {
 		return (StellarManager) data;
 	}
 	
-	public static boolean hasManager(World loadedWorld, boolean isRemote) {
-		World world = isRemote? loadedWorld : StellarSky.proxy.getDefWorld(isRemote);
+	public static boolean hasClientManager() {
+		World world = StellarSky.proxy.getDefWorld();
 		if(world == null)
 			return false;
 		return (world.mapStorage.loadData(StellarManager.class, ID) instanceof StellarManager);
 	}
 
-	public static StellarManager getManager(boolean isRemote) {
-		World world = StellarSky.proxy.getDefWorld(isRemote);
+	public static boolean hasServerManager(MinecraftServer server) {
+		World world = server.getEntityWorld();
+		if(world == null)
+			return false;
+		return (world.mapStorage.loadData(StellarManager.class, ID) instanceof StellarManager);
+	}
+
+	public static StellarManager getClientManager() {
+		World world = StellarSky.proxy.getDefWorld();
+		return getManager(world);
+	}
+	
+	public static StellarManager getServerManager(MinecraftServer server) {
+		World world = server.getEntityWorld();
+		return getManager(world);
+	}
+	
+	private static StellarManager getManager(World world) {
 		WorldSavedData data = world.mapStorage.loadData(StellarManager.class, ID);
 		
 		if(!(data instanceof StellarManager)) {
@@ -63,6 +85,7 @@ public final class StellarManager extends WorldSavedData {
 		
 		return (StellarManager)data;
 	}
+
 	
 	private void loadSettingsFromConfig() {
 		this.settings = (CommonSettings) StellarSky.proxy.commonSettings.copy();
@@ -97,17 +120,12 @@ public final class StellarManager extends WorldSavedData {
 	
 	
 	public void setup(CelestialManager manager) {
-		if(this.setup)
-			return;
-		
-		StellarSky.logger.info("Starting Common Initialization...");
-		this.celestialManager = manager;
-		manager.initializeCommon(this.settings);
-		StellarSky.logger.info("Common Initialization Ended.");
-		
-		StellarSky.logger.info("Starting Initial Update...");
-		this.update(0.0);
-		StellarSky.logger.info("Initial Update Ended.");
+		if(!this.setup) {
+			StellarSky.logger.info("Starting Common Initialization...");
+			this.celestialManager = manager;
+			manager.initializeCommon(this.settings);
+			StellarSky.logger.info("Common Initialization Ended.");
+		}
 		
 		this.setup = true;
 	}
@@ -152,5 +170,15 @@ public final class StellarManager extends WorldSavedData {
 
 	public boolean isLocked() {
 		return this.locked;
+	}
+
+	public boolean hasSetup() {
+		return this.setup;
+	}
+
+	public static boolean hasSetup(World world) {
+		if(world.isRemote)
+			return StellarManager.getClientManager().hasSetup();
+		else return StellarManager.getServerManager(MinecraftServer.getServer()).hasSetup();
 	}
 }

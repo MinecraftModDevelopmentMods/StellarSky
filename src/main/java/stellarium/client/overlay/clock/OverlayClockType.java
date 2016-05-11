@@ -54,4 +54,9 @@ public class OverlayClockType implements IOverlayType<OverlayClock, ClockSetting
 		return false;
 	}
 
+	@Override
+	public boolean isOnMain() {
+		return true;
+	}
+
 }

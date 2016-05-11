@@ -34,11 +34,9 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 		this.onSettingsUpdated(Minecraft.getMinecraft());
 	}
 	
+	@Override
 	public void renderCelestial(Minecraft mc, float[] skycolor, float weathereff, float partialTicks) {
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		
-		if(settings.checkDirty())
-		{
+		if(settings.checkDirty()) {
 			celManager.reloadClientSettings(this.settings);
 			this.updated = false;
 		}
@@ -46,7 +44,27 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 		if(!this.updated)
 			this.onSettingsUpdated(mc);
 		
-		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks), celManager.getLayers());
+		GL11.glDepthMask(true);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+
+		EnumRenderPass pass = EnumRenderPass.OpaqueStellar;
+		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks, pass), celManager.getLayers());
+		
+		pass = EnumRenderPass.DeepScattering;
+		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks, pass), celManager.getLayers());
+		
+		GL11.glDepthMask(false);
+		
+		pass = EnumRenderPass.ShallowScattering;
+		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks, pass), celManager.getLayers());
+		
+		GL11.glDepthMask(true);
+		
+		pass = EnumRenderPass.OpaqueSky;
+		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks, pass), celManager.getLayers());
+		
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glDepthMask(false);
 	}
 	
 	private void onSettingsUpdated(Minecraft mc) {
@@ -54,13 +72,13 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 		World world = mc.theWorld;
 		
 		if(world != null) {
-			StellarManager manager = StellarManager.getManager(true);
+			StellarManager manager = StellarManager.getClientManager();
 			if(manager.getCelestialManager() != null) {
 				this.updated = true;
 				manager.update(world.getWorldTime());
 				StellarDimensionManager dimManager = StellarDimensionManager.get(world);
 				if(dimManager != null)
-					dimManager.update(world, world.getWorldTime());
+					dimManager.update(world, world.getWorldTime(), world.getTotalWorldTime());
 				
 				manager.updateClient(StellarSky.proxy.getClientSettings());
 			}

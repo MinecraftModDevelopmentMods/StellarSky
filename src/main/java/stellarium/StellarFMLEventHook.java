@@ -34,6 +34,6 @@ public class StellarFMLEventHook {
 	}
 	
 	private void handleNotHave() {
-		StellarForgeEventHook.markNotHave();
+		StellarAPIEventHook.markNotHave();
 	}
 }

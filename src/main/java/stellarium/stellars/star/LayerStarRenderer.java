@@ -3,6 +3,7 @@ package stellarium.stellars.star;
 import org.lwjgl.opengl.GL11;
 
 import stellarium.StellarSkyResources;
+import stellarium.render.EnumRenderPass;
 import stellarium.render.ICelestialLayerRenderer;
 import stellarium.render.StellarRenderInfo;
 
@@ -19,6 +20,11 @@ public class LayerStarRenderer implements ICelestialLayerRenderer {
 	@Override
 	public void postRender(StellarRenderInfo info) {
 		info.tessellator.draw();
+	}
+
+	@Override
+	public boolean acceptPass(EnumRenderPass pass) {
+		return pass == EnumRenderPass.DeepScattering;
 	}
 
 }

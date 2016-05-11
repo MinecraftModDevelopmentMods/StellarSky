@@ -9,22 +9,19 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
-import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
-import stellarium.client.DefaultHourProvider;
 import stellarium.client.StellarClientFMLHook;
-import stellarium.client.StellarClientForgeHook;
 import stellarium.client.overlay.StellarSkyOverlays;
+import stellarium.client.overlay.clientcfg.OverlayClientSettingsType;
 import stellarium.client.overlay.clock.OverlayClockType;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.CelestialManager;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
-	private static final String clientConfigCategory = "clientconfig";
+	public static final String clientConfigCategory = "clientconfig";
 	private static final String clientConfigOpticsCategory = "clientconfig.optics";
 	
 	private ClientSettings clientSettings = new ClientSettings();
@@ -46,15 +43,12 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		this.guiConfig = new ConfigManager(
 				StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
 						StellarSkyReferences.guiSettings));
-		
-		MinecraftForge.EVENT_BUS.register(new StellarClientForgeHook());
-				
+						
 		FMLCommonHandler.instance().bus().register(new StellarClientFMLHook());
-		
-		StellarSkyAPI.registerHourProvider(new DefaultHourProvider(this.clientSettings));
 		
 		OverlayRegistry.registerOverlaySet("stellarsky", new StellarSkyOverlays());
 		OverlayRegistry.registerOverlay("clock", new OverlayClockType(), this.guiConfig);
+		OverlayRegistry.registerOverlay("clientconfig", new OverlayClientSettingsType(), this.guiConfig);
 	}
 
 	@Override
@@ -80,11 +74,6 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	@Override
 	public World getDefWorld() {
 		return Minecraft.getMinecraft().theWorld;
-	}
-	
-	@Override
-	public World getDefWorld(boolean isRemote) {
-		return isRemote? this.getDefWorld() : super.getDefWorld();
 	}
 	
 	public Entity getDefViewerEntity() {

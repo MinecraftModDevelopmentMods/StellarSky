@@ -19,9 +19,8 @@ public interface IProxy {
 
     public void postInit(FMLPostInitializationEvent event);
     
-    public World getDefWorld();
-    public World getDefWorld(boolean isRemote);
-    
+	public World getDefWorld();
+	
 	public Entity getDefViewerEntity();
     
     public ClientSettings getClientSettings();

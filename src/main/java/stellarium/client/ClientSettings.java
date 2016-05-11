@@ -3,22 +3,16 @@ package stellarium.client;
 import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.SimpleHierarchicalConfig;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
-import stellarapi.api.lib.config.property.ConfigPropertyInteger;
-import stellarapi.api.lib.config.property.ConfigPropertyString;
 import stellarium.stellars.layer.StellarLayerRegistry;
 
 public class ClientSettings extends SimpleHierarchicalConfig {
 	
 	public float mag_Limit;
-	public double minuteLength;
-	public int anHourToMinute;
 	
-	private ConfigPropertyDouble propMagLimit, propTurb;
-	private ConfigPropertyDouble propMinuteLength;
-	private ConfigPropertyInteger propHourToMinute;
-	private ConfigPropertyString propLockBtnPosition;
+	private ConfigPropertyDouble propMagLimit;
+	//private ConfigPropertyString propLockBtnPosition;
 	
-	private EnumLockBtnPosition btnPosition = EnumLockBtnPosition.UPRIGHT;
+	//private EnumLockBtnPosition btnPosition = EnumLockBtnPosition.UPRIGHT;
 	
 	private boolean isDirty = false;
 	
@@ -26,16 +20,10 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 		StellarLayerRegistry.getInstance().composeSettings(this);
 		
 		this.propMagLimit = new ConfigPropertyDouble("Mag_Limit", "", 6.0);
-		this.propTurb = new ConfigPropertyDouble("Twinkling(Turbulance)", "", 1.0);
-		this.propMinuteLength = new ConfigPropertyDouble("Minute_Length", "", 16.666);
-		this.propHourToMinute = new ConfigPropertyInteger("Hour_Length", "", 60);
-		this.propLockBtnPosition = new ConfigPropertyString("Lock_Button_Position", "", btnPosition.getName());
+		//this.propLockBtnPosition = new ConfigPropertyString("Lock_Button_Position", "", btnPosition.getName());
 		
 		this.addConfigProperty(this.propMagLimit);
-		this.addConfigProperty(this.propTurb);
-		this.addConfigProperty(this.propMinuteLength);
-		this.addConfigProperty(this.propHourToMinute);
-		this.addConfigProperty(this.propLockBtnPosition);
+		//this.addConfigProperty(this.propLockBtnPosition);
 	}
 	
 	@Override
@@ -54,26 +42,14 @@ public class ClientSettings extends SimpleHierarchicalConfig {
         		"but the better FPS you will get");
         propMagLimit.setRequiresMcRestart(true);
         propMagLimit.setLanguageKey("config.property.client.maglimit");
-
-        propTurb.setComment("Degree of the twinkling effect of star.\n"
-        		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect. "
-				+ "The greater the value, the more the stars will twinkle. Default is 1.0. To disable set to 0.0");
-        propTurb.setRequiresMcRestart(false);
-        propTurb.setLanguageKey("config.property.client.turbulance");
-
-        propMinuteLength.setComment("Number of ticks in a minute. (The minute & hour is displayed on HUD as HH:MM format)");
-        propMinuteLength.setRequiresMcRestart(false);
-        propMinuteLength.setLanguageKey("config.property.client.minutelength");        
-
-        propHourToMinute.setComment("Number of minutes in an hour. (The minute & hour is displayed on HUD as HH:MM format)");
-        propHourToMinute.setRequiresMcRestart(false);
-        propHourToMinute.setLanguageKey("config.property.client.hourlength");
+        propMagLimit.setMinValue(2.0);
+        propMagLimit.setMaxValue(7.0);
         
-        propLockBtnPosition.setValidValues(EnumLockBtnPosition.names);
+        /*propLockBtnPosition.setValidValues(EnumLockBtnPosition.names);
         propLockBtnPosition.setComment("Position of sky lock button.\n"
         		+ "Now there are upright and downleft.");
         propLockBtnPosition.setRequiresMcRestart(false);
-        propLockBtnPosition.setLanguageKey("config.property.client.lockbtnpos");
+        propLockBtnPosition.setLanguageKey("config.property.client.lockbtnpos");*/
 	}
 
 	@Override
@@ -81,22 +57,16 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 		super.loadFromConfig(config, category);
 		
 		this.mag_Limit=(float)propMagLimit.getDouble();
-        this.minuteLength = propMinuteLength.getDouble();
-        this.anHourToMinute = propHourToMinute.getInt();
         
-        this.btnPosition = EnumLockBtnPosition.getModeForName(propLockBtnPosition.getString());
+        //this.btnPosition = EnumLockBtnPosition.getModeForName(propLockBtnPosition.getString());
         
         this.isDirty = true;
 	}
 	
 	@Override
 	public void saveToConfig(Configuration config, String category) {
-		propLockBtnPosition.setString(btnPosition.getName());
+		//propLockBtnPosition.setString(btnPosition.getName());
 		super.saveToConfig(config, category);
-	}
-	
-	public double getTurbulance() {
-		return propTurb.getDouble() * 4.0;
 	}
 	
 	public boolean checkDirty() {
@@ -105,7 +75,7 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 		return flag;
 	}
 	
-	public EnumLockBtnPosition getBtnPosition() {
+	/*public EnumLockBtnPosition getBtnPosition() {
 		return this.btnPosition;
-	}
+	}*/
 }

@@ -16,4 +16,9 @@ public class StellarSkyOverlays implements IOverlaySetType {
 		return overlay.getModId().equals(StellarSkyReferences.modid);
 	}
 
+	@Override
+	public boolean isMain() {
+		return false;
+	}
+
 }

@@ -7,6 +7,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import stellarium.stellars.StellarManager;
@@ -27,16 +29,16 @@ public class StellarTickHandler {
 	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
 		if(e.phase == Phase.START){
-			World world = StellarSky.proxy.getDefWorld(true);
+			World world = StellarSky.proxy.getDefWorld();
 			
 			if(world != null) {
-				StellarManager manager = StellarManager.getManager(true);
+				StellarManager manager = StellarManager.getClientManager();
 				if(manager.getCelestialManager() != null) {
 					manager.update(world.getWorldTime());
 					StellarDimensionManager dimManager = StellarDimensionManager.get(world);
 					if(dimManager != null)
 					{
-						dimManager.update(world, world.getWorldTime());
+						dimManager.update(world, world.getWorldTime(), world.getTotalWorldTime());
 						manager.updateClient(StellarSky.proxy.getClientSettings());
 					}
 				}
@@ -47,10 +49,11 @@ public class StellarTickHandler {
 	@SubscribeEvent
 	public void tickStart(TickEvent.ServerTickEvent e) {
 		if(e.phase == Phase.START){
-			World world = StellarSky.proxy.getDefWorld(false);
+			MinecraftServer server = MinecraftServer.getServer();
+			World world = server.getEntityWorld();
 			
 			if(world != null) {
-				StellarManager manager = StellarManager.getManager(false);
+				StellarManager manager = StellarManager.getServerManager(server);
 				
 				if(manager.getSettings().serverEnabled)
 					manager.update(world.getWorldTime());
@@ -60,10 +63,13 @@ public class StellarTickHandler {
 	
 	@SubscribeEvent
 	public void tickStart(TickEvent.WorldTickEvent e) {
-		if(e.phase == Phase.START){
+		if(e.phase == Phase.START && e.side == Side.SERVER){
+			MinecraftServer server = MinecraftServer.getServer();
+			World defWorld = server.getEntityWorld();
+			
 			StellarDimensionManager dimManager = StellarDimensionManager.get(e.world);
 			if(dimManager != null)
-				dimManager.update(e.world, e.world.getWorldTime());
+				dimManager.update(e.world, e.world.getWorldTime(), defWorld.getTotalWorldTime());
 		}
 	}
 

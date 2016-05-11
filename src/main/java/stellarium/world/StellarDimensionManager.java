@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import stellarapi.api.ICelestialCoordinate;
@@ -84,11 +85,11 @@ public final class StellarDimensionManager extends WorldSavedData {
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
-		this.syncFromNBT(compound, false);
+		this.syncFromNBT(compound, StellarManager.getServerManager(MinecraftServer.getServer()), false);
 	}
 	
-	public void syncFromNBT(NBTTagCompound compound, boolean isRemote) {
-		if(StellarManager.getManager(isRemote).isLocked() || isRemote)
+	public void syncFromNBT(NBTTagCompound compound, StellarManager manager, boolean isRemote) {
+		if(manager.isLocked() || isRemote)
 		{
 			this.settings = new PerDimensionSettings(this.dimensionName);
 			settings.readFromNBT(compound);
@@ -117,6 +118,10 @@ public final class StellarDimensionManager extends WorldSavedData {
 		foundSuns.clear();
 		foundMoons.clear();
 		
+		StellarSky.logger.info("Starting Initial Update to Construct Images...");
+		manager.update(0.0);
+		StellarSky.logger.info("Initial Update Ended.");
+		
 		for(StellarObjectContainer container : manager.getCelestialManager().getLayers()) {
 			StellarCollection collection = new StellarCollection(container, coordinate, sky,
 					this.coordinate.getYearPeriod());
@@ -137,14 +142,14 @@ public final class StellarDimensionManager extends WorldSavedData {
 		return this.foundMoons;
 	}
 	
-	public void update(World world, long currentTick) {
+	public void update(World world, long currentTick, long currentUniversalTick) {
 		double skyTime = manager.getSkyTime(currentTick);
 		coordinate.update(skyTime / manager.getSettings().day / manager.getSettings().year);
 		
 		for(int i = 0; i < collections.size(); i++) {
 			StellarCollection collection = collections.get(i);
 			StellarObjectContainer container = manager.getCelestialManager().getLayers().get(i);
-			container.updateCollection(collection, StellarSky.proxy.getDefWorld(world.isRemote).getWorldTime());
+			container.updateCollection(collection, currentUniversalTick);
 		}
 	}
 }

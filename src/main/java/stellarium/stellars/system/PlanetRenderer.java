@@ -3,6 +3,7 @@ package stellarium.stellars.system;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.StellarSkyResources;
+import stellarium.render.EnumRenderPass;
 import stellarium.render.ICelestialObjectRenderer;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.Optics;
@@ -11,7 +12,7 @@ public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCach
 
 	@Override
 	public void render(StellarRenderInfo info, PlanetRenderCache cache) {
-		if(!cache.shouldRender)
+		if(!cache.shouldRender || info.pass != EnumRenderPass.ShallowScattering)
 			return;
 		
 		Vector3 pos = cache.appCoord.getVec();

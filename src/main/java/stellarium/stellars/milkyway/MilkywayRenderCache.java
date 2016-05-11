@@ -5,6 +5,7 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
+import stellarium.render.EnumRenderPass;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.util.math.VectorHelper;
@@ -44,7 +45,7 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 				info.applyAtmRefraction(coord);
 
 				milkywayvec[longc][latc].set(coord.getVec());
-				milkywayvec[longc][latc].scale(50.0);
+				milkywayvec[longc][latc].scale(EnumRenderPass.DEEP_DEPTH);
 			}
 		}
 		
