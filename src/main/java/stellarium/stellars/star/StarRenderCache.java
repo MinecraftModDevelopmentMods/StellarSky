@@ -51,7 +51,7 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 		}
 		
 		StarColor starColor = StarColor.getColor(object.B_V);
-		size *= 0.5f * EnumRenderPass.DEEP_DEPTH / 100.0;
+		size *= 0.5f * EnumRenderPass.getDeepDepth() / 100.0;
 		
 		double alpha = Optics.getAlphaFromMagnitude(object.mag + airmass * info.getExtinctionRate(EnumRGBA.Alpha), 0.0f) * 0.0005;
 		
@@ -71,7 +71,7 @@ public class StarRenderCache implements IRenderCache<BgStar, IConfigHandler> {
 		appCoord.y = 0.0;
 		dif.set(appCoord.getVec());
 		
-		pos.scale(EnumRenderPass.DEEP_DEPTH);
+		pos.scale(EnumRenderPass.getDeepDepth());
 		dif.scale(size);
 		dif2.scale(-size);
 	}

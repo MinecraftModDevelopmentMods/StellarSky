@@ -49,7 +49,7 @@ public class HorGridSettings extends PerDisplaySettings {
         propDisplayFrag.setMinValue(4).setMaxValue(64);
         propNameList.add(propDisplayFrag.getName());
 
-        propHorizonEnabled=config.get(category, "Display_Horizon_Enabled", false);
+        /*propHorizonEnabled=config.get(category, "Display_Horizon_Enabled", false);
         propHorizonEnabled.comment="Set to true to enable display of horizon.";
         propHorizonEnabled.setRequiresMcRestart(false);
         propHorizonEnabled.setLanguageKey("config.property.display.horcoord.horizon.displayed");
@@ -59,7 +59,7 @@ public class HorGridSettings extends PerDisplaySettings {
         propGridEnabled.comment="Set to true to enable display of horizontal grid.";
         propGridEnabled.setRequiresMcRestart(false);
         propGridEnabled.setLanguageKey("config.property.display.horcoord.grid.displayed");
-        propNameList.add(propHorizonEnabled.getName());
+        propNameList.add(propHorizonEnabled.getName());*/
         
         propDisplayBaseColor=config.get(category, "Display_Base_Color", new double[] {0.25, 0.25, 0.5});
         propDisplayBaseColor.comment = "Base color factor, the grid tends to have this color as base.";

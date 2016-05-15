@@ -51,7 +51,7 @@ public class EcGridCache implements IDisplayRenderCache<EcGridSettings> {
 			info.applyAtmRefraction(coord);
 			
 			ecliptic[longc].set(coord.getVec());
-			ecliptic[longc].scale(EnumRenderPass.DEEP_DEPTH + 1.0);
+			ecliptic[longc].scale(EnumRenderPass.getDeepDepth() + 1.0);
 			
 			for(int latc=0; latc<=latn; latc++){
 				Buf = new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec();
@@ -63,7 +63,7 @@ public class EcGridCache implements IDisplayRenderCache<EcGridSettings> {
 				info.applyAtmRefraction(coord);
 
 				displayvec[longc][latc].set(coord.getVec());
-				displayvec[longc][latc].scale(EnumRenderPass.DEEP_DEPTH + 2.0);
+				displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth() + 2.0);
 				
 				colorvec[longc][latc].set(this.baseColor);
 				

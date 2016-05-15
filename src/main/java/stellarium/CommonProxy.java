@@ -54,4 +54,9 @@ public class CommonProxy implements IProxy {
 	public Entity getDefViewerEntity() {
 		return null;
 	}
+
+	@Override
+	public int getRenderDistanceSettings() {
+		return 0;
+	}
 }

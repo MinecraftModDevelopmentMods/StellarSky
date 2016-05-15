@@ -28,5 +28,7 @@ public interface IProxy {
 	public void setupCelestialConfigManager(ConfigManager manager);
 
 	public CelestialManager getClientCelestialManager();
+	
+	public int getRenderDistanceSettings();
 
 }

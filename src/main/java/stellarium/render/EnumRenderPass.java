@@ -1,5 +1,7 @@
 package stellarium.render;
 
+import stellarium.StellarSky;
+
 /**
  * Enumeration for Stellar Render Pass.
  * @see #OpaqueStellar
@@ -17,8 +19,7 @@ public enum EnumRenderPass {
 	/**
 	 * Scattering from farther objects, e.g. Deep sky objects and stars,
 	 *  will be rendered here, as Pass 1.
-	 * They should be on distance 300.0
-	 * @see #DEEP_DEPTH
+	 * They should be on {@link #getDeepDepth()}
 	 * */
 	DeepScattering,
 	
@@ -36,7 +37,15 @@ public enum EnumRenderPass {
 	OpaqueSky;
 	
 	/**
-	 * Distance(depth) for scatters from far objects.
+	 * Gets Distance(depth) for scatters from far objects.
 	 * */
-	public static final double DEEP_DEPTH = 400.0;
+	public static final double getDeepDepth() {
+		int renderDistance = StellarSky.proxy.getRenderDistanceSettings();
+		return 30.0 * renderDistance;
+	}
+	
+	/**
+	 * The depth that it is confirmed usable when the sky is rendered.
+	 * */
+	public static final double DEFAULT_OPAQUE_DEPTH = 100.0;
 }

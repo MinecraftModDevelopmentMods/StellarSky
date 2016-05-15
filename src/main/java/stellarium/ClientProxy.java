@@ -79,4 +79,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public Entity getDefViewerEntity() {
 		return Minecraft.getMinecraft().renderViewEntity;
 	}
+	
+	@Override
+	public int getRenderDistanceSettings() {
+		return Minecraft.getMinecraft().gameSettings.renderDistanceChunks;
+	}
 }

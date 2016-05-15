@@ -47,11 +47,11 @@ public class HorGridCache implements IDisplayRenderCache<HorGridSettings> {
 		
 		for(int longc=0; longc<longn; longc++){
 			horizon[longc].set(new SpCoord(-longc*360.0/longn, 0.0).getVec());
-			horizon[longc].scale(EnumRenderPass.DEEP_DEPTH + 1.0);
+			horizon[longc].scale(EnumRenderPass.getDeepDepth() + 1.0);
 			
 			for(int latc=0; latc<=latn; latc++){
 				displayvec[longc][latc].set(new SpCoord(-longc*360.0/longn, latc*180.0/latn - 90.0).getVec());
-				displayvec[longc][latc].scale(EnumRenderPass.DEEP_DEPTH + 2.0);
+				displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth() + 2.0);
 				
 				colorvec[longc][latc].set(this.baseColor);
 				

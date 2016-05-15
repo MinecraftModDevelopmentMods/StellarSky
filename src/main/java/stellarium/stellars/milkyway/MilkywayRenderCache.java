@@ -45,7 +45,7 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 				info.applyAtmRefraction(coord);
 
 				milkywayvec[longc][latc].set(coord.getVec());
-				milkywayvec[longc][latc].scale(EnumRenderPass.DEEP_DEPTH);
+				milkywayvec[longc][latc].scale(EnumRenderPass.getDeepDepth());
 			}
 		}
 		
