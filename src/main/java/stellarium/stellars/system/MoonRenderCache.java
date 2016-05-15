@@ -5,6 +5,7 @@ import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EnumRGBA;
 import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
+import stellarium.render.EnumRenderPass;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.util.math.VectorHelper;
@@ -13,7 +14,8 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 	
 	protected boolean shouldRenderGlow;
 	
-	protected SpCoord appCoord, cache;
+	private SpCoord appCoord, cache;
+	protected Vector3 pos = new Vector3(), dif = new Vector3(), dif2 = new Vector3();
 	protected int latn, longn;
 	protected Vector3 moonPos[][], moonnormal[][];
 	protected float moonilum[][];
@@ -48,7 +50,18 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 		this.difactor = 0.8 / 180.0 * Math.PI / this.size;
 		this.difactor = this.difactor * this.difactor / Math.PI;
 		
-		this.size *= (90.0*5.0);
+		if(this.shouldRenderGlow) {
+			pos.set(appCoord.getVec());
+			dif.set(new SpCoord(appCoord.x+90, 0.0).getVec());
+			dif2.set(new SpCoord(appCoord.x, appCoord.y+90).getVec());
+
+			pos.scale(EnumRenderPass.DEFAULT_OPAQUE_DEPTH);
+			this.size *= (EnumRenderPass.DEFAULT_OPAQUE_DEPTH*5.0);
+			
+			dif.scale(this.size);
+			dif2.scale(-this.size);
+		}
+		
 		
 		int latc, longc;
 		for(longc=0; longc<longn; longc++){
@@ -65,7 +78,7 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 				info.applyAtmRefraction(this.cache);
 
 				moonPos[longc][latc].set(cache.getVec());
-				moonPos[longc][latc].scale(size/object.earthPos.size()*98.0);
+				moonPos[longc][latc].scale(size/object.earthPos.size()*EnumRenderPass.DEFAULT_OPAQUE_DEPTH);
 
 				if(cache.y < 0 && info.hideObjectsUnderHorizon)
 					moonilum[longc][latc]=0.0f;

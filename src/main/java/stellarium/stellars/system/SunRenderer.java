@@ -14,13 +14,9 @@ public class SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 		if(info.pass != EnumRenderPass.ShallowScattering)
 			return;
 		
-		Vector3 pos = cache.appCoord.getVec();
-		Vector3 dif = new SpCoord(cache.appCoord.x+90, 0.0).getVec();
-		Vector3 dif2 = new SpCoord(cache.appCoord.x, cache.appCoord.y+90).getVec();
-
-		pos.scale(99.0);
-		dif.scale(cache.size);
-		dif2.scale(-cache.size);
+		Vector3 pos = cache.pos;
+		Vector3 dif = cache.dif;
+		Vector3 dif2 = cache.dif2;
 		
 		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceSunHalo.getLocation());
 		info.tessellator.startDrawingQuads();

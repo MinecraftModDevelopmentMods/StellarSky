@@ -53,12 +53,12 @@ public class SkyRenderCelestial implements ICelestialRenderer {
 		pass = EnumRenderPass.DeepScattering;
 		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks, pass), celManager.getLayers());
 		
-		GL11.glDepthMask(false);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		
 		pass = EnumRenderPass.ShallowScattering;
 		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks, pass), celManager.getLayers());
 		
-		GL11.glDepthMask(true);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		
 		pass = EnumRenderPass.OpaqueSky;
 		renderer.render(new StellarRenderInfo(mc, Tessellator.instance, skycolor, weathereff, partialTicks, pass), celManager.getLayers());
