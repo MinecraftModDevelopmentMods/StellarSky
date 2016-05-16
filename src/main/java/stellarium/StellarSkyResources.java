@@ -109,6 +109,25 @@ public class StellarSkyResources {
 	
 	public static final ResourceLocation fragment =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/fragments.png");
+
+	
+	public static final ResourceLocation horizon =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/horizon.png");
+
+	public static final ResourceLocation equator =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/equator.png");
+	
+	public static final ResourceLocation eclipticline =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/eclipticline.png");
+	
+	public static final ResourceLocation horizontalgrid =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/horizontalgrid.png");
+
+	public static final ResourceLocation equatorialgrid =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/equatorialgrid.png");
+	
+	public static final ResourceLocation eclipticgrid =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/eclipticgrid.png");
 	
 	
 	public static final ResourceLocation optics =

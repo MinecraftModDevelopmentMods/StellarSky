@@ -148,6 +148,12 @@ config.property.display.horcoord.color.height.tooltip=Color factor for height, t
 config.property.display.horcoord.color.azimuth=Azimuth color of Hor. Coordinate
 config.property.display.horcoord.color.azimuth.tooltip=Color factor for azimuth(horizontal position), the grid tends to have this color when azimuth gets bigger.
 
+config.property.display.horcoord.horizon.displayed=Enable Horizon
+config.property.display.horcoord.horizon.displayed.tooltip=Enable display of the horizon.
+
+config.property.display.horcoord.grid.displayed=Enable Horizontal Grid
+config.property.display.horcoord.grid.displayed.tooltip=Enable display of the horizontal grid.
+
 ////Display/Equatorial Coordinate Grid
 config.category.display.eqcoord=Equatorial Coordinate Grid
 config.category.display.eqcoord.tooltip=Configurations for the display element: Equatorial Coodrinate Grid.
@@ -164,6 +170,12 @@ config.property.display.eqcoord.color.dec.tooltip=Color factor for declination, 
 config.property.display.eqcoord.color.ra=Right Ascension color of Eq. Coordinate
 config.property.display.eqcoord.color.ra.tooltip=Color factor for right ascension, the grid tends to have this color when right ascension gets bigger.
 
+config.property.display.eqcoord.equator.displayed=Enable Equator
+config.property.display.eqcoord.equator.displayed.tooltip=Enable display of the equator.
+
+config.property.display.eqcoord.grid.displayed=Enable Equatorial Grid
+config.property.display.eqcoord.grid.displayed.tooltip=Enable display of the equatorial grid.
+
 ////Display/Ecliptic Coordinate Grid
 config.category.display.eccoord=Ecliptic Coordinate Grid
 config.category.display.eccoord.tooltip=Configurations for the display element: Ecliptic Coodrinate Grid.
@@ -179,6 +191,12 @@ config.property.display.eccoord.color.latitude.tooltip=Color factor for latitude
 
 config.property.display.eccoord.color.longitude=Longitude color of Ec. Coordinate
 config.property.display.eccoord.color.longitude.tooltip=Color factor for longitude, the grid tends to have this color when longitude gets bigger.
+
+config.property.display.eccoord.ecliptic.displayed=Enable ecliptic
+config.property.display.eccoord.ecliptic.displayed.tooltip=Enable display of the ecliptic.
+
+config.property.display.eccoord.grid.displayed=Enable Ecliptic Grid
+config.property.display.eccoord.grid.displayed.tooltip=Enable diplay of the ecliptic grid.
 
 
 ///Dimension

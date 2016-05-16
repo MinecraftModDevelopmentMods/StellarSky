@@ -10,7 +10,7 @@ import stellarium.stellars.display.PerDisplaySettings;
 
 public class EqGridSettings extends PerDisplaySettings {
 
-	public boolean displayEnabled;
+	public boolean displayEnabled, equatorEnabled, gridEnabled;
 	public int displayFrag;
 	public double displayAlpha;
 	public double[] displayBaseColor;
@@ -18,6 +18,7 @@ public class EqGridSettings extends PerDisplaySettings {
 	public double[] displayRAColor;
 	
 	private Property propDisplayEnabled, propDisplayAlpha, propDisplayFrag;
+	private Property propEquatorEnabled, propGridEnabled;
 	private Property propDisplayBaseColor, propDisplayDecColor, propDisplayRAColor;
 	
 	@Override
@@ -47,6 +48,18 @@ public class EqGridSettings extends PerDisplaySettings {
         propDisplayFrag.setLanguageKey("config.property.display.eqcoord.fragments");
         propDisplayFrag.setMinValue(4).setMaxValue(64);
         propNameList.add(propDisplayFrag.getName());
+        
+        propEquatorEnabled=config.get(category, "Display_Equator_Enabled", true);
+        propEquatorEnabled.comment="Set to true to enable display of equator.";
+        propEquatorEnabled.setRequiresMcRestart(false);
+        propEquatorEnabled.setLanguageKey("config.property.display.eqcoord.equator.displayed");
+        propNameList.add(propEquatorEnabled.getName());
+        
+        propGridEnabled=config.get(category, "Display_Grid_Enabled", true);
+        propGridEnabled.comment="Set to true to enable display of equatorial grid.";
+        propGridEnabled.setRequiresMcRestart(false);
+        propGridEnabled.setLanguageKey("config.property.display.eqcoord.grid.displayed");
+        propNameList.add(propGridEnabled.getName());
         
         propDisplayBaseColor=config.get(category, "Display_Base_Color", new double[] {0.5, 0.25, 0.25});
         propDisplayBaseColor.comment = "Base color factor, the grid tends to have this color as base.";
@@ -80,6 +93,8 @@ public class EqGridSettings extends PerDisplaySettings {
 		this.displayBaseColor = propDisplayBaseColor.getDoubleList();
 		this.displayDecColor = propDisplayDecColor.getDoubleList();
 		this.displayRAColor = propDisplayRAColor.getDoubleList();
+		this.equatorEnabled = propEquatorEnabled.getBoolean();
+		this.gridEnabled = propGridEnabled.getBoolean();
 	}
 
 	@Override

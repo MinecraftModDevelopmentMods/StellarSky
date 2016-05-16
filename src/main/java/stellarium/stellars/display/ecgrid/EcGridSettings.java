@@ -10,7 +10,7 @@ import stellarium.stellars.display.PerDisplaySettings;
 
 public class EcGridSettings extends PerDisplaySettings {
 
-	public boolean displayEnabled;
+	public boolean displayEnabled, eclipticEnabled, gridEnabled;
 	public int displayFrag;
 	public double displayAlpha;
 	public double[] displayBaseColor;
@@ -18,11 +18,12 @@ public class EcGridSettings extends PerDisplaySettings {
 	public double[] displayAzimuthColor;
 	
 	private Property propDisplayEnabled, propDisplayAlpha, propDisplayFrag;
+	private Property propEclipticEnabled, propGridEnabled;
 	private Property propDisplayBaseColor, propDisplayLatitudeColor, propDisplayLongitudeColor;
 	
 	@Override
 	public void setupConfig(Configuration config, String category) {
-		config.setCategoryComment(category, "Configurations for Display of Horizontal Coordinate Grid.");
+		config.setCategoryComment(category, "Configurations for Display of ecliptictal Coordinate Grid.");
 		config.setCategoryLanguageKey(category, "config.category.display.eccoord");
 		config.setCategoryRequiresMcRestart(category, false);
 		
@@ -31,7 +32,7 @@ public class EcGridSettings extends PerDisplaySettings {
 		List<String> propNameList = Lists.newArrayList();
 		
         propDisplayEnabled=config.get(category, "Display_Enabled", false);
-        propDisplayEnabled.comment="Set to true to enable display of horizontal coordinates.";
+        propDisplayEnabled.comment="Set to true to enable display of ecliptictal coordinates.";
         propDisplayEnabled.setRequiresMcRestart(false);
         propDisplayEnabled.setLanguageKey("config.property.display.enabled");
         propNameList.add(propDisplayEnabled.getName());
@@ -49,6 +50,18 @@ public class EcGridSettings extends PerDisplaySettings {
         propDisplayFrag.setMinValue(4).setMaxValue(64);
         propDisplayFrag.setLanguageKey("config.property.display.eccoord.fragments");
         propNameList.add(propDisplayFrag.getName());
+        
+        propEclipticEnabled=config.get(category, "Display_Ecliptic_Enabled", true);
+        propEclipticEnabled.comment="Set to true to enable display of ecliptic.";
+        propEclipticEnabled.setRequiresMcRestart(false);
+        propEclipticEnabled.setLanguageKey("config.property.display.eccoord.ecliptic.displayed");
+        propNameList.add(propEclipticEnabled.getName());
+        
+        propGridEnabled=config.get(category, "Display_Grid_Enabled", true);
+        propGridEnabled.comment="Set to true to enable display of ecliptictal grid.";
+        propGridEnabled.setRequiresMcRestart(false);
+        propGridEnabled.setLanguageKey("config.property.display.eccoord.grid.displayed");
+        propNameList.add(propGridEnabled.getName());
         
         propDisplayBaseColor=config.get(category, "Display_Base_Color", new double[] {0.5, 0.5, 0.0});
         propDisplayBaseColor.comment = "Base color factor, the grid tends to have this color as base.";
@@ -82,6 +95,8 @@ public class EcGridSettings extends PerDisplaySettings {
 		this.displayBaseColor = propDisplayBaseColor.getDoubleList();
 		this.displayHeightColor = propDisplayLatitudeColor.getDoubleList();
 		this.displayAzimuthColor = propDisplayLongitudeColor.getDoubleList();
+		this.gridEnabled = propGridEnabled.getBoolean();
+		this.eclipticEnabled = propEclipticEnabled.getBoolean();
 	}
 
 	@Override

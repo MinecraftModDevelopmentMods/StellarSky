@@ -6,6 +6,7 @@ import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EnumRGBA;
 import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
+import stellarium.render.EnumRenderPass;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
@@ -14,8 +15,8 @@ public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 	
 	protected boolean shouldRender;
 	protected SpCoord appCoord = new SpCoord();
+	protected Vector3 pos = new Vector3(), dif = new Vector3(), dif2 = new Vector3();
 	protected float appMag;
-	protected float size;
 	protected float multiplier;
 	protected double[] color = new double[4];
 	
@@ -41,12 +42,27 @@ public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
 		if(appCoord.y < 0.0 && info.hideObjectsUnderHorizon)
 			this.shouldRender = false;
 		
-		this.size = (float) (info.getResolution(EnumRGBA.Alpha) / 0.3);
-		this.multiplier = (float)(info.lgp / (this.size * this.size * info.mp * info.mp));
-		this.size *= 0.6f;
+		pos.set(appCoord.getVec());
+		dif.set(new SpCoord(appCoord.x+90, 0.0).getVec());
+		dif2.set(new SpCoord(appCoord.x, appCoord.y+90).getVec());
+		
+		double size = (info.getResolution(EnumRGBA.Alpha) / 0.3);
+		this.multiplier = (float)(info.lgp / (size * size * info.mp * info.mp));
+		size *= 0.6f;
 		System.arraycopy(
 				EyeDetector.getInstance().process(this.multiplier, info.filter, new double[] {1.0, 1.0, 1.0, 0.1}),
 				0, this.color, 0, color.length);
+		
+		pos.set(appCoord.getVec());
+		appCoord.y += 90.0;
+		dif2.set(appCoord.getVec());
+		appCoord.x += 90.0;
+		appCoord.y = 0.0;
+		dif.set(appCoord.getVec());
+		
+		pos.scale(EnumRenderPass.DEFAULT_OPAQUE_DEPTH);
+		dif.scale(size);
+		dif2.scale(-size);
 	}
 
 	@Override

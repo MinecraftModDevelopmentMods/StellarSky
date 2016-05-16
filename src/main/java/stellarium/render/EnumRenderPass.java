@@ -18,7 +18,8 @@ public enum EnumRenderPass {
 	
 	/**
 	 * Scattering from farther objects, e.g. Deep sky objects and stars,
-	 *  will be rendered here, as Pass 1.
+	 *  will be rendered here, as Pass 1. <p>
+	 *  (Or Scattering) <p>
 	 * They should be on {@link #getDeepDepth()}
 	 * */
 	DeepScattering,

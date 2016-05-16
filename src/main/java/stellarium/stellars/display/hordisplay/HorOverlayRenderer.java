@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import stellarium.render.EnumRenderPass;
 import stellarium.render.StellarRenderInfo;
 import stellarium.stellars.display.IDisplayRenderer;
 
@@ -12,11 +13,10 @@ public class HorOverlayRenderer implements IDisplayRenderer<HorOverlayCache> {
 
 	@Override
 	public void render(StellarRenderInfo info, HorOverlayCache cache) {
+		if(!cache.enabled || info.pass != EnumRenderPass.OpaqueSky)
+			return;
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ZERO);
-		
-		if(!cache.enabled)
-			return;
 		
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		
@@ -39,7 +39,7 @@ public class HorOverlayRenderer implements IDisplayRenderer<HorOverlayCache> {
 		
 		info.tessellator.draw();
 		
-		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 	}
 
 }
