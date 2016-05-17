@@ -15,14 +15,20 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	public double latitude, longitude;
 	
-	private ConfigPropertyDouble propLatitude, propLongitude;
 	private ConfigPropertyBoolean propPatchProvider;
+
+	private ConfigPropertyDouble propLatitude, propLongitude;
+	
 	private ConfigPropertyBoolean propHideObjectsUnderHorizon;
+	
 	private ConfigPropertyBoolean propAllowRefraction;
 	private ConfigPropertyDouble propSunlightMultiplier;
 	private ConfigPropertyDouble propSkyDispersionRate;
 	private ConfigPropertyDouble propLightPollutionRate;
 	private ConfigPropertyDouble propMinimumSkyRenderBrightness;
+	
+	private ConfigPropertyBoolean propLandscapeEnabled;
+	
 	private ConfigPropertyString propRenderType;
 	
 	public PerDimensionSettings(String dimensionName) {
@@ -35,12 +41,15 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		
 		this.propLatitude = new ConfigPropertyDouble("Latitude", "lattitude", !dimensionName.equals("The End")? 37.5 : -52.5);
 		this.propLongitude = new ConfigPropertyDouble("Longitude", "longitude", !dimensionName.equals("The End")? 0.0 : 180.0);
+		
 		this.propHideObjectsUnderHorizon = new ConfigPropertyBoolean("Hide_Objects_Under_Horizon", "hideObjectsUnderHorizon", !dimensionName.equals("The End"));
 		this.propAllowRefraction = new ConfigPropertyBoolean("Allow_Atmospheric_Refraction", "allowRefraction", !dimensionName.equals("The End"));
        	this.propSunlightMultiplier = new ConfigPropertyDouble("SunLight_Multiplier", "sunlightMultiplier", 1.0);
        	this.propSkyDispersionRate = new ConfigPropertyDouble("Sky_Dispersion_Rate", "skyDispersionRate", 1.0);
        	this.propLightPollutionRate = new ConfigPropertyDouble("Light_Pollution_Rate", "lightPollutionRate", 1.0);
        	this.propMinimumSkyRenderBrightness = new ConfigPropertyDouble("Minimum_Sky_Render_Brightness", "minimumSkyRenderBrightness", 0.2);
+       	
+       	this.propLandscapeEnabled = new ConfigPropertyBoolean("Landscape_Enabled", "landscapeEnabled", false);
        	
        	this.addConfigProperty(this.propPatchProvider);
        	this.addConfigProperty(this.propRenderType);
@@ -52,6 +61,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	this.addConfigProperty(this.propSkyDispersionRate);
        	this.addConfigProperty(this.propLightPollutionRate);
        	this.addConfigProperty(this.propMinimumSkyRenderBrightness);
+       	this.addConfigProperty(this.propLandscapeEnabled);
 	}
 
 	@Override
@@ -106,18 +116,24 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
         propMinimumSkyRenderBrightness.setComment("Minimum brightness of skylight which (only) affects the rendering.");
         propMinimumSkyRenderBrightness.setRequiresWorldRestart(true);
         propMinimumSkyRenderBrightness.setLanguageKey("config.property.dimension.minimumskybrightness");
+        
+        propLandscapeEnabled.setComment("Whether landscape rendering on this world is enabled.");
+        propLandscapeEnabled.setRequiresWorldRestart(true);
+        propLandscapeEnabled.setLanguageKey("config.property.dimension.enablelandscape");
 	}
 
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
 		super.loadFromConfig(config, category);
 		
-		if(!this.doesPatchProvider())
-		{
+		if(!this.doesPatchProvider()) {
 			propLatitude.setAsDefault();
 			propLongitude.setAsDefault();
 			propAllowRefraction.setAsDefault();
 			propSunlightMultiplier.setAsDefault();
+			propSkyDispersionRate.setAsDefault();
+			propLightPollutionRate.setAsDefault();
+			propMinimumSkyRenderBrightness.setAsDefault();
 		}
        	
        	this.latitude = propLatitude.getDouble();
@@ -163,6 +179,10 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	public String getSkyRendererType() {
 		return propRenderType.getString();
+	}
+	
+	public boolean isLandscapeEnabled() {
+		return propLandscapeEnabled.getBoolean();
 	}
 
 	@Override

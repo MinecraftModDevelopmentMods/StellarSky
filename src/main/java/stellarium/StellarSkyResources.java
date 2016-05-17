@@ -28,6 +28,10 @@ public class StellarSkyResources {
 	public static final PerDimensionResource resourcePlanetSmall =
 			new PerDimensionResource("Planet_Small", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/star.png"));
 	
+	
+	public static final PerDimensionResource resourceLandscape =
+			new PerDimensionResource("Landscape", new ResourceLocation(StellarSkyReferences.resourceId, "textures/overlay/landscape.png"));
+
 	public static void init() {
 		PerDimensionResourceRegistry.getInstance().registerResourceId("End_Sky");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Milkyway");
@@ -36,6 +40,8 @@ public class StellarSkyResources {
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Surface");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Halo");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Planet_Small");
+		
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Landscape");
 	}
 	
 	
@@ -110,6 +116,9 @@ public class StellarSkyResources {
 	public static final ResourceLocation fragment =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/fragments.png");
 
+	public static final ResourceLocation fillfragment =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/fillfragments.png");
+	
 	
 	public static final ResourceLocation horizon =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/horizon.png");
@@ -128,7 +137,7 @@ public class StellarSkyResources {
 	
 	public static final ResourceLocation eclipticgrid =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/eclipticgrid.png");
-	
+
 	
 	public static final ResourceLocation optics =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/optics.png");
@@ -155,4 +164,5 @@ public class StellarSkyResources {
 	
 	public static final ResourceLocation milkywaybrightness =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/milkywaybrightness.png");
+
 }

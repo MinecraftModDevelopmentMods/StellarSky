@@ -19,7 +19,7 @@ import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.render.SkyRenderTypeEnd;
-import stellarium.render.SkyRenderTypeOverworld;
+import stellarium.render.SkyRenderTypeSurface;
 import stellarium.sync.StellarNetworkManager;
 import stellarium.world.provider.DefaultWorldProviderReplacer;
 import stellarium.world.provider.EndReplacer;
@@ -33,7 +33,7 @@ public class StellarSky {
         public static StellarSky instance;
         
         @SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
-        public static CommonProxy proxy;
+        public static IProxy proxy;
         
         public static Logger logger;
         
@@ -59,6 +59,7 @@ public class StellarSky {
         			StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
         					StellarSkyReferences.celestialSettings));
         	
+        	
             proxy.setupCelestialConfigManager(this.celestialConfigManager);
         	proxy.preInit(event);
         	
@@ -73,7 +74,7 @@ public class StellarSky {
     		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
     		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());
     		
-    		StellarSkyAPI.registerRendererType(new SkyRenderTypeOverworld());
+    		StellarSkyAPI.registerRendererType(new SkyRenderTypeSurface());
     		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
     		
     		StellarSkyResources.init();
@@ -81,12 +82,12 @@ public class StellarSky {
         
         @EventHandler
         public void load(FMLInitializationEvent event) throws IOException {
-        	celestialConfigManager.syncFromFile();
         	proxy.load(event);
         }
         
         @EventHandler
         public void postInit(FMLPostInitializationEvent event) {
+        	celestialConfigManager.syncFromFile();
         	proxy.postInit(event);
         }
         

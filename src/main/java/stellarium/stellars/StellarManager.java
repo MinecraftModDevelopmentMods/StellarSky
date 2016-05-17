@@ -12,14 +12,14 @@ import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
-import stellarium.common.CommonSettings;
+import stellarium.common.ServerSettings;
 import stellarium.stellars.layer.CelestialManager;
 
 public final class StellarManager extends WorldSavedData {
 	
 	private static final String ID = "stellarskymanagerdata";
 		
-	private CommonSettings settings;
+	private ServerSettings settings;
 	private CelestialManager celestialManager;
 	private boolean locked = false, setup = false;
 	
@@ -88,7 +88,7 @@ public final class StellarManager extends WorldSavedData {
 
 	
 	private void loadSettingsFromConfig() {
-		this.settings = (CommonSettings) StellarSky.proxy.commonSettings.copy();
+		this.settings = (ServerSettings) StellarSky.proxy.getServerSettings().copy();
 		this.markDirty();
 	}
 	
@@ -105,7 +105,7 @@ public final class StellarManager extends WorldSavedData {
 		this.locked = compound.getBoolean("locked");
 		if(this.locked || isRemote)
 		{
-			this.settings = new CommonSettings();
+			this.settings = new ServerSettings();
 			settings.readFromNBT(compound);
 		} else {
 			this.loadSettingsFromConfig();
@@ -130,7 +130,7 @@ public final class StellarManager extends WorldSavedData {
 		this.setup = true;
 	}
 	
-	public CommonSettings getSettings() {
+	public ServerSettings getSettings() {
 		return this.settings;
 	}
 	

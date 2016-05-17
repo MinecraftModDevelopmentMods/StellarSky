@@ -7,16 +7,19 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import stellarapi.api.lib.config.ConfigManager;
+import stellarapi.api.lib.config.HierarchicalConfig;
 import stellarium.client.ClientSettings;
-import stellarium.common.CommonSettings;
 import stellarium.common.DimensionSettings;
+import stellarium.common.ServerSettings;
 import stellarium.stellars.layer.CelestialManager;
+import stellarium.world.landscape.LandscapeCache;
 
 public class CommonProxy implements IProxy {
 
-	public CommonSettings commonSettings = new CommonSettings();
-	public DimensionSettings dimensionSettings = new DimensionSettings();
+	private ServerSettings serverSettings = new ServerSettings();
+	private DimensionSettings dimensionSettings = new DimensionSettings();
 	
 	private static final String serverConfigCategory = "serverconfig";
 	private static final String serverConfigDimensionCategory = "serverconfig.dimension";
@@ -32,7 +35,7 @@ public class CommonProxy implements IProxy {
 	
 	@Override
 	public void setupCelestialConfigManager(ConfigManager manager) {
-		manager.register(serverConfigCategory, this.commonSettings);
+		manager.register(serverConfigCategory, this.serverSettings);
 		manager.register(serverConfigDimensionCategory, this.dimensionSettings);
 	}
 	
@@ -59,4 +62,20 @@ public class CommonProxy implements IProxy {
 	public int getRenderDistanceSettings() {
 		return 0;
 	}
+
+	@Override
+	public void setupSkyRenderer(WorldProvider provider, String skyType, LandscapeCache cache) { }
+
+	@Override
+	public HierarchicalConfig getDimensionSettings() {
+		return this.dimensionSettings;
+	}
+
+	@Override
+	public ServerSettings getServerSettings() {
+		return this.serverSettings;
+	}
+
+	@Override
+	public void updateTick() { }
 }

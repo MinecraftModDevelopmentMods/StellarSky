@@ -11,8 +11,7 @@ import com.google.common.collect.Maps;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarium.client.ClientSettings;
-import stellarium.common.CommonSettings;
-import stellarium.stellars.display.LayerDisplay;
+import stellarium.common.ServerSettings;
 import stellarium.stellars.milkyway.LayerMilkyway;
 import stellarium.stellars.milkyway.MilkywaySettings;
 import stellarium.stellars.star.brstar.LayerBrStar;
@@ -37,9 +36,6 @@ public class StellarLayerRegistry {
 		this.registerLayer(new LayerBrStar(), null, (Callable)null, (Callable)null);
 		this.registerLayer(new LayerMilkyway(), "MilkyWay", (Callable)null, MilkywaySettings.class);
 		this.registerLayer(new LayerSolarSystem(), "SolarSystem", SolarSystemSettings.class, SolarSystemClientSettings.class);
-		
-		LayerDisplay display = new LayerDisplay();
-		this.registerLayer(display, "Display", (Callable)null, display);
 	}
 	
 	public void registerLayer(IStellarLayerType layer, String configName, Callable<INBTConfig> commonConfigFactory, Callable<IConfigHandler> clientConfigFactory)
@@ -80,7 +76,7 @@ public class StellarLayerRegistry {
 			}
 	}
 	
-	public void composeSettings(CommonSettings settings) {
+	public void composeSettings(ServerSettings settings) {
 		for(RegistryDelegate delegate : this.registeredLayers)
 			if(delegate.commonConfigCallable != null) {
 				try {

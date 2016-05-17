@@ -20,7 +20,9 @@ public class SkyRendererEnd extends IRenderHandler {
 	}
 
 	@Override
-	public void render(float partialTicks, WorldClient world, Minecraft mc) {
+	public void render(float partialTicks, WorldClient theWorld, Minecraft mc) {
+		// TODO celestial rendering before sky is rendered?
+		
 		GL11.glDisable(GL11.GL_FOG);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL11.GL_BLEND);
@@ -73,7 +75,8 @@ public class SkyRendererEnd extends IRenderHandler {
         
         GL11.glPushMatrix();
         GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-        celestials.renderCelestial(mc, new float[] {0.0f, 0.0f, 0.0f}, 1.0f, partialTicks);
+        celestials.renderCelestial(mc, theWorld, new float[] {0.0f, 0.0f, 0.0f}, partialTicks);
+        celestials.renderSkyLandscape(mc, theWorld, partialTicks);
         GL11.glPopMatrix();
         
         GL11.glDepthMask(true);

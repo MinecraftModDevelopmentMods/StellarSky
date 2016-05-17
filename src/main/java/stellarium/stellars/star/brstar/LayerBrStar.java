@@ -183,9 +183,4 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 		return null;
 	}
 
-	@Override
-	public Ordering<BgStar> getOrdering() {
-		return null;
-	}
-
 }

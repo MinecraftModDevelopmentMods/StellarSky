@@ -198,6 +198,12 @@ config.property.display.eccoord.ecliptic.displayed.tooltip=Enable display of the
 config.property.display.eccoord.grid.displayed=Enable Ecliptic Grid
 config.property.display.eccoord.grid.displayed.tooltip=Enable diplay of the ecliptic grid.
 
+////Landscape
+config.category.landscape=Landscape
+config.category.landscape.tooltip=Landscape is an overlay on Horizontal Coordinates which overlaps the celestial sphere.
+config.property.landscape.fragments=Number of Landscape fragment
+config.property.landscape.fragments.tooltip=Landscape is drawn with fragments. Less fragments will increase FPS, but the Landscape become more defective.
+
 
 ///Dimension
 config.category.dimension=Dimension Settings
@@ -236,11 +242,8 @@ config.property.dimension.lightpollutionrate.tooltip=Relative strength of light 
 config.property.dimension.minimumskybrightness=Minimum Sky Brightness
 config.property.dimension.minimumskybrightness.tooltip=Minimum brightness of skylight which (only) affects the rendering.
 
-////Dimension Resources
-config.category.dimension.perdimresource=Per Dimension Resources
-config.category.dimension.perdimresource.tooltip=Configuration on resources which are unique to this dimension.
-
-config.property.dimension.perdimresource.tooltip=If this is not set to 'default', the resource will be replaced by the resource on the described location. Note that resource location is form of '(modid):(actual location)'.
+config.property.dimension.enablelandscape=Enable Landscape
+config.property.dimension.enablelandscape.tooltip=Enable the landscape on this world.
 
 
 

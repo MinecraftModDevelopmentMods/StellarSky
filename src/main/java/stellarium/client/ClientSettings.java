@@ -17,8 +17,6 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 	private boolean isDirty = false;
 	
 	public ClientSettings() {
-		StellarLayerRegistry.getInstance().composeSettings(this);
-		
 		this.propMagLimit = new ConfigPropertyDouble("Mag_Limit", "", 6.0);
 		//this.propLockBtnPosition = new ConfigPropertyString("Lock_Button_Position", "", btnPosition.getName());
 		

@@ -61,7 +61,8 @@ public class DefCfgHierarchyHandler implements ICfgHierarchyHandler {
 
 	@Override
 	public boolean accept(ConfigCategory parent, ConfigCategory category) {
-		return parent != null || category.getName().contains(Configuration.CATEGORY_SPLITTER);
+		return (parent != null || category.getName().contains(Configuration.CATEGORY_SPLITTER))
+				&& !category.getLanguagekey().equals(category.getQualifiedName());
 	}
 
 	@Override

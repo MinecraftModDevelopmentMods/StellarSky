@@ -9,15 +9,24 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
+import net.minecraftforge.client.IRenderHandler;
 import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
+import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.StellarClientFMLHook;
 import stellarium.client.overlay.StellarSkyOverlays;
 import stellarium.client.overlay.clientcfg.OverlayClientSettingsType;
 import stellarium.client.overlay.clock.OverlayClockType;
+import stellarium.display.DisplayManager;
+import stellarium.display.DisplayRegistry;
+import stellarium.render.SkyCelestialRenderer;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.CelestialManager;
+import stellarium.stellars.layer.StellarLayerRegistry;
+import stellarium.world.landscape.LandscapeCache;
+import stellarium.world.landscape.LandscapeClientSettings;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
@@ -25,9 +34,11 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	private static final String clientConfigOpticsCategory = "clientconfig.optics";
 	
 	private ClientSettings clientSettings = new ClientSettings();
+	private LandscapeClientSettings landscapeSettings = new LandscapeClientSettings();
 	
 	private ConfigManager guiConfig;
 	private CelestialManager celestialManager = new CelestialManager(true);
+	private DisplayManager displayManager = new DisplayManager();
 	
 	public ClientSettings getClientSettings() {
 		return this.clientSettings;
@@ -40,6 +51,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
+		super.preInit(event);
 		this.guiConfig = new ConfigManager(
 				StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
 						StellarSkyReferences.guiSettings));
@@ -54,14 +66,18 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	@Override
 	public void load(FMLInitializationEvent event) throws IOException {
 		super.load(event);
-		guiConfig.syncFromFile();
 		
-    	celestialManager.initializeClient(this.clientSettings);
+		StellarLayerRegistry.getInstance().composeSettings(this.clientSettings);
+		DisplayRegistry.getInstance().setupDisplay(this.clientSettings, this.displayManager);
+		clientSettings.putSubConfig("landscape", this.landscapeSettings);
 	}
 
 	@Override
 	public void postInit(FMLPostInitializationEvent event) {
 		super.postInit(event);
+		
+		guiConfig.syncFromFile();
+    	celestialManager.initializeClient(this.clientSettings);
 	}
 	
 	@Override
@@ -83,5 +99,17 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	@Override
 	public int getRenderDistanceSettings() {
 		return Minecraft.getMinecraft().gameSettings.renderDistanceChunks;
+	}
+	
+	@Override
+	public void setupSkyRenderer(WorldProvider provider, String skyType, LandscapeCache cache) {
+		IRenderHandler renderer = StellarSkyAPI.getRendererFor(skyType,
+				new SkyCelestialRenderer(this.clientSettings, this.displayManager, this.landscapeSettings, cache));
+		provider.setSkyRenderer(renderer);
+	}
+	
+	@Override
+	public void updateTick() {
+		displayManager.updateDisplay(this.clientSettings);
 	}
 }

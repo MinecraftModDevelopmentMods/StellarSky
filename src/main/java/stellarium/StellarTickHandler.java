@@ -31,17 +31,18 @@ public class StellarTickHandler {
 		if(e.phase == Phase.START){
 			World world = StellarSky.proxy.getDefWorld();
 			
-			if(world != null) {
+			if(world != null) {				
 				StellarManager manager = StellarManager.getClientManager();
 				if(manager.getCelestialManager() != null) {
 					manager.update(world.getWorldTime());
 					StellarDimensionManager dimManager = StellarDimensionManager.get(world);
-					if(dimManager != null)
-					{
+					if(dimManager != null) {
 						dimManager.update(world, world.getWorldTime(), world.getTotalWorldTime());
 						manager.updateClient(StellarSky.proxy.getClientSettings());
 					}
 				}
+				
+				StellarSky.proxy.updateTick();
 			}
 		}
 	}

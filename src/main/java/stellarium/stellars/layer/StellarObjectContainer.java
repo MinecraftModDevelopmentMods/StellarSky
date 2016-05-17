@@ -138,16 +138,8 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 			entry.getValue().updateCache(settings, specificSettings, entry.getKey(), info);
 	}
 
-	public Iterable<IRenderCache> getRenderCacheList(Ordering<Obj> ordering) {
-		if(ordering == null)
-			return renderCacheMap.values();
-		return Iterables.transform(ordering.immutableSortedCopy(renderCacheMap.keySet()),
-				new Function<Obj, IRenderCache>() {
-					@Override
-					public IRenderCache apply(Obj input) {
-						return renderCacheMap.get(input);
-					}
-		});
+	public Iterable<IRenderCache> getRenderCacheList() {
+		return renderCacheMap.values();
 	}
 
 	

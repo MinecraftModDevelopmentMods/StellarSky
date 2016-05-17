@@ -6,7 +6,7 @@ import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
-import stellarium.common.CommonSettings;
+import stellarium.common.ServerSettings;
 
 public class StellarCoordinate implements ICelestialCoordinate {
 	
@@ -26,7 +26,7 @@ public class StellarCoordinate implements ICelestialCoordinate {
 	private CelestialPeriod dayPeriod;
 	private CelestialPeriod yearPeriod;
 	
-	public StellarCoordinate(CommonSettings commonSettings, PerDimensionSettings settings) {
+	public StellarCoordinate(ServerSettings commonSettings, PerDimensionSettings settings) {
 		this.yearLength = commonSettings.year;
 		this.dayLength = commonSettings.day;
 		this.latitude = Spmath.Radians(settings.latitude);

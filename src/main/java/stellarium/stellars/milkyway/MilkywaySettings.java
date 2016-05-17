@@ -23,6 +23,7 @@ public class MilkywaySettings implements IConfigHandler {
 		
 		List<String> propNameList = Lists.newArrayList();
 		
+		// TODO Migrate into classification.
         propMilkywayBrightness=config.get(category, "Milkyway_Brightness", 1.5);
         propMilkywayBrightness.comment="Brightness of milky way.\n"
         		+ "For real world it should be 1.0 or lower, but default is set to 1.5 for visual effect.";

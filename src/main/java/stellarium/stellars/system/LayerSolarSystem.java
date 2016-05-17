@@ -359,9 +359,4 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	public Collection<SolarObject> getMoons(StellarObjectContainer container) {
 		return container.getLoadedObjects("Moon");
 	}
-
-	@Override
-	public Ordering<SolarObject> getOrdering() {
-		return null;
-	}
 }

@@ -94,9 +94,4 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 	public Collection<Milkyway> getMoons(StellarObjectContainer container) {
 		return null;
 	}
-
-	@Override
-	public Ordering<Milkyway> getOrdering() {
-		return null;
-	}
 }

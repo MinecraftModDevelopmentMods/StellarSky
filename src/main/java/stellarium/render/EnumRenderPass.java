@@ -28,14 +28,7 @@ public enum EnumRenderPass {
 	 * Scattering from objects farther than the sky will be rendered here, as Pass 2.
 	 * Depth test will be disabled, so there's no need to control distance.
 	 * */
-	ShallowScattering,
-	
-	/**
-	 * Opaque objects which is nearer than the sky.
-	 * Mainly used for overlays.
-	 * (Depth test is enabled again here)
-	 * */
-	OpaqueSky;
+	ShallowScattering;
 	
 	/**
 	 * Gets Distance(depth) for scatters from far objects.

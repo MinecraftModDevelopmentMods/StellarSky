@@ -13,7 +13,7 @@ import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
-import stellarium.common.CommonSettings;
+import stellarium.common.ServerSettings;
 
 public class CelestialManager {
 
@@ -33,7 +33,7 @@ public class CelestialManager {
 		return this.layers;
 	}
 	
-	public void initializeClient(ClientSettings settings) {
+	public void initializeClient(ClientSettings settings) {		
 		StellarSky.logger.info("Initializing Celestial Layers with Client Settings...");
 		String layerName = null;
 		try {
@@ -49,7 +49,7 @@ public class CelestialManager {
     	StellarSky.logger.info("Successfully initialized Celestial Layers with Client Settings!");
 	}
 	
-	public void initializeCommon(CommonSettings settings) {
+	public void initializeCommon(ServerSettings settings) {
 		StellarSky.logger.info("Initializing Celestial Layers with Common Settings...");
 		String layerName = null;
 		try {
