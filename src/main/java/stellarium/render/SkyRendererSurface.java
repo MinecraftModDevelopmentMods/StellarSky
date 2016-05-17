@@ -28,6 +28,11 @@ public class SkyRendererSurface extends IRenderHandler {
 
 	public SkyRendererSurface(ICelestialRenderer subRenderer) {
         Tessellator tessellator = Tessellator.instance;
+        
+        /*
+         * Generate the sky list above the player.
+         * It is generated above the player, as surface.
+         * */
         this.skyList = GLAllocation.generateDisplayLists(2);
         GL11.glNewList(this.skyList, GL11.GL_COMPILE);
         byte b2 = 64;
@@ -48,8 +53,12 @@ public class SkyRendererSurface extends IRenderHandler {
                 tessellator.draw();
             }
         }
-
         GL11.glEndList();
+        
+        /*
+         * Generate the sky list under the player.
+         * It is generated above the player, as surface.
+         * */
         this.skyListUnderPlayer = this.skyList + 1;
         GL11.glNewList(this.skyListUnderPlayer, GL11.GL_COMPILE);
         f = -16.0F;
@@ -75,8 +84,22 @@ public class SkyRendererSurface extends IRenderHandler {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(float partialTicks, WorldClient theWorld, Minecraft mc) {
-        if (theWorld.provider.isSurfaceWorld())
-        {
+        if (theWorld.provider.isSurfaceWorld()) {
+        	/*
+        	 * TODO Atmospheric Rendering
+        	 * 1. Perform accurate atmosphere rendering (Use shaders if possible)
+        	 * 2. Atmosphere effects on Celestial Objects
+        	 * 
+        	 * Rendering Order should be:
+        	 * A. Render Pre-Additional Displays
+        	 * B. Apply Atmospherical Shaders
+        	 * C. Render Celestial Objects
+        	 *  C1. Render Distant Objects - On the Same Plane
+        	 *  C2. Render Near Objects
+        	 * C. Disapply Atmospherical Shaders
+        	 * D. Render Post-Additional Displays
+        	 * E. Render Landscape - To hide everything under the ground
+        	 * */
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             Vec3 vec3 = theWorld.getSkyColor(mc.renderViewEntity, partialTicks);
             float f1 = (float)vec3.xCoord;
@@ -96,19 +119,43 @@ public class SkyRendererSurface extends IRenderHandler {
                 f2 = f5;
                 f3 = f6;
             }
-
-            /*
+            
+            float f4, f5;
+            float alpha = f1 + f2 + f3;
+            if(alpha > 0.0f && alpha < 1.0f) {
+            	f4 = f1 / alpha;
+            	f5 = f2 / alpha;
+            	f6 = f3 / alpha;
+            } else {
+            	f4 = f1;
+            	f5 = f2;
+            	f6 = f3;
+            }
+            
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glPushMatrix();
+            GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
+            celestials.renderCelestial(mc, theWorld, new float[] {0.0f, 0.0f, 0.0f}, partialTicks);
+            GL11.glPopMatrix();
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            
+    		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            
+    		/*
              * Draw the sky above the player.
              * Mixed with the fog to give the semi-realistic view.
              */
-            GL11.glColor3f(f1, f2, f3);
+            GL11.glColor4f(f4, f5, f6, alpha);
+            GL11.glPushMatrix();
             Tessellator tessellator1 = Tessellator.instance;
             GL11.glDepthMask(false);
             GL11.glEnable(GL11.GL_FOG);
-            GL11.glColor3f(f1, f2, f3);
             GL11.glCallList(this.skyList);
             GL11.glDisable(GL11.GL_FOG);
-            
+            GL11.glPopMatrix();
             /*
              * Draw the sunrise/sunset effect.
              * Mixed with the sky color to give semi-realistic view.
@@ -125,15 +172,6 @@ public class SkyRendererSurface extends IRenderHandler {
 
             if (afloat != null)
             	celestials.renderSunriseSunsetEffect(mc, theWorld, afloat, partialTicks);
-            
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            OpenGlHelper.glBlendFunc(770, 1, 1, 0);
-            GL11.glPushMatrix();
-            GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-            GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
-            celestials.renderCelestial(mc, theWorld, new float[] {f1, f2, f3}, partialTicks);
-            GL11.glPopMatrix();
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
             
             
             /* 

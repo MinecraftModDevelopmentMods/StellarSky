@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -72,7 +73,7 @@ public class SkyCelestialRenderer implements ICelestialRenderer {
 
 		GL11.glDepthMask(true);
 		
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE, GL11.GL_ONE);
 		
 		float weathereff = 1.0F - theWorld.getRainStrength(partialTicks);
 		
