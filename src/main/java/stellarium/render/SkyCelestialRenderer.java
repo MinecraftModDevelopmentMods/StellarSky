@@ -69,10 +69,6 @@ public class SkyCelestialRenderer implements ICelestialRenderer {
 			this.onSettingsUpdated(mc);
 		
 		Tessellator tessellator = Tessellator.instance;
-		
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		display.render(mc, tessellator, partialTicks, false);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
 
 		GL11.glDepthMask(true);
 		
@@ -82,6 +78,8 @@ public class SkyCelestialRenderer implements ICelestialRenderer {
 		
 		EnumRenderPass pass = EnumRenderPass.OpaqueStellar;
 		renderer.render(new StellarRenderInfo(mc, tessellator, skycolor, weathereff, partialTicks, pass), celManager.getLayers());
+		
+		display.render(mc, tessellator, partialTicks, false);
 		
 		pass = EnumRenderPass.DeepScattering;
 		renderer.render(new StellarRenderInfo(mc, tessellator, skycolor, weathereff, partialTicks, pass), celManager.getLayers());

@@ -8,6 +8,11 @@ public class DisplayRenderInfo {
 	public final Minecraft mc;
 	public final Tessellator tessellator;
 	public final float partialTicks;
+	
+	/**
+	 * Render pass which display is rendered.
+	 * To accept this as false, the depth should be farther than {@link EnumRenderPass#getDeepDepth()}.
+	 * */
 	public final boolean isPostCelesitals;
 	
 	public DisplayRenderInfo(Minecraft mc, Tessellator tessellator, float partialTicks, boolean isPostCelesitals) {
