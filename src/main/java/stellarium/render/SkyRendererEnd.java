@@ -21,6 +21,9 @@ public class SkyRendererEnd extends IRenderHandler {
 
 	@Override
 	public void render(float partialTicks, WorldClient theWorld, Minecraft mc) {
+		/*
+		 * Render the end sky. This is rendered as cube which is on far away.
+		 */
 		GL11.glDisable(GL11.GL_FOG);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL11.GL_BLEND);
@@ -30,6 +33,9 @@ public class SkyRendererEnd extends IRenderHandler {
         mc.renderEngine.bindTexture(StellarSkyResources.resourceEndSky.getLocation());
         Tessellator tessellator = Tessellator.instance;
 
+		/*
+		 * The cube. (6 faces)
+		 */
         for (int i = 0; i < 6; ++i)
         {
             GL11.glPushMatrix();

@@ -84,6 +84,9 @@ public class SkyRendererSurface extends IRenderHandler {
             float f3 = (float)vec3.zCoord;
             float f6;
 
+            /* 
+             * When anaglyph is enabled, sky color is modified to fit the effect.
+             */
             if (mc.gameSettings.anaglyph)
             {
                 float f4 = (f1 * 30.0F + f2 * 59.0F + f3 * 11.0F) / 100.0F;
@@ -94,6 +97,10 @@ public class SkyRendererSurface extends IRenderHandler {
                 f3 = f6;
             }
 
+            /*
+             * Draw the sky above the player.
+             * Mixed with the fog to give the semi-realistic view.
+             */
             GL11.glColor3f(f1, f2, f3);
             Tessellator tessellator1 = Tessellator.instance;
             GL11.glDepthMask(false);
@@ -101,7 +108,12 @@ public class SkyRendererSurface extends IRenderHandler {
             GL11.glColor3f(f1, f2, f3);
             GL11.glCallList(this.skyList);
             GL11.glDisable(GL11.GL_FOG);
-            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            
+            /*
+             * Draw the sunrise/sunset effect.
+             * Mixed with the sky color to give semi-realistic view.
+             */
+            GL11.glDisable(GL11.GL_ALPHA_TEST);   
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(770, 771, 1, 0);
             RenderHelper.disableStandardItemLighting();
@@ -123,6 +135,10 @@ public class SkyRendererSurface extends IRenderHandler {
             GL11.glPopMatrix();
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             
+            
+            /* 
+             * Will draw the sky list under the player.
+             */
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -130,6 +146,11 @@ public class SkyRendererSurface extends IRenderHandler {
             GL11.glColor3f(0.0F, 0.0F, 0.0F);
             double d0 = mc.thePlayer.getPosition(partialTicks).yCoord - theWorld.getHorizon();
 
+            /* 
+             * When the player is under the horizon,
+             * Draw the sky list under the player in black color,
+             * And draw the rectangle under the y -1.0 to hide the sky under y 0
+             */
             if (d0 < 0.0D)
             {
                 GL11.glPushMatrix();
@@ -173,6 +194,10 @@ public class SkyRendererSurface extends IRenderHandler {
                 GL11.glColor3f(f1, f2, f3);
             }
 
+            /* 
+             * Draw the sky list under the player in sky color.
+             * This is to hide celestial objects under the horizon.
+             */
             GL11.glPushMatrix();
             GL11.glTranslatef(0.0F, -((float)(d0 - 16.0D)), 0.0F);
             GL11.glCallList(this.skyListUnderPlayer);
