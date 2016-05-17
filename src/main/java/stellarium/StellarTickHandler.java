@@ -39,10 +39,9 @@ public class StellarTickHandler {
 					if(dimManager != null) {
 						dimManager.update(world, world.getWorldTime(), world.getTotalWorldTime());
 						manager.updateClient(StellarSky.proxy.getClientSettings());
+						StellarSky.proxy.updateTick();
 					}
 				}
-				
-				StellarSky.proxy.updateTick();
 			}
 		}
 	}
