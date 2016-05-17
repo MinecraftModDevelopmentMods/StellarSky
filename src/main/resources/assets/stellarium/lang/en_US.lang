@@ -216,7 +216,7 @@ config.property.dimension.patchprovider=Patch Provider
 config.property.dimension.patchprovider.tooltip=Determine whether or not patch provider. Cannot adjust longitude and latitude when this is false.
 
 config.property.dimension.skyrenderertype=Sky Renderer Type
-config.property.dimension.skyrenderertype.tooltip=Sky renderer type for this dimension. There are 'Overworld Sky' and 'End Sky' type by default.
+config.property.dimension.skyrenderertype.tooltip=Sky renderer type for this dimension. There are 'Overworld Sky', 'End Sky', and 'Skyblock Sky' type by default.
 
 config.property.dimension.latitude=Latitude
 config.property.dimension.latitude.tooltip=Latitude on this world, in Degrees.

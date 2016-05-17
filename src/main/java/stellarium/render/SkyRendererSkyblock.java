@@ -178,11 +178,17 @@ public class SkyRendererSkyblock extends IRenderHandler {
 
     	GL11.glEnable(GL11.GL_TEXTURE_2D);
 
+    	float color = (float) (1.0 + d0 / theWorld.getHorizon());
+    	
+    	GL11.glDisable(GL11.GL_FOG);
     	GL11.glPushMatrix();
+    	GL11.glTranslatef(0.0F, -((float)d0), 0.0F);
     	GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
     	GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
+    	GL11.glColor3f(color, color, color);
     	celestials.renderSkyLandscape(mc, theWorld, partialTicks);
     	GL11.glPopMatrix();
+    	GL11.glEnable(GL11.GL_FOG);
 
     	GL11.glDepthMask(true);
     }

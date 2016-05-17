@@ -77,7 +77,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
         
         String[] list = StellarSkyAPI.getRenderTypesForDimension(this.dimensionName);
         propRenderType.setComment("Sky renderer type for this dimension.\n"
-        		+ "There are 'Overworld Sky' and 'End Sky' type by default.");
+        		+ "There are 'Overworld Sky', 'End Sky' and 'Skyblock Sky' type by default.");
         propRenderType.setRequiresWorldRestart(true);
         propRenderType.setLanguageKey("config.property.dimension.skyrenderertype");
         propRenderType.setValidValues(list);

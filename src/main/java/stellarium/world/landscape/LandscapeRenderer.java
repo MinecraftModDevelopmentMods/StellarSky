@@ -12,9 +12,7 @@ import stellarium.render.StellarRenderInfo;
 @SideOnly(Side.CLIENT)
 public class LandscapeRenderer {
 
-	public void render(LandscapeRenderInfo info, LandscapeCache cache) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		
+	public void render(LandscapeRenderInfo info, LandscapeCache cache) {		
 		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceLandscape.getLocation());
 		info.tessellator.startDrawingQuads();
 

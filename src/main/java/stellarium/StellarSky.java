@@ -19,6 +19,7 @@ import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.render.SkyRenderTypeEnd;
+import stellarium.render.SkyRenderTypeSkyblock;
 import stellarium.render.SkyRenderTypeSurface;
 import stellarium.sync.StellarNetworkManager;
 import stellarium.world.provider.DefaultWorldProviderReplacer;
@@ -76,6 +77,7 @@ public class StellarSky {
     		
     		StellarSkyAPI.registerRendererType(new SkyRenderTypeSurface());
     		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
+    		StellarSkyAPI.registerRendererType(new SkyRenderTypeSkyblock());
     		
     		StellarSkyResources.init();
         }
