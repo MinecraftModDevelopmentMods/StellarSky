@@ -41,9 +41,8 @@ public class SettingSpecific {
 		model.addSubModel("config.property.display.eqcoord.grid.displayed", new ModelOnOff(StellarSkyResources.equatorialgrid));
 		model.addSubModel("config.property.display.eccoord.grid.displayed", new ModelOnOff(StellarSkyResources.eclipticgrid));
 		
-		model.addSubModel("config.property.display.horoverlay.fragments", new ModelSimpleTextured(StellarSkyResources.fillfragment));
-		model.addSubModel("config.property.display.eqoverlay.fragments", new ModelSimpleTextured(StellarSkyResources.fillfragment));
-		model.addSubModel("config.property.display.ecoverlay.fragments", new ModelSimpleTextured(StellarSkyResources.fillfragment));
+		model.addSubModel("config.category.landscape", new ModelSimpleTextured(StellarSkyResources.landscape));
+		model.addSubModel("config.property.landscape.fragments", new ModelSimpleTextured(StellarSkyResources.fillfragment));
 
 		model.addSubModel("config.category.optics", new ModelSimpleTextured(StellarSkyResources.optics));
 		model.addSubModel("config.property.client.turbulance", new ModelSimpleTextured(StellarSkyResources.turbulance));

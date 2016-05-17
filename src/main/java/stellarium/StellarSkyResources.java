@@ -138,6 +138,10 @@ public class StellarSkyResources {
 	public static final ResourceLocation eclipticgrid =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/eclipticgrid.png");
 
+
+	public static final ResourceLocation landscape =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/landscape.png");
+	
 	
 	public static final ResourceLocation optics =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/optics.png");
