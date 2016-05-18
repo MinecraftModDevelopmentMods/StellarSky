@@ -1,4 +1,4 @@
-package stellarium.render;
+package stellarium.render.celesital;
 
 import java.util.List;
 

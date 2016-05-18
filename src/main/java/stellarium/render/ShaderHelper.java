@@ -1,21 +1,17 @@
 package stellarium.render;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.lwjgl.opengl.ARBFragmentShader;
-import org.lwjgl.opengl.ARBGeometryShader4;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.ARBVertexShader;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Maps;
 
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.ResourceLocation;
 import stellarapi.api.lib.math.Vector3;
 
 public class ShaderHelper {
@@ -23,22 +19,21 @@ public class ShaderHelper {
 			
 	private int currentShader;
 	protected Map<String, Integer> shaderMap = Maps.newHashMap();
-	private String beforesh = "";	
+	private String beforesh = "";
 	
-	public void initShader(String shname, String vertloc, String fragloc, String geomloc){
+	public void initShader(String shname, String vertloc, String fragloc){
 		
-		int vertShader = 0, fragShader = 0, geomShader = 0;
+		int vertShader = 0, fragShader = 0;
 		int programObject;
 	 
 		try {
 			vertShader = createShader(vertloc, ARBVertexShader.GL_VERTEX_SHADER_ARB);
 			fragShader = createShader(fragloc, ARBFragmentShader.GL_FRAGMENT_SHADER_ARB);
-			geomShader = createShader(geomloc, ARBGeometryShader4.GL_GEOMETRY_SHADER_ARB);
 		} catch(Exception exc) {
 			exc.printStackTrace();
 			return;
 		} finally {
-			if(vertShader == 0 || fragShader == 0 || geomShader == 0)
+			if(vertShader == 0 || fragShader == 0)
 				return;
 		}
 	 
@@ -52,14 +47,12 @@ public class ShaderHelper {
 		
 		ARBShaderObjects.glLinkProgramARB(programObject);
 		if (ARBShaderObjects.glGetObjectParameteriARB(programObject, ARBShaderObjects.GL_OBJECT_LINK_STATUS_ARB) == GL11.GL_FALSE) {
-			System.err.println(getLogInfo(programObject));
-			return;
+			throw new RuntimeException(getLogInfo(programObject));
 		}
 	 
 		ARBShaderObjects.glValidateProgramARB(programObject);
 		if (ARBShaderObjects.glGetObjectParameteriARB(programObject, ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB) == GL11.GL_FALSE) {
-			System.err.println(getLogInfo(programObject));
-			return;
+			throw new RuntimeException(getLogInfo(programObject));
 		}
 		
 		shaderMap.put(shname, programObject);
@@ -70,7 +63,13 @@ public class ShaderHelper {
 			releaseShader();
 			
 			this.beforesh = shname;
-			this.currentShader = shaderMap.get(shname);
+			Integer id = shaderMap.get(shname);
+			
+			if(id == null)
+				throw new IllegalStateException(
+						String.format("The shader for the name %s is not initialized.", shname));
+			
+			this.currentShader = id.intValue();
 			ARBShaderObjects.glUseProgramObjectARB(this.currentShader);
 		}
 	}
@@ -90,7 +89,7 @@ public class ShaderHelper {
 	}
 	
 	
-	private int createShader(String filename, int shaderType) throws Exception{
+	private int createShader(String resourceName, int shaderType) throws Exception{
 		int shader = 0;
 		try {
 			shader = ARBShaderObjects.glCreateShaderObjectARB(shaderType);
@@ -98,7 +97,7 @@ public class ShaderHelper {
 			if(shader == 0)
 				return 0;
 			
-			ARBShaderObjects.glShaderSourceARB(shader, readFileAsString(filename));
+			ARBShaderObjects.glShaderSourceARB(shader, readFileAsString(resourceName));
 			ARBShaderObjects.glCompileShaderARB(shader);
 		 
 			if (ARBShaderObjects.glGetObjectParameteriARB(shader, ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE)
@@ -116,16 +115,16 @@ public class ShaderHelper {
 		return ARBShaderObjects.glGetInfoLogARB(obj, ARBShaderObjects.glGetObjectParameteriARB(obj, ARBShaderObjects.GL_OBJECT_INFO_LOG_LENGTH_ARB));
 	}
 			 
-	private String readFileAsString(String filename) throws Exception {
+	private String readFileAsString(String resourceName) throws Exception {
 		StringBuilder source = new StringBuilder();
-			 
-		FileInputStream in = new FileInputStream(filename);
-			 
+		
+		InputStream in = this.getClass().getResourceAsStream(resourceName);
+		
 		Exception exception = null;
 		
 		BufferedReader reader;
 		try{
-			reader = new BufferedReader(new InputStreamReader(in,"UTF-8"));
+			reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 			 
 			Exception innerExc= null;
 			try {

@@ -3,9 +3,9 @@ package stellarium.stellars.star;
 import org.lwjgl.opengl.GL11;
 
 import stellarium.StellarSkyResources;
-import stellarium.render.EnumRenderPass;
-import stellarium.render.ICelestialLayerRenderer;
-import stellarium.render.StellarRenderInfo;
+import stellarium.render.celesital.EnumRenderPass;
+import stellarium.render.celesital.ICelestialLayerRenderer;
+import stellarium.render.celesital.StellarRenderInfo;
 
 public class LayerStarRenderer implements ICelestialLayerRenderer {
 

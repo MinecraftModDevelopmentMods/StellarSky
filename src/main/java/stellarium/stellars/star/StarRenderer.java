@@ -1,8 +1,8 @@
 package stellarium.stellars.star;
 
 import stellarapi.api.lib.math.Vector3;
-import stellarium.render.ICelestialObjectRenderer;
-import stellarium.render.StellarRenderInfo;
+import stellarium.render.celesital.ICelestialObjectRenderer;
+import stellarium.render.celesital.StellarRenderInfo;
 import stellarium.stellars.Optics;
 
 public class StarRenderer implements ICelestialObjectRenderer<StarRenderCache> {

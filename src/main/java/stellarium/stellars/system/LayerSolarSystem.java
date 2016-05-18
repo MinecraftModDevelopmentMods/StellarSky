@@ -14,7 +14,7 @@ import stellarapi.api.celestials.EnumCelestialCollectionType;
 import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
-import stellarium.render.StellarRenderingRegistry;
+import stellarium.render.celesital.StellarRenderingRegistry;
 import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;

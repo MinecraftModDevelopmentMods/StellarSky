@@ -1,4 +1,4 @@
-package stellarium.render;
+package stellarium.render.celesital;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

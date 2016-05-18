@@ -15,7 +15,11 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.IRenderHandler;
+import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
 import stellarium.api.ICelestialRenderer;
+import stellarium.render.celesital.EnumRenderPass;
+import stellarium.util.math.VectorHelper;
 
 public class SkyRendererSurface extends IRenderHandler {
 
@@ -79,11 +83,47 @@ public class SkyRendererSurface extends IRenderHandler {
         GL11.glEndList();
         
         this.celestials = subRenderer;
+        this.latn = 20;
+        this.longn = 40;
+        this.displayvec = VectorHelper.createAndInitialize(longn, latn+1);
 	}
+	
+	private int longn, latn;
+	private Vector3 displayvec[][];
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(float partialTicks, WorldClient theWorld, Minecraft mc) {
+		
+		for(int longc=0; longc<longn; longc++){
+			for(int latc=0; latc<=latn; latc++){
+				displayvec[longc][latc].set(new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec());
+				displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth() * 0.7);
+			}
+		}
+		
+		Tessellator tessellator = Tessellator.instance;
+		
+		ShaderHelper.instance.useShader("atmosphere");
+		tessellator.startDrawingQuads();
+
+		for(int longc=0; longc<longn; longc++) {
+			for(int latc=0; latc<latn; latc++) {
+				int longcd=(longc+1)%longn;
+
+				tessellator.addVertex(displayvec[longc][latc].getX(), displayvec[longc][latc].getY(), displayvec[longc][latc].getZ());
+				tessellator.addVertex(displayvec[longc][latc+1].getX(), displayvec[longc][latc+1].getY(), displayvec[longc][latc+1].getZ());
+				tessellator.addVertex(displayvec[longcd][latc+1].getX(), displayvec[longcd][latc+1].getY(), displayvec[longcd][latc+1].getZ());
+				tessellator.addVertex(displayvec[longcd][latc].getX(), displayvec[longcd][latc].getY(), displayvec[longcd][latc].getZ());
+			}
+		}
+		
+		tessellator.draw();
+		ShaderHelper.instance.releaseShader();
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void renderPrevious(float partialTicks, WorldClient theWorld, Minecraft mc) {
         if (theWorld.provider.isSurfaceWorld()) {
         	/*
         	 * TODO Atmospheric Rendering
@@ -96,10 +136,13 @@ public class SkyRendererSurface extends IRenderHandler {
         	 * C. Render Celestial Objects
         	 *  C1. Render Distant Objects - On the Same Plane
         	 *  C2. Render Near Objects
-        	 * C. Disapply Atmospherical Shaders
-        	 * D. Render Post-Additional Displays
-        	 * E. Render Landscape - To hide everything under the ground
+        	 * * Objects with greater influence will be written on atmosphere
+        	 * D. Render the Atmosphere
+        	 * E. Disapply Atmospherical Shaders
+        	 * F. Render Post-Additional Displays
+        	 * G. Render Landscape - To hide everything under the ground
         	 * */
+        	
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             Vec3 vec3 = theWorld.getSkyColor(mc.renderViewEntity, partialTicks);
             float f1 = (float)vec3.xCoord;

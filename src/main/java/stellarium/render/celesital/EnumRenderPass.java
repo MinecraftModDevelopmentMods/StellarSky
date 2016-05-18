@@ -1,4 +1,4 @@
-package stellarium.render;
+package stellarium.render.celesital;
 
 import stellarium.StellarSky;
 

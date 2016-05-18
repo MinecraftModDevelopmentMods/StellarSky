@@ -4,7 +4,7 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
-import stellarium.render.EnumRenderPass;
+import stellarium.render.celesital.EnumRenderPass;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 

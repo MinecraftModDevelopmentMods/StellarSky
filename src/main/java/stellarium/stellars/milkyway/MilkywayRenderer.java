@@ -3,9 +3,9 @@ package stellarium.stellars.milkyway;
 import org.lwjgl.opengl.GL11;
 
 import stellarium.StellarSkyResources;
-import stellarium.render.EnumRenderPass;
-import stellarium.render.ICelestialObjectRenderer;
-import stellarium.render.StellarRenderInfo;
+import stellarium.render.celesital.EnumRenderPass;
+import stellarium.render.celesital.ICelestialObjectRenderer;
+import stellarium.render.celesital.StellarRenderInfo;
 import stellarium.stellars.Optics;
 
 public class MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRenderCache> {

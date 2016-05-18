@@ -21,6 +21,7 @@ import stellarium.client.overlay.clientcfg.OverlayClientSettingsType;
 import stellarium.client.overlay.clock.OverlayClockType;
 import stellarium.display.DisplayManager;
 import stellarium.display.DisplayRegistry;
+import stellarium.render.ShaderHelper;
 import stellarium.render.SkyCelestialRenderer;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.CelestialManager;
@@ -39,7 +40,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	private ConfigManager guiConfig;
 	private CelestialManager celestialManager = new CelestialManager(true);
 	private DisplayManager displayManager = new DisplayManager();
-	
+		
 	public ClientSettings getClientSettings() {
 		return this.clientSettings;
 	}
@@ -61,6 +62,11 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		OverlayRegistry.registerOverlaySet("stellarsky", new StellarSkyOverlays());
 		OverlayRegistry.registerOverlay("clock", new OverlayClockType(), this.guiConfig);
 		OverlayRegistry.registerOverlay("clientconfig", new OverlayClientSettingsType(), this.guiConfig);
+		
+		
+		ShaderHelper.instance.initShader("atmosphere",
+        		"/stellarium/render/shaders/atmospheric_shader.vsh",
+        		"/stellarium/render/shaders/atmospheric_shader.psh");
 	}
 
 	@Override

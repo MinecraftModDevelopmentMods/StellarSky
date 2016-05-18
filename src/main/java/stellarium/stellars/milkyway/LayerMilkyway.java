@@ -16,7 +16,7 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
-import stellarium.render.StellarRenderingRegistry;
+import stellarium.render.celesital.StellarRenderingRegistry;
 import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;

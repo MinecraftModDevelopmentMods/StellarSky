@@ -5,7 +5,7 @@ import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
 import stellarium.display.DisplayCacheInfo;
 import stellarium.display.IDisplayCache;
-import stellarium.render.EnumRenderPass;
+import stellarium.render.celesital.EnumRenderPass;
 import stellarium.util.math.VectorHelper;
 
 public class EcGridCache implements IDisplayCache<EcGridSettings> {

@@ -4,7 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import stellarium.render.StellarRenderInfo;
+import stellarium.render.celesital.StellarRenderInfo;
 
 @SideOnly(Side.CLIENT)
 public interface IDisplayRenderer<Cache extends IDisplayCache> {
