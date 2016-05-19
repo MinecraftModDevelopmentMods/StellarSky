@@ -138,7 +138,7 @@ public class StellarAPIEventHook {
 		}
 		
 		if(world.isRemote)
-			StellarSky.proxy.setupSkyRenderer(world.provider, dimManager.getSettings().getSkyRendererType(), dimManager.getLandscapeCache());
+			StellarSky.proxy.setupSkyRenderer(world.provider, manager.getCelestialManager(), dimManager.getSettings().getSkyRendererType(), dimManager.getLandscapeCache());
 	}
 	
 	

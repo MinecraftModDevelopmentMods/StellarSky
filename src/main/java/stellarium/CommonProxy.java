@@ -64,7 +64,7 @@ public class CommonProxy implements IProxy {
 	}
 
 	@Override
-	public void setupSkyRenderer(WorldProvider provider, String skyType, LandscapeCache cache) { }
+	public void setupSkyRenderer(WorldProvider provider, CelestialManager celManager, String skyType, LandscapeCache cache) { }
 
 	@Override
 	public HierarchicalConfig getDimensionSettings() {

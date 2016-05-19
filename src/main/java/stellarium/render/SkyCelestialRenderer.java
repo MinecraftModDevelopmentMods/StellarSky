@@ -36,11 +36,11 @@ public class SkyCelestialRenderer implements ICelestialRenderer {
 	private boolean updated = false;
 	private CelestialManager celManager;
 	
-	public SkyCelestialRenderer(ClientSettings settings, DisplayManager display,
-			LandscapeClientSettings landscapeSettings, LandscapeCache landscapeCache) {
+	public SkyCelestialRenderer(ClientSettings settings, CelestialManager celManager,
+			DisplayManager display, LandscapeClientSettings landscapeSettings, LandscapeCache landscapeCache) {
 		this.settings = settings;
 		this.renderer = new StellarRenderer();
-		this.celManager = StellarManager.getClientManager().getCelestialManager();
+		this.celManager = celManager;
 		this.display = display;
 		this.landscapeRenderer = new LandscapeRenderer();
 		this.landscapeCache = landscapeCache;
