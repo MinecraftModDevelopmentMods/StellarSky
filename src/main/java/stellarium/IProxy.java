@@ -34,7 +34,7 @@ public interface IProxy {
     
 	public CelestialManager getClientCelestialManager();
 	
-	public void setupSkyRenderer(WorldProvider provider, String skyType, LandscapeCache cache);
+	public void setupSkyRenderer(WorldProvider provider, CelestialManager celestialManager, String skyType, LandscapeCache cache);
 
 	public void updateTick();
 
