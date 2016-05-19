@@ -1,9 +1,13 @@
 package stellarium.render;
 
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.Random;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -15,8 +19,12 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.IRenderHandler;
+import stellarapi.api.StellarAPIReference;
+import stellarapi.api.celestials.ICelestialObject;
+import stellarapi.api.celestials.IEffectorType;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.optics.Wavelength;
 import stellarium.api.ICelestialRenderer;
 import stellarium.render.celesital.EnumRenderPass;
 import stellarium.util.math.VectorHelper;
@@ -83,28 +91,80 @@ public class SkyRendererSurface extends IRenderHandler {
         GL11.glEndList();
         
         this.celestials = subRenderer;
-        this.latn = 20;
-        this.longn = 40;
+        this.latn = 99;
+        this.longn = this.latn * 2;
         this.displayvec = VectorHelper.createAndInitialize(longn, latn+1);
+        
+        ShaderHelper.instance.initShader("atmosphere",
+        		"/stellarium/render/shaders/atmospheric_shader.vsh",
+        		"/stellarium/render/shaders/atmospheric_shader.psh");
 	}
 	
 	private int longn, latn;
 	private Vector3 displayvec[][];
 	
+	private float calculateLat(int latc) {
+		float ratio = 2.0f * latc / latn - 1.0f;
+		return 90.0f * ratio + 90.0f;
+	}
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(float partialTicks, WorldClient theWorld, Minecraft mc) {
-		
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
-				displayvec[longc][latc].set(new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec());
-				displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth() * 0.7);
+				displayvec[longc][latc].set(new SpCoord(longc*360.0/longn, calculateLat(latc)).getVec());
+				displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth());
 			}
 		}
 		
 		Tessellator tessellator = Tessellator.instance;
 		
 		ShaderHelper.instance.useShader("atmosphere");
+		
+		ICelestialObject object = StellarAPIReference.getEffectors(theWorld, IEffectorType.Light).getPrimarySource();
+		
+		float rainStrength = theWorld.getRainStrength(partialTicks);
+		float rainStrengthFactor = 1.0f + 5.0f * rainStrength;
+        float weatherFactor = (float)(1.0D - (double)(rainStrength * 5.0F) / 16.0D);
+        weatherFactor *= (1.0D - (double)(theWorld.getWeightedThunderStrength(partialTicks) * 5.0F) / 16.0D);
+		
+        float cameraHeight = 0.1f;
+        float groundFactor = 1.0f / (2*cameraHeight + 1.0f);
+        
+		Vec3 vec3 = theWorld.getSkyColor(mc.renderViewEntity, partialTicks);
+        float red = (float)vec3.xCoord;
+		float green = (float)vec3.yCoord;
+		float blue = (float)vec3.zCoord;
+        
+		ShaderHelper.instance.setValueVec("v3LightDir", object.getCurrentHorizontalPos().getVec());
+		ShaderHelper.instance.setValuef("cameraHeight", cameraHeight);
+		ShaderHelper.instance.setValuef("outerRadius", 820.0);
+		ShaderHelper.instance.setValuef("innerRadius", 800.0);
+		ShaderHelper.instance.setValuei("nSamples", 100);
+		
+		ShaderHelper.instance.setValuef("exposure", 2.0);
+		
+		ShaderHelper.instance.setValuef("depthToFogFactor", 10.0);
+		
+		Vector3 vec = new Vector3(0.09, 0.18, 0.27);
+		ShaderHelper.instance.setValueVec("extinctionFactor", vec.scale(1.0));
+		ShaderHelper.instance.setValuef("g", -0.99);
+		ShaderHelper.instance.setValue4f("rayleighFactor",
+				4 * weatherFactor * red / 0.45,
+				8 * weatherFactor * green / 0.65,
+				16 * weatherFactor * blue,
+				1.0);
+		ShaderHelper.instance.setValue4f("mieFactor",
+				0.1 * rainStrengthFactor * weatherFactor,
+				0.2 * rainStrengthFactor * weatherFactor,
+				0.3 * rainStrengthFactor * weatherFactor,
+				1.0);
+
+        GL11.glPushMatrix();
+        GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
+		
 		tessellator.startDrawingQuads();
 
 		for(int longc=0; longc<longn; longc++) {
@@ -118,8 +178,20 @@ public class SkyRendererSurface extends IRenderHandler {
 			}
 		}
 		
+        GL11.glDepthMask(false);
 		tessellator.draw();
+		
 		ShaderHelper.instance.releaseShader();
+		
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+        celestials.renderCelestial(mc, theWorld, new float[] {
+        		red * groundFactor, green  * groundFactor, blue * groundFactor}, partialTicks);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(true);
+        
+        GL11.glPopMatrix();
 	}
 	
 	@SideOnly(Side.CLIENT)

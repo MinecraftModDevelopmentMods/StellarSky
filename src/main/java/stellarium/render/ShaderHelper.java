@@ -30,12 +30,11 @@ public class ShaderHelper {
 			vertShader = createShader(vertloc, ARBVertexShader.GL_VERTEX_SHADER_ARB);
 			fragShader = createShader(fragloc, ARBFragmentShader.GL_FRAGMENT_SHADER_ARB);
 		} catch(Exception exc) {
-			exc.printStackTrace();
-			return;
-		} finally {
-			if(vertShader == 0 || fragShader == 0)
-				return;
+			throw new RuntimeException(exc);
 		}
+		
+		if(vertShader == 0 || fragShader == 0)
+			return;
 	 
 		programObject = ARBShaderObjects.glCreateProgramObjectARB();
 		
@@ -75,22 +74,37 @@ public class ShaderHelper {
 	}
 	
 	public void releaseShader(){
-		ARBShaderObjects.glUseProgramObjectARB(0);
+		this.beforesh = "";
+		this.currentShader = 0;
+		ARBShaderObjects.glUseProgramObjectARB(this.currentShader);
 	}
 	
-	public void setValue(String Value_name, double val){
-		int my_value_loc = ARBShaderObjects.glGetUniformLocationARB(currentShader, Value_name);
+	public void setValuei(String value_name, int val){
+		int my_value_loc = ARBShaderObjects.glGetUniformLocationARB(this.currentShader, value_name);
+		ARBShaderObjects.glUniform1iARB(my_value_loc, val);
+	}
+	
+	public void setValuef(String value_name, double val){
+		int my_value_loc = ARBShaderObjects.glGetUniformLocationARB(this.currentShader, value_name);
 		ARBShaderObjects.glUniform1fARB(my_value_loc, (float)val);
 	}
 	
-	public void setValue(String Value_name, Vector3 val){
-		int my_value_loc = ARBShaderObjects.glGetUniformLocationARB(currentShader, Value_name);
+	public void setValueVec(String value_name, Vector3 val){
+		int my_value_loc = ARBShaderObjects.glGetUniformLocationARB(this.currentShader, value_name);
 		ARBShaderObjects.glUniform3fARB(my_value_loc, (float)val.getX(), (float)val.getY(), (float)val.getZ());
+	}
+	
+	public void setValue4f(String value_name, double red, double green, double blue, double alpha){
+		int my_value_loc = ARBShaderObjects.glGetUniformLocationARB(this.currentShader, value_name);
+		ARBShaderObjects.glUniform4fARB(my_value_loc, (float)red, (float)green, (float)blue, (float)alpha);
 	}
 	
 	
 	private int createShader(String resourceName, int shaderType) throws Exception{
 		int shader = 0;
+		if(resourceName.equals(""))
+			return 0;
+		
 		try {
 			shader = ARBShaderObjects.glCreateShaderObjectARB(shaderType);
 		 
@@ -119,6 +133,11 @@ public class ShaderHelper {
 		StringBuilder source = new StringBuilder();
 		
 		InputStream in = this.getClass().getResourceAsStream(resourceName);
+		
+		if(in == null) {
+			System.out.println("Maybe loading resource.");
+			return "";
+		}
 		
 		Exception exception = null;
 		
