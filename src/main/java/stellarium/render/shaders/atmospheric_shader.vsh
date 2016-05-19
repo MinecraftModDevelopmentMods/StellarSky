@@ -66,7 +66,7 @@ void main() {
 	if (cosViewAngle > 0.0 || depth2 > innerRadius * innerRadius)
 		fFar = sqrt(outerRadius * outerRadius - depth2) - sign(cosViewAngle) * sqrt(cameraRadius * cameraRadius - depth2);
 	else {
-		fFar = abs(sqrt(cameraRadius * cameraRadius - depth2) - sqrt(innerRadius * innerRadius - depth2));
+		fFar = sqrt(cameraRadius * cameraRadius - depth2) - sqrt(innerRadius * innerRadius - depth2);
 		cosViewAngle = -cosViewAngle;
 		v3Start += fFar * v3Ray;
 		v3Ray = -v3Ray;
@@ -100,9 +100,7 @@ void main() {
 
 		float cosLightAngle = dot(v3LightDir, v3SamplePoint) / radiusSample;
 
-		if (cosLightAngle < 0.0 && radiusSample * radiusSample * (1.0 - cosLightAngle * cosLightAngle) < innerRadius * innerRadius) {
-			depthFactor = 0.0;
-		}
+		depthFactor *= float((cosLightAngle >= 0.0 || radiusSample * radiusSample * (1.0 - cosLightAngle * cosLightAngle) >= innerRadius * innerRadius));
 
 		float cosCameraAngle = dot(v3Ray, v3SamplePoint) / radiusSample;
 
@@ -132,5 +130,5 @@ void main() {
 	scatteringColor4.rgb = integratedScatterColor;
 	v3Direction = -invertFlag * v3Ray;
 
-	gl_FogFragCoord = 1.0 - exp(invertFlag * (depthEnd - depthCamera) / depthToFogFactor);
+	gl_FogFragCoord = exp(invertFlag * (depthEnd - depthCamera) / depthToFogFactor);
 }

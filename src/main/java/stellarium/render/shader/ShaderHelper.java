@@ -1,4 +1,4 @@
-package stellarium.render;
+package stellarium.render.shader;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -12,19 +12,25 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Maps;
 
+import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 
 public class ShaderHelper {
-	public static ShaderHelper instance = new ShaderHelper();
-			
-	private int currentShader;
-	protected Map<String, Integer> shaderMap = Maps.newHashMap();
-	private String beforesh = "";
+	private static ShaderHelper instance = new ShaderHelper();
 	
-	public void initShader(String shname, String vertloc, String fragloc){
-		
+	public static ShaderHelper getInstance() {
+		return instance;
+	}
+	
+	private Map<String, ShaderObject> objectMap = Maps.newHashMap();
+	private ShaderObject current = null;
+	
+	public IShaderObject buildShader(String id, String vertloc, String fragloc) {
 		int vertShader = 0, fragShader = 0;
 		int programObject;
+		
+		if(objectMap.containsKey(id))
+			ARBShaderObjects.glDeleteObjectARB(objectMap.get(id).programId);
 	 
 		try {
 			vertShader = createShader(vertloc, ARBVertexShader.GL_VERTEX_SHADER_ARB);
@@ -34,12 +40,12 @@ public class ShaderHelper {
 		}
 		
 		if(vertShader == 0 || fragShader == 0)
-			return;
+			return null;
 	 
 		programObject = ARBShaderObjects.glCreateProgramObjectARB();
 		
 		if(programObject == 0)
-			return;
+			return null;
 	 
 		ARBShaderObjects.glAttachObjectARB(programObject, vertShader);
 		ARBShaderObjects.glAttachObjectARB(programObject, fragShader);
@@ -54,49 +60,25 @@ public class ShaderHelper {
 			throw new RuntimeException(getLogInfo(programObject));
 		}
 		
-		shaderMap.put(shname, programObject);
+		return new ShaderObject(programObject);
 	}
 	
-	public void useShader(String shname){		
-		if(!shname.equals(this.beforesh)) {
-			releaseShader();
-			
-			this.beforesh = shname;
-			Integer id = shaderMap.get(shname);
-			
-			if(id == null)
-				throw new IllegalStateException(
-						String.format("The shader for the name %s is not initialized.", shname));
-			
-			this.currentShader = id.intValue();
-			ARBShaderObjects.glUseProgramObjectARB(this.currentShader);
+	private void bindShader(ShaderObject object){		
+		if(this.current != object) {
+			this.releaseCurrentShader();
+			this.current = object;
+			ARBShaderObjects.glUseProgramObjectARB(object.programId);
 		}
 	}
 	
-	public void releaseShader(){
-		this.beforesh = "";
-		this.currentShader = 0;
-		ARBShaderObjects.glUseProgramObjectARB(this.currentShader);
+	private void releaseShader(ShaderObject object) {
+		if(this.current == object)
+			this.releaseCurrentShader();
 	}
 	
-	public void setValuei(String value_name, int val){
-		int my_value_loc = ARBShaderObjects.glGetUniformLocationARB(this.currentShader, value_name);
-		ARBShaderObjects.glUniform1iARB(my_value_loc, val);
-	}
-	
-	public void setValuef(String value_name, double val){
-		int my_value_loc = ARBShaderObjects.glGetUniformLocationARB(this.currentShader, value_name);
-		ARBShaderObjects.glUniform1fARB(my_value_loc, (float)val);
-	}
-	
-	public void setValueVec(String value_name, Vector3 val){
-		int my_value_loc = ARBShaderObjects.glGetUniformLocationARB(this.currentShader, value_name);
-		ARBShaderObjects.glUniform3fARB(my_value_loc, (float)val.getX(), (float)val.getY(), (float)val.getZ());
-	}
-	
-	public void setValue4f(String value_name, double red, double green, double blue, double alpha){
-		int my_value_loc = ARBShaderObjects.glGetUniformLocationARB(this.currentShader, value_name);
-		ARBShaderObjects.glUniform4fARB(my_value_loc, (float)red, (float)green, (float)blue, (float)alpha);
+	private void releaseCurrentShader(){
+		this.current = null;
+		ARBShaderObjects.glUseProgramObjectARB(0);
 	}
 	
 	
@@ -113,10 +95,9 @@ public class ShaderHelper {
 			
 			ARBShaderObjects.glShaderSourceARB(shader, readFileAsString(resourceName));
 			ARBShaderObjects.glCompileShaderARB(shader);
-		 
+			
 			if (ARBShaderObjects.glGetObjectParameteriARB(shader, ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE)
 				throw new RuntimeException("Error creating shader: " + getLogInfo(shader));
-		 
 			return shader;
 		}
 		catch(Exception exc) {
@@ -135,7 +116,7 @@ public class ShaderHelper {
 		InputStream in = this.getClass().getResourceAsStream(resourceName);
 		
 		if(in == null) {
-			System.out.println("Maybe loading resource.");
+			System.out.println("Maybe loading resources.");
 			return "";
 		}
 		
@@ -188,6 +169,79 @@ public class ShaderHelper {
 		}
 			 
 		return source.toString();
+	}
+	
+	private class ShaderObject implements IShaderObject {
+		private int programId;
+		private Map<String, ShaderUniform> uniformMap = Maps.newHashMap();
+		
+		public ShaderObject(int programId) {
+			this.programId = programId;
+		}
+
+		@Override
+		public void bindShader() {
+			ShaderHelper.this.bindShader(this);
+		}
+
+		@Override
+		public void releaseShader() {
+			ShaderHelper.this.releaseShader(this);
+		}
+
+		@Override
+		public IUniformField getField(String fieldName) {
+			if(uniformMap.containsKey(fieldName))
+				return uniformMap.get(fieldName);
+			
+			int location = ARBShaderObjects.glGetUniformLocationARB(this.programId, fieldName);
+			if(location == -1)
+				return null;
+			
+			else {
+				ShaderUniform uniform = new ShaderUniform(location);
+				uniformMap.put(fieldName, uniform);
+				return uniform;
+			}
+		}
+	}
+	
+	private class ShaderUniform implements IUniformField {
+		int location;
+		
+		public ShaderUniform(int location) {
+			this.location = location;
+		}
+
+		@Override
+		public void setInteger(int val) {
+			ARBShaderObjects.glUniform1iARB(this.location, val);
+		}
+
+		@Override
+		public void setDouble(double val) {
+			ARBShaderObjects.glUniform1fARB(this.location, (float)val);
+		}
+
+		@Override
+		public void setSpCoord(SpCoord val) {
+			ARBShaderObjects.glUniform2fARB(this.location, (float)val.x, (float)val.y);
+		}
+
+		@Override
+		public void setVector3(Vector3 val) {
+			ARBShaderObjects.glUniform3fARB(this.location, (float)val.getX(), (float)val.getY(), (float)val.getZ());
+		}
+
+		@Override
+		public void setDouble3(double x, double y, double z) {
+			ARBShaderObjects.glUniform3fARB(this.location, (float)x, (float)y, (float)z);
+		}
+
+		@Override
+		public void setDouble4(double red, double green, double blue, double alpha) {
+			ARBShaderObjects.glUniform4fARB(this.location, (float)red, (float)green, (float)blue, (float)alpha);
+		}
 	}
 
 }

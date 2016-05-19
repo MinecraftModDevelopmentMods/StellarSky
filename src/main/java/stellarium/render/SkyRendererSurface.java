@@ -27,16 +27,16 @@ import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.api.ICelestialRenderer;
 import stellarium.render.celesital.EnumRenderPass;
+import stellarium.render.shader.ShaderHelper;
 import stellarium.util.math.VectorHelper;
 
 public class SkyRendererSurface extends IRenderHandler {
-
-	private Random random;
 	
     private int skyList;
     private int skyListUnderPlayer;
     
     private ICelestialRenderer celestials;
+    private TheSkyRenderer renderer;
 
 	public SkyRendererSurface(ICelestialRenderer subRenderer) {
         Tessellator tessellator = Tessellator.instance;
@@ -45,7 +45,7 @@ public class SkyRendererSurface extends IRenderHandler {
          * Generate the sky list above the player.
          * It is generated above the player, as surface.
          * */
-        this.skyList = GLAllocation.generateDisplayLists(2);
+        /*this.skyList = GLAllocation.generateDisplayLists(2);
         GL11.glNewList(this.skyList, GL11.GL_COMPILE);
         byte b2 = 64;
         int i = 256 / b2 + 2;
@@ -71,7 +71,7 @@ public class SkyRendererSurface extends IRenderHandler {
          * Generate the sky list under the player.
          * It is generated above the player, as surface.
          * */
-        this.skyListUnderPlayer = this.skyList + 1;
+        /*this.skyListUnderPlayer = this.skyList + 1;
         GL11.glNewList(this.skyListUnderPlayer, GL11.GL_COMPILE);
         f = -16.0F;
         tessellator.startDrawingQuads();
@@ -88,110 +88,14 @@ public class SkyRendererSurface extends IRenderHandler {
         }
 
         tessellator.draw();
-        GL11.glEndList();
-        
-        this.celestials = subRenderer;
-        this.latn = 99;
-        this.longn = this.latn * 2;
-        this.displayvec = VectorHelper.createAndInitialize(longn, latn+1);
-        
-        ShaderHelper.instance.initShader("atmosphere",
-        		"/stellarium/render/shaders/atmospheric_shader.vsh",
-        		"/stellarium/render/shaders/atmospheric_shader.psh");
-	}
-	
-	private int longn, latn;
-	private Vector3 displayvec[][];
-	
-	private float calculateLat(int latc) {
-		float ratio = 2.0f * latc / latn - 1.0f;
-		return 90.0f * ratio + 90.0f;
+        GL11.glEndList();*/
+        this.renderer = new TheSkyRenderer(subRenderer);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(float partialTicks, WorldClient theWorld, Minecraft mc) {
-		for(int longc=0; longc<longn; longc++){
-			for(int latc=0; latc<=latn; latc++){
-				displayvec[longc][latc].set(new SpCoord(longc*360.0/longn, calculateLat(latc)).getVec());
-				displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth());
-			}
-		}
-		
-		Tessellator tessellator = Tessellator.instance;
-		
-		ShaderHelper.instance.useShader("atmosphere");
-		
-		ICelestialObject object = StellarAPIReference.getEffectors(theWorld, IEffectorType.Light).getPrimarySource();
-		
-		float rainStrength = theWorld.getRainStrength(partialTicks);
-		float rainStrengthFactor = 1.0f + 5.0f * rainStrength;
-        float weatherFactor = (float)(1.0D - (double)(rainStrength * 5.0F) / 16.0D);
-        weatherFactor *= (1.0D - (double)(theWorld.getWeightedThunderStrength(partialTicks) * 5.0F) / 16.0D);
-		
-        float cameraHeight = 0.1f;
-        float groundFactor = 1.0f / (2*cameraHeight + 1.0f);
-        
-		Vec3 vec3 = theWorld.getSkyColor(mc.renderViewEntity, partialTicks);
-        float red = (float)vec3.xCoord;
-		float green = (float)vec3.yCoord;
-		float blue = (float)vec3.zCoord;
-        
-		ShaderHelper.instance.setValueVec("v3LightDir", object.getCurrentHorizontalPos().getVec());
-		ShaderHelper.instance.setValuef("cameraHeight", cameraHeight);
-		ShaderHelper.instance.setValuef("outerRadius", 820.0);
-		ShaderHelper.instance.setValuef("innerRadius", 800.0);
-		ShaderHelper.instance.setValuei("nSamples", 100);
-		
-		ShaderHelper.instance.setValuef("exposure", 2.0);
-		
-		ShaderHelper.instance.setValuef("depthToFogFactor", 10.0);
-		
-		Vector3 vec = new Vector3(0.09, 0.18, 0.27);
-		ShaderHelper.instance.setValueVec("extinctionFactor", vec.scale(1.0));
-		ShaderHelper.instance.setValuef("g", -0.99);
-		ShaderHelper.instance.setValue4f("rayleighFactor",
-				4 * weatherFactor * red / 0.45,
-				8 * weatherFactor * green / 0.65,
-				16 * weatherFactor * blue,
-				1.0);
-		ShaderHelper.instance.setValue4f("mieFactor",
-				0.1 * rainStrengthFactor * weatherFactor,
-				0.2 * rainStrengthFactor * weatherFactor,
-				0.3 * rainStrengthFactor * weatherFactor,
-				1.0);
-
-        GL11.glPushMatrix();
-        GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
-		
-		tessellator.startDrawingQuads();
-
-		for(int longc=0; longc<longn; longc++) {
-			for(int latc=0; latc<latn; latc++) {
-				int longcd=(longc+1)%longn;
-
-				tessellator.addVertex(displayvec[longc][latc].getX(), displayvec[longc][latc].getY(), displayvec[longc][latc].getZ());
-				tessellator.addVertex(displayvec[longc][latc+1].getX(), displayvec[longc][latc+1].getY(), displayvec[longc][latc+1].getZ());
-				tessellator.addVertex(displayvec[longcd][latc+1].getX(), displayvec[longcd][latc+1].getY(), displayvec[longcd][latc+1].getZ());
-				tessellator.addVertex(displayvec[longcd][latc].getX(), displayvec[longcd][latc].getY(), displayvec[longcd][latc].getZ());
-			}
-		}
-		
-        GL11.glDepthMask(false);
-		tessellator.draw();
-		
-		ShaderHelper.instance.releaseShader();
-		
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-        celestials.renderCelestial(mc, theWorld, new float[] {
-        		red * groundFactor, green  * groundFactor, blue * groundFactor}, partialTicks);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(true);
-        
-        GL11.glPopMatrix();
+		renderer.render(partialTicks, theWorld, mc);
 	}
 	
 	@SideOnly(Side.CLIENT)
