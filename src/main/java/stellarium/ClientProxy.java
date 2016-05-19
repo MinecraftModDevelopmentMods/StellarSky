@@ -11,6 +11,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.IRenderHandler;
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.StellarAPIReference;
 import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.StellarSkyAPI;
@@ -116,6 +119,8 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	
 	@Override
 	public void updateTick() {
-		displayManager.updateDisplay(this.clientSettings);
+		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(StellarSky.proxy.getDefWorld());
+		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
+		displayManager.updateDisplay(this.clientSettings, coordinate, sky);
 	}
 }

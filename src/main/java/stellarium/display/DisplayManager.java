@@ -46,10 +46,7 @@ public class DisplayManager implements IDisplayInjectable {
 		}
 	}
 
-	public void updateDisplay(ClientSettings clientSettings) {
-		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(StellarSky.proxy.getDefWorld());
-		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
-
+	public void updateDisplay(ClientSettings clientSettings, ICelestialCoordinate coordinate, ISkyEffect sky) {
 		DisplayCacheInfo info = new DisplayCacheInfo(coordinate, sky);
 		for(Delegate delegate : this.displayList) {
 			delegate.cache.updateCache(clientSettings, delegate.settings, info);
