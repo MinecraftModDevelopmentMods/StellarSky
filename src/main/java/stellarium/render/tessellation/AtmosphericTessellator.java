@@ -1,11 +1,4 @@
-package stellarium.render;
-
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL21;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL31;
-import org.lwjgl.util.glu.GLU;
+package stellarium.render.tessellation;
 
 public class AtmosphericTessellator {
 	
@@ -21,21 +14,21 @@ public class AtmosphericTessellator {
 	/**
 	 * Add overall light source.
 	 * */
-	public void addOverall() {
+	public void addOverall(IOverallTessellation overall) {
 		
 	}
 	
 	/**
 	 * Add spherical opaque light source.
 	 * */
-	public void addSphere() {
+	public void addSphere(ISphereTessellation sphere) {
 		
 	}
 	
 	/**
-	 * Add quad opaque light source.
+	 * Add opaque light source tessellated by quads.
 	 * */
-	public void addQuad() {
+	public void addQuads() {
 		
 	}
 }
