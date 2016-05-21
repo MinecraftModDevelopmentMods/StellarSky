@@ -65,36 +65,36 @@ public class ModelGradientScrollRegion implements IRenderModel {
 		
 		textureManager.bindTexture(this.resource);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		worldRenderer.pos((double)(leftX), (double)(downY), 0.0).tex(minU, maxV);
 		worldRenderer.color(
         		color[0]*(this.rightRGBA[0]*minU+this.leftRGBA[0]*(1.0f-minU)),
         		color[1]*(this.rightRGBA[1]*minU+this.leftRGBA[1]*(1.0f-minU)),
         		color[2]*(this.rightRGBA[2]*minU+this.leftRGBA[2]*(1.0f-minU)),
         		color[3]*(this.rightRGBA[3]*minU+this.leftRGBA[3]*(1.0f-minU)));
-		worldRenderer.pos((double)(leftX), (double)(downY), 0.0).tex(minU, maxV);
 		worldRenderer.endVertex();
 		
+        worldRenderer.pos((double)(rightX), (double)(downY), 0.0).tex(maxU, maxV);
         worldRenderer.color(
         		color[0]*(this.rightRGBA[0]*maxU+this.leftRGBA[0]*(1.0f-maxU)),
         		color[1]*(this.rightRGBA[1]*maxU+this.leftRGBA[1]*(1.0f-maxU)),
         		color[2]*(this.rightRGBA[2]*maxU+this.leftRGBA[2]*(1.0f-maxU)),
         		color[3]*(this.rightRGBA[3]*maxU+this.leftRGBA[3]*(1.0f-maxU)));
-        worldRenderer.pos((double)(rightX), (double)(downY), 0.0).tex(maxU, maxV);
         worldRenderer.endVertex();
 		
+        worldRenderer.pos((double)(rightX), (double)(upY), 0.0).tex(maxU, minV);
         worldRenderer.color(
         		color[0]*(this.rightRGBA[0]*maxU+this.leftRGBA[0]*(1.0f-maxU)),
         		color[1]*(this.rightRGBA[1]*maxU+this.leftRGBA[1]*(1.0f-maxU)),
         		color[2]*(this.rightRGBA[2]*maxU+this.leftRGBA[2]*(1.0f-maxU)),
         		color[3]*(this.rightRGBA[3]*maxU+this.leftRGBA[3]*(1.0f-maxU)));
-        worldRenderer.pos((double)(rightX), (double)(upY), 0.0).tex(maxU, minV);
         worldRenderer.endVertex();
         
+        worldRenderer.pos((double)(leftX), (double)(upY), 0.0).tex(minU, minV);
         worldRenderer.color(
         		color[0]*(this.rightRGBA[0]*minU+this.leftRGBA[0]*(1.0f-minU)),
         		color[1]*(this.rightRGBA[1]*minU+this.leftRGBA[1]*(1.0f-minU)),
         		color[2]*(this.rightRGBA[2]*minU+this.leftRGBA[2]*(1.0f-minU)),
         		color[3]*(this.rightRGBA[3]*minU+this.leftRGBA[3]*(1.0f-minU)));
-        worldRenderer.pos((double)(leftX), (double)(upY), 0.0).tex(minU, minV);
         worldRenderer.endVertex();
         
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
