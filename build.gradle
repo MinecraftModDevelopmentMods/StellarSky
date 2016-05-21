@@ -28,6 +28,16 @@ dependencies {
 
 }
 
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+task srcJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
 processResources
 {
     // this will ensure that this task is redone when the versions change.
@@ -46,4 +56,10 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+artifacts {
+    archives deobfJar 
+    archives srcJar
+    archives jar
 }
