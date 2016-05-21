@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraftforge.fml.common.Loader;
+import stellarapi.lib.compat.ICompatModule;
 
 public class CompatManager {
 	

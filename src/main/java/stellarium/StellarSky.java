@@ -13,84 +13,87 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import stellarapi.api.StellarAPIReference;
+import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
-import stellarium.command.FixedCommandTime;
-import stellarium.compat.CompatManager;
 import stellarium.render.SkyRenderTypeEnd;
-import stellarium.render.SkyRenderTypeOverworld;
-import stellarium.sync.StellarNetworkEventHandler;
-import stellarium.sync.StellarNetworkFMLEventHandler;
+import stellarium.render.SkyRenderTypeSkyblock;
+import stellarium.render.SkyRenderTypeSurface;
 import stellarium.sync.StellarNetworkManager;
-import stellarium.world.DefaultWorldProviderReplacer;
-import stellarium.world.EndReplacer;
+import stellarium.world.provider.DefaultWorldProviderReplacer;
+import stellarium.world.provider.EndReplacer;
 
-@Mod(modid=StellarSky.modid, version=StellarSky.version,
-	dependencies="required-after:sciapi@[1.3.0.1,1.4.0.0)", guiFactory="stellarium.config.StellarConfigGuiFactory")
+@Mod(modid=StellarSkyReferences.modid, version=StellarSkyReferences.version,
+	dependencies="required-after:StellarAPI@[0.3.3.1, 0.3.4.0)", guiFactory="stellarium.client.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
-		public static final String modid = "stellarsky";
-		public static final String version = "@VERSION@";
-
-        // The instance of Stellarium
-        @Instance(StellarSky.modid)
+		// The instance of Stellarium
+        @Instance(StellarSkyReferences.modid)
         public static StellarSky instance;
         
         @SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
-        public static CommonProxy proxy;
+        public static IProxy proxy;
         
         public static Logger logger;
         
-        private StellarEventHook eventHook = new StellarEventHook();
+        private ConfigManager celestialConfigManager;
+        private StellarForgeEventHook eventHook = new StellarForgeEventHook();
         private StellarTickHandler tickHandler = new StellarTickHandler();
         private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
-        private StellarNetworkManager networkManager = new StellarNetworkManager();
+        private StellarNetworkManager networkManager;
         
         public StellarNetworkManager getNetworkManager() {
         	return this.networkManager;
         }
         
+		public ConfigManager getCelestialConfigManager() {
+			return this.celestialConfigManager;
+		}
+        
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) { 
         	logger = event.getModLog();
         	
+        	this.celestialConfigManager = new ConfigManager(
+        			StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
+        					StellarSkyReferences.celestialSettings));
+        	
+        	
+            proxy.setupCelestialConfigManager(this.celestialConfigManager);
         	proxy.preInit(event);
+        	
+        	this.networkManager = new StellarNetworkManager();
         	
     		MinecraftForge.EVENT_BUS.register(this.eventHook);
     		MinecraftForge.EVENT_BUS.register(this.tickHandler);
     		MinecraftForge.EVENT_BUS.register(this.fmlEventHook);
-    		
-    		MinecraftForge.EVENT_BUS.register(new StellarNetworkEventHandler(this.networkManager));
-    		MinecraftForge.EVENT_BUS.register(new StellarNetworkFMLEventHandler(this.networkManager));
+
+    		StellarAPIReference.getEventBus().register(new StellarAPIEventHook());
     		
     		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
     		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());
     		
-    		StellarSkyAPI.registerRendererType(new SkyRenderTypeOverworld());
+    		StellarSkyAPI.registerRendererType(new SkyRenderTypeSurface());
     		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
+    		StellarSkyAPI.registerRendererType(new SkyRenderTypeSkyblock());
     		
     		StellarSkyResources.init();
-    		
-    		CompatManager.getInstance().onPreInit();
         }
         
         @EventHandler
         public void load(FMLInitializationEvent event) throws IOException {
         	proxy.load(event);
-        	
-    		CompatManager.getInstance().onInit();
         }
         
         @EventHandler
         public void postInit(FMLPostInitializationEvent event) {
+        	celestialConfigManager.syncFromFile();
         	proxy.postInit(event);
-        	
-    		CompatManager.getInstance().onPostInit();
         }
         
         @EventHandler
         public void serverStarting(FMLServerStartingEvent event) {
         	event.registerServerCommand(new CommandLock());
-        	event.registerServerCommand(new FixedCommandTime());
         }
 }

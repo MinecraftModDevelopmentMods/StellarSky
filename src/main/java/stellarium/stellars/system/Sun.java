@@ -1,32 +1,35 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.euclidian.EVector;
-import stellarium.render.IRenderCache;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
+import stellarapi.api.lib.math.Vector3;
 
 public class Sun extends SolarObject {
 
-	public Sun(boolean isRemote) {
-		super(isRemote);
+	protected double offset;
+	
+	public Sun(String name) {
+		super(name);
+		//Constant for sun
 		this.currentMag=-26.74;
 	}
 
 	@Override
-	public EVector getRelativePos(double year) {
+	public Vector3 getRelativePos(double year) {
 		return null;
 	}
 	
-	protected void updateMagnitude(EVector earthFromSun) { }
+	public void updatePost(SolarObject earth) {
+		this.offset = earth.absoluteOffset();
+	}
+	
+	protected void updateMagnitude(Vector3 earthFromSun) { }
 
-	@Override
-	public IRenderCache generateCache() {
-		return new SunRenderCache();
+	public double getMagnitude() {
+		return this.currentMag;
 	}
 
 	@Override
-	public int getRenderId() {
-		return LayerSolarSystem.sunRenderId;
+	public double absoluteOffset() {
+		return this.offset;
 	}
 
 }

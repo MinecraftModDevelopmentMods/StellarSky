@@ -1,19 +1,26 @@
 package stellarium.stellars.star;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Comparator;
+
+import com.google.common.base.Predicate;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import stellarium.render.CelestialRenderingRegistry;
-import stellarium.stellars.layer.CelestialObject;
-import stellarium.stellars.layer.ICelestialLayer;
+import stellarapi.api.celestials.ICelestialObject;
+import stellarapi.api.lib.config.IConfigHandler;
+import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.lib.math.SpCoord;
+import stellarium.render.StellarRenderingRegistry;
+import stellarium.stellars.layer.IStellarLayerType;
+import stellarium.stellars.layer.StellarObjectContainer;
 
-public abstract class LayerBgStar implements ICelestialLayer {
+public abstract class LayerBgStar<ClientConfig extends IConfigHandler, CommonConfig extends INBTConfig> 
+implements IStellarLayerType<BgStar, ClientConfig, CommonConfig> {
 	
 	public static int renderIndex = -1;
-		
-	public abstract List<? extends CelestialObject> getObjectList();
-
+	public static int renderStarIndex = -1;
+	
 	@Override
 	public int getLayerRendererIndex() {
 		return renderIndex;
@@ -22,11 +29,31 @@ public abstract class LayerBgStar implements ICelestialLayer {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderers() {
-		CelestialRenderingRegistry registry = CelestialRenderingRegistry.getInstance();
+		StellarRenderingRegistry registry = StellarRenderingRegistry.getInstance();
 		renderIndex = registry.registerLayerRenderer(new LayerStarRenderer());
-		BgStar.setRenderId(registry.registerObjectRenderer(new StarRenderer()));
+		renderStarIndex = registry.registerObjectRenderer(new StarRenderer());
 	}
 	
 	@Override
-	public void updateLayer(double year) { }
+	public void updateLayer(StellarObjectContainer<BgStar, ClientConfig> container, double year) { }
+	
+	@Override
+	public Comparator<ICelestialObject> getDistanceComparator(SpCoord pos) {
+		return null;
+	}
+
+	@Override
+	public Predicate<ICelestialObject> conditionInRange(SpCoord pos, double radius) {
+		return null;
+	}
+	
+	@Override
+	public Collection<BgStar> getSuns(StellarObjectContainer container) {
+		return null;
+	}
+
+	@Override
+	public Collection<BgStar> getMoons(StellarObjectContainer container) {
+		return null;
+	}
 }

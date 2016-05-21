@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import stellarium.config.IConfigHandler;
+import stellarapi.api.lib.config.IConfigHandler;
 
 public class SolarSystemClientSettings implements IConfigHandler {
 	
@@ -27,6 +27,7 @@ public class SolarSystemClientSettings implements IConfigHandler {
         		"Less fragments will increase FPS, but the moon will become more defective");
         propMoonFrac.setRequiresMcRestart(false);
         propMoonFrac.setLanguageKey("config.property.client.moonfrac");
+        propMoonFrac.setMinValue(4).setMaxValue(64);
         propNameList.add(propMoonFrac.getName());
         
         config.setCategoryPropertyOrder(category, propNameList);

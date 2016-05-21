@@ -1,22 +1,12 @@
 package stellarium.stellars.milkyway;
 
-import stellarium.render.IRenderCache;
-import stellarium.stellars.layer.CelestialObject;
+import stellarium.stellars.layer.StellarObject;
 
-public class Milkyway extends CelestialObject {
-
-	public Milkyway(boolean isRemote) {
-		super(isRemote);
-	}
+public class Milkyway extends StellarObject {
 
 	@Override
-	public IRenderCache generateCache() {
-		return new MilkywayCache();
-	}
-
-	@Override
-	public int getRenderId() {
-		return LayerMilkyway.milkywayRenderId;
+	public String getID() {
+		return "Milkyway";
 	}
 
 }

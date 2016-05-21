@@ -1,20 +1,18 @@
 package stellarium;
 
 import java.lang.reflect.Field;
-import java.util.Iterator;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import stellarium.api.ISkyProvider;
-import stellarium.api.StellarSkyAPI;
+import net.minecraftforge.fml.relauncher.Side;
 import stellarium.stellars.StellarManager;
-import stellarium.stellars.view.StellarDimensionManager;
+import stellarium.world.StellarDimensionManager;
 
 public class StellarTickHandler {
 	
@@ -31,18 +29,17 @@ public class StellarTickHandler {
 	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
 		if(e.phase == TickEvent.Phase.START){
-			World world = StellarSky.proxy.getDefWorld(true);
+			World world = StellarSky.proxy.getDefWorld();
 			
-			if(world != null) {
-				StellarManager manager = StellarManager.getManager(true);
+			if(world != null) {				
+				StellarManager manager = StellarManager.getClientManager();
 				if(manager.getCelestialManager() != null) {
 					manager.update(world.getWorldTime());
 					StellarDimensionManager dimManager = StellarDimensionManager.get(world);
-					if(dimManager != null)
-					{
-						dimManager.update(world, world.getWorldTime());
-						manager.updateClient(StellarSky.proxy.getClientSettings(),
-								dimManager.getViewpoint());
+					if(dimManager != null) {
+						dimManager.update(world, world.getWorldTime(), world.getTotalWorldTime());
+						manager.updateClient(StellarSky.proxy.getClientSettings());
+						StellarSky.proxy.updateTick();
 					}
 				}
 			}
@@ -51,70 +48,29 @@ public class StellarTickHandler {
 	
 	@SubscribeEvent
 	public void tickStart(TickEvent.ServerTickEvent e) {
-		if(e.phase == TickEvent.Phase.START){
-			World world = StellarSky.proxy.getDefWorld(false);
+		if(e.phase == TickEvent.Phase.START) {
+			// TODO fix this mess; Should not get minecraft server instance from there
+			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+			World world = server.getEntityWorld();
 			
 			if(world != null) {
-				StellarManager manager = StellarManager.getManager(false);
+				StellarManager manager = StellarManager.getServerManager(server);
 				
 				if(manager.getSettings().serverEnabled)
 					manager.update(world.getWorldTime());
 			}
 		}
 	}
-		
+	
 	@SubscribeEvent
 	public void tickStart(TickEvent.WorldTickEvent e) {
-		if(e.phase == TickEvent.Phase.START){
-			if(e.world != null) {
-				StellarDimensionManager dimManager = StellarDimensionManager.get(e.world);
-				if(dimManager != null)
-					dimManager.update(e.world, e.world.getWorldTime());
-				
-				StellarManager manager = StellarManager.getManager(false);
-				if(!StellarSkyAPI.hasSkyProvider(e.world))
-					return;
-				
-				if(StellarSky.proxy.wakeManager.isEnabled()) {
-					WorldServer world = (WorldServer) e.world;
-
-					world.updateAllPlayersSleepingFlag();
-					if (world.areAllPlayersAsleep())
-						this.tryWakePlayers(world, StellarSkyAPI.getSkyProvider(e.world));
-
-					try {
-						sleep.setBoolean(world, false);
-					} catch (IllegalArgumentException ex) {
-						ex.printStackTrace();
-					} catch (IllegalAccessException ex) {
-						ex.printStackTrace();
-					}
-				}
-			}
+		if(e.phase == TickEvent.Phase.START && e.side == Side.SERVER){
+			MinecraftServer server = e.world.getMinecraftServer();
+			World defWorld = server.getEntityWorld();
+			
+			StellarDimensionManager dimManager = StellarDimensionManager.get(e.world);
+			if(dimManager != null)
+				dimManager.update(e.world, e.world.getWorldTime(), defWorld.getTotalWorldTime());
 		}
 	}
-
-	private void tryWakePlayers(WorldServer world, ISkyProvider skyProvider) {		
-        if (world.getGameRules().getBoolean("doDaylightCycle"))
-        {
-        	WorldInfo info = world.getWorldInfo();
-        	long worldTime = info.getWorldTime();
-            info.setWorldTime(StellarSky.proxy.wakeManager.getWakeTime(world, skyProvider, worldTime));
-        }
-
-        Iterator iterator = world.playerEntities.iterator();
-
-        while (iterator.hasNext())
-        {
-            EntityPlayer entityplayer = (EntityPlayer)iterator.next();
-
-            if (entityplayer.isPlayerSleeping())
-            {
-                entityplayer.wakeUpPlayer(false, false, true);
-            }
-        }
-
-        world.provider.resetRainAndThunder();
-	}
-
 }

@@ -1,79 +1,48 @@
 package stellarium;
 
-import java.io.File;
 import java.io.IOException;
 
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraft.world.WorldProvider;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import stellarapi.api.lib.config.ConfigManager;
+import stellarapi.api.lib.config.HierarchicalConfig;
 import stellarium.client.ClientSettings;
-import stellarium.common.CommonSettings;
 import stellarium.common.DimensionSettings;
-import stellarium.config.ConfigManager;
-import stellarium.sleepwake.AlarmWakeHandler;
-import stellarium.sleepwake.LightWakeHandler;
-import stellarium.sleepwake.SleepWakeManager;
+import stellarium.common.ServerSettings;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.util.math.Spmath;
+import stellarium.world.landscape.LandscapeCache;
 
 public class CommonProxy implements IProxy {
 
-	protected Configuration config;
-	protected ConfigManager cfgManager;
-	public CommonSettings commonSettings = new CommonSettings();
-	public DimensionSettings dimensionSettings = new DimensionSettings();
-	public SleepWakeManager wakeManager = new SleepWakeManager();
+	private ServerSettings serverSettings = new ServerSettings();
+	private DimensionSettings dimensionSettings = new DimensionSettings();
 	
 	private static final String serverConfigCategory = "serverconfig";
 	private static final String serverConfigDimensionCategory = "serverconfig.dimension";
-	private static final String serverConfigWakeCategory = "serverconfig.wake";
 	
 	@Override
-	public void preInit(FMLPreInitializationEvent event) {		
-		this.setupConfigManager(event.getSuggestedConfigurationFile());
-	}
+	public void preInit(FMLPreInitializationEvent event) { }
 
 	@Override
-	public void load(FMLInitializationEvent event) throws IOException {
-        cfgManager.syncFromFile();
-        
-		System.out.println("[Stellarium]: "+"Initializing Math class...");
-		//Initializing Spmath
-		Spmath.Initialize();
-		System.out.println("[Stellarium]: "+"Math Class Initialized!");	}
+	public void load(FMLInitializationEvent event) throws IOException { }
 
 	@Override
-	public void postInit(FMLPostInitializationEvent event) {
-		
-	}
+	public void postInit(FMLPostInitializationEvent event) { }
 	
-	public void setupConfigManager(File file) {
-		config = new Configuration(file);
-        cfgManager = new ConfigManager(config);
-        
-        cfgManager.register(serverConfigCategory, this.commonSettings);
-        cfgManager.register(serverConfigDimensionCategory, this.dimensionSettings);
-        cfgManager.register(serverConfigWakeCategory, this.wakeManager);
-        wakeManager.register("wakeByBright", new LightWakeHandler(), true);
-        wakeManager.register("wakeByAlarm", new AlarmWakeHandler(), false);
-	}
-	
-	public ConfigManager getCfgManager() {
-		return this.cfgManager;
+	@Override
+	public void setupCelestialConfigManager(ConfigManager manager) {
+		manager.register(serverConfigCategory, this.serverSettings);
+		manager.register(serverConfigDimensionCategory, this.dimensionSettings);
 	}
 	
 	@Override
 	public World getDefWorld() {
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld();
-	}
-	
-	@Override
-	public World getDefWorld(boolean isRemote) {
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld();
+		return null;
 	}
 	
 	@Override
@@ -81,17 +50,38 @@ public class CommonProxy implements IProxy {
 		return null;
 	}
 
-	public Configuration getConfig() {
-		return this.config;
-	}
-
 	@Override
 	public CelestialManager getClientCelestialManager() {
 		return null;
+	}
+
+	public Entity getDefViewerEntity() {
+		return null;
+	}
+
+	@Override
+	public int getRenderDistanceSettings() {
+		return 0;
+	}
+
+	@Override
+	public void setupSkyRenderer(WorldProvider provider, CelestialManager celManager, String skyType, LandscapeCache cache) { }
+
+	@Override
+	public HierarchicalConfig getDimensionSettings() {
+		return this.dimensionSettings;
+	}
+
+	@Override
+	public ServerSettings getServerSettings() {
+		return this.serverSettings;
 	}
 
 	@Override
 	public void addScheduledTask(Runnable runnable) {
 		FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(runnable);
 	}
+
+	@Override
+	public void updateTick() { }
 }
