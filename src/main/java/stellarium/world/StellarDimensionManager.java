@@ -37,7 +37,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	private LandscapeCache landscapeCache;
 	
 	public static StellarDimensionManager loadOrCreate(World world, StellarManager manager, String dimName) {
-		WorldSavedData data = world.getPerWorldStorage().loadData(StellarDimensionManager.class, String.format(ID, dimName));
+		WorldSavedData data = world.getPerWorldStorage().getOrLoadData(StellarDimensionManager.class, String.format(ID, dimName));
 		StellarDimensionManager dimManager;
 		
 		if(!(data instanceof StellarDimensionManager))
@@ -55,7 +55,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	}
 
 	public static StellarDimensionManager get(World world) {
-		WorldSavedData data = world.getPerWorldStorage().loadData(StellarDimensionManager.class,
+		WorldSavedData data = world.getPerWorldStorage().getOrLoadData(StellarDimensionManager.class,
 				String.format(ID, world.provider.getDimensionType().getName()));
 		
 		if(!(data instanceof StellarDimensionManager))
@@ -102,8 +102,9 @@ public final class StellarDimensionManager extends WorldSavedData {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		settings.writeToNBT(compound);
+		return compound;
 	}
 	
 	public void setup() {

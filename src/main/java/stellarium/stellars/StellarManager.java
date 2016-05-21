@@ -36,7 +36,7 @@ public final class StellarManager extends WorldSavedData {
 	}
 	
 	private static StellarManager loadOrCreateManager(World world) {		
-		WorldSavedData data = world.getMapStorage().loadData(StellarManager.class, ID);
+		WorldSavedData data = world.getMapStorage().getOrLoadData(StellarManager.class, ID);
 		
 		if(!(data instanceof StellarManager))
 		{
@@ -55,14 +55,14 @@ public final class StellarManager extends WorldSavedData {
 		World world = StellarSky.proxy.getDefWorld();
 		if(world == null)
 			return false;
-		return (world.getMapStorage().loadData(StellarManager.class, ID) instanceof StellarManager);
+		return (world.getMapStorage().getOrLoadData(StellarManager.class, ID) instanceof StellarManager);
 	}
 
 	public static boolean hasServerManager(MinecraftServer server) {
 		World world = server.getEntityWorld();
 		if(world == null)
 			return false;
-		return (world.getMapStorage().loadData(StellarManager.class, ID) instanceof StellarManager);
+		return (world.getMapStorage().getOrLoadData(StellarManager.class, ID) instanceof StellarManager);
 	}
 
 	public static StellarManager getClientManager() {
@@ -76,7 +76,7 @@ public final class StellarManager extends WorldSavedData {
 	}
 	
 	private static StellarManager getManager(World world) {
-		WorldSavedData data = world.getMapStorage().loadData(StellarManager.class, ID);
+		WorldSavedData data = world.getMapStorage().getOrLoadData(StellarManager.class, ID);
 		
 		if(!(data instanceof StellarManager)) {
 			throw new IllegalStateException(
@@ -113,9 +113,10 @@ public final class StellarManager extends WorldSavedData {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setBoolean("locked", this.locked);
 		settings.writeToNBT(compound);
+		return compound;
 	}
 	
 	

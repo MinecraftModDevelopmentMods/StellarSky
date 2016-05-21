@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.Chunk;
@@ -393,9 +393,9 @@ public class StellarWorldProvider extends WorldProvider {
     }
     
     @Override
-    public WorldBorder getWorldBorder()
+    public WorldBorder createWorldBorder()
     {
-        return parProvider.getWorldBorder();
+        return parProvider.createWorldBorder();
     }
     
     /*======================================= Forge Start =========================================*/
@@ -497,9 +497,9 @@ public class StellarWorldProvider extends WorldProvider {
     /*======================================= Start Moved From World =========================================*/
     
     @Override
-    public BiomeGenBase getBiomeGenForCoords(BlockPos pos)
+    public Biome getBiomeForCoords(BlockPos pos)
     {
-        return parProvider.getBiomeGenForCoords(pos);
+        return parProvider.getBiomeForCoords(pos);
     }
 
     @Override
