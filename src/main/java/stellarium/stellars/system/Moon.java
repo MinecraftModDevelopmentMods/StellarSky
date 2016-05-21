@@ -1,15 +1,9 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.CrossUtil;
-import sciapi.api.value.euclidian.EVector;
-import sciapi.api.value.euclidian.IEVector;
-import sciapi.api.value.util.BOp;
-import sciapi.api.value.util.VOp;
-import stellarium.render.IRenderCache;
-import stellarium.util.math.Rotate;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
+import stellarapi.api.lib.math.Matrix3;
+import stellarapi.api.lib.math.Spmath;
+import stellarapi.api.lib.math.Vector3;
+import stellarium.util.math.StellarMath;
 
 public class Moon extends SolarObject {
 	
@@ -22,44 +16,71 @@ public class Moon extends SolarObject {
 	protected double rotation;
 	
 	protected double brightness;
+	
+	protected double brightnessFactor;
+	
+	private double currentOffsetAngle;
 		
 	//Moon's Ecliptic Position Vector from Ground
 	//EVector posGround = new EVector(3);
 	
 	
 	//Moon's Pole(Ecliptic Coord)
-	EVector Pole;
+	Vector3 Pole;
 	
 	//Moon's Prime Meridian at first
-	EVector PrMer0 = new EVector(3);
+	Vector3 PrMer0 = new Vector3();
 	
 	//Moon's East from Prime Meridian
-	EVector East = new EVector(3);
+	Vector3 East = new Vector3();
 	
-	Rotate ri = new Rotate('X'), rom = new Rotate('Z'), rw = new Rotate('Z');
+	Matrix3 ri = new Matrix3(), rom = new Matrix3(), rw = new Matrix3();
 
 
-	public Moon(boolean isRemote, SolarObject earth) {
-		super(isRemote, earth);
+	public Moon(String name, SolarObject earth) {
+		super(name, earth);
 	}
 	
 	@Override
 	public void initialize() {
 		super.initialize();
-		Pole=new EVector(0.0, 0.0, 1.0);
-		ri.setRAngle(-Spmath.Radians(I0));
-		rom.setRAngle(-Spmath.Radians(Omega0));
-		Pole.set((IValRef)rom.transform(ri.transform((IEVector)Pole)));
-		PrMer0.set(VecMath.normalize(VecMath.mult(-1.0, this.getRelativePos(0.0))));
-		East.set((IValRef)CrossUtil.cross((IEVector)Pole, (IEVector)PrMer0));
+		Pole = new Vector3(0.0, 0.0, 1.0);
+		ri.setAsRotation(1.0, 0.0, 0.0, - Spmath.Radians(I0));
+		rom.setAsRotation(0.0, 0.0, 1.0, -Spmath.Radians(Omega0));
+		
+		ri.transform(this.Pole);
+		rom.transform(this.Pole);
+		
+		PrMer0 = this.getRelativePos(0.0);
+		PrMer0.scale(-1.0);
+		PrMer0.normalize();
+		East.setCross(Pole, PrMer0);
+		
+		this.mean_mot=360.0*Math.sqrt(parent.mass/a)/a;
+	}
+	
+	public double getRevolutionPeriod() {
+		return 360.0 / this.mean_mot;
 	}
 	
 	//Get Ecliptic Position Vector from Earth
-	public EVector getRelativePos(double yr){
+	public Vector3 getRelativePos(double yr){
 		this.updateOrbE(yr);
 		this.rotation = mean_mot * yr;
 		double M = this.M0 + this.rotation;
-		return Spmath.GetOrbVec(a, e, ri.setRAngle(-Spmath.Radians(I)), rw.setRAngle(-Spmath.Radians(w)), rom.setRAngle(-Spmath.Radians(Omega)), M);
+		this.currentOffsetAngle = M + w;
+		
+		ri.setAsRotation(1.0, 0.0, 0.0, -Spmath.Radians(I));
+		rw.setAsRotation(0.0, 0.0, 1.0, -Spmath.Radians(w));
+		rom.setAsRotation(0.0, 0.0, 1.0, -Spmath.Radians(Omega));
+
+		Matrix3 matrix = new Matrix3();
+		matrix.setIdentity();
+		matrix.postMult(this.rom);
+		matrix.postMult(this.ri);
+		matrix.postMult(this.rw);
+		
+		return StellarMath.GetOrbVec(a, e, M, matrix);
 	}
 	
 	//Update Orbital Elements in time
@@ -70,68 +91,74 @@ public class Moon extends SolarObject {
 		w=w0+wd*yr;
 		Omega=Omega0+Omegad*yr;
 		M0=M0_0;
-		this.mean_mot=360.0*Math.sqrt(parent.mass/a)/a;
 	}
 	
 	@Override
 	public void updateModulate() {
-		VecMath.sub(parent.relativePos, VecMath.mult(this.mass / parent.mass, this.relativePos));
-	}
-	
-	@Override
-	public IRenderCache generateCache() {
-		return new MoonRenderCache();
-	}
-
-	@Override
-	public int getRenderId() {
-		return LayerSolarSystem.moonRenderId;
+		Vector3 vec = new Vector3(this.relativePos);
+		vec.scale(this.mass / parent.mass);
+		parent.relativePos.sub(vec);
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)
-	public IValRef<EVector> posLocalM(double longitude, double latitude){
+	public Vector3 posLocalM(double longitude, double latitude){
 		float longp=(float)Spmath.Radians(longitude + this.rotation);
 		float lat=(float)Spmath.Radians(latitude);
-		return VecMath.mult(this.radius, VecMath.add(VecMath.add(VecMath.mult(Spmath.sinf(lat), Pole), VecMath.mult(Spmath.cosf(lat)*Spmath.cosf(longp), PrMer0)), VecMath.mult(Spmath.cosf(lat)*Spmath.sinf(longp), East)));
+		Vector3 result = new Vector3(this.Pole);
+		result.scale(Spmath.sinf(lat));
+		Vector3 ref = new Vector3(this.PrMer0);
+		ref.scale(Spmath.cosf(lat)*Spmath.cosf(longp));
+		result.add(ref);
+		ref = new Vector3(this.East);
+		ref.scale(Spmath.cosf(lat)*Spmath.sinf(longp));
+		result.add(ref);
+		result.scale(this.radius);
+		return result;
 	}
 	
 	//Ecliptic Position of Moon's Local Region from Ground (Update Needed)
 	//Parameter: PosLocalM Result
-	public IValRef<EVector> posLocalG(IValRef<EVector> p){
-		return VecMath.add(this.earthPos, p);
+	public Vector3 posLocalG(Vector3 p){
+		Vector3 vec = new Vector3(p);
+		vec.add(this.earthPos);
+		return vec;
 	}
 	
 	@Override
-	protected void updateMagnitude(EVector earthFromSun) {
-		double dist=Spmath.getD(VecMath.size(this.earthPos));
-		double distS=Spmath.getD(VecMath.size(this.sunPos));
-		double distE=Spmath.getD(VecMath.size(earthFromSun));
-		double LvsSun=this.radius*this.radius*this.getPhase()*distE*distE*this.albedo*1.4/(dist*dist*distS*distS);
+	protected void updateMagnitude(Vector3 earthFromSun) {
+		double dist=this.earthPos.size();
+		double distS=this.sunPos.size();
+		double distE=earthFromSun.size();
+		double LvsSun=this.radius*this.radius*this.getPhase()*distE*distE*this.albedo*this.brightnessFactor*1.4/(dist*dist*distS*distS);
 		this.currentMag=-26.74-2.5*Math.log10(LvsSun);
-		this.brightness = distE*distE*this.albedo/(distS*distS)*10;
+		this.brightness = distE*distE*this.albedo * this.brightnessFactor/(distS*distS)*10;
 	}
 	
 	//Illumination of Moon's Local Region (Update Needed)
 	//Parameter: PosLocalM Result
-	public double illumination(EVector p){
-		return -Spmath.getD(BOp.div(VecMath.dot(this.sunPos, p), BOp.mult(VecMath.size(this.sunPos), VecMath.size(p))))*this.brightness;
+	public double illumination(Vector3 p){
+		return -this.sunPos.dot(p)/(this.sunPos.size()*p.size())*this.brightness;
+	}
+	
+	@Override
+	public double absoluteOffset() {
+		return this.currentOffsetAngle / 360.0;
 	}
 	
 	//Phase of the Moon(Update Needed)
+	@Override
 	public double getPhase(){
-		return (Math.PI-Math.acos(Spmath.getD(BOp.div(VecMath.dot(this.earthPos, this.sunPos), BOp.mult(VecMath.size(this.earthPos), VecMath.size(this.sunPos))))))/Math.PI;
+		return (Math.PI-Math.acos(earthPos.dot(this.sunPos) / (this.earthPos.size() * this.sunPos.size()))) / Math.PI;
 	}
 	
 	//Time phase for moon
-	public double phase_Time(){
-		double k=Math.signum(Spmath.getD(VOp.dot(CrossUtil.cross(this.earthPos, this.sunPos), (IValRef)Pole)))
-				*(1.0 - getPhase());
+	@Override
+	public double phaseOffset(){
+		Vector3 crossed = new Vector3();
+		crossed.setCross(this.earthPos, this.sunPos);
+		double k=Math.signum(crossed.dot(Pole)) * (1.0 - getPhase());
 		if(k<0) k=k+2;
 		return k/2;
-	}
-
-	public double getPeriod() {
-		return this.a * Math.sqrt(this.a / parent.mass);
 	}
 
 }

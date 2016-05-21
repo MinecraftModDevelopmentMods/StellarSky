@@ -1,14 +1,9 @@
 package stellarium.stellars.system;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
-import stellarium.config.INBTConfig;
-import stellarium.config.SimpleNBTConfig;
-import stellarium.config.property.ConfigPropertyDouble;
+import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.lib.config.SimpleNBTConfig;
+import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 
 public class SolarSystemSettings extends SimpleNBTConfig {
 		

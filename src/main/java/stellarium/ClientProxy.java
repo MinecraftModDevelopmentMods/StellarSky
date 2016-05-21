@@ -1,32 +1,47 @@
 package stellarium;
 
-import java.io.File;
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.world.WorldProvider;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ISkyEffect;
+import stellarapi.api.StellarAPIReference;
+import stellarapi.api.gui.overlay.OverlayRegistry;
+import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
-import stellarium.client.DefaultHourProvider;
-import stellarium.client.StellarKeyHook;
-import stellarium.client.StellarSkyClientHandler;
+import stellarium.client.StellarClientFMLHook;
+import stellarium.client.overlay.StellarSkyOverlays;
+import stellarium.client.overlay.clientcfg.OverlayClientSettingsType;
+import stellarium.client.overlay.clock.OverlayClockType;
+import stellarium.display.DisplayManager;
+import stellarium.display.DisplayRegistry;
+import stellarium.render.SkyCelestialRenderer;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.CelestialManager;
+import stellarium.stellars.layer.StellarLayerRegistry;
+import stellarium.world.landscape.LandscapeCache;
+import stellarium.world.landscape.LandscapeClientSettings;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
-	private static final String clientConfigCategory = "clientconfig";
+	public static final String clientConfigCategory = "clientconfig";
 	private static final String clientConfigOpticsCategory = "clientconfig.optics";
 	
 	private ClientSettings clientSettings = new ClientSettings();
+	private LandscapeClientSettings landscapeSettings = new LandscapeClientSettings();
 	
+	private ConfigManager guiConfig;
 	private CelestialManager celestialManager = new CelestialManager(true);
+	private DisplayManager displayManager = new DisplayManager();
 	
 	public ClientSettings getClientSettings() {
 		return this.clientSettings;
@@ -38,32 +53,41 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	@Override
-	public void preInit(FMLPreInitializationEvent event) {		
-        this.setupConfigManager(event.getSuggestedConfigurationFile());
-        
-		MinecraftForge.EVENT_BUS.register(new StellarSkyClientHandler());
-		FMLCommonHandler.instance().bus().register(new StellarKeyHook());
+	public void preInit(FMLPreInitializationEvent event) {
+		super.preInit(event);
+		this.guiConfig = new ConfigManager(
+				StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
+						StellarSkyReferences.guiSettings));
+						
+		FMLCommonHandler.instance().bus().register(new StellarClientFMLHook());
 		
-		StellarSkyAPI.registerHourProvider(new DefaultHourProvider(this.clientSettings));
+		OverlayRegistry.registerOverlaySet("stellarsky", new StellarSkyOverlays());
+		OverlayRegistry.registerOverlay("clock", new OverlayClockType(), this.guiConfig);
+		OverlayRegistry.registerOverlay("clientconfig", new OverlayClientSettingsType(), this.guiConfig);
 	}
 
 	@Override
 	public void load(FMLInitializationEvent event) throws IOException {
 		super.load(event);
 		
-    	celestialManager.initializeClient(this.clientSettings);
+		StellarLayerRegistry.getInstance().composeSettings(this.clientSettings);
+		DisplayRegistry.getInstance().setupDisplay(this.clientSettings, this.displayManager);
+		clientSettings.putSubConfig("landscape", this.landscapeSettings);
 	}
 
 	@Override
 	public void postInit(FMLPostInitializationEvent event) {
 		super.postInit(event);
+		
+		guiConfig.syncFromFile();
+    	celestialManager.initializeClient(this.clientSettings);
 	}
 	
 	@Override
-	public void setupConfigManager(File file) {
-		super.setupConfigManager(file);
-		cfgManager.register(clientConfigCategory, this.clientSettings);
-		cfgManager.register(clientConfigOpticsCategory, Optics.instance);
+	public void setupCelestialConfigManager(ConfigManager manager) {
+		super.setupCelestialConfigManager(manager);
+		manager.register(clientConfigCategory, this.clientSettings);
+		manager.register(clientConfigOpticsCategory, Optics.instance);
 	}
 	
 	@Override
@@ -71,9 +95,27 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		return Minecraft.getMinecraft().theWorld;
 	}
 	
+	public Entity getDefViewerEntity() {
+		return Minecraft.getMinecraft().getRenderViewEntity();
+	}
+	
 	@Override
-	public World getDefWorld(boolean isRemote) {
-		return isRemote? this.getDefWorld() : super.getDefWorld();
+	public int getRenderDistanceSettings() {
+		return Minecraft.getMinecraft().gameSettings.renderDistanceChunks;
+	}
+	
+	@Override
+	public void setupSkyRenderer(WorldProvider provider, CelestialManager celManager, String skyType, LandscapeCache cache) {
+		IRenderHandler renderer = StellarSkyAPI.getRendererFor(skyType,
+				new SkyCelestialRenderer(this.clientSettings, celManager, this.displayManager, this.landscapeSettings, cache));
+		provider.setSkyRenderer(renderer);
+	}
+	
+	@Override
+	public void updateTick() {
+		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(StellarSky.proxy.getDefWorld());
+		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
+		displayManager.updateDisplay(this.clientSettings, coordinate, sky);
 	}
 	
 	@Override

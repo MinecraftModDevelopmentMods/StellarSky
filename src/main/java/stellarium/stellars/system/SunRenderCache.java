@@ -1,30 +1,41 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.euclidian.EVector;
+import stellarapi.api.lib.config.IConfigHandler;
+import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
-import stellarium.config.IConfigHandler;
-import stellarium.render.IRenderCache;
-import stellarium.stellars.view.IStellarViewpoint;
-import stellarium.util.math.SpCoord;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
+import stellarium.render.EnumRenderPass;
+import stellarium.stellars.layer.IRenderCache;
+import stellarium.stellars.layer.StellarCacheInfo;
 
 public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
-	
 	protected SpCoord appCoord = new SpCoord();
-	protected double size;
+	protected Vector3 pos = new Vector3(), dif = new Vector3(), dif2 = new Vector3();
 
 	@Override
-	public void initialize(ClientSettings settings, IConfigHandler config) { }
+	public void initialize(ClientSettings settings, IConfigHandler config, Sun sun) { }
 
 	@Override
-	public void updateCache(ClientSettings settings, IConfigHandler config, Sun object, IStellarViewpoint viewpoint) {
-		EVector ref = new EVector(3);
-		ref.set(viewpoint.getProjection().transform(object.earthPos));
+	public void updateCache(ClientSettings settings, IConfigHandler config, Sun object, StellarCacheInfo info) {
+		Vector3 ref = new Vector3(object.earthPos);
+		info.projectionToGround.transform(ref);
 		appCoord.setWithVec(ref);
-		viewpoint.applyAtmRefraction(this.appCoord);
+		info.applyAtmRefraction(this.appCoord);
 		
-		this.size = object.radius / Spmath.getD(VecMath.size(object.earthPos))*99.0*20;
+		double size = object.radius / object.earthPos.size()*99.0*20;
+		
+		pos.set(appCoord.getVec());
+		dif.set(new SpCoord(appCoord.x+90, 0.0).getVec());
+		dif2.set(new SpCoord(appCoord.x, appCoord.y+90).getVec());
+
+		pos.scale(EnumRenderPass.DEFAULT_OPAQUE_DEPTH);
+		dif.scale(size);
+		dif2.scale(-size);
+	}
+
+	@Override
+	public int getRenderId() {
+		return LayerSolarSystem.sunRenderId;
 	}
 
 }

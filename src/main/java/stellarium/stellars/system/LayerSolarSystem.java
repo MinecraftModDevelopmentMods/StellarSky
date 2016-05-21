@@ -1,18 +1,24 @@
 package stellarium.stellars.system;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Map;
 
-import com.google.common.collect.Lists;
+import com.google.common.base.Predicate;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import sciapi.api.value.euclidian.EVector;
+import stellarapi.api.celestials.EnumCelestialCollectionType;
+import stellarapi.api.celestials.ICelestialObject;
+import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
-import stellarium.render.CelestialRenderingRegistry;
-import stellarium.stellars.layer.ICelestialLayerCommon;
+import stellarium.render.StellarRenderingRegistry;
+import stellarium.stellars.layer.IPerWorldImage;
+import stellarium.stellars.layer.IStellarLayerType;
+import stellarium.stellars.layer.StellarObjectContainer;
 
-public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettings, SolarSystemClientSettings> {
+public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSystemClientSettings, SolarSystemSettings> {
 	
 	private static int renderId = -1;
 	protected static int planetRenderId = -1;
@@ -21,43 +27,29 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 	
 	public final double AU=1.496e+8;
 	
-	protected Sun sun;
-	protected Earth earth;
-	protected Moon moon;
-	
-	private Planet mercury;
-	private Planet venus;
-	private Planet mars;
-	private Planet jupiter;
-	private Planet saturn;
-	private Planet uranus;
-	private Planet neptune;
-	
-	protected List<SolarObject> objects = Lists.newArrayList();
-	
 	@Override
-	public void initialize(boolean isRemote, SolarSystemClientSettings config) throws IOException { }
+	public void initializeClient(SolarSystemClientSettings config, StellarObjectContainer container) throws IOException { }
 
 	@Override
-	public void initializeCommon(boolean isRemote, SolarSystemSettings settings) throws IOException {		
-		objects.clear();
-		
+	public void initializeCommon(SolarSystemSettings settings, StellarObjectContainer<SolarObject, SolarSystemClientSettings> container) throws IOException {		
 		////Solar System
 		StellarSky.logger.info("Initializing Solar System...");
 		///Sun
 		StellarSky.logger.info("Initializing Sun...");
-		sun = new Sun(isRemote);
+		Sun sun = new Sun("Sun");
 		sun.radius=0.00465469;
 		sun.mass=1.0;
 		sun.initialize();
-		objects.add(this.sun);
+		container.loadObject("Sun", sun);
+		container.loadObject("System", sun);
+		container.addRenderCache(sun, new SunRenderCache());
+		container.addImageType(sun, SunImage.class);
 		
 		///Earth System
-		//Declaration
-		earth = new Earth(isRemote, this.sun);
-		moon = new Moon(isRemote, this.earth);
-		
+		//Declaration		
 		StellarSky.logger.info("Initializing Earth...");
+		Earth earth = new Earth("Earth", sun);
+		Moon moon = new Moon("Moon", earth);
 		
 		earth.radius=4.2634e-5;
 		earth.mass=3.002458398e-6;
@@ -80,7 +72,8 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		
 		//-Moon
 		StellarSky.logger.info("Initializing Moon...");
-		moon.albedo=0.12 * settings.propMoonBrightness.getDouble();
+		moon.albedo=0.12;
+		moon.brightnessFactor = settings.propMoonBrightness.getDouble();
 		moon.a0=0.00257184;
 		moon.e0=0.0549006;
 		moon.I0=5.14;
@@ -92,16 +85,20 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		
 		//Earth Initialize
 		earth.initialize();
-		objects.add(this.earth);
+		container.loadObject("Earth", earth);
+		container.loadObject("System", earth);
 		
 		//Moon Initialize
 		moon.initialize();
-		objects.add(this.moon);
+		container.loadObject("Moon", moon);
+		container.loadObject("System", moon);
+		container.addRenderCache(moon, new MoonRenderCache());
+		container.addImageType(moon, MoonImage.class);
 		
 		///Planets
 		//Mercury
 		StellarSky.logger.info("Initializing Mercury...");
-		mercury = new Planet(isRemote, this.sun);
+		Planet mercury = new Planet("Mercury", sun);
 		mercury.albedo=0.119;
 		mercury.radius=1.630815508e-5;
 		mercury.mass=1.660147806e-7;
@@ -119,11 +116,13 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		mercury.Omegad=-0.12214182;
 		
 		mercury.initialize();
-		objects.add(this.mercury);
+		container.loadObject("System", mercury);
+		container.addRenderCache(mercury, new PlanetRenderCache());
+		container.addImageType(mercury, PlanetImage.class);
 		
 		//Venus
 		StellarSky.logger.info("Initizlizing Venus...");
-		venus = new Planet(isRemote, this.sun);
+		Planet venus = new Planet("Venus", sun);
 		venus.albedo=0.90;
 		venus.radius=4.0453208556e-5;
 		venus.mass=2.447589362e-6;
@@ -141,11 +140,13 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		venus.Omegad=-0.27274174;
 		
 		venus.initialize();
-		objects.add(this.venus);
+		container.loadObject("System", venus);
+		container.addRenderCache(venus, new PlanetRenderCache());
+		container.addImageType(venus, PlanetImage.class);
 		
 		//Mars
 		StellarSky.logger.info("Initializing Mars...");
-		mars = new Planet(isRemote, this.sun);
+		Planet mars = new Planet("Mars", sun);
 		mars.albedo=0.25;
 		mars.radius=2.26604278e-5;
 		mars.mass=3.22683626e-7;
@@ -163,11 +164,13 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		mars.Omegad=-0.26852431;
 		
 		mars.initialize();
-		objects.add(this.mars);
+		container.loadObject("System", mars);
+		container.addRenderCache(mars, new PlanetRenderCache());
+		container.addImageType(mars, PlanetImage.class);
 		
 		//Jupiter
 		StellarSky.logger.info("Initializing Jupiter...");
-		jupiter = new Planet(isRemote, this.sun);
+		Planet jupiter = new Planet("Jupiter", sun);
 		jupiter.albedo=0.343;
 		jupiter.radius=4.673195187e-4;
 		jupiter.mass=9.54502036e-4;
@@ -189,11 +192,13 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		jupiter.f=38.35125;
 		
 		jupiter.initialize();
-		objects.add(this.jupiter);
+		container.loadObject("System", jupiter);
+		container.addRenderCache(jupiter, new PlanetRenderCache());
+		container.addImageType(jupiter, PlanetImage.class);
 		
 		//Saturn
 		StellarSky.logger.info("Initializing Saturn...");
-		saturn = new Planet(isRemote, this.sun);
+		Planet saturn = new Planet("Saturn", sun);
 		saturn.albedo=0.342;
 		saturn.radius=3.83128342e-4;
 		saturn.mass=2.8578754e-4;
@@ -215,11 +220,13 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		saturn.f=38.35125;
 		
 		saturn.initialize();
-		objects.add(this.saturn);
-		
+		container.loadObject("System", saturn);
+		container.addRenderCache(saturn, new PlanetRenderCache());
+		container.addImageType(saturn, PlanetImage.class);
+
 		//Uranus
 		StellarSky.logger.info("Initializing Uranus...");
-		uranus = new Planet(isRemote, this.sun);
+		Planet uranus = new Planet("uranus", sun);
 		uranus.albedo=0.300;
 		uranus.radius=1.68890374e-4;
 		uranus.mass=4.3642853557e-5;
@@ -241,11 +248,13 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		uranus.f=7.67025;
 		
 		uranus.initialize();
-		objects.add(this.uranus);
-		
+		container.loadObject("System", uranus);
+		container.addRenderCache(uranus, new PlanetRenderCache());
+		container.addImageType(uranus, PlanetImage.class);
+
 		//Neptune
 		StellarSky.logger.info("Initializing Neptune...");
-		neptune = new Planet(isRemote, this.sun);
+		Planet neptune = new Planet("Neptune", sun);
 		neptune.albedo=0.290;
 		neptune.radius=1.641209893e-4;
 		neptune.mass=5.14956513e-5;
@@ -267,26 +276,23 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 		neptune.f=7.67025;
 		
 		neptune.initialize();
-		objects.add(this.neptune);
-		
+		container.loadObject("System", neptune);
+		container.addRenderCache(neptune, new PlanetRenderCache());
+		container.addImageType(neptune, PlanetImage.class);
+
 		StellarSky.logger.info("Solar System Initialized!");
 	}
 
 	@Override
-	public void updateLayer(double year) {
-		for(SolarObject object : this.objects)
+	public void updateLayer(StellarObjectContainer<SolarObject, SolarSystemClientSettings> container, double year) {
+		for(SolarObject object : container.getLoadedObjects("System"))
 			object.updatePre(year);
-		for(SolarObject object : this.objects)
+		for(SolarObject object : container.getLoadedObjects("System"))
 			object.updateModulate();
-		for(SolarObject object : this.objects)
-			object.updatePos(this.sun, this.earth);
-		for(SolarObject object : this.objects)
-			object.updatePost(this.earth);
-	}
-
-	@Override
-	public List<SolarObject> getObjectList() {
-		return this.objects;
+		for(SolarObject object : container.getLoadedObjects("System"))
+			object.updatePos(container.getLoadedSingleton("Sun"), container.getLoadedSingleton("Earth"));
+		for(SolarObject object : container.getLoadedObjects("System"))
+			object.updatePost(container.getLoadedSingleton("Earth"));
 	}
 
 	@Override
@@ -297,39 +303,59 @@ public class LayerSolarSystem implements ICelestialLayerCommon<SolarSystemSettin
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderers() {
-		renderId = CelestialRenderingRegistry.getInstance().registerLayerRenderer(
+		renderId = StellarRenderingRegistry.getInstance().registerLayerRenderer(
 				new LayerSolarSystemRenderer());
 		
-		planetRenderId = CelestialRenderingRegistry.getInstance().registerObjectRenderer(
+		planetRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(
 				new PlanetRenderer());
-		sunRenderId = CelestialRenderingRegistry.getInstance().registerObjectRenderer(
+		sunRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(
 				new SunRenderer());
-		moonRenderId = CelestialRenderingRegistry.getInstance().registerObjectRenderer(
+		moonRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(
 				new MoonRenderer());
 	}
 
 	@Override
-	public boolean provideSun() {
-		return true;
+	public String getName() {
+		return "Solar System";
 	}
 
 	@Override
-	public EVector getSunEcRPos() {
-		return sun.earthPos;
+	public int searchOrder() {
+		return 0;
 	}
 
 	@Override
-	public boolean provideMoon() {
-		return true;
+	public boolean isBackground() {
+		return false;
 	}
 
 	@Override
-	public EVector getMoonEcRPos() {
-		return moon.earthPos;
+	public EnumCelestialCollectionType getCollectionType() {
+		return EnumCelestialCollectionType.System;
 	}
 
 	@Override
-	public double[] getMoonFactors() {
-		return new double[] {moon.getPeriod(), moon.getPhase(), moon.phase_Time()};
+	public Comparator<ICelestialObject> getDistanceComparator(SpCoord pos) {
+		return null;
+	}
+
+	@Override
+	public Predicate<ICelestialObject> conditionInRange(SpCoord pos, double radius) {
+		return null;
+	}
+
+	@Override
+	public Map<SolarObject, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
+		return null;
+	}
+
+	@Override
+	public Collection<SolarObject> getSuns(StellarObjectContainer container) {
+		return container.getLoadedObjects("Sun");
+	}
+
+	@Override
+	public Collection<SolarObject> getMoons(StellarObjectContainer container) {
+		return container.getLoadedObjects("Moon");
 	}
 }

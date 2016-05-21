@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import stellarium.config.IConfigHandler;
+import stellarapi.api.lib.config.IConfigHandler;
 
 public class MilkywaySettings implements IConfigHandler {
 	
@@ -23,18 +23,21 @@ public class MilkywaySettings implements IConfigHandler {
 		
 		List<String> propNameList = Lists.newArrayList();
 		
+		// TODO Migrate into classification.
         propMilkywayBrightness=config.get(category, "Milkyway_Brightness", 1.5);
         propMilkywayBrightness.comment="Brightness of milky way.\n"
         		+ "For real world it should be 1.0 or lower, but default is set to 1.5 for visual effect.";
         propMilkywayBrightness.setRequiresMcRestart(false);
         propMilkywayBrightness.setLanguageKey("config.property.client.milkywaybrightness");
+        propMilkywayBrightness.setMinValue(0.0).setMaxValue(3.0);
         propNameList.add(propMilkywayBrightness.getName());
         
-		propMilkywayFrac=config.get(category, "Milkyway_Fragments_Number", 32);
+		propMilkywayFrac=config.get(category, "Milkyway_Fragments_Number", 16);
         propMilkywayFrac.comment="Milky way is drawn with fragments\n" +
         		"Less fragments will increase FPS, but the milky way will become more defective";
         propMilkywayFrac.setRequiresMcRestart(false);
         propMilkywayFrac.setLanguageKey("config.property.client.milkywayfrac");
+        propMilkywayFrac.setMinValue(4).setMaxValue(64);
         propNameList.add(propMilkywayFrac.getName());
 
         config.setCategoryPropertyOrder(category, propNameList);

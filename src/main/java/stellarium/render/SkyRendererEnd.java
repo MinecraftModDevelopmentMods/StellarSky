@@ -30,39 +30,13 @@ public class SkyRendererEnd extends IRenderHandler {
 		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.depthMask(false);
-		mc.renderEngine.bindTexture(StellarSkyResources.resourceEndSky.getLocationFor(mc.theWorld));
+		mc.renderEngine.bindTexture(StellarSkyResources.resourceEndSky.getLocation());
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
 		for (int i = 0; i < 6; ++i)
 		{
 			GlStateManager.pushMatrix();
-
-			if (i == 1)
-			{
-				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-			}
-
-			if (i == 2)
-			{
-				GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			}
-
-			if (i == 3)
-			{
-				GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			}
-
-			if (i == 4)
-			{
-				GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-			}
-
-			if (i == 5)
-			{
-				GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
-			}
-
 			worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 			worldrenderer.pos(-100.0D, -100.0D, -100.0D).tex(0.0D, 0.0D).color(40, 40, 40, 255).endVertex();
 			worldrenderer.pos(-100.0D, -100.0D, 100.0D).tex(0.0D, 16.0D).color(40, 40, 40, 255).endVertex();
@@ -77,7 +51,9 @@ public class SkyRendererEnd extends IRenderHandler {
 		
 		GlStateManager.pushMatrix();
 		GlStateManager.rotate(-90.0f, 1.0f, 0.0f, 0.0f); //e,n,z
-		this.celestials.renderCelestial(mc, 0.0f, 1.0f, partialTicks);
+		celestials.renderCelestial(mc, world, new float[]{0, 0, 0}, partialTicks);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        celestials.renderSkyLandscape(mc, world, partialTicks);
 		GlStateManager.popMatrix();
 		
 		GlStateManager.disableBlend();

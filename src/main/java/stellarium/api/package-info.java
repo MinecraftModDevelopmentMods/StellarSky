@@ -1,13 +1,11 @@
 /**
  * API for Stellar Sky.
- * 2.1-2.3 changelog
- *  - Introduced Sky Renderer Type to control sky render type via configuration.
- *     This will be added for each configuration for dimension compatible with it.
- *  - Added calculateDispersionFactor to the sky provider.
- *  - Added per dimension resource to control resources on specific dimension.
- *  - Added Light pollution rate.
+ * 2.4-2.5 changelog <p>
+ *  - Introduced {@link ICelestialRenderer#renderSunriseSunsetEffect(net.minecraft.client.Minecraft, float[], float)}. <p>
+ *  - Removed Per dimension resources from Stellar Sky, it moved to Stellar API. <p>
+ *  - Rephrased Celestial Renderer to give actual sky color.
  * */
-@API(apiVersion = "2.2", owner = "stellarsky", provides = "stellarsky|API")
+@API(apiVersion = "2.5", owner = "stellarsky", provides = "stellarsky|API")
 package stellarium.api;
 
 import net.minecraftforge.fml.common.API;

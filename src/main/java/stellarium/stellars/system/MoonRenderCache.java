@@ -1,74 +1,100 @@
 package stellarium.stellars.system;
 
-import sciapi.api.value.IValRef;
-import sciapi.api.value.euclidian.EVector;
+import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.optics.EnumRGBA;
+import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
-import stellarium.render.IRenderCache;
-import stellarium.stellars.Optics;
-import stellarium.stellars.util.ExtinctionRefraction;
-import stellarium.stellars.view.IStellarViewpoint;
-import stellarium.util.math.SpCoord;
-import stellarium.util.math.Spmath;
-import stellarium.util.math.VecMath;
+import stellarium.render.EnumRenderPass;
+import stellarium.stellars.layer.IRenderCache;
+import stellarium.stellars.layer.StellarCacheInfo;
+import stellarium.util.math.VectorHelper;
 
 public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSettings> {
 	
 	protected boolean shouldRenderGlow;
 	
-	protected SpCoord appCoord, cache;
+	private SpCoord appCoord, cache;
+	protected Vector3 pos = new Vector3(), dif = new Vector3(), dif2 = new Vector3();
 	protected int latn, longn;
-	protected EVector moonPos[][], moonnormal[][];
+	protected Vector3 moonPos[][], moonnormal[][];
 	protected float moonilum[][];
-	protected EVector buf = new EVector(3);
+	protected Vector3 buf = new Vector3();
 	protected double size, difactor, appMag;
+	protected float multiplier;
+	protected double[] color = new double[4];
 
 	@Override
-	public void initialize(ClientSettings settings, SolarSystemClientSettings specificSettings) {
+	public void initialize(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon moon) {
 		this.appCoord = new SpCoord();
 		this.latn = specificSettings.imgFrac;
 		this.longn = 2*specificSettings.imgFrac;
-		this.moonPos = new EVector[longn][latn+1];
+		this.moonPos = VectorHelper.createAndInitialize(longn, latn+1);
 		this.moonilum = new float[longn][latn+1];
-		this.moonnormal = new EVector[longn][latn+1];
+		this.moonnormal = VectorHelper.createAndInitialize(longn, latn+1);
 		this.cache = new SpCoord();
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, SolarSystemClientSettings specificSettings,
-			Moon object, IStellarViewpoint viewpoint) {
-		EVector ref = new EVector(3);
-		ref.set(viewpoint.getProjection().transform(object.earthPos));
-		double airmass = viewpoint.getAirmass(ref, false);
-		this.appMag = object.currentMag + airmass * Optics.ext_coeff_V;
-		appCoord.setWithVec(ref);
-		viewpoint.applyAtmRefraction(this.appCoord);
+	public void updateCache(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon object, StellarCacheInfo info) {
+		buf.set(object.earthPos);
+		info.projectionToGround.transform(this.buf);
+		appCoord.setWithVec(this.buf);
+		double airmass = info.calculateAirmass(this.appCoord);
+		this.appMag = object.currentMag + airmass * info.getExtinctionRate(EnumRGBA.Alpha);
+		info.applyAtmRefraction(this.appCoord);
 		
-		this.shouldRenderGlow = appCoord.y >= 0 || !viewpoint.hideObjectsUnderHorizon();
+		this.shouldRenderGlow = appCoord.y >= 0 || !info.hideObjectsUnderHorizon;
 		
-		this.size = object.radius/Spmath.getD(VecMath.size(object.earthPos));
+		this.size = object.radius/object.earthPos.size();
 		this.difactor = 0.8 / 180.0 * Math.PI / this.size;
 		this.difactor = this.difactor * this.difactor / Math.PI;
 		
-		this.size *= (98.0*5.0);
+		if(this.shouldRenderGlow) {
+			pos.set(appCoord.getVec());
+			dif.set(new SpCoord(appCoord.x+90, 0.0).getVec());
+			dif2.set(new SpCoord(appCoord.x, appCoord.y+90).getVec());
+
+			pos.scale(EnumRenderPass.DEFAULT_OPAQUE_DEPTH);
+			this.size *= (EnumRenderPass.DEFAULT_OPAQUE_DEPTH*5.0);
+			
+			dif.scale(this.size);
+			dif2.scale(-this.size);
+		}
+		
 		
 		int latc, longc;
 		for(longc=0; longc<longn; longc++){
 			for(latc=0; latc<=latn; latc++){
 				buf.set(object.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0));
 				moonilum[longc][latc]=(float) (object.illumination(buf) * this.difactor * 1.5);
-				moonnormal[longc][latc] = new EVector(3).set(buf);
+				moonnormal[longc][latc].set(object.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0));
+				moonnormal[longc][latc].scale(-10000.0);
 				buf.set(object.posLocalG(buf));
-				IValRef ref2 = viewpoint.getProjection().transform(buf);
+				info.projectionToGround.transform(buf);
 
-				cache.setWithVec(ref2);
-				viewpoint.applyAtmRefraction(this.cache);
+				double size = buf.size();
+				cache.setWithVec(buf);
+				info.applyAtmRefraction(this.cache);
 
-				moonPos[longc][latc] = VecMath.mult(98.0, cache.getVec()).getVal();
+				moonPos[longc][latc].set(cache.getVec());
+				moonPos[longc][latc].scale(size/object.earthPos.size()*EnumRenderPass.DEFAULT_OPAQUE_DEPTH);
 
-				if(viewpoint.hideObjectsUnderHorizon() && cache.y < 0)
+				if(cache.y < 0 && info.hideObjectsUnderHorizon)
 					moonilum[longc][latc]=0.0f;
 			}
 		}
+		
+		this.multiplier = (float)(info.lgp / (info.mp*info.mp));
+		System.arraycopy(
+				EyeDetector.getInstance().process(this.multiplier, info.filter, new double[] {1.0, 1.0, 1.0, object.brightness}),
+				0, this.color, 0, color.length);
+		color[3] /= object.brightness;
+	}
+
+	@Override
+	public int getRenderId() {
+		return LayerSolarSystem.moonRenderId;
 	}
 
 }

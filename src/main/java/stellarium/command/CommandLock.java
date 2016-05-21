@@ -4,6 +4,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 
 public class CommandLock extends CommandBase {
@@ -39,8 +40,9 @@ public class CommandLock extends CommandBase {
 		if(args.length >= 1)
 			lock = this.parseBoolean(args[0]);
 		
-		StellarManager manager = StellarManager.getManager(false);
+		StellarManager manager = StellarManager.getServerManager(MinecraftServer.getServer());
 		manager.setLocked(lock);
+		StellarSky.instance.getNetworkManager().sendLockInformation(lock);
 	}
 
 }

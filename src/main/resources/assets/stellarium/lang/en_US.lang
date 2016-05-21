@@ -1,14 +1,54 @@
-﻿
+癤�
 //Keys
 key.stellarsky=Stellar Sky
-key.stellarsky.viewmod.description=Change Time Info Text
+key.stellarsky.focusgui.description=Focus Stellar Sky Settings
+key.stellarsky.customizegui.description=Customize Settings GUI
+
+//Progress Texts
+progress.text.injection.main=StellarSky World&Server Injection
+progress.text.injection.manager=Injecting Stellar Manager...
+progress.text.injection.dimmanager=Injecting Dimension Manager for %s...
+progress.text.injection.query=Waiting for Information on Dimension %s...
 
 //HUD Texts
 hud.text.year=Year %1$s
-hud.text.day=Day  #%1$s (/%2$s)
+hud.text.day=Day %1$s (/%2$s)
 hud.text.tick=Tick  #%1$s (/%2$s)
-hud.text.time=Time %1$s:%2$s (/%3$s:%4$s) (1 hour=%5$s min.)
+hud.text.time=Time %1$s:%2$s (/%3$s:%4$s)
 
+hud.text.dayequal=1D=
+hud.text.hourequal=1H=
+hud.text.unit.hour=h
+hud.text.unit.tick=t
+
+hud.text.double=%sD
+hud.text.int=%s
+
+hud.overlay.stellarsky=Stellar Sky
+
+//HUD Configurations
+config.property.gui.clock.fix.tooltip=Fix button to fix this overlay
+
+config.property.gui.clock.modeview=Mode for HUD time view
+config.property.gui.clock.modeview.tooltip=Mode for HUD time view. 2 modes available: hhmm, tick. Can also be changed in-game.
+config.property.gui.clock.modeview.tooltip1=Mode for HUD time view.
+config.property.gui.clock.modeview.tooltip2=2 modes available: hhmm, tick.
+config.property.gui.clock.modeview.tooltip3=Can also be changed in-game.
+
+config.property.gui.clock.shadow.tooltip=Draw Text with Shadow
+
+config.property.gui.clock.hourformat.tooltip=Choose from 1day=?hour and 1hour=?tick
+
+config.property.gui.clock.daytohour.tooltip=Day length in Hour
+config.property.gui.clock.hourlength.tooltip=Hour length in Tick
+
+config.property.gui.clock.transparency.tooltip=Transparency of the overlay background
+
+config.property.gui.clock.wordbrightness.tooltip=Brightness of Texts
+config.property.gui.clock.wordhue.tooltip=Hue of Texts
+config.property.gui.clock.wordsaturation.tooltip=Saturation of Texts
+
+config.property.gui.settings.fix.tooltip=Fix button to fix this settings overlay
 
 //Client Configs
 config.category.client=Client Configurations
@@ -23,29 +63,17 @@ config.property.client.milkywaybrightness.tooltip=Brightness of milky way. For r
 config.property.client.turbulance=Twinkling(Turbulance)
 config.property.client.turbulance.tooltip=Degree of the twinkling effect of star. It determines the turbulance of atmosphere, which actually cause the twinkling effect. The greater the value, the more the stars will twinkle.
 
-config.property.client.moonfrac=Number of Moon fragment
-config.property.client.moonfrac.tooltip=Moon is drawn with fragments. Less fragments will increase FPS, but the moon become more defective.
-
-config.property.client.milkywayfrac=Number of Milky way fragment
-config.property.client.milkywayfrac.tooltip=Milky way is drawn with fragments. Less fragments will increase FPS, but the milky way become more defective.
-
-config.property.client.minutelength=Length of Minute
-config.property.client.minutelength.tooltip=Number of ticks in a minute. (The minute & hour is displayed on HUD as HH:MM format)
-
-config.property.client.hourlength=Length of Hour
-config.property.client.hourlength.tooltip=Number of minutes in an hour. (The minute & hour is displayed on HUD as HH:MM format)
-
-config.property.client.modeview=Mode for HUD time view
-config.property.client.modeview.tooltip=Mode for HUD time view. 3 modes available: empty, hhmm, tick. Can also be changed in-game using key.
-
 config.property.client.brcontrast=Brightness Contrast
 config.property.client.brcontrast.tooltip=Brightness Contrast determines the contrast between bright stars and faint stars. The bigger the value, the less difference between bright stars and faint stars. For real world, 1.0 is right. Though default value is 1.75 for visual effect.
 
+<<<<<<< HEAD
 config.property.client.lockbtnpos=Position of Lock Button
 config.property.client.lockbtnpos.tooltip=Position of sky lock button. Now there are upright and downleft.
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ///Optics
 config.category.optics=Optics
 config.category.optics.tooltip=Configuration for Optical settings.
@@ -96,6 +124,95 @@ config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brigh
 config.category.milkyway=Milky Way Configurations
 config.category.milkyway.tooltip=Configurations for Milky Way.
 
+config.property.client.moonfrac=Number of Moon fragment
+config.property.client.moonfrac.tooltip=Moon is drawn with fragments. Less fragments will increase FPS, but the moon become more defective.
+
+config.property.client.milkywayfrac=Number of Milky way fragment
+config.property.client.milkywayfrac.tooltip=Milky way is drawn with fragments. Less fragments will increase FPS, but the milky way become more defective.
+
+
+///Display
+config.category.display=Display Option Configurations
+config.category.display.tooltip=Configurations for additional display.
+
+config.property.display.enabled=Enable this display
+config.property.display.enabled.tooltip=Enable rendering of this display.
+
+config.property.display.alpha=Alpha of this display
+config.property.display.alpha.tooltip=Alpha(Brightness) of this display.
+
+////Display/Horizontal Coordinate Grid
+config.category.display.horcoord=Horizontal Coordinate Grid
+config.category.display.horcoord.tooltip=Configurations for the display element: Horizontal Coodrinate Grid.
+
+config.property.display.horcoord.fragments=Fragment number
+config.property.display.horcoord.fragments.tooltip=Number of fragments of Horizontal Coodrinate Grid in direction of height.
+
+config.property.display.horcoord.color.base=Base color of Hor. Coordinate
+config.property.display.horcoord.color.base.tooltip=Base color factor, the grid tends to have this color as base.
+
+config.property.display.horcoord.color.height=Height color of Hor. Coordinate
+config.property.display.horcoord.color.height.tooltip=Color factor for height, the grid tends to have this color when height gets bigger.
+
+config.property.display.horcoord.color.azimuth=Azimuth color of Hor. Coordinate
+config.property.display.horcoord.color.azimuth.tooltip=Color factor for azimuth(horizontal position), the grid tends to have this color when azimuth gets bigger.
+
+config.property.display.horcoord.horizon.displayed=Enable Horizon
+config.property.display.horcoord.horizon.displayed.tooltip=Enable display of the horizon.
+
+config.property.display.horcoord.grid.displayed=Enable Horizontal Grid
+config.property.display.horcoord.grid.displayed.tooltip=Enable display of the horizontal grid.
+
+////Display/Equatorial Coordinate Grid
+config.category.display.eqcoord=Equatorial Coordinate Grid
+config.category.display.eqcoord.tooltip=Configurations for the display element: Equatorial Coodrinate Grid.
+
+config.property.display.eqcoord.fragments=Fragment number
+config.property.display.eqcoord.fragments.tooltip=Number of fragments of Equatorial Coodrinate Grid in direction of declination.
+
+config.property.display.eqcoord.color.base=Base color of Eq. Coordinate
+config.property.display.eqcoord.color.base.tooltip=Base color factor, the grid tends to have this color as base.
+
+config.property.display.eqcoord.color.dec=Declination color of Eq. Coordinate
+config.property.display.eqcoord.color.dec.tooltip=Color factor for declination, the grid tends to have this color when declination gets bigger.
+
+config.property.display.eqcoord.color.ra=Right Ascension color of Eq. Coordinate
+config.property.display.eqcoord.color.ra.tooltip=Color factor for right ascension, the grid tends to have this color when right ascension gets bigger.
+
+config.property.display.eqcoord.equator.displayed=Enable Equator
+config.property.display.eqcoord.equator.displayed.tooltip=Enable display of the equator.
+
+config.property.display.eqcoord.grid.displayed=Enable Equatorial Grid
+config.property.display.eqcoord.grid.displayed.tooltip=Enable display of the equatorial grid.
+
+////Display/Ecliptic Coordinate Grid
+config.category.display.eccoord=Ecliptic Coordinate Grid
+config.category.display.eccoord.tooltip=Configurations for the display element: Ecliptic Coodrinate Grid.
+
+config.property.display.eccoord.fragments=Fragment number
+config.property.display.eccoord.fragments.tooltip=Number of fragments of Ecliptic Coodrinate Grid in direction of latitude.
+
+config.property.display.eccoord.color.base=Base color of Ec. Coordinate
+config.property.display.eccoord.color.base.tooltip=Base color factor, the grid tends to have this color as base.
+
+config.property.display.eccoord.color.latitude=Latitude color of Ec. Coordinate
+config.property.display.eccoord.color.latitude.tooltip=Color factor for latitude, the grid tends to have this color when latitude gets bigger.
+
+config.property.display.eccoord.color.longitude=Longitude color of Ec. Coordinate
+config.property.display.eccoord.color.longitude.tooltip=Color factor for longitude, the grid tends to have this color when longitude gets bigger.
+
+config.property.display.eccoord.ecliptic.displayed=Enable ecliptic
+config.property.display.eccoord.ecliptic.displayed.tooltip=Enable display of the ecliptic.
+
+config.property.display.eccoord.grid.displayed=Enable Ecliptic Grid
+config.property.display.eccoord.grid.displayed.tooltip=Enable diplay of the ecliptic grid.
+
+////Landscape
+config.category.landscape=Landscape
+config.category.landscape.tooltip=Landscape is an overlay on Horizontal Coordinates which overlaps the celestial sphere.
+config.property.landscape.fragments=Number of Landscape fragment
+config.property.landscape.fragments.tooltip=Landscape is drawn with fragments. Less fragments will increase FPS, but the Landscape become more defective.
+
 
 ///Dimension
 config.category.dimension=Dimension Settings
@@ -108,7 +225,7 @@ config.property.dimension.patchprovider=Patch Provider
 config.property.dimension.patchprovider.tooltip=Determine whether or not patch provider. Cannot adjust longitude and latitude when this is false.
 
 config.property.dimension.skyrenderertype=Sky Renderer Type
-config.property.dimension.skyrenderertype.tooltip=Sky renderer type for this dimension. There are 'Overworld Sky' and 'End Sky' type by default.
+config.property.dimension.skyrenderertype.tooltip=Sky renderer type for this dimension. There are 'Overworld Sky', 'End Sky', and 'Skyblock Sky' type by default.
 
 config.property.dimension.latitude=Latitude
 config.property.dimension.latitude.tooltip=Latitude on this world, in Degrees.
@@ -132,6 +249,7 @@ config.property.dimension.skydispersionrate.tooltip=Relative strength of sky dis
 
 config.property.dimension.lightpollutionrate=Light Pollution Rate
 config.property.dimension.lightpollutionrate.tooltip=Relative strength of light pollution on the dimension. Only affects the sky color and visibility of stars/milky way.
+<<<<<<< HEAD
 
 ////Dimension Resources
 config.category.dimension.perdimresource=Per Dimension Resources
@@ -156,6 +274,15 @@ config.property.server.wakeangle.tooltip=Solar azimuth(height) angle to wake up.
 
 config.property.server.waketime=Wake Time from midnight
 config.property.server.waketime.tooltip=Wake-up time from midnight. (in tick)
+=======
+
+config.property.dimension.minimumskybrightness=Minimum Sky Brightness
+config.property.dimension.minimumskybrightness.tooltip=Minimum brightness of skylight which (only) affects the rendering.
+
+config.property.dimension.enablelandscape=Enable Landscape
+config.property.dimension.enablelandscape.tooltip=Enable the landscape on this world.
+
+>>>>>>> refs/remotes/origin/master
 
 
 //Commands
@@ -164,4 +291,8 @@ stellarsky.command.lock.usage=/locksky [lock=true]
 
 //GUIs
 stellarsky.gui.lock=Lock Sky Settings
+stellarsky.gui.lock.description=You are locking the Sky Settings from configuration for this save.
+stellarsky.gui.lock.tooltip=Locking this will have the Sky Settings of this save not be affected by configuration on world restart.
 stellarsky.gui.unlock=Unlock Sky Settings
+stellarsky.gui.unlock.tooltip=Unlocking this will have the Sky Settings of this save be sync with configuration on world restart.
+stellarsky.gui.unlock.description=You are unlocking the Sky Settings from configuration for this save.

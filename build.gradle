@@ -12,12 +12,12 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "0.2.2.7b"
+version = "0.2.4.1"
 group= "stellarium" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Stellar Sky"
 
 minecraft {
-    version = "1.8.9-11.15.1.1742"
+    version = "1.8.9-11.15.1.1890-1.8.9"
     runDir = "run"
     mappings = "stable_20"
 

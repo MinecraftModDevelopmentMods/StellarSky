@@ -10,28 +10,11 @@ import net.minecraftforge.client.IRenderHandler;
 
 public class StellarSkyAPI {
 	
-	private IHourProvider hourProvider;
 	private List<IWorldProviderReplacer> worldProviderReplacers = Lists.newArrayList();
 	private IWorldProviderReplacer defaultReplacer;
 	private List<ISkyRendererType> rendererTypes = Lists.newArrayList();
-	private List<String> perDimensionResources = Lists.newArrayList();
 	
 	private static StellarSkyAPI INSTANCE = new StellarSkyAPI();
-	
-	/**
-	 * Registers hour provider. <p>
-	 * Currently hour provider only have effect on client. <p>
-	 * You can manually create an wrapper for previous provider.
-	 * @param provider the hour provider to register
-	 * */
-	public static void registerHourProvider(IHourProvider provider) {
-		INSTANCE.hourProvider = provider;
-	}
-	
-	/** Gets current hour provider. */
-	public static IHourProvider getCurrentHourProvider() {
-		return INSTANCE.hourProvider;
-	}
 	
 	/**
 	 * Registers world provider replacer.
@@ -52,8 +35,6 @@ public class StellarSkyAPI {
 	}
 	
 	/**
-<<<<<<< HEAD
-=======
 	 * Registers sky renderer type. <p>
 	 * Note that this should be done on both side.
 	 * @param rendererType the sky renderer type to register
@@ -62,34 +43,23 @@ public class StellarSkyAPI {
 		INSTANCE.rendererTypes.add(rendererType);
 	}
 	
-	/**
-	 * Registers per dimension resource. <p>
-	 * Note that this should be done on both side.
-	 * @param resourceId the id of the resource
-	 * */
-	public static void registerPerDimensionResource(String resourceId) {
-		INSTANCE.perDimensionResources.add(resourceId);
-	}
-	
 	
 	/**
->>>>>>> refs/remotes/origin/master
 	 * Gets replaced world provider.
 	 * @param world the world to replace the provider
 	 * @param originalProvider original provider to be replaced
+	 * @param helper the celestial helper
 	 * @return the provider which will replace original provider
 	 * */
-	public static WorldProvider getReplacedWorldProvider(World world, WorldProvider originalProvider) {
+	public static WorldProvider getReplacedWorldProvider(World world, WorldProvider originalProvider, ICelestialHelper helper) {
 		for(IWorldProviderReplacer replacer : INSTANCE.worldProviderReplacers)
 			if(replacer.accept(world, originalProvider))
-				return replacer.createWorldProvider(world, originalProvider);
+				return replacer.createWorldProvider(world, originalProvider, helper);
 		
-		return INSTANCE.defaultReplacer.createWorldProvider(world, originalProvider);
+		return INSTANCE.defaultReplacer.createWorldProvider(world, originalProvider, helper);
 	}
 	
 	/**
-<<<<<<< HEAD
-=======
 	 * Gets possible render types for certain dimension.
 	 * @param worldName the name of the world; only provided information on the world
 	 * */
@@ -112,34 +82,4 @@ public class StellarSkyAPI {
 				return type.createSkyRenderer(subRenderer);
 		return null;
 	}
-	
-	/**
-	 * Gets list of per dimension resource id list. <p>
-	 * Used by Stellar Sky.
-	 * */
-	public static List<String> getPerDimensionResourceIdList() {
-		return INSTANCE.perDimensionResources;
-	}
-	
-	/**
->>>>>>> refs/remotes/origin/master
-	 * Checks if there is sky provider for specific world.
-	 * @param world the world to check if sky provider exists for
-	 * @return <code>true</code> if there exists sky provider for this world.
-	 * */
-	public static boolean hasSkyProvider(World world) {
-		return world.provider instanceof IStellarWorldProvider;
-	}
-		
-	/**
-	 * Gets the sky provider for specific world.
-	 * @param world the world to get sky provider
-	 * @return the sky provider for this world if it exists, <code>null</code> otherwise.
-	 * */
-	public static ISkyProvider getSkyProvider(World world) {
-		if(hasSkyProvider(world))
-			return ((IStellarWorldProvider)world.provider).getSkyProvider();
-		else return null;
-	}
-	
 }
