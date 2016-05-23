@@ -1,5 +1,6 @@
 #version 130
-uniform vec3 v3LightDir;      // Direction vector to the light source
+uniform vec3 lightDir;      // Direction vectors to the light source
+
 uniform float cameraHeight;     // Camera height scaled by scale height
 uniform float outerRadius;     // The outer (atmosphere) radius scaled by scale height
 uniform float innerRadius;     // The inner (planetary) radius scaled by scale height
@@ -98,7 +99,7 @@ void main() {
 
 		float depthFactor = exp(innerRadius - radiusSample);
 
-		float cosLightAngle = dot(v3LightDir, v3SamplePoint) / radiusSample;
+		float cosLightAngle = dot(lightDir, v3SamplePoint) / radiusSample;
 
 		depthFactor *= float((cosLightAngle >= 0.0 || radiusSample * radiusSample * (1.0 - cosLightAngle * cosLightAngle) >= innerRadius * innerRadius));
 

@@ -1,17 +1,29 @@
 package stellarium.render.shader;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBFragmentShader;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.ARBVertexShader;
+import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GLContext;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.util.ResourceLocation;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 
@@ -25,12 +37,16 @@ public class ShaderHelper {
 	private Map<String, ShaderObject> objectMap = Maps.newHashMap();
 	private ShaderObject current = null;
 	
-	public IShaderObject buildShader(String id, String vertloc, String fragloc) {
+	private ContextCapabilities contextcapabilities = GLContext.getCapabilities();
+	
+	public IShaderObject buildShader(String id, ResourceLocation vertloc, ResourceLocation fragloc) {
 		int vertShader = 0, fragShader = 0;
 		int programObject;
 		
-		if(objectMap.containsKey(id))
-			ARBShaderObjects.glDeleteObjectARB(objectMap.get(id).programId);
+		if(objectMap.containsKey(id)) {
+			//Delete object
+			OpenGlHelper.func_153187_e(objectMap.get(id).programId);
+		}
 	 
 		try {
 			vertShader = createShader(vertloc, ARBVertexShader.GL_VERTEX_SHADER_ARB);
@@ -42,32 +58,42 @@ public class ShaderHelper {
 		if(vertShader == 0 || fragShader == 0)
 			return null;
 	 
-		programObject = ARBShaderObjects.glCreateProgramObjectARB();
+		//Creates program object
+		programObject = OpenGlHelper.func_153183_d();
 		
 		if(programObject == 0)
 			return null;
 	 
-		ARBShaderObjects.glAttachObjectARB(programObject, vertShader);
-		ARBShaderObjects.glAttachObjectARB(programObject, fragShader);
+		//Attatches shaders to object
+		OpenGlHelper.func_153178_b(programObject, vertShader);
+		OpenGlHelper.func_153178_b(programObject, fragShader);
 		
-		ARBShaderObjects.glLinkProgramARB(programObject);
-		if (ARBShaderObjects.glGetObjectParameteriARB(programObject, ARBShaderObjects.GL_OBJECT_LINK_STATUS_ARB) == GL11.GL_FALSE) {
-			throw new RuntimeException(getLogInfo(programObject));
+		//Links the program
+		OpenGlHelper.func_153179_f(programObject);
+		
+		//Check if link is done correctly
+		if (OpenGlHelper.func_153175_a(programObject, OpenGlHelper.field_153207_o) == GL11.GL_FALSE) {
+			throw new RuntimeException();
 		}
 	 
-		ARBShaderObjects.glValidateProgramARB(programObject);
+		/*ARBShaderObjects.glValidateProgramARB(programObject);
 		if (ARBShaderObjects.glGetObjectParameteriARB(programObject, ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB) == GL11.GL_FALSE) {
 			throw new RuntimeException(getLogInfo(programObject));
-		}
+		}*/
 		
-		return new ShaderObject(programObject);
+		ShaderObject object = new ShaderObject(programObject);
+		objectMap.put(id, object);
+		
+		return object;
 	}
 	
 	private void bindShader(ShaderObject object){		
 		if(this.current != object) {
 			this.releaseCurrentShader();
 			this.current = object;
-			ARBShaderObjects.glUseProgramObjectARB(object.programId);
+			
+			//Use program
+			OpenGlHelper.func_153161_d(object.programId);
 		}
 	}
 	
@@ -78,97 +104,47 @@ public class ShaderHelper {
 	
 	private void releaseCurrentShader(){
 		this.current = null;
-		ARBShaderObjects.glUseProgramObjectARB(0);
+		
+		//Use empty program
+		OpenGlHelper.func_153161_d(0);
 	}
 	
 	
-	private int createShader(String resourceName, int shaderType) throws Exception{
+	private int createShader(ResourceLocation location, int shaderType) throws Exception{
 		int shader = 0;
-		if(resourceName.equals(""))
+		if(location == null)
 			return 0;
 		
 		try {
-			shader = ARBShaderObjects.glCreateShaderObjectARB(shaderType);
-		 
-			if(shader == 0)
-				return 0;
+            BufferedInputStream bufferedinputstream = new BufferedInputStream(
+            		Minecraft.getMinecraft().getResourceManager().getResource(location).getInputStream());
+            byte[] abyte = IOUtils.toByteArray(bufferedinputstream);
+            ByteBuffer bytebuffer = BufferUtils.createByteBuffer(abyte.length);
+            bytebuffer.put(abyte);
+            bytebuffer.position(0);
+            
+            //Creates the shader object
+            shader = OpenGlHelper.func_153195_b(shaderType);
 			
-			ARBShaderObjects.glShaderSourceARB(shader, readFileAsString(resourceName));
-			ARBShaderObjects.glCompileShaderARB(shader);
+			//Provide source to the shader
+            OpenGlHelper.func_153169_a(shader, bytebuffer);
+            
+            //Compiles the shader
+            OpenGlHelper.func_153170_c(shader);
 			
-			if (ARBShaderObjects.glGetObjectParameteriARB(shader, ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE)
+			//Check compile
+			if (OpenGlHelper.func_153157_c(shader, OpenGlHelper.field_153208_p) == GL11.GL_FALSE)
 				throw new RuntimeException("Error creating shader: " + getLogInfo(shader));
 			return shader;
 		}
 		catch(Exception exc) {
-			ARBShaderObjects.glDeleteObjectARB(shader);
+			OpenGlHelper.func_153180_a(shader);
 			throw exc;
 		}
 	}
-		
-	private static String getLogInfo(int obj) {
-		return ARBShaderObjects.glGetInfoLogARB(obj, ARBShaderObjects.glGetObjectParameteriARB(obj, ARBShaderObjects.GL_OBJECT_INFO_LOG_LENGTH_ARB));
-	}
-			 
-	private String readFileAsString(String resourceName) throws Exception {
-		StringBuilder source = new StringBuilder();
-		
-		InputStream in = this.getClass().getResourceAsStream(resourceName);
-		
-		if(in == null) {
-			System.out.println("Maybe loading resources.");
-			return "";
-		}
-		
-		Exception exception = null;
-		
-		BufferedReader reader;
-		try{
-			reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-			 
-			Exception innerExc= null;
-			try {
-				String line;
-				while((line = reader.readLine()) != null)
-					source.append(line).append('\n');
-			}
-			catch(Exception exc) {
-				exception = exc;
-			}
-			finally {
-				try {
-					reader.close();
-				}
-				catch(Exception exc) {
-					if(innerExc == null)
-						innerExc = exc;
-					else
-						exc.printStackTrace();
-				}
-			}
-			 
-			if(innerExc != null)
-				throw innerExc;
-			}
-		catch(Exception exc) {
-			exception = exc;
-		}
-		finally {
-			try {
-				in.close();
-			}
-			catch(Exception exc) {
-				if(exception == null)
-					exception = exc;
-				else
-					exc.printStackTrace();
-			}
-			 
-			if(exception != null)
-				throw exception;
-		}
-			 
-		return source.toString();
+	
+	private static String getLogInfo(int programObject) {
+		return OpenGlHelper.func_153166_e(programObject, ARBShaderObjects.GL_OBJECT_INFO_LOG_LENGTH_ARB);
 	}
 	
 	private class ShaderObject implements IShaderObject {
@@ -194,7 +170,8 @@ public class ShaderHelper {
 			if(uniformMap.containsKey(fieldName))
 				return uniformMap.get(fieldName);
 			
-			int location = ARBShaderObjects.glGetUniformLocationARB(this.programId, fieldName);
+			//Gets the location
+			int location = OpenGlHelper.func_153194_a(this.programId, fieldName);
 			if(location == -1)
 				return null;
 			
@@ -215,32 +192,52 @@ public class ShaderHelper {
 
 		@Override
 		public void setInteger(int val) {
-			ARBShaderObjects.glUniform1iARB(this.location, val);
+			OpenGlHelper.func_153163_f(this.location, val);
 		}
 
 		@Override
 		public void setDouble(double val) {
-			ARBShaderObjects.glUniform1fARB(this.location, (float)val);
+			//Temporal, since openglhelper does not expose something important (below)
+	        if (!contextcapabilities.OpenGL21)
+	            ARBShaderObjects.glUniform1fARB(this.location, (float) val);
+	        else
+	            GL20.glUniform1f(this.location, (float) val);
 		}
 
 		@Override
 		public void setSpCoord(SpCoord val) {
-			ARBShaderObjects.glUniform2fARB(this.location, (float)val.x, (float)val.y);
+			//Temporal, since openglhelper does not expose something important (below)
+	        if (!contextcapabilities.OpenGL21)
+	            ARBShaderObjects.glUniform2fARB(this.location, (float)val.x, (float)val.y);
+	        else
+	            GL20.glUniform2f(this.location, (float)val.x, (float)val.y);
 		}
 
 		@Override
 		public void setVector3(Vector3 val) {
-			ARBShaderObjects.glUniform3fARB(this.location, (float)val.getX(), (float)val.getY(), (float)val.getZ());
+			//Temporal, since openglhelper does not expose something important (below)
+	        if (!contextcapabilities.OpenGL21)
+	            ARBShaderObjects.glUniform3fARB(this.location, (float)val.getX(), (float)val.getY(), (float)val.getZ());
+	        else
+	            GL20.glUniform3f(this.location, (float)val.getX(), (float)val.getY(), (float)val.getZ());
 		}
 
 		@Override
 		public void setDouble3(double x, double y, double z) {
-			ARBShaderObjects.glUniform3fARB(this.location, (float)x, (float)y, (float)z);
+			//Temporal, since openglhelper does not expose something important (below)
+	        if (!contextcapabilities.OpenGL21)
+	            ARBShaderObjects.glUniform3fARB(this.location, (float)x, (float)y, (float)z);
+	        else
+	            GL20.glUniform3f(this.location, (float)x, (float)y, (float)z);
 		}
 
 		@Override
 		public void setDouble4(double red, double green, double blue, double alpha) {
-			ARBShaderObjects.glUniform4fARB(this.location, (float)red, (float)green, (float)blue, (float)alpha);
+			//Temporal, since openglhelper does not expose something important (below)
+	        if (!contextcapabilities.OpenGL21)
+	            ARBShaderObjects.glUniform4fARB(this.location, (float)red, (float)green, (float)blue, (float)alpha);
+	        else
+	            GL20.glUniform4f(this.location, (float)red, (float)green, (float)blue, (float)alpha);
 		}
 	}
 

@@ -1,0 +1,14 @@
+#version 130
+
+uniform float dominationscale;
+uniform sampler2D skyDominationMap;
+uniform sampler2D texture;
+
+in vec4 color;
+in vec2 dominationCoord;
+
+void main()
+{
+    vec4 dominated = texture2D(skyDominationMap, dominationCoord)
+    gl_FragColor = color * texture2D(texture, gl_TexCoord[0].st) - sqrt(dominated) * dominationscale;
+}

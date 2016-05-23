@@ -3,6 +3,7 @@ package stellarium;
 import java.io.IOException;
 
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.util.glu.GLU;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;

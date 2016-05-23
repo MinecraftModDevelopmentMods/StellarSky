@@ -99,7 +99,9 @@ public class SkyCelestialRenderer implements ICelestialRenderer {
 		display.render(mc, tessellator, partialTicks, true);
 		
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glDepthMask(true);
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glDepthMask(false);
 	}
 	
 	@Override

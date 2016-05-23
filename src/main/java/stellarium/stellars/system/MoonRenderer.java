@@ -2,7 +2,6 @@ package stellarium.stellars.system;
 
 import org.lwjgl.opengl.GL11;
 
-import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.StellarSkyResources;
 import stellarium.render.celesital.EnumRenderPass;
@@ -55,7 +54,7 @@ public class MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 							(float)cache.color[2] * (1.0f - lightlevel), ((info.weathereff*cache.moonilum[longc][latc]-0.015f*info.bglight)*2.0f)*(float)cache.color[3]);
 					info.tessellator.setNormal((float)cache.moonnormal[longc][latc].getX(), (float)cache.moonnormal[longc][latc].getY(), (float)cache.moonnormal[longc][latc].getZ());
 					info.tessellator.addVertexWithUV(cache.moonPos[longc][latc].getX(), cache.moonPos[longc][latc].getY(), cache.moonPos[longc][latc].getZ(), (longd+0.5)%1.0, latd);
-
+					
 					info.tessellator.setColorRGBA_F((float)cache.color[0] * (1.0f - lightlevel),
 							(float)cache.color[1] * (1.0f - lightlevel),
 							(float)cache.color[2] * (1.0f - lightlevel), ((info.weathereff*cache.moonilum[longcd][latc]-0.015f*info.bglight)*2.0f)*(float)cache.color[3]);

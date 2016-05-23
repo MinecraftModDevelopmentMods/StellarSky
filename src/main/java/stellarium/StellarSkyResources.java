@@ -45,6 +45,55 @@ public class StellarSkyResources {
 	}
 	
 	
+	public static final ResourceLocation vertexAtmosphereSimple =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/atmosphere_simple.vsh");
+	
+	public static final ResourceLocation fragmentAtmosphereSimple =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/atmosphere_simple.psh");
+	
+	public static final ResourceLocation vertexAtmosphereSpCoord =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/atmosphere_spcoord.vsh");
+	
+	public static final ResourceLocation fragmentAtmosphereSpCoord =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/atmosphere_spcoord.psh");
+	
+	public static final ResourceLocation vertexScatterPointMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_point_mapped.vsh");
+	
+	public static final ResourceLocation fragmentScatterPointMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_point_mapped.psh");
+	
+	public static final ResourceLocation vertexScatterPointSkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_point_skylight.vsh");
+	
+	public static final ResourceLocation fragmentScatterPointSkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_point_skylight.psh");
+	
+	public static final ResourceLocation vertexScatterFuzzyMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_fuzzy_mapped.vsh");
+	
+	public static final ResourceLocation fragmentScatterFuzzyMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_fuzzy_mapped.psh");
+	
+	public static final ResourceLocation vertexScatterFuzzySkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_fuzzy_skylight.vsh");
+	
+	public static final ResourceLocation fragmentScatterFuzzySkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_fuzzy_skylight.psh");
+	
+	public static final ResourceLocation vertexTextureMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/src_texture_mapped.vsh");
+	
+	public static final ResourceLocation fragmentTextureMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/src_texture_mapped.psh");
+	
+	public static final ResourceLocation vertexTextureSkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/src_texture_skylight.vsh");
+	
+	public static final ResourceLocation fragmentTextureSkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/src_texture_skylight.psh");
+	
+	
 	public static final ResourceLocation unroll =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/unroll.png");
 

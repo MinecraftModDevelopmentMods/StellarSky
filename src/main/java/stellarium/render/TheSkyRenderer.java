@@ -1,6 +1,12 @@
 package stellarium.render;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL32;
+import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL40;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -8,12 +14,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import stellarapi.api.StellarAPIReference;
 import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.celestials.IEffectorType;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarium.StellarSkyReferences;
+import stellarium.StellarSkyResources;
 import stellarium.api.ICelestialRenderer;
 import stellarium.render.celesital.EnumRenderPass;
 import stellarium.render.shader.IShaderObject;
@@ -39,8 +48,8 @@ public class TheSkyRenderer {
         Tessellator tessellator = Tessellator.instance;
         
         this.atmosphere = ShaderHelper.getInstance().buildShader("atmosphere",
-        		"/stellarium/render/shaders/atmospheric_shader.vsh",
-        		"/stellarium/render/shaders/atmospheric_shader.psh");
+        		StellarSkyResources.vertexAtmosphereSimple,
+        		StellarSkyResources.fragmentAtmosphereSimple);
         
         this.lightDir = atmosphere.getField("v3LightDir");
         this.cameraHeight = atmosphere.getField("cameraHeight");
@@ -155,9 +164,10 @@ public class TheSkyRenderer {
         GL11.glCallList(this.skyList);
 		
         atmosphere.releaseShader();
-		
+        
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         celestials.renderCelestial(mc, theWorld, new float[] {
         		red * groundFactor, green  * groundFactor, blue * groundFactor}, partialTicks);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
