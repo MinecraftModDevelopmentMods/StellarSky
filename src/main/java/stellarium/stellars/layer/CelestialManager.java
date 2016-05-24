@@ -85,8 +85,7 @@ public class CelestialManager {
 	
 	public void updateClient(ClientSettings settings,
 			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {		
-		for(StellarObjectContainer layer : this.layers)
-		{
+		for(StellarObjectContainer layer : this.layers) {
 			String layerName = layer.getConfigName();
 			layer.updateClient(settings, layerName != null? settings.getSubConfig(layerName) : null,
 					new StellarCacheInfo(coordinate, sky, scope, filter));

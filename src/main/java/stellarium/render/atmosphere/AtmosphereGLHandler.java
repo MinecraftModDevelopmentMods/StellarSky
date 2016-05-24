@@ -118,15 +118,11 @@ public class AtmosphereGLHandler {
         
 		if(framebufferEnabled) {
 	        GL11.glDisable(GL11.GL_BLEND);
-
 			dominateCache.bindFramebufferTexture();
 			GL11.glCallList(this.renderedList);
-			dominateCache.unbindFramebuffer();
-			
+			dominateCache.unbindFramebufferTexture();
 			GL11.glEnable(GL11.GL_BLEND);
 		}
-
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
 		OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -134,36 +130,40 @@ public class AtmosphereGLHandler {
 		OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
 		GL11.glShadeModel(GL11.GL_SMOOTH);
+		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 		
 		boolean textured = true;
 		IShaderObject object = renderer.setupShader(framebufferEnabled, false, textured);
 		this.populateShader(object, renderer, textured);
-		renderer.render(false, textured);
+		renderer.render(framebufferEnabled, false, textured);
+		
+		GL11.glShadeModel(GL11.GL_FLAT);
 		
 		textured = false;
 		object = renderer.setupShader(framebufferEnabled, false, false);
 		this.populateShader(object, renderer, textured);
-		renderer.render(false, textured);
+		renderer.render(framebufferEnabled, false, textured);
 		
         GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ZERO);
+		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 		
 		textured = true;
 		object = renderer.setupShader(framebufferEnabled, true, textured);
 		this.populateShader(object, renderer, textured);
-		renderer.render(true, textured);
+		renderer.render(framebufferEnabled, true, textured);
 		
         GL11.glDepthMask(false);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 		GL11.glShadeModel(GL11.GL_FLAT);
 		
 		textured = false;
 		object = renderer.setupShader(framebufferEnabled, true, textured);
 		this.populateShader(object, renderer, textured);
-		renderer.render(true, textured);
+		renderer.render(framebufferEnabled, true, textured);
 
 		object.releaseShader();
 		
@@ -187,6 +187,8 @@ public class AtmosphereGLHandler {
 		
 		if(textured)
 			object.getField(IPhasedRenderer.defaultTexture).setInteger(0);
+		
+		object.getField(IPhasedRenderer.dominationScaleField).setDouble(renderer.dominationScale());
 	}
 
 }

@@ -51,7 +51,7 @@ public class TheSkyRenderer {
         		StellarSkyResources.vertexAtmosphereSimple,
         		StellarSkyResources.fragmentAtmosphereSimple);
         
-        this.lightDir = atmosphere.getField("v3LightDir");
+        this.lightDir = atmosphere.getField("lightDir");
         this.cameraHeight = atmosphere.getField("cameraHeight");
         this.outerRadius = atmosphere.getField("outerRadius");
         this.innerRadius = atmosphere.getField("innerRadius");

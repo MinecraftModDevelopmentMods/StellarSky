@@ -15,7 +15,10 @@ public interface IAtmosphericTessellator {
 	public void normal(Vector3 normal);
 	public void writeVertex();
 	
-	/** For opaque scatterings */
+	/**
+	 * For opaque scatterings.
+	 * Limited to once per call.
+	 *  */
 	public void radius(float angularRadius);
 	
 	public void end();

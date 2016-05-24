@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarium.StellarSky;
 
 public class ShaderHelper {
 	private static ShaderHelper instance = new ShaderHelper();
@@ -173,13 +174,11 @@ public class ShaderHelper {
 			//Gets the location
 			int location = OpenGlHelper.func_153194_a(this.programId, fieldName);
 			if(location == -1)
-				return null;
+				StellarSky.logger.error("Invalid field %s has claimed!", fieldName);
 			
-			else {
-				ShaderUniform uniform = new ShaderUniform(location);
-				uniformMap.put(fieldName, uniform);
-				return uniform;
-			}
+			ShaderUniform uniform = new ShaderUniform(location);
+			uniformMap.put(fieldName, uniform);
+			return uniform;
 		}
 	}
 	

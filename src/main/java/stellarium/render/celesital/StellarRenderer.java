@@ -5,6 +5,7 @@ import java.util.List;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import stellarapi.api.lib.config.IConfigHandler;
+import stellarium.render.atmosphere.IAtmRenderedObjects;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarLayerRegistry;
 import stellarium.stellars.layer.StellarObject;
