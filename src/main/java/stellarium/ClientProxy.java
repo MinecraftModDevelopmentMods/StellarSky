@@ -113,7 +113,12 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	@Override
-	public void updateTick() {
+	public float getScreenWidth() {
+		return Minecraft.getMinecraft().displayWidth;
+	}
+	
+	@Override
+	public void updateTick() {		
 		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(StellarSky.proxy.getDefWorld());
 		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
 		displayManager.updateDisplay(this.clientSettings, coordinate, sky);

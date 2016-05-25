@@ -3,18 +3,17 @@ package stellarium.stellars.layer;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Ordering;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarium.client.ClientSettings;
+import stellarium.render.atmosphere.IAtmosphericChecker;
+import stellarium.render.atmosphere.ViewerInfo;
 
 public class StellarObjectContainer<Obj extends StellarObject, ClientConfig extends IConfigHandler> {
 
@@ -130,12 +129,12 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 			entry.getValue().initialize(settings, specificSettings, entry.getKey());
 	}
 
-	public void updateClient(ClientSettings settings, ClientConfig specificSettings, StellarCacheInfo info) {
+	public void updateClient(ClientSettings settings, ClientConfig specificSettings, ViewerInfo info, IAtmosphericChecker checker) {
 		if(!this.initialized)
 			return;
 		
 		for(Map.Entry<Obj, IRenderCache> entry : renderCacheMap.entrySet())
-			entry.getValue().updateCache(settings, specificSettings, entry.getKey(), info);
+			entry.getValue().updateCache(settings, specificSettings, entry.getKey(), info, checker);
 	}
 
 	public Iterable<IRenderCache> getRenderCacheList() {

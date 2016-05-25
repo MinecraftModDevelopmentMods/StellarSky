@@ -11,9 +11,9 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
-import stellarium.render.celesital.StellarRenderingRegistry;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.render.StellarRenderingRegistry;
 
 public abstract class LayerBgStar<ClientConfig extends IConfigHandler, CommonConfig extends INBTConfig> 
 implements IStellarLayerType<BgStar, ClientConfig, CommonConfig> {

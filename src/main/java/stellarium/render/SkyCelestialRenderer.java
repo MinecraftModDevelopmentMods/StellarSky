@@ -14,11 +14,11 @@ import stellarapi.api.celestials.IEffectorType;
 import stellarium.api.ICelestialRenderer;
 import stellarium.client.ClientSettings;
 import stellarium.display.DisplayManager;
-import stellarium.render.celesital.EnumRenderPass;
-import stellarium.render.celesital.StellarRenderInfo;
-import stellarium.render.celesital.StellarRenderer;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.stellars.render.StellarRenderInfo;
+import stellarium.stellars.render.StellarRenderer;
 import stellarium.world.StellarDimensionManager;
 import stellarium.world.landscape.LandscapeCache;
 import stellarium.world.landscape.LandscapeClientSettings;
@@ -80,10 +80,10 @@ public class SkyCelestialRenderer implements ICelestialRenderer {
 		
 		float weathereff = 1.0F - theWorld.getRainStrength(partialTicks);
 		
+		display.render(mc, tessellator, partialTicks, false);
+		
 		EnumRenderPass pass = EnumRenderPass.OpaqueStellar;
 		renderer.render(new StellarRenderInfo(mc, tessellator, skycolor, weathereff, partialTicks, pass), celManager.getLayers());
-		
-		display.render(mc, tessellator, partialTicks, false);
 		
 		pass = EnumRenderPass.DeepScattering;
 		renderer.render(new StellarRenderInfo(mc, tessellator, skycolor, weathereff, partialTicks, pass), celManager.getLayers());

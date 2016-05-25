@@ -3,10 +3,10 @@ package stellarium.world.landscape;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
-import stellarium.render.celesital.EnumRenderPass;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
-import stellarium.util.math.VectorHelper;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.util.math.Allocator;
 
 public class LandscapeCache {
 	
@@ -18,7 +18,7 @@ public class LandscapeCache {
 	public void initialize(LandscapeClientSettings specificSettings) {
 		this.latn = specificSettings.displayFrag;
 		this.longn = 2*specificSettings.displayFrag;
-		this.displayvec = VectorHelper.createAndInitialize(longn, latn+1);
+		this.displayvec = Allocator.createAndInitialize(longn, latn+1);
 	}
 
 	public void updateCache() {

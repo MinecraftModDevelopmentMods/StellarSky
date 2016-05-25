@@ -8,13 +8,13 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.util.ResourceLocation;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
 import stellarapi.api.optics.Wavelength;
 import stellarium.StellarSkyResources;
 import stellarium.render.shader.IShaderObject;
@@ -30,9 +30,7 @@ public class AtmosphericRenderer implements IPhasedRenderer {
 	private Pair<AtmosphericTessellator, AtmosphericTessellator> srcTexture;
 	
 	private Pair<AtmosphereHolder, AtmosphereHolder> atmHolder;
-	
-	private List<IAtmRenderedObjects> renderedObjectsList;
-	
+		
 	private List<SpCoord> dominatorPositions = Lists.newArrayList();
 	private List<Vector3> dominatorColors = Lists.newArrayList();
 	
@@ -40,22 +38,21 @@ public class AtmosphericRenderer implements IPhasedRenderer {
 	private float multiplyingPower;
 	
 	private ISkyEffect sky;
-	
+	private ViewerInfo info;
+
 	private Vector3 resolutionColor = new Vector3();
 	private float resolutionGeneral;
 	
 	/** Size of radian 1 in rasterized pixel size */
 	private float rasterizedAngleRatio;
 	
-	private float leastBrightnessRendered;
-	private float leastBrightnessDominator;
+	private float leastBrightnessRendered = 1.0e-4f;
+	private float leastBrightnessDominator = 1.0e-7f;
 	//private float maxDominatorMultiplier;
 	
 	private static final float DEFAULT_SIZE = Spmath.Radians(0.3f);
 	
-	public Pair<AtmosphereHolder, AtmosphereHolder> initialize(List<IAtmRenderedObjects> renderedObjectsList) {
-		this.renderedObjectsList = renderedObjectsList;
-		
+	public Pair<AtmosphereHolder, AtmosphereHolder> initialize() {		
 		this.scatterFuzzy = Pair.of(
 				new AtmosphericTessellator(false,
 						ShaderHelper.getInstance().buildShader("fuzzymapped", StellarSkyResources.vertexScatterFuzzyMapped, StellarSkyResources.fragmentScatterFuzzyMapped)),
@@ -81,25 +78,27 @@ public class AtmosphericRenderer implements IPhasedRenderer {
 		return this.atmHolder;
 	}
 	
-	public void setMultipliers(ISkyEffect sky, IViewScope scope, IOpticalFilter filter, float screenSize) {
-		this.multiplyingPower = (float) scope.getMP();
+	public void setMultipliers(ViewerInfo info, float screenSize) {
+		this.multiplyingPower = (float) info.scope.getMP();
 		colorMultiplier.set(
-				scope.getLGP() * filter.getFilterEfficiency(Wavelength.red),
-				scope.getLGP() * filter.getFilterEfficiency(Wavelength.V),
-				scope.getLGP() * filter.getFilterEfficiency(Wavelength.B)
+				info.scope.getLGP() * info.filter.getFilterEfficiency(Wavelength.red),
+				info.scope.getLGP() * info.filter.getFilterEfficiency(Wavelength.V),
+				info.scope.getLGP() * info.filter.getFilterEfficiency(Wavelength.B)
 				);
 		
 		resolutionColor.set(
-				Spmath.Radians(Math.max(scope.getResolution(Wavelength.red), sky.getSeeing(Wavelength.red))),
-				Spmath.Radians(Math.max(scope.getResolution(Wavelength.V), sky.getSeeing(Wavelength.V))),
-				Spmath.Radians(Math.max(scope.getResolution(Wavelength.B), sky.getSeeing(Wavelength.B)))
+				Spmath.Radians(Math.max(info.scope.getResolution(Wavelength.red), info.sky.getSeeing(Wavelength.red))),
+				Spmath.Radians(Math.max(info.scope.getResolution(Wavelength.V), info.sky.getSeeing(Wavelength.V))),
+				Spmath.Radians(Math.max(info.scope.getResolution(Wavelength.B), info.sky.getSeeing(Wavelength.B)))
 				);
 		
-		this.resolutionGeneral = (float) Spmath.Radians(Math.max(scope.getResolution(Wavelength.visible), sky.getSeeing(Wavelength.visible)));
+		this.resolutionGeneral = (float) Spmath.Radians(Math.max(info.scope.getResolution(Wavelength.visible), info.sky.getSeeing(Wavelength.visible)));
 		
 		this.rasterizedAngleRatio = this.multiplyingPower / Spmath.Radians(70.0f) * screenSize;
 		
-		this.sky = sky;
+		this.sky = info.sky;
+		
+		this.info = info;
 	}
 	
 	@Override
@@ -135,13 +134,13 @@ public class AtmosphericRenderer implements IPhasedRenderer {
 	}
 	
 	@Override
-	public void check() {
-		for(IAtmRenderedObjects object : this.renderedObjectsList)
-			object.check(this.checker);
+	public void check(Iterable<IAtmRenderedObjects> objects) {
+		for(IAtmRenderedObjects object : objects)
+			object.check(this.info, this.checker);
 	}
 
 	@Override
-	public void render(boolean forDegradeMap, boolean forOpaque, boolean hasTexture) {
+	public void render(Iterable<IAtmRenderedObjects> objects, boolean forDegradeMap, boolean forOpaque, boolean hasTexture) {
 		AtmosphericTessellator tessellator;
 		Pair<AtmosphericTessellator, AtmosphericTessellator> thePair;
 
@@ -155,7 +154,7 @@ public class AtmosphericRenderer implements IPhasedRenderer {
 			tessellator = thePair.getLeft();
 		else tessellator = thePair.getRight();
 		
-		for(IAtmRenderedObjects object : this.renderedObjectsList)
+		for(IAtmRenderedObjects object : objects)
 			object.render(tessellator, forOpaque, hasTexture);
 	}
 
@@ -179,6 +178,7 @@ public class AtmosphericRenderer implements IPhasedRenderer {
 		public void startDescription() {
 			this.curPos = null;
 			this.red = this.green = this.blue = 0;
+			this.scale = 1.0f;
 			this.radius = 0.0f;
 		}
 
@@ -396,6 +396,11 @@ public class AtmosphericRenderer implements IPhasedRenderer {
 		public void radius(float angularRadius) {
 			if(!this.hasTexture)
 				this.radius = angularRadius;
+		}
+
+		@Override
+		public void bindTexture(ResourceLocation location) {
+			Minecraft.getMinecraft().getTextureManager().bindTexture(location);
 		}
 	}
 

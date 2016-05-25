@@ -1,4 +1,4 @@
-package stellarium.render.celesital;
+package stellarium.stellars.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;

@@ -8,7 +8,7 @@ import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.render.shader.IShaderObject;
-import stellarium.util.math.VectorHelper;
+import stellarium.util.math.Allocator;
 
 public class AtmosphereGLHandler {
 	
@@ -25,7 +25,7 @@ public class AtmosphereGLHandler {
 		dominateCache.unbindFramebuffer();
 		
 		
-		Vector3[][] displayvec = VectorHelper.createAndInitialize(fragLong, fragLat+1);
+		Vector3[][] displayvec = Allocator.createAndInitialize(fragLong, fragLat+1);
         
 		for(int longc=0; longc<fragLong; longc++)
 			for(int latc=0; latc<=fragLat; latc++) {
@@ -92,7 +92,7 @@ public class AtmosphereGLHandler {
 		GL11.glEnd();
 	}
 	
-	public void renderAtmosphere(IPhasedRenderer renderer) {
+	public void renderAtmosphere(Iterable<IAtmRenderedObjects> objects, IPhasedRenderer renderer) {
 		dominateCache.bindFramebuffer(false);
 		
 		boolean framebufferEnabled = OpenGlHelper.isFramebufferEnabled();
@@ -117,12 +117,12 @@ public class AtmosphereGLHandler {
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         
 		if(framebufferEnabled) {
-	        GL11.glDisable(GL11.GL_BLEND);
 			dominateCache.bindFramebufferTexture();
 			GL11.glCallList(this.renderedList);
 			dominateCache.unbindFramebufferTexture();
-			GL11.glEnable(GL11.GL_BLEND);
 		}
+		
+		GL11.glEnable(GL11.GL_BLEND);
 
 		OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -135,14 +135,14 @@ public class AtmosphereGLHandler {
 		boolean textured = true;
 		IShaderObject object = renderer.setupShader(framebufferEnabled, false, textured);
 		this.populateShader(object, renderer, textured);
-		renderer.render(framebufferEnabled, false, textured);
+		renderer.render(objects, framebufferEnabled, false, textured);
 		
 		GL11.glShadeModel(GL11.GL_FLAT);
 		
 		textured = false;
 		object = renderer.setupShader(framebufferEnabled, false, false);
 		this.populateShader(object, renderer, textured);
-		renderer.render(framebufferEnabled, false, textured);
+		renderer.render(objects, framebufferEnabled, false, textured);
 		
         GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -152,7 +152,7 @@ public class AtmosphereGLHandler {
 		textured = true;
 		object = renderer.setupShader(framebufferEnabled, true, textured);
 		this.populateShader(object, renderer, textured);
-		renderer.render(framebufferEnabled, true, textured);
+		renderer.render(objects, framebufferEnabled, true, textured);
 		
         GL11.glDepthMask(false);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -163,7 +163,7 @@ public class AtmosphereGLHandler {
 		textured = false;
 		object = renderer.setupShader(framebufferEnabled, true, textured);
 		this.populateShader(object, renderer, textured);
-		renderer.render(framebufferEnabled, true, textured);
+		renderer.render(objects, framebufferEnabled, true, textured);
 
 		object.releaseShader();
 		

@@ -24,11 +24,11 @@ import stellarapi.api.lib.math.Vector3;
 import stellarium.StellarSkyReferences;
 import stellarium.StellarSkyResources;
 import stellarium.api.ICelestialRenderer;
-import stellarium.render.celesital.EnumRenderPass;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.shader.IUniformField;
 import stellarium.render.shader.ShaderHelper;
-import stellarium.util.math.VectorHelper;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.util.math.Allocator;
 
 public class TheSkyRenderer {
     private int skyList;
@@ -70,7 +70,7 @@ public class TheSkyRenderer {
         this.latn = 99;
         this.longn = this.latn * 2;
         
-        Vector3[][] displayvec = VectorHelper.createAndInitialize(longn, latn+1);
+        Vector3[][] displayvec = Allocator.createAndInitialize(longn, latn+1);
         
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
@@ -160,7 +160,7 @@ public class TheSkyRenderer {
         GL11.glPushMatrix();
         GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
         GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
-		        
+		
         GL11.glCallList(this.skyList);
 		
         atmosphere.releaseShader();

@@ -3,10 +3,10 @@ package stellarium.stellars.system;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.StellarSkyResources;
-import stellarium.render.celesital.EnumRenderPass;
-import stellarium.render.celesital.ICelestialObjectRenderer;
-import stellarium.render.celesital.StellarRenderInfo;
 import stellarium.stellars.Optics;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.stellars.render.ICelestialObjectRenderer;
+import stellarium.stellars.render.StellarRenderInfo;
 
 public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache> {
 

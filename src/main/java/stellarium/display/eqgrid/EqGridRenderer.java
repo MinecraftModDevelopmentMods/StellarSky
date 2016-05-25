@@ -6,7 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import stellarium.display.DisplayRenderInfo;
 import stellarium.display.IDisplayRenderer;
-import stellarium.render.celesital.EnumRenderPass;
+import stellarium.stellars.render.EnumRenderPass;
 
 @SideOnly(Side.CLIENT)
 public class EqGridRenderer implements IDisplayRenderer<EqGridCache> {

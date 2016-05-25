@@ -5,10 +5,10 @@ import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EnumRGBA;
 import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
-import stellarium.render.celesital.EnumRenderPass;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
-import stellarium.util.math.VectorHelper;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.util.math.Allocator;
 
 public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSettings> {
 	
@@ -29,9 +29,9 @@ public class MoonRenderCache implements IRenderCache<Moon, SolarSystemClientSett
 		this.appCoord = new SpCoord();
 		this.latn = specificSettings.imgFrac;
 		this.longn = 2*specificSettings.imgFrac;
-		this.moonPos = VectorHelper.createAndInitialize(longn, latn+1);
+		this.moonPos = Allocator.createAndInitialize(longn, latn+1);
 		this.moonilum = new float[longn][latn+1];
-		this.moonnormal = VectorHelper.createAndInitialize(longn, latn+1);
+		this.moonnormal = Allocator.createAndInitialize(longn, latn+1);
 		this.cache = new SpCoord();
 	}
 

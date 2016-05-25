@@ -38,4 +38,6 @@ public interface IProxy {
 
 	public void updateTick();
 
+	public float getScreenWidth();
+
 }

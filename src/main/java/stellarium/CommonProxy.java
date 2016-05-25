@@ -78,4 +78,9 @@ public class CommonProxy implements IProxy {
 
 	@Override
 	public void updateTick() { }
+
+	@Override
+	public float getScreenWidth() {
+		return 0;
+	}
 }

@@ -5,8 +5,8 @@ import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
 import stellarium.display.DisplayCacheInfo;
 import stellarium.display.IDisplayCache;
-import stellarium.render.celesital.EnumRenderPass;
-import stellarium.util.math.VectorHelper;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.util.math.Allocator;
 
 public class EcGridCache implements IDisplayCache<EcGridSettings> {
 
@@ -27,11 +27,11 @@ public class EcGridCache implements IDisplayCache<EcGridSettings> {
 		this.gridEnabled = specificSettings.gridEnabled;
 		if(this.enabled) {
 			if(this.gridEnabled) {
-				this.displayvec = VectorHelper.createAndInitialize(longn, latn+1);
-				this.colorvec = VectorHelper.createAndInitialize(longn, latn+1);
+				this.displayvec = Allocator.createAndInitialize(longn, latn+1);
+				this.colorvec = Allocator.createAndInitialize(longn, latn+1);
 			}
 			if(this.eclipticEnabled)
-				this.ecliptic = VectorHelper.createAndInitialize(longn);
+				this.ecliptic = Allocator.createAndInitialize(longn);
 		}
 		this.brightness = (float) specificSettings.displayAlpha;
 		this.baseColor = new Vector3(specificSettings.displayBaseColor);

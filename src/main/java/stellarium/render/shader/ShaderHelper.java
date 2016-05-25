@@ -103,7 +103,7 @@ public class ShaderHelper {
 			this.releaseCurrentShader();
 	}
 	
-	private void releaseCurrentShader(){
+	public void releaseCurrentShader(){
 		this.current = null;
 		
 		//Use empty program

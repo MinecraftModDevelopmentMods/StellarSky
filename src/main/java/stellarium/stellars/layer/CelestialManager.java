@@ -69,8 +69,7 @@ public class CelestialManager {
 	public void reloadClientSettings(ClientSettings settings) {
 		StellarSky.logger.info("Reloading Client Settings...");
 		
-		for(StellarObjectContainer layer : this.layers)
-		{
+		for(StellarObjectContainer layer : this.layers) {
 			String layerName = layer.getConfigName();
 			layer.reloadClientSettings(settings, layerName != null? settings.getSubConfig(layerName) : null);
 		}
@@ -81,15 +80,6 @@ public class CelestialManager {
 	public void update(double year) {
 		for(StellarObjectContainer layer : this.layers)
 			layer.getType().updateLayer(layer, year);
-	}
-	
-	public void updateClient(ClientSettings settings,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {		
-		for(StellarObjectContainer layer : this.layers) {
-			String layerName = layer.getConfigName();
-			layer.updateClient(settings, layerName != null? settings.getSubConfig(layerName) : null,
-					new StellarCacheInfo(coordinate, sky, scope, filter));
-		}
 	}
 	
 

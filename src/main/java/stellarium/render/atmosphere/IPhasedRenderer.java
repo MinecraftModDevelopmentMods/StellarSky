@@ -14,12 +14,12 @@ public interface IPhasedRenderer {
 
 	public IShaderObject setupShader(boolean forDegradeMap, boolean forOpaque, boolean hasTexture);
 
-	public void check();
+	public void check(Iterable<IAtmRenderedObjects> objects);
 	
 	/**
 	 * Rendering opaque object without texture means that its rendering scatter from the object.
 	 * */
-	public void render(boolean forDegradeMap, boolean forOpaque, boolean hasTexture);
+	public void render(Iterable<IAtmRenderedObjects> objects, boolean forDegradeMap, boolean forOpaque, boolean hasTexture);
 
 	public double skyBrightness();
 	public double dominationScale();

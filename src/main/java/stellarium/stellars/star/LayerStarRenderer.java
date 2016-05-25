@@ -3,28 +3,27 @@ package stellarium.stellars.star;
 import org.lwjgl.opengl.GL11;
 
 import stellarium.StellarSkyResources;
-import stellarium.render.celesital.EnumRenderPass;
-import stellarium.render.celesital.ICelestialLayerRenderer;
-import stellarium.render.celesital.StellarRenderInfo;
+import stellarium.render.atmosphere.IAtmosphericTessellator;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.stellars.render.ICelestialLayerRenderer;
+import stellarium.stellars.render.StellarRenderInfo;
 
 public class LayerStarRenderer implements ICelestialLayerRenderer {
 
 	@Override
-	public void preRender(StellarRenderInfo info) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, info.weathereff);
-
-		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceStar.getLocation());
-		info.tessellator.startDrawingQuads();
+	public void preRender(IAtmosphericTessellator tessellator, boolean forOpaque, boolean hasTexture) {
+		tessellator.bindTexture(StellarSkyResources.resourceStar.getLocation());
+		tessellator.begin(false);
 	}
 
 	@Override
-	public void postRender(StellarRenderInfo info) {
-		info.tessellator.draw();
+	public void postRender(IAtmosphericTessellator tessellator, boolean forOpaque, boolean hasTexture) {
+		tessellator.end();
 	}
 
 	@Override
-	public boolean acceptPass(EnumRenderPass pass) {
-		return pass == EnumRenderPass.DeepScattering;
+	public boolean acceptPass(boolean forOpaque, boolean hasTexture) {
+		return !forOpaque && !hasTexture;
 	}
 
 }

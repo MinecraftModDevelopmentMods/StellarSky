@@ -5,9 +5,9 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import stellarium.StellarSkyResources;
-import stellarium.render.celesital.EnumRenderPass;
-import stellarium.render.celesital.ICelestialObjectRenderer;
-import stellarium.render.celesital.StellarRenderInfo;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.stellars.render.ICelestialObjectRenderer;
+import stellarium.stellars.render.StellarRenderInfo;
 
 @SideOnly(Side.CLIENT)
 public class LandscapeRenderer {

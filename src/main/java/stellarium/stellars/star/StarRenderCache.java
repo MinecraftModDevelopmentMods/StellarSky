@@ -6,10 +6,10 @@ import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EnumRGBA;
 import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
-import stellarium.render.celesital.EnumRenderPass;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
+import stellarium.stellars.render.EnumRenderPass;
 import stellarium.stellars.util.StarColor;
 import stellarium.util.math.StellarMath;
 

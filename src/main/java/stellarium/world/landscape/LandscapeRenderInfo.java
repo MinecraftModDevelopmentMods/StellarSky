@@ -2,7 +2,7 @@ package stellarium.world.landscape;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import stellarium.render.celesital.EnumRenderPass;
+import stellarium.stellars.render.EnumRenderPass;
 
 public class LandscapeRenderInfo {
 	public final Minecraft mc;

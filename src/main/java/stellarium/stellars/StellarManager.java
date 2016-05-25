@@ -154,15 +154,6 @@ public final class StellarManager extends WorldSavedData {
 		celestialManager.update(time / settings.day / settings.year);
 	}
 	
-	public void updateClient(ClientSettings clientSettings) {
-		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(StellarSky.proxy.getDefWorld());
-		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
-		IViewScope scope = StellarAPIReference.getScope(StellarSky.proxy.getDefViewerEntity());
-		IOpticalFilter filter = StellarAPIReference.getFilter(StellarSky.proxy.getDefViewerEntity());
-		
-		celestialManager.updateClient(clientSettings, coordinate, sky, scope, filter);
-	}
-	
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 		this.markDirty();

@@ -26,9 +26,9 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.api.ICelestialRenderer;
-import stellarium.render.celesital.EnumRenderPass;
 import stellarium.render.shader.ShaderHelper;
-import stellarium.util.math.VectorHelper;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.util.math.Allocator;
 
 public class SkyRendererSurface extends IRenderHandler {
 	

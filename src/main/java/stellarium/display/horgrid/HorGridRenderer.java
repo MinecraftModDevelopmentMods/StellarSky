@@ -6,8 +6,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import stellarium.display.DisplayRenderInfo;
 import stellarium.display.IDisplayRenderer;
-import stellarium.render.celesital.EnumRenderPass;
-import stellarium.render.celesital.StellarRenderInfo;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.stellars.render.StellarRenderInfo;
 
 @SideOnly(Side.CLIENT)
 public class HorGridRenderer implements IDisplayRenderer<HorGridCache> {

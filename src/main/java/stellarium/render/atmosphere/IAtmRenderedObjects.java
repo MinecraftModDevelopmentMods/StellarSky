@@ -2,7 +2,7 @@ package stellarium.render.atmosphere;
 
 public interface IAtmRenderedObjects {
 	
-	public void check(IAtmosphericChecker checker);
+	public void check(ViewerInfo info, IAtmosphericChecker checker);
 	
 	/**
 	 * Rendering opaque object without texture means that

@@ -2,7 +2,7 @@ package stellarium.display;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import stellarium.render.celesital.EnumRenderPass;
+import stellarium.stellars.render.EnumRenderPass;
 
 public class DisplayRenderInfo {
 	public final Minecraft mc;

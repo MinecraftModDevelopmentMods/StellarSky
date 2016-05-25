@@ -2,9 +2,9 @@ package stellarium.stellars.system;
 
 import org.lwjgl.opengl.GL11;
 
-import stellarium.render.celesital.EnumRenderPass;
-import stellarium.render.celesital.ICelestialLayerRenderer;
-import stellarium.render.celesital.StellarRenderInfo;
+import stellarium.stellars.render.EnumRenderPass;
+import stellarium.stellars.render.ICelestialLayerRenderer;
+import stellarium.stellars.render.StellarRenderInfo;
 
 public class LayerSolarSystemRenderer implements ICelestialLayerRenderer {
 	
