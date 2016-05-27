@@ -2,8 +2,8 @@ package stellarium.stellars.layer;
 
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarium.client.ClientSettings;
-import stellarium.render.atmosphere.IAtmosphericChecker;
-import stellarium.render.atmosphere.ViewerInfo;
+import stellarium.render.stellars.access.IAtmosphericChecker;
+import stellarium.view.ViewerInfo;
 
 public interface IRenderCache<Obj extends StellarObject, Config extends IConfigHandler> {
 	

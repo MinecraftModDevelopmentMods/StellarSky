@@ -5,8 +5,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -21,6 +23,10 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
+import stellarium.stellars.layer.query.CacheStellarObject;
+import stellarium.stellars.layer.query.ILayerTempManager;
+import stellarium.stellars.layer.query.IMetadataManager;
+import stellarium.stellars.layer.query.QueryStellarObject;
 
 public class StellarCollection<Obj extends StellarObject> implements ICelestialCollection {
 
@@ -29,16 +35,21 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	private ICelestialCoordinate coordinate;
 	private ISkyEffect sky;
 	private Map<Obj, IPerWorldImage> imageMap = Maps.newHashMap();
+	private CacheStellarObject<Obj, IPerWorldImage> cache;
 	private CelestialPeriod yearPeriod;
-		
+
 	public StellarCollection(StellarObjectContainer container, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
 		this.type = container.getType();
 		this.container = container;
 		this.coordinate = coordinate;
 		this.sky = sky;
 		this.yearPeriod = yearPeriod;
+		
+		ILayerTempManager<Obj> temp = type.getTempLoadManager();
+		this.cache = temp != null? new CacheStellarObject(
+				new WorldImageManager(temp), temp) : null;
 	}
-
+	
 	@Override
 	public String getName() {
 		return type.getName();
@@ -50,32 +61,32 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	}
 
 	@Override
-	public ImmutableSet<? extends IPerWorldImage> getObjectInRange(SpCoord pos, double radius) {		
-		Map<Obj, IPerWorldImage> updateMap = type.temporalLoadImagesInRange(pos, radius);
-		if(updateMap == null) {
+	public ImmutableSet<? extends IPerWorldImage> getObjectInRange(SpCoord pos, double radius) {
+		if(this.cache == null) {
 			Predicate<ICelestialObject> inRange = type.conditionInRange(pos, radius);
 			if(inRange == null)
-				inRange = new PredicateInRange(pos, radius);
+				inRange = new QueryStellarObject(pos, radius);
 			return ImmutableSet.copyOf(Iterables.filter(imageMap.values(), inRange));
-		} else {			
-			for(Map.Entry<Obj, IPerWorldImage> entry : updateMap.entrySet())
-				entry.getValue().updateCache(entry.getKey(), this.coordinate, this.sky);
-			return ImmutableSet.copyOf(updateMap.values());
+		} else {
+			return ImmutableSet.copyOf(cache.query(new QueryStellarObject(pos, radius)));
 		}
 	}
 	
-	private class PredicateInRange implements Predicate<ICelestialObject> {
-		private SpCoord pos;
-		private double radius;
+	private class WorldImageManager implements IMetadataManager<Obj, IPerWorldImage> {
+		private ILayerTempManager<Obj> temp;
 		
-		public PredicateInRange(SpCoord pos, double radius) {
-			this.pos = pos;
-			this.radius = radius;
+		public WorldImageManager(ILayerTempManager<Obj> temp) {
+			this.temp = temp;
 		}
-		
+
 		@Override
-		public boolean apply(ICelestialObject input) {
-			return pos.distanceTo(input.getCurrentHorizontalPos()) < radius;
+		public IPerWorldImage loadMetadata(Obj object) {
+			return temp.loadImage(object);
+		}
+
+		@Override
+		public void updateMetadata(Obj object, IPerWorldImage metadata) {
+			metadata.updateCache(object, coordinate, sky);
 		}
 	}
 
@@ -88,12 +99,15 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 		else return comparator.compare(obj1, obj2) < 0? obj1 : obj2;
 	}
 	
-	public void addImages(Set<Obj> addedSet, Map<Obj, IPerWorldImageType> imageTypeMap) {
-		for(Obj object : addedSet)
-		{
-			IPerWorldImage image = imageTypeMap.get(object).generateImage();
-			image.initialize(object, this.coordinate, this.sky, this.yearPeriod);
-			imageMap.put(object, image);
+	public void addImages(Set<Obj> addedSet, Map<Obj, Callable<IPerWorldImage>> imageTypeMap) {
+		try {
+			for(Obj object : addedSet) {
+				IPerWorldImage image = imageTypeMap.get(object).call();
+				image.initialize(object, this.coordinate, this.sky, this.yearPeriod);
+				imageMap.put(object, image);
+			}
+		} catch (Exception exc) {
+			Throwables.propagate(exc);
 		}
 	}
 	

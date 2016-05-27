@@ -5,12 +5,12 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
-import stellarium.render.atmosphere.IAtmosphericChecker;
-import stellarium.render.atmosphere.ViewerInfo;
+import stellarium.render.stellars.access.IAtmosphericChecker;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.stellars.render.EnumRenderPass;
 import stellarium.util.math.Allocator;
+import stellarium.view.ViewerInfo;
 
 public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySettings> {
 	

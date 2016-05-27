@@ -1,4 +1,4 @@
-package stellarium.render.atmosphere;
+package stellarium.render.stellars.access;
 
 import stellarapi.api.lib.math.SpCoord;
 

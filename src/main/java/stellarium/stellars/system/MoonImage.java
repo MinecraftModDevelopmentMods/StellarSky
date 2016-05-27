@@ -13,7 +13,7 @@ public class MoonImage implements IPerWorldImage<Moon> {
 
 	private double mag;
 	private Vector3 pos;
-	private SpCoord appCoord = new SpCoord();
+	SpCoord appCoord = new SpCoord();
 	private double phase;
 	private CelestialPeriod siderealPeriod, synodicPeriod;
 	private CelestialPeriod horPeriod;

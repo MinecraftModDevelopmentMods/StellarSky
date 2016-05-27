@@ -81,7 +81,7 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 	}
 
 	@Override
-	public Map<Milkyway, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
+	public Map<Milkyway, IPerWorldImage> temporalLoadObjectsInRange(SpCoord pos, double radius) {
 		return null;
 	}
 

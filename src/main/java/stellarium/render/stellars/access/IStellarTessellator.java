@@ -1,10 +1,10 @@
-package stellarium.render.atmosphere;
+package stellarium.render.stellars.access;
 
 import net.minecraft.util.ResourceLocation;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 
-public interface IAtmosphericTessellator {
+public interface IStellarTessellator {
 	
 	public void bindTexture(ResourceLocation location);
 	

@@ -2,6 +2,7 @@ package stellarium.stellars.layer;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
@@ -12,8 +13,8 @@ import com.google.common.collect.Sets;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarium.client.ClientSettings;
-import stellarium.render.atmosphere.IAtmosphericChecker;
-import stellarium.render.atmosphere.ViewerInfo;
+import stellarium.render.stellars.access.IAtmosphericChecker;
+import stellarium.view.ViewerInfo;
 
 public class StellarObjectContainer<Obj extends StellarObject, ClientConfig extends IConfigHandler> {
 
@@ -23,7 +24,7 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 
 	private SetMultimap<String, Obj> loadedObjects = HashMultimap.create();
 	private Map<Obj, IRenderCache> renderCacheMap = Maps.newHashMap();
-	private Map<Obj, IPerWorldImageType> imageTypeMap = Maps.newHashMap();
+	private Map<Obj, Callable<IPerWorldImage>> imageTypeMap = Maps.newHashMap();
 	private Set<Obj> addedSet = Sets.newHashSet();
 	private Set<Obj> removedSet = Sets.newHashSet();
 	private long previousUpdateTick = -1L;
@@ -67,21 +68,16 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 			renderCacheMap.put(object, renderCache);
 	}
 	
-	public void addImageType(Obj object, IPerWorldImageType imageType) {
+	public void addImageType(Obj object, Callable<IPerWorldImage> imageType) {
 		imageTypeMap.put(object, imageType);
 		addedSet.add(object);
 	}
 	
 	public void addImageType(Obj object, final Class<? extends IPerWorldImage> imageClass) {
-		this.addImageType(object, new IPerWorldImageType() {
+		this.addImageType(object, new Callable<IPerWorldImage>() {
 			@Override
-			public IPerWorldImage generateImage() {
-				try {
-					return imageClass.newInstance();
-				} catch (Exception exc) {
-					Throwables.propagate(exc);
-					return null;
-				}
+			public IPerWorldImage call() throws Exception {
+				return imageClass.newInstance();
 			}
 		});
 	}
@@ -92,7 +88,7 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 
 		if(this.isRemote && renderCacheMap.containsKey(object))
 			renderCacheMap.remove(object);
-		
+
 		if(imageTypeMap.containsKey(object))
 		{
 			imageTypeMap.remove(object);
@@ -101,22 +97,22 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	}
 	
 	
-	public void addCollection(StellarCollection image) {
+	public void addCollection(StellarCollection<Obj> image) {
 		image.addImages(imageTypeMap.keySet(), this.imageTypeMap);
 	}
 	
-	public void updateCollection(StellarCollection image, long currentUniversalTick) {
+	public void updateCollection(StellarCollection<Obj> image, long currentUniversalTick) {
 		if(this.previousUpdateTick != currentUniversalTick) {
 			addedSet.clear();
 			removedSet.clear();
 			this.previousUpdateTick = currentUniversalTick;
 		}
-		
+
 		if(!addedSet.isEmpty())
 			image.addImages(this.addedSet, this.imageTypeMap);
 		if(!removedSet.isEmpty())
 			image.removeImages(this.removedSet);
-		
+
 		image.update();
 	}
 

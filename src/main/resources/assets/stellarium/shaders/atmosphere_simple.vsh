@@ -1,5 +1,6 @@
 #version 130
 uniform vec3 lightDir;      // Direction vectors to the light source
+uniform vec3 lightColor;    // Brightness of the light source
 
 uniform float cameraHeight;     // Camera height scaled by scale height
 uniform float outerRadius;     // The outer (atmosphere) radius scaled by scale height
@@ -128,7 +129,7 @@ void main() {
 	// Finally, scale the Mie and Rayleigh colors
 
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-	scatteringColor4.rgb = integratedScatterColor;
+	scatteringColor4.rgb = integratedScatterColor * lightColor;
 	v3Direction = -invertFlag * v3Ray;
 
 	gl_FogFragCoord = exp(invertFlag * (depthEnd - depthCamera) / depthToFogFactor);

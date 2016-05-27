@@ -179,7 +179,7 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	}
 
 	@Override
-	public Map<BgStar, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
+	public Map<BgStar, IPerWorldImage> temporalLoadObjectsInRange(SpCoord pos, double radius) {
 		return null;
 	}
 

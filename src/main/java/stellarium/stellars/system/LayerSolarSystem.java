@@ -3,10 +3,9 @@ package stellarium.stellars.system;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Map;
+import java.util.Set;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Ordering;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -14,7 +13,6 @@ import stellarapi.api.celestials.EnumCelestialCollectionType;
 import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
-import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.render.StellarRenderingRegistry;
@@ -346,7 +344,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	}
 
 	@Override
-	public Map<SolarObject, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
+	public Set<SolarObject> temporalLoadObjectsInRange(SpCoord pos, double radius) {
 		return null;
 	}
 

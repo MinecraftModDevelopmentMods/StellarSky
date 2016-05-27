@@ -1,4 +1,4 @@
-package stellarium.render.stellars.phased;
+package stellarium.render.stellars.access;
 
 public enum EnumStellarPass {
 	DominateScatter,
@@ -7,13 +7,16 @@ public enum EnumStellarPass {
 	Opaque(true, true),
 	OpaqueScatter(true, false);
 	
-	public final boolean isOpaque, hasTexture;
+	public final boolean isDominate, isOpaque, hasTexture;
 	
 	EnumStellarPass() {
-		
+		this.isDominate = true;
+		this.isOpaque = false;
+		this.hasTexture = false;
 	}
 	
 	EnumStellarPass(boolean isOpaque, boolean hasTexture) {
+		this.isDominate = false;
 		this.isOpaque = isOpaque;
 		this.hasTexture = hasTexture;
 	}

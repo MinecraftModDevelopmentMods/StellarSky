@@ -12,6 +12,7 @@ import stellarapi.api.StellarAPIReference;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
+import stellarium.view.ViewerInfo;
 
 public class AtmosphereRenderHandler implements Runnable {
 	
