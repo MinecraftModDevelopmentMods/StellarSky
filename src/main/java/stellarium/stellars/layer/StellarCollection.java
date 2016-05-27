@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
@@ -23,19 +24,26 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
-import stellarium.stellars.layer.query.CacheStellarObject;
 import stellarium.stellars.layer.query.ILayerTempManager;
-import stellarium.stellars.layer.query.IMetadataManager;
+import stellarium.stellars.layer.query.MetadataQueryCache;
 import stellarium.stellars.layer.query.QueryStellarObject;
+import stellarium.stellars.layer.update.IMetadataUpdater;
+import stellarium.stellars.layer.update.IUpdateTracked;
+import stellarium.stellars.layer.update.MetadataUpdateTracker;
 
 public class StellarCollection<Obj extends StellarObject> implements ICelestialCollection {
 
 	private IStellarLayerType<Obj, IConfigHandler, INBTConfig> type;
 	private StellarObjectContainer container;
+	
 	private ICelestialCoordinate coordinate;
 	private ISkyEffect sky;
+	
 	private Map<Obj, IPerWorldImage> imageMap = Maps.newHashMap();
-	private CacheStellarObject<Obj, IPerWorldImage> cache;
+	
+	private MetadataQueryCache<Obj, IUpdateTracked<IPerWorldImage>> cache;
+	private MetadataUpdateTracker<Obj, IPerWorldImage> updateTracker;
+	
 	private CelestialPeriod yearPeriod;
 
 	public StellarCollection(StellarObjectContainer container, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
@@ -45,15 +53,46 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 		this.sky = sky;
 		this.yearPeriod = yearPeriod;
 		
+		this.updateTracker = new MetadataUpdateTracker(new ImageUpdater());
+		
 		ILayerTempManager<Obj> temp = type.getTempLoadManager();
-		this.cache = temp != null? new CacheStellarObject(
-				new WorldImageManager(temp), temp) : null;
+		this.cache = temp != null?
+				new MetadataQueryCache(new ImageBuilder(temp), temp) : null;
 	}
 	
 	@Override
 	public String getName() {
 		return type.getName();
 	}
+
+	private class ImageBuilder implements Function<Obj, IUpdateTracked<IPerWorldImage>> {
+		private ILayerTempManager<Obj> temp;
+		
+		public ImageBuilder(ILayerTempManager<Obj> temp) {
+			this.temp = temp;
+		}
+
+		@Override
+		public IUpdateTracked<IPerWorldImage> apply(Obj object) {
+			IPerWorldImage image = temp.loadImage(object);
+			image.initialize(object, coordinate, sky, yearPeriod);
+			return updateTracker.createTracker(object, image);
+		}
+	}
+
+	private class ImageUpdater implements IMetadataUpdater<Obj, IPerWorldImage> {
+		@Override
+		public long getCurrentTime() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void update(Obj object, IPerWorldImage metadata) {
+			metadata.updateCache(object, coordinate, sky);
+		}
+	}
+	
 
 	@Override
 	public ImmutableSet<? extends IPerWorldImage> getObjects() {
@@ -62,32 +101,26 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 
 	@Override
 	public ImmutableSet<? extends IPerWorldImage> getObjectInRange(SpCoord pos, double radius) {
-		if(this.cache == null) {
-			Predicate<ICelestialObject> inRange = type.conditionInRange(pos, radius);
-			if(inRange == null)
-				inRange = new QueryStellarObject(pos, radius);
-			return ImmutableSet.copyOf(Iterables.filter(imageMap.values(), inRange));
-		} else {
-			return ImmutableSet.copyOf(cache.query(new QueryStellarObject(pos, radius)));
-		}
+		// TODO Controlling Transformations
+		QueryStellarObject query = new QueryStellarObject(pos, radius);
+
+		Predicate<ICelestialObject> inRange = type.conditionInRange(pos, radius);
+		if(inRange == null)
+			inRange = query;
+
+		Iterable<IPerWorldImage> saved = Iterables.filter(imageMap.values(), inRange);
+
+		if(cache != null) {
+			return ImmutableSet.copyOf(
+					Iterables.concat(saved,
+							updateTracker.addUpdateOnIteration(cache.query(query))));
+		} else return ImmutableSet.copyOf(saved);
 	}
-	
-	private class WorldImageManager implements IMetadataManager<Obj, IPerWorldImage> {
-		private ILayerTempManager<Obj> temp;
-		
-		public WorldImageManager(ILayerTempManager<Obj> temp) {
-			this.temp = temp;
-		}
 
-		@Override
-		public IPerWorldImage loadMetadata(Obj object) {
-			return temp.loadImage(object);
-		}
-
-		@Override
-		public void updateMetadata(Obj object, IPerWorldImage metadata) {
-			metadata.updateCache(object, coordinate, sky);
-		}
+	public IPerWorldImage loadImageFor(Obj object) {
+		if(imageMap.containsKey(object))
+			return imageMap.get(object);
+		else return cache.lazyLoader().apply(object).getMetadata();
 	}
 
 	@Override
@@ -115,10 +148,9 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 		for(Obj object : removedSet)
 			imageMap.remove(object);
 	}
-	
+
 	public void update() {
-		for(Map.Entry<Obj, IPerWorldImage> entry : imageMap.entrySet())
-			entry.getValue().updateCache(entry.getKey(), this.coordinate, this.sky);
+		updateTracker.updateMap(this.imageMap);
 	}
 
 	

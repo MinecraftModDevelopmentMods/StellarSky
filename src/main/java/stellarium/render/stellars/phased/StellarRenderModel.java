@@ -13,7 +13,6 @@ import stellarium.stellars.layer.StellarObjectContainer;
 public class StellarRenderModel implements IRenderModel<StellarSettings, StellarUpdateInfo> {
 
 	private CelestialManager celManager;
-	//private Map<Obj, IRenderCache> renderCacheMap = Maps.newHashMap();
 	
 	@Override
 	public void initialize(StellarSettings settings) {

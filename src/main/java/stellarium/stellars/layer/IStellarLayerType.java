@@ -48,6 +48,7 @@ public interface IStellarLayerType<Obj extends StellarObject, ClientConfig exten
 
 	/**
 	 * Can be null not to support temporal loading.
+	 * Should be constructed with the layer, since this has universal use.
 	 * */
 	public ILayerTempManager<Obj> getTempLoadManager();
 }
