@@ -1,62 +1,34 @@
 package stellarium.render.stellars.phased;
 
-import stellarapi.api.lib.config.IConfigHandler;
-import stellarium.render.base.IGenericRenderer;
-import stellarium.render.sky.SkyRenderInformation;
+import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.stellars.access.EnumStellarPass;
-import stellarium.stellars.layer.IRenderCache;
-import stellarium.stellars.layer.StellarObject;
-import stellarium.stellars.layer.StellarObjectContainer;
-import stellarium.stellars.render.ICelestialLayerRenderer;
-import stellarium.stellars.render.ICelestialObjectRenderer;
-import stellarium.stellars.render.StellarRenderingRegistry;
+import stellarium.render.stellars.layer.LayerRenderInformation;
+import stellarium.render.stellars.layer.StellarLayerModel;
+import stellarium.render.stellars.layer.StellarLayerRenderer;
 
 public class StellarPhasedRenderer implements IGenericRenderer<Void, EnumStellarPass, StellarRenderModel, StellarRenderInformation> {
 
 	private StellarTessellator tessellator = new StellarTessellator();
+	private StellarLayerRenderer layerRenderer = new StellarLayerRenderer();
 	
 	@Override
 	public void initialize(Void settings) {
-		
+		// TODO Initialization?
 	}
 
 	@Override
-	public void preRender(Void settings, StellarRenderInformation info) {
-		// TODO Auto-generated method stub
-	}
+	public void preRender(Void settings, StellarRenderInformation info) { }
 
 	@Override
 	public void renderPass(StellarRenderModel model, EnumStellarPass pass, StellarRenderInformation info) {
-		// TODO Auto-generated method stub
 		tessellator.initialize(pass, info);
-		for(StellarObjectContainer<StellarObject, IConfigHandler> layer : model.getLayers()) {
-			ICelestialLayerRenderer layerRenderer = null;
-			
-			int rendererId = layer.getType().getLayerRendererIndex();
-			if(rendererId != -1)
-				layerRenderer = StellarRenderingRegistry.getInstance().getLayerRenderer(rendererId);
-			
-			if(layerRenderer != null && !layerRenderer.acceptPass(pass))
-				continue;
-			
-			if(layerRenderer != null)
-				layerRenderer.preRender(this.tessellator, pass);
-			
-			for(IRenderCache cache : layer.getRenderCacheList())
-			{
-				ICelestialObjectRenderer objRenderer = StellarRenderingRegistry.getInstance().getObjectRenderer(cache.getRenderId());
-				objRenderer.render(this.tessellator, cache);
-			}
-			
-			if(layerRenderer != null)
-				layerRenderer.postRender(this.tessellator, pass);
-		}
+		
+		LayerRenderInformation layerInfo = new LayerRenderInformation(info, this.tessellator);
+		for(StellarLayerModel layerModel : model.getLayerModels())
+			layerRenderer.renderPass(layerModel, pass, layerInfo);
 	}
 
 	@Override
-	public void postRender(Void settings, StellarRenderInformation info) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void postRender(Void settings, StellarRenderInformation info) { }
 
 }

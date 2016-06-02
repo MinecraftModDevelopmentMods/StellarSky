@@ -100,25 +100,7 @@ public class SkyRendererSurface extends IRenderHandler {
 	
 	@SideOnly(Side.CLIENT)
 	public void renderPrevious(float partialTicks, WorldClient theWorld, Minecraft mc) {
-        if (theWorld.provider.isSurfaceWorld()) {
-        	/*
-        	 * TODO Atmospheric Rendering
-        	 * 1. Perform accurate atmosphere rendering (Use shaders if possible)
-        	 * 2. Atmosphere effects on Celestial Objects
-        	 * 
-        	 * Rendering Order should be:
-        	 * A. Render Pre-Additional Displays
-        	 * B. Apply Atmospherical Shaders
-        	 * C. Render Celestial Objects
-        	 *  C1. Render Distant Objects - On the Same Plane
-        	 *  C2. Render Near Objects
-        	 * * Objects with greater influence will be written on atmosphere
-        	 * D. Render the Atmosphere
-        	 * E. Disapply Atmospherical Shaders
-        	 * F. Render Post-Additional Displays
-        	 * G. Render Landscape - To hide everything under the ground
-        	 * */
-        	
+        if (theWorld.provider.isSurfaceWorld()) {        	
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             Vec3 vec3 = theWorld.getSkyColor(mc.renderViewEntity, partialTicks);
             float f1 = (float)vec3.xCoord;

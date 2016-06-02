@@ -25,7 +25,10 @@ import stellarium.client.overlay.clock.OverlayClockType;
 import stellarium.display.DisplayManager;
 import stellarium.display.DisplayRegistry;
 import stellarium.render.SkyCelestialRenderer;
-import stellarium.render.shader.ShaderHelper;
+import stellarium.render.sky.SkyModel;
+import stellarium.render.sky.SkyRenderer;
+import stellarium.render.sky.SkySettingsHandler;
+import stellarium.render.state.EnumUpdateState;
 import stellarium.stellars.Optics;
 import stellarium.stellars.layer.CelestialManager;
 import stellarium.stellars.layer.StellarLayerRegistry;
@@ -43,7 +46,11 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	private ConfigManager guiConfig;
 	private CelestialManager celestialManager = new CelestialManager(true);
 	private DisplayManager displayManager = new DisplayManager();
-		
+	
+	private SkyRenderer skyRenderer;
+	private SkyModel skyModel;
+	private SkySettingsHandler settings = new SkySettingsHandler();
+	
 	public ClientSettings getClientSettings() {
 		return this.clientSettings;
 	}
@@ -71,9 +78,13 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public void load(FMLInitializationEvent event) throws IOException {
 		super.load(event);
 		
-		StellarLayerRegistry.getInstance().composeSettings(this.clientSettings);
-		DisplayRegistry.getInstance().setupDisplay(this.clientSettings, this.displayManager);
-		clientSettings.putSubConfig("landscape", this.landscapeSettings);
+		settings.setupSettings(this.clientSettings);
+		skyModel.initialize(this.settings);
+		skyRenderer.initialize(this.settings);
+		
+		//StellarLayerRegistry.getInstance().composeSettings(this.clientSettings);
+		//DisplayRegistry.getInstance().setupDisplay(this.clientSettings, this.displayManager);
+		//clientSettings.putSubConfig("landscape", this.landscapeSettings);
 	}
 
 	@Override
@@ -105,8 +116,15 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		return Minecraft.getMinecraft().gameSettings.renderDistanceChunks;
 	}
 	
+	public void setupStartingGame() {
+
+	}
+	
 	@Override
 	public void setupSkyRenderer(WorldProvider provider, CelestialManager celManager, String skyType, LandscapeCache cache) {
+		skyModel.initialize(this.settings);
+		skyRenderer.initialize(this.settings);
+		
 		IRenderHandler renderer = StellarSkyAPI.getRendererFor(skyType,
 				new SkyCelestialRenderer(this.clientSettings, celManager, this.displayManager, this.landscapeSettings, cache));
 		provider.setSkyRenderer(renderer);
@@ -118,7 +136,14 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	@Override
-	public void updateTick() {		
+	public void updateTick() {
+		if(settings.checkDirty()) {
+			skyModel.initialize(this.settings);
+			skyRenderer.initialize(this.settings);
+		}
+		
+		skyModel.update(this.settings, update);
+		
 		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(StellarSky.proxy.getDefWorld());
 		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
 		displayManager.updateDisplay(this.clientSettings, coordinate, sky);

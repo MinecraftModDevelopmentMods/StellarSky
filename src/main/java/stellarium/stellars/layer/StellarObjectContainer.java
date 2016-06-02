@@ -12,7 +12,7 @@ import com.google.common.collect.Sets;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.access.IAtmosphericChecker;
+import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.render.stellars.layer.StellarLayerModel;
 import stellarium.view.ViewerInfo;
@@ -31,8 +31,7 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	private Set<Obj> removedSet = Sets.newHashSet();
 	private long previousUpdateTick = -1L;
 
-	public StellarObjectContainer(boolean isRemote, IStellarLayerType<Obj, ClientConfig, INBTConfig> type, String configName) {
-		this.isRemote = isRemote;
+	public StellarObjectContainer(IStellarLayerType<Obj, ClientConfig, INBTConfig> type, String configName) {
 		this.type = type;
 		this.configName = configName;
 	}
@@ -122,11 +121,12 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	}
 
 	
-	public StellarObjectContainer<Obj, ClientConfig> copy() {
-		StellarObjectContainer copied = new StellarObjectContainer(this.isRemote, this.type, this.configName);
+	public StellarObjectContainer<Obj, ClientConfig> copyFromClient() {
+		StellarObjectContainer copied = new StellarObjectContainer(this.type, this.configName);
 		copied.loadedObjects = HashMultimap.create(copied.loadedObjects);
 		copied.imageTypeMap = Maps.newHashMap(this.imageTypeMap);
 		copied.layerModel = layerModel.copy(copied);
+		// TODO separate layer model
 		
 		return copied;
 	}

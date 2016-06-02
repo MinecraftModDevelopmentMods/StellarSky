@@ -47,6 +47,7 @@ public class AtmShaderManager {
 		this.mieFactor = shader.getField("mieFactor");
 	}
 
+	// TODO move to model
 	public void updateWorldInfo(SkyRenderInformation info) {
 		float rainStrength = info.world.getRainStrength(info.partialTicks);
 		this.rainStrengthFactor = 1.0f + 5.0f * rainStrength;
@@ -69,6 +70,7 @@ public class AtmShaderManager {
 		this.angle = Spmath.Degrees(Math.acos(1.0 / (this.height / INNER_RADIUS + 1.0)));
 	}
 
+	// TODO move to renderer
 	public void configureAtmosphere() {
 		atmosphere.bindShader();
 

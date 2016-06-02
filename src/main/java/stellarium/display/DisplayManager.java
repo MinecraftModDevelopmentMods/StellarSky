@@ -17,9 +17,9 @@ import stellarium.client.ClientSettings;
 
 @SideOnly(Side.CLIENT)
 public class DisplayManager implements IDisplayInjectable {
-	
+
 	private List<Delegate> displayList = Lists.newArrayList();
-	
+
 	@Override
 	public <Cfg extends PerDisplaySettings, Cache extends IDisplayCache<Cfg>> void injectDisplay(
 			IDisplayElementType<Cfg, Cache> type, Cfg settings) {
@@ -39,7 +39,7 @@ public class DisplayManager implements IDisplayInjectable {
 					delegate.cache);
 		}
 	}
-	
+
 	public void reloadClientSettings(ClientSettings clientSettings) {
 		for(Delegate delegate : this.displayList) {
 			delegate.cache.initialize(clientSettings, delegate.settings);
@@ -52,7 +52,7 @@ public class DisplayManager implements IDisplayInjectable {
 			delegate.cache.updateCache(clientSettings, delegate.settings, info);
 		}
 	}
-	
+
 	private static class Delegate<Cfg extends PerDisplaySettings, Cache extends IDisplayCache<Cfg>> {
 		public Delegate(IDisplayElementType<Cfg, Cache> type, Cfg settings) {
 			this.type = type;

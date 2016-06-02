@@ -56,7 +56,7 @@ public class MessageInfoSync implements IMessage {
 			if(dimManager != null)
 				dimManager.syncFromNBT(message.dimensionInfo, manager, true);
 			
-			manager.setup(StellarSky.proxy.getClientCelestialManager().copy());
+			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
 
 			if(dimManager != null)
 				StellarAPIEventHook.setupDimension(world, manager, dimManager);

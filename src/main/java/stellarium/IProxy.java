@@ -27,7 +27,8 @@ public interface IProxy {
 	public Entity getDefViewerEntity();
 	public int getRenderDistanceSettings();
 	
-	public void setupCelestialConfigManager(ConfigManager manager);    
+	public void setupCelestialConfigManager(ConfigManager manager);
+	
     public ClientSettings getClientSettings();
 	public ServerSettings getServerSettings();
 	public HierarchicalConfig getDimensionSettings();

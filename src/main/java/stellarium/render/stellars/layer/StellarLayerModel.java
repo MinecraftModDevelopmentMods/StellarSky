@@ -4,9 +4,12 @@ import java.util.Map;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
-import stellarium.render.base.IRenderModel;
+import net.minecraft.server.MinecraftServer;
+import stellarium.lib.render.IRenderModel;
+import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.layer.StellarObjectContainer;
@@ -17,7 +20,7 @@ import stellarium.stellars.layer.update.IMetadataUpdater;
 import stellarium.stellars.layer.update.IUpdateTracked;
 import stellarium.stellars.layer.update.MetadataUpdateTracker;
 
-public class StellarLayerModel<Obj extends StellarObject> implements IRenderModel<LayerSettings<Obj>, LayerUpdateInfo> {
+public class StellarLayerModel<Obj extends StellarObject> implements IRenderModel<LayerSettings, LayerUpdateInfo> {
 	private StellarObjectContainer container;
 	private StellarCollection<Obj> collection;
 
@@ -35,12 +38,20 @@ public class StellarLayerModel<Obj extends StellarObject> implements IRenderMode
 		this.updateTracker = new MetadataUpdateTracker(this.cacheUpdater = new RenderCacheUpdater());
 	}
 	
+	public IStellarLayerType getLayerType() {
+		return container.getType();
+	}
+	
+	public String getConfigName() {
+		return container.getConfigName();
+	}
+
 	@Override
-	public void initialize(LayerSettings<Obj> settings) {
+	public void initialize(LayerSettings settings) {
 		for(Map.Entry<Obj, IObjRenderCache<Obj>> entry : cacheMap.entrySet())
 			entry.getValue().initialize(settings.getSettingsFor(entry.getKey()));
 	}
-	
+
 	public void addRenderCache(Obj object, IObjRenderCache<Obj> renderCache) {
 		cacheMap.put(object, renderCache);
 	}
@@ -48,7 +59,7 @@ public class StellarLayerModel<Obj extends StellarObject> implements IRenderMode
 	public void removeCache(Obj object) {
 		cacheMap.remove(object);
 	}
-	
+
 	public void setupForWorld(StellarCollection<Obj> collection) {
 		this.collection = collection;
 
@@ -64,13 +75,16 @@ public class StellarLayerModel<Obj extends StellarObject> implements IRenderMode
 
 		updateTracker.updateMap(this.cacheMap);
 
-		if(this.cache != null) {
+		if(this.cache != null)
 			this.fromCache = ImmutableList.copyOf(updateTracker.addUpdateOnIteration(
 					cache.query(new QueryStellarObject(update.currentDirection, update.currentRadius))));
-		}
 	}
 	
-	private class RenderCacheLoader implements Function<Obj, IObjRenderCache<Obj>> {
+	public Iterable<IObjRenderCache<Obj>> getRenderCaches() {
+		return Iterables.concat(cacheMap.values(), this.fromCache);
+	}
+	
+	private class RenderCacheLoader implements Function<Obj, IUpdateTracked<IObjRenderCache<Obj>>> {
 		private ILayerTempManager<Obj> manager;
 		private LayerSettings settings;
 		
@@ -83,10 +97,10 @@ public class StellarLayerModel<Obj extends StellarObject> implements IRenderMode
 		}
 
 		@Override
-		public IObjRenderCache<Obj> apply(Obj object) {
+		public IUpdateTracked<IObjRenderCache<Obj>> apply(Obj object) {
 			IObjRenderCache<Obj> cache = manager.loadCache(object);
 			cache.initialize(settings.getSettingsFor(object));
-			return cache;
+			return updateTracker.createTracker(object, cache);
 		}
 	}
 
@@ -96,8 +110,7 @@ public class StellarLayerModel<Obj extends StellarObject> implements IRenderMode
 		
 		@Override
 		public long getCurrentTime() {
-			// TODO Auto-generated method stub
-			return 0;
+			return MinecraftServer.getServer().getEntityWorld().getTotalWorldTime();
 		}
 
 		public void set(LayerSettings settings, LayerUpdateInfo update) {

@@ -5,7 +5,7 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.access.IAtmosphericChecker;
+import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.stellars.layer.IRenderCache;
 import stellarium.stellars.layer.StellarCacheInfo;
 import stellarium.stellars.render.EnumRenderPass;
@@ -35,7 +35,7 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 
 	@Override
 	public void updateCache(ClientSettings settings, MilkywaySettings specificSettings, Milkyway object,
-			ViewerInfo info, IAtmosphericChecker checker) {
+			ViewerInfo info, IStellarChecker checker) {
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				Vector3 Buf = new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec();

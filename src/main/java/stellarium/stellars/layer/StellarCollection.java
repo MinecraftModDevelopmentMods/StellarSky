@@ -15,6 +15,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import net.minecraft.server.MinecraftServer;
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
@@ -83,8 +84,7 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	private class ImageUpdater implements IMetadataUpdater<Obj, IPerWorldImage> {
 		@Override
 		public long getCurrentTime() {
-			// TODO Auto-generated method stub
-			return 0;
+			return MinecraftServer.getServer().getEntityWorld().getTotalWorldTime();
 		}
 
 		@Override

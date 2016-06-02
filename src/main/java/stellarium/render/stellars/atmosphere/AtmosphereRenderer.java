@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
-import stellarium.render.base.IGenericRenderer;
+import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.sky.SkyRenderInformation;
 import stellarium.util.math.Allocator;
@@ -29,7 +29,7 @@ public class AtmosphereRenderer implements IGenericRenderer<AtmosphereRenderSett
 	private boolean previousFlag;
 	private boolean initialFlag = true;
 	
-	private AtmShaderManager shaderManager;
+	//private AtmShaderManager shaderManager;
 	
 	public void setupAtmShader(IShaderObject shader) {
 		shaderManager.initialize(shader);

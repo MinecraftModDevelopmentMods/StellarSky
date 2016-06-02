@@ -2,26 +2,28 @@ package stellarium.render.sky;
 
 import org.lwjgl.opengl.GL11;
 
-import stellarium.render.base.IGenericRenderer;
+import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.stellars.StellarRenderer;
 import stellarium.world.landscape.LandscapeRenderer;
 
-public class SkyRenderer implements IGenericRenderer<SkyRendererSettings, Void, SkyModel, SkyRenderInformation> {
+public class SkyRenderer implements IGenericRenderer<SkySettingsHandler, Void, SkyModel, SkyRenderInformation> {
 	
-	private IGenericRenderer displayRenderer;
-	private StellarRenderer stellarRenderer;
-	private LandscapeRenderer landscapeRenderer;
+	//private IGenericRenderer displayRenderer;
+	//private StellarRenderer stellarRenderer;
+	//private LandscapeRenderer landscapeRenderer;
 	
 	@Override
-	public void initialize(SkyRendererSettings settings) {
-		// TODO Auto-generated method stub
-		
+	public void initialize(SkySettingsHandler settings) {
+		displayRenderer.initialize(settings);
+		stellarRenderer.initialize(settings.getStellarSettings());
+		landscapeRenderer.initialize(settings);
 	}
 
 	@Override
-	public void preRender(SkyRendererSettings settings, SkyRenderInformation info) {
-		// TODO Auto-generated method stub
-		
+	public void preRender(SkySettingsHandler settings, SkyRenderInformation info) {
+		displayRenderer.preRender(settings, info);
+		stellarRenderer.preRender(settings.getStellarSettings(), info);
+		landscapeRenderer.preRender(settings, info);
 	}
 
 	@Override
@@ -61,8 +63,9 @@ public class SkyRenderer implements IGenericRenderer<SkyRendererSettings, Void, 
 	}
 
 	@Override
-	public void postRender(SkyRendererSettings settings, SkyRenderInformation info) {
-		// TODO Auto-generated method stub
-		
+	public void postRender(SkySettingsHandler settings, SkyRenderInformation info) {
+		displayRenderer.postRender(settings, info);
+		stellarRenderer.postRender(settings.getStellarSettings(), info);
+		landscapeRenderer.postRender(settings, info);
 	}
 }

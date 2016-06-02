@@ -1,6 +1,6 @@
 package stellarium.render.stellars.atmosphere;
 
-import stellarium.render.base.IRenderModel;
+import stellarium.lib.render.IRenderModel;
 
 public class AtmosphereModel implements IRenderModel<Settings, UpdateInfo> {
 

@@ -5,7 +5,7 @@ import stellarapi.api.lib.math.SpCoord;
 /**
  * Checker to check scatters.
  * */
-public interface IAtmosphericChecker {
+public interface IStellarChecker {
 	
 	public void startDescription();
 	

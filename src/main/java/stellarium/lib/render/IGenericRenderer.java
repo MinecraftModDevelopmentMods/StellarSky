@@ -1,10 +1,10 @@
-package stellarium.render.base;
+package stellarium.lib.render;
 
 /**
  * @param Settings the renderer-specific settings
- * @param Pass the render pass
+ * @param Pass the immutable object to represent render pass
  * @param Model the model to render, need not inherit IRenderModel while it is recommended
- * @param RCI the general render context
+ * @param RCI mutable render context information
  * */
 public interface IGenericRenderer<Settings, Pass, Model, RCI> {
 	/**

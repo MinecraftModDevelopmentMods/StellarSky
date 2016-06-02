@@ -78,7 +78,7 @@ public class StellarAPIEventHook {
 		StellarManager manager = StellarManager.loadOrCreateClientManager(event.getWorld());
 		
 		if(!manager.getSettings().serverEnabled)
-			manager.setup(StellarSky.proxy.getClientCelestialManager().copy());
+			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
 		
 		String dimName = event.getWorld().provider.getDimensionName();
 		if(!StellarSky.proxy.getServerSettings().serverEnabled)
@@ -152,7 +152,7 @@ public class StellarAPIEventHook {
 		manager.handleServerWithoutMod();
 		
 		if(manager.getCelestialManager() == null) {
-			manager.setup(StellarSky.proxy.getClientCelestialManager().copy());
+			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
 			handleDimOnServerDisabled(world, manager, update);
 		}
 	}

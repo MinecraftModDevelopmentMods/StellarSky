@@ -8,7 +8,7 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.client.renderer.OpenGlHelper;
 import stellarium.StellarSkyResources;
-import stellarium.render.base.IGenericRenderer;
+import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.shader.SwitchableShaders;
 import stellarium.render.sky.SkyRenderInformation;
@@ -17,10 +17,10 @@ import stellarium.render.stellars.atmosphere.AtmosphereRenderer;
 import stellarium.render.stellars.phased.StellarPhasedRenderer;
 import stellarium.render.stellars.phased.StellarRenderInformation;
 
-public class StellarRenderer implements IGenericRenderer<StellarRenderSettings, Void, StellarModel, SkyRenderInformation> {
+public class StellarRenderer implements IGenericRenderer<StellarSettingsHandler, Void, StellarModel, SkyRenderInformation> {
 
-	private AtmosphereRenderer atmosphere = new AtmosphereRenderer();
-	private StellarPhasedRenderer phasedRenderer = new StellarPhasedRenderer();
+	//private AtmosphereRenderer atmosphere = new AtmosphereRenderer();
+	//private StellarPhasedRenderer phasedRenderer = new StellarPhasedRenderer();
 	private EnumMap<EnumStellarPass, SwitchableShaders> shaderMap = Maps.newEnumMap(EnumStellarPass.class);
 
 	private void reloadShaders() {
@@ -50,16 +50,15 @@ public class StellarRenderer implements IGenericRenderer<StellarRenderSettings, 
 	}
 
 	@Override
-	public void initialize(StellarRenderSettings settings) {
+	public void initialize(StellarSettingsHandler settings) {
 		this.reloadShaders();
 		atmosphere.setupAtmShader(shaderMap.get(EnumStellarPass.DominateScatter));
 		atmosphere.initialize(settings.getAtmosphereSettings());
 	}
 
 	@Override
-	public void preRender(StellarRenderSettings settings, SkyRenderInformation info) {
+	public void preRender(StellarSettingsHandler settings, SkyRenderInformation info) {
 		atmosphere.preRender(settings.getAtmosphereSettings(), info);
-		phasedRenderer.preRender(null, new StellarRenderInformation(info));
 	}
 
 	@Override
@@ -67,13 +66,14 @@ public class StellarRenderer implements IGenericRenderer<StellarRenderSettings, 
 		EnumStellarPass pass;
 		SwitchableShaders object;
 		StellarRenderInformation subInfo = new StellarRenderInformation(info);
-		
+
+		// TODO Move shaders into atmosphere renderer
 		if(info.isFrameBufferEnabled) {
         	pass = EnumStellarPass.DominateScatter;
-        	
+
         	object = shaderMap.get(pass);
         	this.setupAtmShader(object, true);
-        	
+
         	subInfo.setActiveShader(object);
         	subInfo.setAtmCallList(atmosphere.beginCache());
 
@@ -158,8 +158,7 @@ public class StellarRenderer implements IGenericRenderer<StellarRenderSettings, 
 	}
 
 	@Override
-	public void postRender(StellarRenderSettings settings, SkyRenderInformation info) {
-		phasedRenderer.postRender(null, new StellarRenderInformation(info));
+	public void postRender(StellarSettingsHandler settings, SkyRenderInformation info) {
 		atmosphere.postRender(settings.getAtmosphereSettings(), info);
 	}
 

@@ -66,7 +66,7 @@ public class CelestialManager {
     	this.commonInitialized = true;
 	}
 	
-	public void reloadClientSettings(ClientSettings settings) {
+	/*public void reloadClientSettings(ClientSettings settings) {
 		StellarSky.logger.info("Reloading Client Settings...");
 		
 		for(StellarObjectContainer layer : this.layers) {
@@ -75,15 +75,15 @@ public class CelestialManager {
 		}
 
 		StellarSky.logger.info("Client Settings reloaded.");
-	}
+	}*/
 	
 	public void update(double year) {
 		for(StellarObjectContainer layer : this.layers)
 			layer.getType().updateLayer(layer, year);
 	}
-	
 
-	public CelestialManager copy() {
+
+	public CelestialManager copyFromClient() {
 		CelestialManager copied = new CelestialManager();
 		copied.isRemote = this.isRemote;
 		copied.layers = Lists.newArrayList(
@@ -91,7 +91,7 @@ public class CelestialManager {
 						new Function<StellarObjectContainer, StellarObjectContainer>() {
 							@Override
 							public StellarObjectContainer apply(StellarObjectContainer input) {
-								return input.copy();
+								return input.copyFromClient();
 							}
 				}));
 		

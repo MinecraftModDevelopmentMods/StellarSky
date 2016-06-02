@@ -10,18 +10,13 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 	public float mag_Limit;
 	
 	private ConfigPropertyDouble propMagLimit;
-	//private ConfigPropertyString propLockBtnPosition;
-	
-	//private EnumLockBtnPosition btnPosition = EnumLockBtnPosition.UPRIGHT;
 	
 	private boolean isDirty = false;
 	
 	public ClientSettings() {
 		this.propMagLimit = new ConfigPropertyDouble("Mag_Limit", "", 6.0);
-		//this.propLockBtnPosition = new ConfigPropertyString("Lock_Button_Position", "", btnPosition.getName());
 		
 		this.addConfigProperty(this.propMagLimit);
-		//this.addConfigProperty(this.propLockBtnPosition);
 	}
 	
 	@Override
@@ -42,12 +37,6 @@ public class ClientSettings extends SimpleHierarchicalConfig {
         propMagLimit.setLanguageKey("config.property.client.maglimit");
         propMagLimit.setMinValue(2.0);
         propMagLimit.setMaxValue(7.0);
-        
-        /*propLockBtnPosition.setValidValues(EnumLockBtnPosition.names);
-        propLockBtnPosition.setComment("Position of sky lock button.\n"
-        		+ "Now there are upright and downleft.");
-        propLockBtnPosition.setRequiresMcRestart(false);
-        propLockBtnPosition.setLanguageKey("config.property.client.lockbtnpos");*/
 	}
 
 	@Override
@@ -56,14 +45,11 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 		
 		this.mag_Limit=(float)propMagLimit.getDouble();
         
-        //this.btnPosition = EnumLockBtnPosition.getModeForName(propLockBtnPosition.getString());
-        
         this.isDirty = true;
 	}
 	
 	@Override
 	public void saveToConfig(Configuration config, String category) {
-		//propLockBtnPosition.setString(btnPosition.getName());
 		super.saveToConfig(config, category);
 	}
 	
@@ -72,8 +58,4 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 		this.isDirty = false;
 		return flag;
 	}
-	
-	/*public EnumLockBtnPosition getBtnPosition() {
-		return this.btnPosition;
-	}*/
 }

@@ -3,7 +3,6 @@ package stellarium.stellars.layer;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Set;
 
 import com.google.common.base.Predicate;
 
@@ -15,6 +14,7 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.stellars.layer.query.ILayerTempManager;
+import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public interface IStellarLayerType<Obj extends StellarObject, ClientConfig extends IConfigHandler, CommonConfig extends INBTConfig> {
 
@@ -23,10 +23,11 @@ public interface IStellarLayerType<Obj extends StellarObject, ClientConfig exten
 
 	public void updateLayer(StellarObjectContainer<Obj, ClientConfig> container, double year);
 
-	public int getLayerRendererIndex();
-
+	/**
+	 * Gets layer renderer, which should be static.
+	 * */
 	@SideOnly(Side.CLIENT)
-	public void registerRenderers();
+	public ICelestialLayerRenderer getLayerRenderer();
 
 	public String getName();
 	public int searchOrder();
