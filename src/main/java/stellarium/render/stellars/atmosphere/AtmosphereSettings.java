@@ -6,7 +6,9 @@ import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.SimpleConfigHandler;
 
-public class AtmosphereRenderSettings extends SimpleConfigHandler {
+public class AtmosphereSettings extends SimpleConfigHandler {
+	
+	public static final String KEY = "atmosphere";
 
 	/**
 	 * Size of atmosphere cache texture

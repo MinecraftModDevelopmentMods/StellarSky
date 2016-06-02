@@ -24,7 +24,7 @@ public class QueryStellarObject implements Predicate<ICelestialObject> {
 	}
 	
 	public double distance(QueryStellarObject query) {
-		// TODO reasonable distance metrix
+		// TODO reasonable distance metric
 		return (this.radius + query.radius) / Math.max(this.radius + query.radius - pos.distanceTo(query.pos), 0.0);
 	}
 

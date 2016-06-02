@@ -12,9 +12,7 @@ public class StellarPhasedRenderer implements IGenericRenderer<Void, EnumStellar
 	private StellarLayerRenderer layerRenderer = new StellarLayerRenderer();
 	
 	@Override
-	public void initialize(Void settings) {
-		// TODO Initialization?
-	}
+	public void initialize(Void settings) { }
 
 	@Override
 	public void preRender(Void settings, StellarRenderInformation info) { }

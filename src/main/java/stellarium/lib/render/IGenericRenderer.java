@@ -1,7 +1,7 @@
 package stellarium.lib.render;
 
 /**
- * @param Settings the renderer-specific settings
+ * @param Settings the renderer-specific settings, same settings will be bound
  * @param Pass the immutable object to represent render pass
  * @param Model the model to render, need not inherit IRenderModel while it is recommended
  * @param RCI mutable render context information

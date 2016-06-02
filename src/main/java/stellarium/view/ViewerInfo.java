@@ -2,6 +2,7 @@ package stellarium.view;
 
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
+import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.IOpticalFilter;
@@ -10,8 +11,14 @@ import stellarapi.api.optics.Wavelength;
 
 public class ViewerInfo {
 	
+	public final SpCoord currentDirection;
+	public final double currentRadius;
+	
+	public final Vector3 currentPosition;
+	
 	public final ICelestialCoordinate coordinate;
 	public final ISkyEffect sky;
+	
 	
 	public final double multiplyingPower;
 	

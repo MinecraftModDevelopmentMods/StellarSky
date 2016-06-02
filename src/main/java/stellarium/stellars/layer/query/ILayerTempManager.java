@@ -14,6 +14,6 @@ import stellarium.stellars.layer.StellarObject;
 public interface ILayerTempManager<Obj extends StellarObject> extends LoadingCache<QueryStellarObject, Collection<Obj>> {
 
 	public IPerWorldImage loadImage(Obj object);
-	public IObjRenderCache<Obj> loadCache(Obj object);
+	public IObjRenderCache<Obj, ?, ?> loadCache(Obj object);
 
 }

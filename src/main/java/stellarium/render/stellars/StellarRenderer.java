@@ -189,5 +189,4 @@ public class StellarRenderer implements IGenericRenderer<StellarSettingsHandler,
 
 		shader.getField(dominationScaleField).setDouble(atmosphere.dominationScale(info));
 	}
-
 }

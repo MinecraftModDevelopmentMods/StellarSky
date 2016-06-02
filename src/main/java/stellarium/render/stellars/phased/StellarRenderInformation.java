@@ -12,10 +12,10 @@ public class StellarRenderInformation {
 	public final float partialTicks;
 	public final boolean isFrameBufferEnabled;
 	public final double deepDepth;
-	
+
 	public final ViewerInfo info;
 	public final double screenSize;
-	
+
 	public StellarRenderInformation(SkyRenderInformation info) {
 		this.minecraft = info.minecraft;
 		this.world = info.world;

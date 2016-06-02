@@ -15,7 +15,7 @@ import stellarium.render.shader.IShaderObject;
 import stellarium.render.sky.SkyRenderInformation;
 import stellarium.util.math.Allocator;
 
-public class AtmosphereRenderer implements IGenericRenderer<AtmosphereRenderSettings, Void, AtmosphereModel, SkyRenderInformation> {
+public class AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, Void, AtmosphereModel, SkyRenderInformation> {
 	
 	private static final int STRIDE_IN_FLOAT = 8;
 	
@@ -36,7 +36,7 @@ public class AtmosphereRenderer implements IGenericRenderer<AtmosphereRenderSett
 	}
 	
 	@Override
-	public void initialize(AtmosphereRenderSettings settings) {
+	public void initialize(AtmosphereSettings settings) {
 		if(dominateCache != null)
 			dominateCache.deleteFramebuffer();
 
@@ -50,7 +50,7 @@ public class AtmosphereRenderer implements IGenericRenderer<AtmosphereRenderSett
 	}
 
 	@Override
-	public void preRender(AtmosphereRenderSettings settings, SkyRenderInformation info) {
+	public void preRender(AtmosphereSettings settings, SkyRenderInformation info) {
 		if(this.initialFlag || this.previousFlag != info.isFrameBufferEnabled) {
 			this.reallocList(settings, info.isFrameBufferEnabled, info.deepDepth);
 			this.previousFlag = info.isFrameBufferEnabled;
@@ -96,7 +96,7 @@ public class AtmosphereRenderer implements IGenericRenderer<AtmosphereRenderSett
 	public void endRender() { }
 
 	@Override
-	public void postRender(AtmosphereRenderSettings settings, SkyRenderInformation info) {
+	public void postRender(AtmosphereSettings settings, SkyRenderInformation info) {
 		if(info.isFrameBufferEnabled)
 			dominateCache.framebufferClear();
 	}
@@ -128,7 +128,7 @@ public class AtmosphereRenderer implements IGenericRenderer<AtmosphereRenderSett
 	}*/
 
 
-	public void reallocList(AtmosphereRenderSettings settings, boolean isFramebufferEnabled, double deepDepth) {
+	public void reallocList(AtmosphereSettings settings, boolean isFramebufferEnabled, double deepDepth) {
 		Vector3[][] displayvec = Allocator.createAndInitialize(settings.fragLong, settings.fragLat+1);
 
 		for(int longc=0; longc<settings.fragLong; longc++)

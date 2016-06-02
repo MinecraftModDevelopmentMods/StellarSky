@@ -8,7 +8,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
 import net.minecraft.server.MinecraftServer;
-import stellarium.lib.render.IRenderModel;
+import stellarapi.api.lib.config.IConfigHandler;
+import stellarium.client.ClientSettings;
+import stellarium.lib.hierarchy.Hierarchy;
+import stellarium.lib.hierarchy.HierarchyCall;
+import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.layer.StellarObject;
@@ -19,40 +23,32 @@ import stellarium.stellars.layer.query.QueryStellarObject;
 import stellarium.stellars.layer.update.IMetadataUpdater;
 import stellarium.stellars.layer.update.IUpdateTracked;
 import stellarium.stellars.layer.update.MetadataUpdateTracker;
+import stellarium.view.ViewerInfo;
 
-public class StellarLayerModel<Obj extends StellarObject> implements IRenderModel<LayerSettings, LayerUpdateInfo> {
+@Hierarchy
+public class StellarLayerModel<Obj extends StellarObject> {
 	private StellarObjectContainer container;
 	private StellarCollection<Obj> collection;
 
-	private MetadataQueryCache<Obj, IUpdateTracked<IObjRenderCache<Obj>>> cache;
-	private Map<Obj, IObjRenderCache<Obj>> cacheMap = Maps.newHashMap();
-	private MetadataUpdateTracker<Obj, IObjRenderCache<Obj>> updateTracker;
+	private MetadataQueryCache<Obj, IUpdateTracked<IObjRenderCache>> cache;
+	private Map<Obj, IObjRenderCache> cacheMap = Maps.newHashMap();
+	private MetadataUpdateTracker<Obj, IObjRenderCache> updateTracker;
 
 	private RenderCacheLoader cacheLoader;
 	private RenderCacheUpdater cacheUpdater;
 
-	private ImmutableList<IObjRenderCache<Obj>> fromCache;
+	private ImmutableList<IObjRenderCache> fromCache;
 
 	public StellarLayerModel(StellarObjectContainer container) {
 		this.container = container;
 		this.updateTracker = new MetadataUpdateTracker(this.cacheUpdater = new RenderCacheUpdater());
 	}
-	
+
 	public IStellarLayerType getLayerType() {
 		return container.getType();
 	}
-	
-	public String getConfigName() {
-		return container.getConfigName();
-	}
 
-	@Override
-	public void initialize(LayerSettings settings) {
-		for(Map.Entry<Obj, IObjRenderCache<Obj>> entry : cacheMap.entrySet())
-			entry.getValue().initialize(settings.getSettingsFor(entry.getKey()));
-	}
-
-	public void addRenderCache(Obj object, IObjRenderCache<Obj> renderCache) {
+	public void addRenderCache(Obj object, IObjRenderCache<Obj, ?, ?> renderCache) {
 		cacheMap.put(object, renderCache);
 	}
 	
@@ -60,18 +56,25 @@ public class StellarLayerModel<Obj extends StellarObject> implements IRenderMode
 		cacheMap.remove(object);
 	}
 
-	public void setupForWorld(StellarCollection<Obj> collection) {
+
+	public void onLoadCollection(StellarCollection<Obj> collection) {
 		this.collection = collection;
 
 		ILayerTempManager<Obj> manager = container.getType().getTempLoadManager();
 		this.cache = manager == null? null : new MetadataQueryCache(
 				this.cacheLoader = new RenderCacheLoader(manager), manager);
 	}
-
-	@Override
-	public void update(LayerSettings settings, LayerUpdateInfo update) {
+	
+	@HierarchyCall(id = "updateClientSettings")
+	public void updateSettings(ClientSettings settings) {
 		cacheLoader.set(settings);
-		cacheUpdater.set(settings,update);
+		for(Map.Entry<Obj, IObjRenderCache> entry : cacheMap.entrySet())
+			entry.getValue().updateSettings(settings, this.getSubSettings(settings), entry.getKey());
+	}
+
+	@HierarchyCall(id = "onStellarTick")
+	public void onStellarTick(ViewerInfo update, IStellarChecker checker) {
+		cacheUpdater.set(update, checker);
 
 		updateTracker.updateMap(this.cacheMap);
 
@@ -79,54 +82,59 @@ public class StellarLayerModel<Obj extends StellarObject> implements IRenderMode
 			this.fromCache = ImmutableList.copyOf(updateTracker.addUpdateOnIteration(
 					cache.query(new QueryStellarObject(update.currentDirection, update.currentRadius))));
 	}
-	
-	public Iterable<IObjRenderCache<Obj>> getRenderCaches() {
+
+	public Iterable<IObjRenderCache> getRenderCaches() {
 		return Iterables.concat(cacheMap.values(), this.fromCache);
 	}
 	
-	private class RenderCacheLoader implements Function<Obj, IUpdateTracked<IObjRenderCache<Obj>>> {
+	private IConfigHandler getSubSettings(ClientSettings settings) {
+		return settings.getSubConfig(container.getConfigName());
+	}
+	
+	private class RenderCacheLoader implements Function<Obj, IUpdateTracked<IObjRenderCache>> {
 		private ILayerTempManager<Obj> manager;
-		private LayerSettings settings;
+		private ClientSettings settings;
 		
 		public RenderCacheLoader(ILayerTempManager<Obj> manager) {
 			this.manager = manager;
 		}
 
-		public void set(LayerSettings settings) {
+		public void set(ClientSettings settings) {
 			this.settings = settings;
 		}
 
 		@Override
-		public IUpdateTracked<IObjRenderCache<Obj>> apply(Obj object) {
-			IObjRenderCache<Obj> cache = manager.loadCache(object);
-			cache.initialize(settings.getSettingsFor(object));
+		public IUpdateTracked<IObjRenderCache> apply(Obj object) {
+			IObjRenderCache cache = manager.loadCache(object);
+			cache.updateSettings(this.settings, getSubSettings(this.settings), object);
 			return updateTracker.createTracker(object, cache);
 		}
 	}
 
-	private class RenderCacheUpdater implements IMetadataUpdater<Obj, IObjRenderCache<Obj>> {
-		private LayerSettings settings;
-		private LayerUpdateInfo update;
+	private class RenderCacheUpdater implements IMetadataUpdater<Obj, IObjRenderCache> {
+		private ViewerInfo update;
+		private IStellarChecker checker;
 		
 		@Override
 		public long getCurrentTime() {
 			return MinecraftServer.getServer().getEntityWorld().getTotalWorldTime();
 		}
 
-		public void set(LayerSettings settings, LayerUpdateInfo update) {
-			this.settings = settings;
+		public void set(ViewerInfo update, IStellarChecker checker) {
 			this.update = update;
+			this.checker = checker;
 		}
 
 		@Override
-		public void update(Obj object, IObjRenderCache<Obj> metadata) {
-			metadata.update(settings.getSettingsFor(object), update.getInfoFor(collection.loadImageFor(object)));
+		public void update(Obj object, IObjRenderCache metadata) {
+			metadata.updateCache(object, collection.loadImageFor(object), this.update, this.checker);
 		}
 	}
 
 	public StellarLayerModel copy(StellarObjectContainer copied) {
 		StellarLayerModel model = new StellarLayerModel(copied);
 		model.cacheMap = Maps.newHashMap(this.cacheMap);
+		copied.bindRenderModel(this);
 		return model;
 	}
 }

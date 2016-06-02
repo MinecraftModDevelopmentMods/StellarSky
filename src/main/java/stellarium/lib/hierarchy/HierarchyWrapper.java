@@ -161,10 +161,7 @@ public class HierarchyWrapper {
 						HierarchyWrapper elementWrapper = HierarchyDistributor.INSTANCE.getSafely(element.elementType);
 
 						if(!elementWrapper.calls.containsKey(callId))
-							throw new IllegalStateException(
-									String.format("Impossible Hierarchy Call for id %s,"
-											+ "No such method in element class %s",
-											callId, element.elementType));
+							continue; // Pass if there is no such call available
 
 						CallDescription childDescription = elementWrapper.calls.get(entry.getKey());
 						Class<?>[] parameterTypes = parentDescription.method.getParameterTypes();

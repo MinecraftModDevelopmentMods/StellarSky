@@ -24,7 +24,6 @@ public class AtmShaderManager {
 	private static final float INNER_RADIUS = 800.0f;
 
 	private float height;
-	private double angle;
 
 	private float rainStrengthFactor, weatherFactor;
 	private float skyred, skygreen, skyblue;
@@ -67,7 +66,6 @@ public class AtmShaderManager {
 		this.skyblue = (float)(l & 255) / 255.0F;
 
 		this.height = (float)(viewer.posY - info.world.getHorizon()) / info.world.getHeight();
-		this.angle = Spmath.Degrees(Math.acos(1.0 / (this.height / INNER_RADIUS + 1.0)));
 	}
 
 	// TODO move to renderer

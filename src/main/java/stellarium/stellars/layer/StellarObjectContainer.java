@@ -68,7 +68,7 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 		loadedObjects.put(identifier, object);
 	}
 
-	public void addRenderCache(Obj object, IObjRenderCache<Obj> cache) {
+	public void addRenderCache(Obj object, IObjRenderCache<Obj,?,?> cache) {
 		if(this.layerModel != null)
 			layerModel.addRenderCache(object, cache);
 	}
@@ -125,8 +125,6 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 		StellarObjectContainer copied = new StellarObjectContainer(this.type, this.configName);
 		copied.loadedObjects = HashMultimap.create(copied.loadedObjects);
 		copied.imageTypeMap = Maps.newHashMap(this.imageTypeMap);
-		copied.layerModel = layerModel.copy(copied);
-		// TODO separate layer model
 		
 		return copied;
 	}

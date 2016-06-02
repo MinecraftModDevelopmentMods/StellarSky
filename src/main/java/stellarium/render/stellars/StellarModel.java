@@ -1,30 +1,50 @@
 package stellarium.render.stellars;
 
-import stellarium.lib.render.IRenderModel;
+import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
+import stellarium.client.ClientSettings;
+import stellarium.lib.hierarchy.EnumIDEvaluator;
+import stellarium.lib.hierarchy.Hierarchy;
+import stellarium.lib.hierarchy.HierarchyCall;
+import stellarium.lib.hierarchy.HierarchyDistributor;
+import stellarium.lib.hierarchy.HierarchyElement;
 import stellarium.render.stellars.atmosphere.AtmosphereModel;
 import stellarium.render.stellars.phased.StellarRenderModel;
+import stellarium.stellars.StellarManager;
+import stellarium.view.ViewerInfo;
+import stellarium.world.StellarDimensionManager;
 
-public class StellarModel implements IRenderModel<StellarSettingsHandler, AtmStellarUpdateInfo> {
+@Hierarchy(idEvaluator = "stellarrenderable")
+public class StellarModel {
 
+	@HierarchyElement(type = StellarRenderModel.class)
 	private StellarRenderModel layersModel;
+
+	@HierarchyElement(type = AtmosphereModel.class)
 	private AtmosphereModel atmModel;
-	
-	public StellarRenderModel getStellarModel() {
-		return this.layersModel;
+
+	public static enum EnumStellarRenderable {
+		Stellar,
+		Atmosphere,
 	}
 
-	public AtmosphereModel getAtmosphereModel() {
-		return this.atmModel;
+	static {
+		HierarchyDistributor.INSTANCE.registerEvaluator("stellarrenderable",
+				new EnumIDEvaluator(EnumStellarRenderable.class));
 	}
 
-	@Override
-	public void initialize(StellarSettingsHandler settings) {
-		layersModel.initialize(settings.getStellarSettings());
-	}
+	@HierarchyCall(id = "initializeClientSettings")
+	public void initializeSettings(ClientSettings settings) { }
 
-	@Override
-	public void update(StellarSettingsHandler settings, AtmStellarUpdateInfo update) {
-		layersModel.update(settings.getStellarSettings(), update);
-	}
+	@HierarchyCall(id = "updateClientSettings")
+	public void updateSettings(ClientSettings settings) { }
 
+	@HierarchyCall(id = "stellarLoad")
+	public void stellarLoad(StellarManager manager) { }
+
+	@HierarchyCall(id = "dimensionLoad")
+	public void dimensionLoad(StellarDimensionManager dimManager) { }
+
+	@HierarchyCall(id = "onSkyTick")
+	public void onTick(World world, ViewerInfo update) { }
 }

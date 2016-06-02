@@ -81,6 +81,10 @@ public final class StellarDimensionManager extends WorldSavedData {
 		return this.skyset;
 	}
 	
+	public List<StellarCollection> getCollections() {
+		return this.collections;
+	}
+	
 	private void loadSettingsFromConfig() {
 		this.settings = (PerDimensionSettings) ((INBTConfig) StellarSky.proxy.getDimensionSettings().getSubConfig(this.dimensionName)).copy();
 		this.markDirty();

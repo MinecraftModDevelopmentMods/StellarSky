@@ -53,11 +53,11 @@ public class StellarTessellator implements IStellarTessellator {
 	public void initialize(EnumStellarPass pass, StellarRenderInformation info) {
 		this.shader = info.getActiveShader();
 		this.viewer = info.info;
-		
+
 		this.renderDominateList = info.getAtmCallList();
 
 		this.rasterizedAngleRatio = (float) (viewer.multiplyingPower / Spmath.Radians(70.0f) * info.screenSize);
-		
+
 		this.renderingDominate = pass.isDominate;
 		this.hasTexture = pass.hasTexture;
 	}
