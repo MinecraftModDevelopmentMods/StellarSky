@@ -42,7 +42,32 @@ public class AtmosphereModel {
 		this.skyred = (float)(l >> 16 & 255) / 255.0F;
 		this.skygreen = (float)(l >> 8 & 255) / 255.0F;
 		this.skyblue = (float)(l & 255) / 255.0F;
+
+		this.height = (float)update.getHeight(world);
 		
-		this.height = (float)(update.currentPosition.getY() - world.getHorizon()) / world.getHeight();
+	}
+
+	public double getHeight() {
+		return this.height;
+	}
+
+	public double getOuterRadius() {
+		return this.outerRadius;
+	}
+
+	public double getInnerRadius() {
+		return this.innerRadius;
+	}
+
+	public float getSkyColorRed() {
+		return this.skyred;
+	}
+
+	public float getSkyColorGreen() {
+		return this.skygreen;
+	}
+
+	public float getSkyColorBlue() {
+		return this.skyblue;
 	}
 }

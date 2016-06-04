@@ -1,18 +1,20 @@
 package stellarium.stellars.milkyway;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
 import stellarium.render.stellars.access.IStellarChecker;
-import stellarium.stellars.layer.IRenderCache;
-import stellarium.stellars.layer.StellarCacheInfo;
-import stellarium.stellars.render.EnumRenderPass;
+import stellarium.render.stellars.layer.IObjRenderCache;
+import stellarium.stellars.OpticsHelper;
+import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.util.math.Allocator;
 import stellarium.view.ViewerInfo;
 
-public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySettings> {
+public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayImage, MilkywaySettings> {
 	
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
@@ -22,20 +24,29 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 		EqtoEc.setAsRotation(1.0, 0.0, 0.0, -e);
 	}
 	
-	protected Vector3[][] milkywayvec = null;
+	protected SpCoord[][] milkywaypos = null;
 	protected int latn, longn;
-	protected double[] color = new double[4];
+	protected double[] color = new double[3];
+	protected float milkywayAbsBr;
+	protected boolean rendered;
 
 	@Override
-	public void initialize(ClientSettings settings, MilkywaySettings specificSettings, Milkyway dummy) {
+	public void updateSettings(ClientSettings settings, MilkywaySettings specificSettings,  Milkyway dummy) {
 		this.latn = specificSettings.imgFracMilkyway;
 		this.longn = 2*specificSettings.imgFracMilkyway;
-		this.milkywayvec = Allocator.createAndInitialize(longn, latn+1);
+		this.milkywaypos = Allocator.createAndInitializeSp(longn, latn+1);
+		this.milkywayAbsBr = specificSettings.milkywayBrightness * OpticsHelper.getBrightnessFromMagnitude(4.0f);
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, MilkywaySettings specificSettings, Milkyway object,
-			ViewerInfo info, IStellarChecker checker) {
+	public void updateCache(Milkyway object, MilkywayImage image, ViewerInfo info, IStellarChecker checker) {
+		checker.startDescription();
+		checker.brightness(this.milkywayAbsBr, this.milkywayAbsBr, this.milkywayAbsBr);
+		if(!checker.endCheckRendered()) {
+			this.rendered = false;
+			return;
+		}
+		
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				Vector3 Buf = new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec();
@@ -47,24 +58,18 @@ public class MilkywayRenderCache implements IRenderCache<Milkyway, MilkywaySetti
 
 				info.sky.applyAtmRefraction(coord);
 
-				milkywayvec[longc][latc].set(coord.getVec());
-				milkywayvec[longc][latc].scale(EnumRenderPass.getDeepDepth());
+				milkywaypos[longc][latc].x = coord.x;
+				milkywaypos[longc][latc].y = coord.y;
 			}
 		}
 		
-		double multiplier = info.scope.getLGP() / (info.scope.getMP() * info.scope.getMP());
-		double[] result = EyeDetector.getInstance().process(multiplier, info.filter, new double[] {1.0, 1.0, 1.0, specificSettings.milkywayBrightness*0.0002});
-		System.arraycopy(result, 0, this.color, 0, color.length);
-		color[3]/=0.0002;
-		
-		/*checker.startDescription();
-		checker.brightness(red, green, blue);
-		checker.endCheckRendered();*/
+		this.rendered = true;
 	}
 
 	@Override
-	public int getRenderId() {
-		return LayerMilkyway.milkywayRenderId;
+	@SideOnly(Side.CLIENT)
+	public ICelestialObjectRenderer getRenderer() {
+		return MilkywayRenderer.INSTANCE;
 	}
 
 }

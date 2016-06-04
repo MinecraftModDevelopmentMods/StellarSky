@@ -47,6 +47,8 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	
 	private CelestialPeriod yearPeriod;
 
+	private ILayerTempManager<Obj> temp;
+	
 	public StellarCollection(StellarObjectContainer container, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
 		this.type = container.getType();
 		this.container = container;
@@ -56,9 +58,8 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 		
 		this.updateTracker = new MetadataUpdateTracker(new ImageUpdater());
 		
-		ILayerTempManager<Obj> temp = type.getTempLoadManager();
-		this.cache = temp != null?
-				new MetadataQueryCache(new ImageBuilder(temp), temp) : null;
+		this.temp = type.getTempLoadManager();
+		this.cache = this.temp != null? new MetadataQueryCache(new ImageBuilder(), temp) : null;
 	}
 	
 	@Override
@@ -67,12 +68,6 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	}
 
 	private class ImageBuilder implements Function<Obj, IUpdateTracked<IPerWorldImage>> {
-		private ILayerTempManager<Obj> temp;
-		
-		public ImageBuilder(ILayerTempManager<Obj> temp) {
-			this.temp = temp;
-		}
-
 		@Override
 		public IUpdateTracked<IPerWorldImage> apply(Obj object) {
 			IPerWorldImage image = temp.loadImage(object);
@@ -101,7 +96,6 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 
 	@Override
 	public ImmutableSet<? extends IPerWorldImage> getObjectInRange(SpCoord pos, double radius) {
-		// TODO Controlling Transformations
 		QueryStellarObject query = new QueryStellarObject(pos, radius);
 
 		Predicate<ICelestialObject> inRange = type.conditionInRange(pos, radius);
@@ -110,10 +104,10 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 
 		Iterable<IPerWorldImage> saved = Iterables.filter(imageMap.values(), inRange);
 
-		if(cache != null) {
+		if(this.cache != null) {
+			QueryStellarObject absoluteQuery = temp.transformToAbsolute(query, coordinate.getProjectionToGround(), this.sky);
 			return ImmutableSet.copyOf(
-					Iterables.concat(saved,
-							updateTracker.addUpdateOnIteration(cache.query(query))));
+					Iterables.concat(saved, updateTracker.addUpdateOnIteration(cache.query(absoluteQuery))));
 		} else return ImmutableSet.copyOf(saved);
 	}
 

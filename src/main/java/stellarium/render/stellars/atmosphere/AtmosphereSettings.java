@@ -20,6 +20,8 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	 * */
 	public int fragLong, fragLat;
 	
+	private boolean isChanged;
+	
 	@Override
 	public void setupConfig(Configuration config, String category) {
 		super.setupConfig(config, category);
@@ -28,11 +30,18 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
 		super.loadFromConfig(config, category);
+		
 	}
 	
 	@Override
 	public void saveToConfig(Configuration config, String category) {
 		super.saveToConfig(config, category);
+	}
+
+	public boolean checkChange() {
+		boolean ret = this.isChanged;
+		this.isChanged = false;
+		return ret;
 	}
 
 }

@@ -3,7 +3,6 @@ package stellarium.stellars.system;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Set;
 
 import com.google.common.base.Predicate;
 
@@ -15,7 +14,8 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;
-import stellarium.stellars.render.StellarRenderingRegistry;
+import stellarium.stellars.layer.query.ILayerTempManager;
+import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSystemClientSettings, SolarSystemSettings> {
 	
@@ -295,25 +295,6 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	}
 
 	@Override
-	public int getLayerRendererIndex() {
-		return renderId;
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerRenderers() {
-		renderId = StellarRenderingRegistry.getInstance().registerLayerRenderer(
-				new LayerSolarSystemRenderer());
-		
-		planetRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(
-				new PlanetRenderer());
-		sunRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(
-				new SunRenderer());
-		moonRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(
-				new MoonRenderer());
-	}
-
-	@Override
 	public String getName() {
 		return "Solar System";
 	}
@@ -344,11 +325,6 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	}
 
 	@Override
-	public Set<SolarObject> temporalLoadObjectsInRange(SpCoord pos, double radius) {
-		return null;
-	}
-
-	@Override
 	public Collection<SolarObject> getSuns(StellarObjectContainer container) {
 		return container.getLoadedObjects("Sun");
 	}
@@ -356,5 +332,16 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	@Override
 	public Collection<SolarObject> getMoons(StellarObjectContainer container) {
 		return container.getLoadedObjects("Moon");
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ICelestialLayerRenderer getLayerRenderer() {
+		return LayerSolarSystemRenderer.INSTANCE;
+	}
+
+	@Override
+	public ILayerTempManager<SolarObject> getTempLoadManager() {
+		return null;
 	}
 }

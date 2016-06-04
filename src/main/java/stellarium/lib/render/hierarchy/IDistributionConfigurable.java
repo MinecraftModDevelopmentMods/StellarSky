@@ -4,7 +4,12 @@ import com.google.common.base.Function;
 
 import stellarium.lib.render.IGenericRenderer;
 
-public interface IDistributionBuilder<Pass, RCI> {
+public interface IDistributionConfigurable<Pass, RCI> {
+	
+	/**
+	 * Creates and returns overall collection on the id.
+	 * */
+	public <SubID> IRenderedCollection<SubID> overallCollection();
 	
 	/**
 	 * Gives transition builder for this type of distribution builder
@@ -12,6 +17,6 @@ public interface IDistributionBuilder<Pass, RCI> {
 	public <ResRCI> ITransitionBuilder<Pass, ResRCI> transitionBuilder(
 			Function<RCI, ResRCI> transformer, IRenderState<Pass, ResRCI> initialState);
 	
-	public IPassRenderer<Pass, RCI> build(IRenderTransition transition);
+	public void endSetup(IRenderTransition transition);
 
 }

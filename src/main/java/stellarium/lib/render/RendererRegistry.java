@@ -2,12 +2,11 @@ package stellarium.lib.render;
 
 import java.util.Map;
 
-import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 
-import stellarium.lib.hierarchy.HierarchyDistributor;
-import stellarium.lib.render.hierarchy.IRenderDistribution;
-import stellarium.lib.render.hierarchy.internal.RenderDistribution;
+import stellarium.lib.render.hierarchy.IDistributionConfigurable;
+import stellarium.lib.render.internal.DistributionConfigurable;
+import stellarium.lib.render.internal.GenericRendererWrapper;
 
 /**
  * Settings: Just a rendering settings
@@ -26,17 +25,30 @@ import stellarium.lib.render.hierarchy.internal.RenderDistribution;
 public enum RendererRegistry {
 	INSTANCE;
 
-	private Map<Class<?>, IGenericRenderer> renderers = Maps.newHashMap();
+	private Map<Class<?>, GenericRendererWrapper> renderers = Maps.newHashMap();
 
-	public <T> IGenericRenderer<?,?,T,?> getRenderer(Class<T> modelClass) {
+	/**
+	 * Evaluates renderer, creating one if there wasn't the matching renderer.
+	 * Returned renderer is wrapped version of the renderer
+	 * to be consistent through modification of renderers.
+	 * */
+	public <T> IGenericRenderer<?,?,T,?> evaluateRenderer(Class<T> modelClass) {
+		return this.evaluateRendererInternal(modelClass);
+	}
+	
+	private GenericRendererWrapper evaluateRendererInternal(Class<?> modelClass) {
+		if(!renderers.containsKey(modelClass))
+			renderers.put(modelClass, new GenericRendererWrapper(modelClass));
+
 		return renderers.get(modelClass);
 	}
 
 	public void bind(Class<?> modelClass, IGenericRenderer renderer) {
-		renderers.put(modelClass, renderer);
+		GenericRendererWrapper wrapper = this.evaluateRendererInternal(modelClass);
+		wrapper.setWrappedRenderer(renderer);
 	}
 
-	public <ID> IRenderDistribution<ID> generateDistribution(Class<?> modelClass) {
-		return new RenderDistribution(modelClass, Predicates.alwaysTrue());
+	public <Pass, RCI> IDistributionConfigurable<Pass, RCI> configureRender(Class<?> modelClass) {
+		return new DistributionConfigurable(modelClass);
 	}
 }

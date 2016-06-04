@@ -2,41 +2,44 @@ package stellarium.render.stellars.atmosphere;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.lib.render.IGenericRenderer;
-import stellarium.render.shader.IShaderObject;
+import stellarium.render.shader.SwitchableShaders;
 import stellarium.render.sky.SkyRenderInformation;
+import stellarium.render.stellars.access.EnumStellarPass;
+import stellarium.render.stellars.phased.StellarRenderInformation;
 import stellarium.util.math.Allocator;
 
-public class AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, Void, AtmosphereModel, SkyRenderInformation> {
+public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, EnumAtmospherePass, AtmosphereModel, StellarRenderInformation> {
 	
+	INSTANCE;
+
 	private static final int STRIDE_IN_FLOAT = 8;
-	
+
 	private Framebuffer dominateCache = null;
 	private FloatBuffer renderBuffer;
 	private ByteBuffer indicesBuffer;
-	
+
 	private int renderToCacheList = -1;
 	private int renderedList = -1;
 	
 	private boolean previousFlag;
 	private boolean initialFlag = true;
 	
-	//private AtmShaderManager shaderManager;
-	
-	public void setupAtmShader(IShaderObject shader) {
-		shaderManager.initialize(shader);
-	}
+	private AtmShaderManager shaderManager = new AtmShaderManager();
 	
 	@Override
 	public void initialize(AtmosphereSettings settings) {
+		if(!settings.checkChange())
+			return;
+
 		if(dominateCache != null)
 			dominateCache.deleteFramebuffer();
 
@@ -50,7 +53,7 @@ public class AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, 
 	}
 
 	@Override
-	public void preRender(AtmosphereSettings settings, SkyRenderInformation info) {
+	public void preRender(AtmosphereSettings settings, StellarRenderInformation info) {
 		if(this.initialFlag || this.previousFlag != info.isFrameBufferEnabled) {
 			this.reallocList(settings, info.isFrameBufferEnabled, info.deepDepth);
 			this.previousFlag = info.isFrameBufferEnabled;
@@ -59,64 +62,73 @@ public class AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, 
 		
 		shaderManager.updateWorldInfo(info);
 	}
-	
-	public int beginCache() {
-		dominateCache.bindFramebuffer(false);
-
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		GL11.glOrtho(0.0, 2.0 * Math.PI, 0.0, Math.PI, 100.0, 300.0);
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		GL11.glLoadIdentity();
-		GL11.glTranslatef(0.0F, 0.0F, -200.0F);
-		
-		shaderManager.configureAtmosphere();
-		
-		return this.renderToCacheList;
-	}
-
-	public void endCache() {
-		dominateCache.unbindFramebuffer();
-	}
 
 	@Override
-	public void renderPass(AtmosphereModel model, Void pass, SkyRenderInformation info) {
-		if(info.isFrameBufferEnabled) {
+	public void renderPass(AtmosphereModel model, EnumAtmospherePass pass, StellarRenderInformation info) {
+		switch(pass) {
+		case PrepareDominateScatter:
+			if(info.isFrameBufferEnabled) {
+				dominateCache.bindFramebuffer(false);
+
+				GL11.glMatrixMode(GL11.GL_PROJECTION);
+				GL11.glLoadIdentity();
+				GL11.glOrtho(0.0, 2.0 * Math.PI, 0.0, Math.PI, 100.0, 300.0);
+				GL11.glMatrixMode(GL11.GL_MODELVIEW);
+				GL11.glLoadIdentity();
+				GL11.glTranslatef(0.0F, 0.0F, -200.0F);
+
+				info.setAtmCallList(this.renderToCacheList);
+			}
+			else info.setAtmCallList(this.renderedList);
+			
+			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.DominateScatter));
+			break;
+		case FinalizeDominateScatter:
+			if(info.isFrameBufferEnabled)
+				dominateCache.unbindFramebuffer();
+			info.setActiveShader(null);
+			break;
+		
+		case RenderCachedDominate:
 			dominateCache.bindFramebufferTexture();
 			GL11.glCallList(this.renderedList);
 			dominateCache.unbindFramebufferTexture();
+			break;
+			
+		case SetupOpaque:
+			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.Opaque));
+			break;
+		case SetupOpaqueScatter:
+			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.OpaqueScatter));
+			break;
+		case SetupPointScatter:
+			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.PointScatter));
+			break;
+		case SetupSurfaceScatter:
+			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.SurfaceScatter));
+			break;
+		
+		case BindDomination:
+			OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			dominateCache.bindFramebufferTexture();
+			OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+			break;
+		case UnbindDomination:
+			OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+			dominateCache.unbindFramebufferTexture();
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+			break;
+		default:
+			break;
 		}
 	}
 	
-	public int beginRender() {
-		shaderManager.configureAtmosphere();
-		return this.renderedList;
-	}
-
-	public void endRender() { }
-
 	@Override
-	public void postRender(AtmosphereSettings settings, SkyRenderInformation info) {
+	public void postRender(AtmosphereSettings settings, StellarRenderInformation info) {
 		if(info.isFrameBufferEnabled)
 			dominateCache.framebufferClear();
-	}
-	
-	
-	public void bindCacheTexture() {
-		dominateCache.bindFramebufferTexture();
-	}
-
-	public void unbindCacheTexture() {
-		dominateCache.unbindFramebufferTexture();
-	}
-
-
-	public double getSkyBrightness(SkyRenderInformation info) {
-		return info.world.getSunBrightnessFactor(info.partialTicks);
-	}
-
-	public double dominationScale(SkyRenderInformation info) {
-		return 0.8;
 	}
 	
 	/*

@@ -1,27 +1,13 @@
 package stellarium.render.stellars;
 
-import java.util.EnumMap;
-
-import org.lwjgl.opengl.GL11;
-
-import com.google.common.collect.Maps;
-
-import net.minecraft.client.renderer.OpenGlHelper;
-import stellarium.StellarSkyResources;
 import stellarium.lib.render.IGenericRenderer;
-import stellarium.render.shader.ShaderHelper;
-import stellarium.render.shader.SwitchableShaders;
 import stellarium.render.sky.SkyRenderInformation;
-import stellarium.render.stellars.access.EnumStellarPass;
-import stellarium.render.stellars.atmosphere.AtmosphereRenderer;
-import stellarium.render.stellars.phased.StellarPhasedRenderer;
-import stellarium.render.stellars.phased.StellarRenderInformation;
 
-public class StellarRenderer implements IGenericRenderer<StellarSettingsHandler, Void, StellarModel, SkyRenderInformation> {
+public class StellarRenderer {
 
 	//private AtmosphereRenderer atmosphere = new AtmosphereRenderer();
 	//private StellarPhasedRenderer phasedRenderer = new StellarPhasedRenderer();
-	private EnumMap<EnumStellarPass, SwitchableShaders> shaderMap = Maps.newEnumMap(EnumStellarPass.class);
+	/*private EnumMap<EnumStellarPass, SwitchableShaders> shaderMap = Maps.newEnumMap(EnumStellarPass.class);
 
 	private void reloadShaders() {
 		SwitchableShaders scatterFuzzy = new SwitchableShaders(
@@ -67,7 +53,6 @@ public class StellarRenderer implements IGenericRenderer<StellarSettingsHandler,
 		SwitchableShaders object;
 		StellarRenderInformation subInfo = new StellarRenderInformation(info);
 
-		// TODO Move shaders into atmosphere renderer
 		if(info.isFrameBufferEnabled) {
         	pass = EnumStellarPass.DominateScatter;
 
@@ -188,5 +173,5 @@ public class StellarRenderer implements IGenericRenderer<StellarSettingsHandler,
 			shader.getField(defaultTexture).setInteger(0);
 
 		shader.getField(dominationScaleField).setDouble(atmosphere.dominationScale(info));
-	}
+	}*/
 }

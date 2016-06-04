@@ -10,9 +10,11 @@ import net.minecraft.util.ResourceLocation;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.optics.EnumRGBA;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
+import stellarium.stellars.OpticsHelper;
 import stellarium.view.ViewerInfo;
 
 public class StellarTessellator implements IStellarTessellator {
@@ -27,6 +29,8 @@ public class StellarTessellator implements IStellarTessellator {
 	private float uCoord, vCoord;
 	private float red, green, blue;
 	private float normalX, normalY, normalZ;
+	
+	private float renderedRed, renderedGreen, renderedBlue;
 	
 	
 	private boolean renderingDominate, hasTexture;
@@ -45,19 +49,23 @@ public class StellarTessellator implements IStellarTessellator {
 	private int rawBufferCount;
 	private short vertexCount;
 	
+	private static final double LOWER_LIMIT_FACTOR = 1.0e-4;
+	
 	StellarTessellator() {
 		this.buffer = GLAllocation.createDirectFloatBuffer(maxBufferSize);
 		this.rawBuffer = new float[maxBufferSize];
 	}
 	
-	public void initialize(EnumStellarPass pass, StellarRenderInformation info) {
+	public void initialize(StellarRenderInformation info) {
 		this.shader = info.getActiveShader();
 		this.viewer = info.info;
 
 		this.renderDominateList = info.getAtmCallList();
-
+		
 		this.rasterizedAngleRatio = (float) (viewer.multiplyingPower / Spmath.Radians(70.0f) * info.screenSize);
-
+	}
+	
+	public void initializePass(EnumStellarPass pass) {
 		this.renderingDominate = pass.isDominate;
 		this.hasTexture = pass.hasTexture;
 	}
@@ -109,13 +117,15 @@ public class StellarTessellator implements IStellarTessellator {
 
 	@Override
 	public void writeVertex() {
+		this.processColor();
+		
 		this.rawBuffer[this.rawBufferCount] = this.longitude;
 		this.rawBuffer[this.rawBufferCount + 1] = this.latitude;
 		this.rawBuffer[this.rawBufferCount + 2] = this.depth;
-		this.rawBuffer[this.rawBufferCount + 3] = this.red;
-		this.rawBuffer[this.rawBufferCount + 4] = this.green;
-		this.rawBuffer[this.rawBufferCount + 5] = this.blue;
-		
+		this.rawBuffer[this.rawBufferCount + 3] = this.renderedRed;
+		this.rawBuffer[this.rawBufferCount + 4] = this.renderedGreen;
+		this.rawBuffer[this.rawBufferCount + 5] = this.renderedBlue;
+
 		if(this.hasTexture) {
 			this.rawBuffer[this.rawBufferCount + 6] = this.uCoord;
 			this.rawBuffer[this.rawBufferCount + 7] = this.vCoord;
@@ -125,10 +135,48 @@ public class StellarTessellator implements IStellarTessellator {
 			this.rawBuffer[this.rawBufferCount + 9] = this.normalY;
 			this.rawBuffer[this.rawBufferCount + 10] = this.normalZ;
 		}
-		
+
 		this.rawBufferCount += this.currentContextSize;
 		this.vertexCount ++;
 		this.hasNormal = false;
+	}
+	
+	private static final float DEFAULT_SIZE = Spmath.Radians(0.3f);
+
+	private void processColor() {
+		double multiplier = Spmath.sqr(DEFAULT_SIZE);
+		
+		this.renderedRed = this.red;
+		this.renderedGreen = this.green;
+		this.renderedBlue = this.blue;
+
+		if(!this.hasTexture) {
+			this.renderedRed *= (viewer.colorMultiplier.getX() * multiplier
+					/ Spmath.sqr(viewer.multiplyingPower * (viewer.resolutionColor.getX() + this.radius)));
+			this.renderedGreen *= (viewer.colorMultiplier.getY() * multiplier
+					/ Spmath.sqr(viewer.multiplyingPower * (viewer.resolutionColor.getY() + this.radius)));
+			this.renderedBlue *= (viewer.colorMultiplier.getZ() * multiplier
+					/ Spmath.sqr(viewer.multiplyingPower * (viewer.resolutionColor.getZ() + this.radius)));
+		} else {
+			this.renderedRed *= (viewer.colorMultiplier.getX() / Spmath.sqr(viewer.multiplyingPower));
+			this.renderedGreen *= (viewer.colorMultiplier.getY() / Spmath.sqr(viewer.multiplyingPower));
+			this.renderedBlue *= (viewer.colorMultiplier.getZ() / Spmath.sqr(viewer.multiplyingPower));
+		}
+		
+		if(this.renderingDominate)
+			return;
+
+		double brightest = Math.max(this.renderedRed, Math.max(this.renderedGreen, this.blue));
+
+		if(brightest < LOWER_LIMIT_FACTOR) {
+			this.renderedRed = (float) ((this.renderedRed * 2 * brightest + 1.0 - 2 * brightest) * brightest);
+			this.renderedGreen = (float) ((this.renderedGreen * 2 * brightest + 1.0 - 2 * brightest) * brightest);
+			this.renderedBlue = (float) ((this.renderedBlue * 2 * brightest + 1.0 - 2 * brightest) * brightest);
+		}
+
+		this.renderedRed = OpticsHelper.getCompressed(this.renderedRed);
+		this.renderedGreen = OpticsHelper.getCompressed(this.renderedGreen);
+		this.renderedBlue = OpticsHelper.getCompressed(this.renderedBlue);
 	}
 
 	@Override

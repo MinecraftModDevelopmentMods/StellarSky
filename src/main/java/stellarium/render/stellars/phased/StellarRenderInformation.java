@@ -11,7 +11,7 @@ public class StellarRenderInformation {
 	public final WorldClient world;
 	public final float partialTicks;
 	public final boolean isFrameBufferEnabled;
-	public final double deepDepth;
+	public final float deepDepth;
 
 	public final ViewerInfo info;
 	public final double screenSize;

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.world.World;
 import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.EnumCallOrder;
 import stellarium.lib.hierarchy.Hierarchy;
@@ -42,7 +43,9 @@ public class StellarRenderModel {
 	}
 
 	@HierarchyCall(id = "updateClientSettings")
-	public void updateSettings(ClientSettings settings) { }
+	public void updateSettings(ClientSettings settings) {
+		checker.setMagLimit(settings.mag_Limit);
+	}
 	
 	@HierarchyCall(id = "stellarLoad", callOrder = EnumCallOrder.Custom)
 	public void onStellarLoad(StellarManager manager) {
@@ -61,10 +64,9 @@ public class StellarRenderModel {
 			layerModels.get(i).onLoadCollection(dimManager.getCollections().get(i));
 	}
 
-	@HierarchyCall(id = "onSkyTick", callOrder = EnumCallOrder.Custom,
-			acceptParams = @HierarchyCall.Accept(ViewerInfo.class))
-	public void onTick(ViewerInfo update) {
-		checker.setView(update);
+	@HierarchyCall(id = "onSkyTick")
+	public void onTick(World world, ViewerInfo update) {
+		checker.setView(world, update);
 		HierarchyDistributor.INSTANCE.call(this, "onStellarTick", update, this.checker);
 	}
 	

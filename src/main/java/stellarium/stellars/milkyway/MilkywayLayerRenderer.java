@@ -1,11 +1,11 @@
-package stellarium.stellars.system;
+package stellarium.stellars.milkyway;
 
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
-public enum LayerSolarSystemRenderer implements ICelestialLayerRenderer {
-	
+public enum MilkywayLayerRenderer implements ICelestialLayerRenderer {
+
 	INSTANCE;
 
 	@Override
@@ -16,7 +16,7 @@ public enum LayerSolarSystemRenderer implements ICelestialLayerRenderer {
 
 	@Override
 	public boolean acceptPass(EnumStellarPass pass) {
-		return pass.isDominate || pass.isOpaque;
+		return pass == EnumStellarPass.SurfaceScatter;
 	}
 
 }

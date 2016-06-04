@@ -21,6 +21,7 @@ public @interface HierarchyElement {
 
 	/**
 	 * ID for the hierarchy element if there are multiple hierarchy elements.
+	 * If empty(Default case), it will be replaced by the field number in HEX format.
 	 * */
 	String id() default "";
 

@@ -1,5 +1,6 @@
 package stellarium.view;
 
+import net.minecraft.world.World;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
@@ -48,6 +49,10 @@ public class ViewerInfo {
 				Spmath.Radians(Math.max(scope.getResolution(Wavelength.B), sky.getSeeing(Wavelength.B)))
 				);
 		this.resolutionGeneral = Spmath.Radians(Math.max(scope.getResolution(Wavelength.visible), sky.getSeeing(Wavelength.visible)));
+	}
+
+	public float getHeight(World world) {
+		return (float) ((currentPosition.getY() - world.getHorizon()) / world.getHeight());
 	}
 
 }

@@ -11,11 +11,18 @@ public interface IStellarTessellator {
 	public void begin(boolean hasNormal);
 	
 	public void pos(SpCoord pos, float depth);
+
+	/**
+	 * Appends color <b>without</b> scope & filter.
+	 * */
 	public void color(float red, float green, float blue);
+	
 	/** For textured objects */
 	public void texture(float u, float v);
+	
 	/** For textured objects */
 	public void normal(Vector3 normal);
+	
 	public void writeVertex();
 	
 	/**
@@ -25,5 +32,11 @@ public interface IStellarTessellator {
 	public void radius(float angularRadius);
 	
 	public void end();
+
+
+	/**
+	 * Internal method
+	 * */
+	public void initializePass(EnumStellarPass pass);
 
 }

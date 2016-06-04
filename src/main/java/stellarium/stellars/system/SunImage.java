@@ -13,7 +13,7 @@ public class SunImage implements IPerWorldImage<Sun> {
 	
 	private double mag;
 	private Vector3 pos;
-	private SpCoord appCoord = new SpCoord();
+	protected SpCoord appCoord = new SpCoord();
 	private CelestialPeriod yearPeriod;
 	private CelestialPeriod horPeriod;
 	

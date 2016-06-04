@@ -71,7 +71,8 @@ public class HierarchyWrapper {
 		int index = 0;
 		for(FieldElementDescription description : descriptions) {
 			Object id = evaluator != null?
-					evaluator.evaluateID(index++, description.defaultId) : description.defaultId;
+					evaluator.evaluateID(index++, description.defaultId) :
+						description.defaultId.isEmpty()? Integer.toHexString(index) : description.defaultId;
 			descriptionMap.put(id, description);
 		}
 
@@ -399,15 +400,15 @@ public class HierarchyWrapper {
 			subWrapper.call(ite.next(), callId, subParams);
 	}
 	
-	Set elementIds() {
-		return descriptionMap.keySet();
+	Map fields() {
+		return this.descriptionMap;
 	}
 
 	Iterator elementIteOnField(Object instance, Object fieldId) {
 		return descriptionMap.get(fieldId).structure.iteratorFor(instance);
 	}
 
-	private class FieldElementDescription {
+	private class FieldElementDescription implements IFieldElementDescription {
 		final Field field;
 		final Class<?> elementType;
 		final String defaultId;
@@ -434,6 +435,16 @@ public class HierarchyWrapper {
 				throw new IllegalStateException(
 						String.format("Access Denied on field %s, Unexpected", this.field), cause);
 			}
+		}
+
+		@Override
+		public Class<?> getElementType() {
+			return this.elementType;
+		}
+
+		@Override
+		public IHierarchyStructure getStructure() {
+			return this.structure;
 		}
 	}
 	

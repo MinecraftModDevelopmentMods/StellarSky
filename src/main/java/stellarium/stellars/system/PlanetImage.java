@@ -13,7 +13,7 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 
 	private double mag;
 	private Vector3 pos;
-	private SpCoord appCoord = new SpCoord();
+	protected SpCoord appCoord = new SpCoord();
 	private double phase;
 	private CelestialPeriod siderealPeriod, synodicPeriod;
 	private CelestialPeriod horPeriod;

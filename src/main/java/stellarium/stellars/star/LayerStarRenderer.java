@@ -1,29 +1,28 @@
 package stellarium.stellars.star;
 
-import org.lwjgl.opengl.GL11;
-
 import stellarium.StellarSkyResources;
+import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
-import stellarium.stellars.render.EnumRenderPass;
 import stellarium.stellars.render.ICelestialLayerRenderer;
-import stellarium.stellars.render.StellarRenderInfo;
 
-public class LayerStarRenderer implements ICelestialLayerRenderer {
+public enum LayerStarRenderer implements ICelestialLayerRenderer {
+	
+	INSTANCE;
 
 	@Override
-	public void preRender(IStellarTessellator tessellator, boolean forOpaque, boolean hasTexture) {
+	public void preRender(IStellarTessellator tessellator, EnumStellarPass pass) {
 		tessellator.bindTexture(StellarSkyResources.resourceStar.getLocation());
 		tessellator.begin(false);
 	}
 
 	@Override
-	public void postRender(IStellarTessellator tessellator, boolean forOpaque, boolean hasTexture) {
+	public void postRender(IStellarTessellator tessellator, EnumStellarPass pass) {
 		tessellator.end();
 	}
 
 	@Override
-	public boolean acceptPass(boolean forOpaque, boolean hasTexture) {
-		return !forOpaque && !hasTexture;
+	public boolean acceptPass(EnumStellarPass pass) {
+		return pass == EnumStellarPass.PointScatter;
 	}
 
 }

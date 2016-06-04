@@ -3,7 +3,6 @@ package stellarium.stellars.milkyway;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Map;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -16,14 +15,12 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
-import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;
-import stellarium.stellars.render.StellarRenderingRegistry;
+import stellarium.stellars.layer.query.ILayerTempManager;
+import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler, INBTConfig> {
-	
-	public static int milkywayRenderId;
 
 	@Override
 	public void initializeClient(IConfigHandler config, StellarObjectContainer container) throws IOException { }
@@ -38,17 +35,6 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 	
 	@Override
 	public void updateLayer(StellarObjectContainer<Milkyway, IConfigHandler> container, double year) { }
-
-	@Override
-	public int getLayerRendererIndex() {
-		return -1;
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerRenderers() {
-		milkywayRenderId = StellarRenderingRegistry.getInstance().registerObjectRenderer(new MilkywayRenderer());
-	}
 
 	@Override
 	public String getName() {
@@ -81,17 +67,23 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 	}
 
 	@Override
-	public Map<Milkyway, IPerWorldImage> temporalLoadObjectsInRange(SpCoord pos, double radius) {
-		return null;
-	}
-
-	@Override
 	public Collection<Milkyway> getSuns(StellarObjectContainer container) {
 		return null;
 	}
 
 	@Override
 	public Collection<Milkyway> getMoons(StellarObjectContainer container) {
+		return null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ICelestialLayerRenderer getLayerRenderer() {
+		return MilkywayLayerRenderer.INSTANCE;
+	}
+
+	@Override
+	public ILayerTempManager<Milkyway> getTempLoadManager() {
 		return null;
 	}
 }

@@ -73,8 +73,8 @@ public enum HierarchyDistributor {
 	 * Gets set of id for the hierarchy type.
 	 * Only for external use, like metadata.
 	 * */
-	public Set ids(Class<?> hierarchyType) {
-		return this.getSafely(hierarchyType).elementIds();
+	public <T> Map<T, IFieldElementDescription> fields(Class<?> hierarchyType) {
+		return this.getSafely(hierarchyType).fields();
 	}
 	
 	/**

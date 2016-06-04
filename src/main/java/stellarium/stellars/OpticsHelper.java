@@ -6,28 +6,34 @@ import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarium.StellarSky;
 import stellarium.util.math.CachedGaussianRandom;
 
-public class Optics extends SimpleConfigHandler {
+public class OpticsHelper extends SimpleConfigHandler {
+	// TODO Change Optics
 	
 	public static final double ext_coeff_B_V=0.1;
 	public static final double ext_coeff_V=0.2;
 	
 	// MagOffset needs to be changed to whatever the maximum Magnitude of Venus is 
-	private static final float magOffset = 5.50f;
-	private static final float magCompressionBase = 6.50f;
-		
+	//private static final float magOffset = 5.50f;
+	private static final float magnitudeBase = 2.512f;
+	//private static final float magCompressionBase = 6.50f;
+
+	private static final double sunMagnitude = -26.74;
+	private static final double upperMagLimit = 1.46;
+	
 	private static CachedGaussianRandom randomTurbulance = new CachedGaussianRandom(100, 3L);
 	
-	public static final Optics instance = new Optics();
+	public static final OpticsHelper instance = new OpticsHelper();
 	
 	private ConfigPropertyDouble propBrightnessContrast;
 	private ConfigPropertyDouble propTurb;
 	
 	private double brightnessContrast = 2.0;
-	private float magCompression;
-	private float magContrast;
+	//private float magCompression;
+	//private float magContrast;
+	private float brightnessPower;
 	private double turbulance;
 	
-	public Optics() {
+	public OpticsHelper() {
 		this.propBrightnessContrast = new ConfigPropertyDouble("Brightness_Contrast", "", 2.0);
 		this.propTurb = new ConfigPropertyDouble("Twinkling(Turbulance)", "", 1.0);
 		
@@ -65,16 +71,17 @@ public class Optics extends SimpleConfigHandler {
 	public void loadFromConfig(Configuration config, String category) {
 		this.brightnessContrast = propBrightnessContrast.getDouble();
 		this.turbulance = propTurb.getDouble() * 4.0;
-		this.magCompression = magCompressionBase / StellarSky.proxy.getClientSettings().mag_Limit;
-		this.magContrast = (float) Math.pow(2.512, (1.0/(brightnessContrast * magCompression)));
+		//float magCompression = magCompressionBase / StellarSky.proxy.getClientSettings().mag_Limit;
+		this.brightnessPower = 1.0f / ((float)this.brightnessContrast);
+		//this.magContrast = (float) Math.pow(2.512, (1.0/(brightnessContrast * magCompression)));
 	}
 	
 	@Override
 	public void saveToConfig(Configuration config, String category) { }
 	
-	public static float getAlphaFromMagnitudeSparkling(float Mag, float bglight){
+	/*public static float getAlphaFromMagnitudeSparkling(float Mag, float bglight){
 		double turb = randomTurbulance.nextGaussian() * (instance.turbulance / (Mag + 4.46f));
-		return getAlpha(((Mag + 1.46f) * instance.magCompression) + turb, bglight);
+		return getAlpha(((Mag + upperMagLimit) * instance.magCompression) + turb, bglight);
 	}
 
 	public static float getAlphaFromMagnitude(double Mag, float bglight) {
@@ -82,13 +89,31 @@ public class Optics extends SimpleConfigHandler {
 	}
 	
 	public static float getAlphaForGalaxy(double Mag, float bglight) {
-		return getAlpha(((Mag + 1.46f) * instance.magCompression), bglight);
-	}
-	
-	public static final double constantBgDiv = Math.log(2.1333334f + 1.0f);
-	
+		return getAlpha(((Mag + upperMagLimit) * instance.magCompression), bglight);
+	}*/
+
+	/*public static final double constantBgDiv = Math.log(2.1333334f + 1.0f);
+
 	private static float getAlpha(double magCompressed, float bglight) {
-		return (float) ((Math.pow(instance.magContrast,	- magCompressed - magOffset * ((Math.pow(Math.log(bglight + 1.0f)/constantBgDiv, magOffset)))))	- (bglight / 2.1333334f));
+		return (float) ((Math.pow(instance.magContrast,
+				- magCompressed - magOffset *
+				((Math.pow(Math.log(bglight + 1.0f)/constantBgDiv, magOffset)))))
+				- (bglight / 2.1333334f));
+	}*/
+
+	public static float turbulanceMultiplier() {
+		return (float) (instance.turbulance * instance.randomTurbulance.nextGaussian() * 0.1 + 0.9);
+	}
+
+	public static float getBrightnessFromMagnitude(double magnitude) {
+		return (float) Math.pow(magnitudeBase, upperMagLimit - magnitude);
 	}
 	
+	public static float getDominationFromMagnitude(double magnitude) {
+		return (float) Math.pow(magnitudeBase, sunMagnitude - magnitude);
+	}
+
+	public static float getCompressed(float brightness) {
+		return (float) Math.pow(brightness, instance.brightnessPower);
+	}
 }

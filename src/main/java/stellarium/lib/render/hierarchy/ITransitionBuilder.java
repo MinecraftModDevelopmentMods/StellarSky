@@ -11,7 +11,7 @@ public interface ITransitionBuilder<Pass, ResRCI> {
 	 * */
 	public <ChildPass> ITransitionBuilder<Pass, ResRCI> appendState(
 			IRenderState<Pass, ResRCI> state, ChildPass pass,
-			IRenderDistribution subDist);
+			IRenderedCollection subDist);
 
 	/**
 	 * Builds this transition builder.

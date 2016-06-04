@@ -6,7 +6,8 @@ import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
-public class StellarLayerRenderer implements IGenericRenderer<Void, EnumStellarPass, StellarLayerModel<StellarObject>, LayerRenderInformation> {
+public enum StellarLayerRenderer implements IGenericRenderer<Void, EnumStellarPass, StellarLayerModel<StellarObject>, LayerRenderInformation> {
+	INSTANCE;
 
 	@Override
 	public void initialize(Void settings) { }
