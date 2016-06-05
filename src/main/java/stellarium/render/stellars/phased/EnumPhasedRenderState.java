@@ -45,6 +45,7 @@ public enum EnumPhasedRenderState implements IRenderState<EnumStellarPass, Layer
 		
 		configurable.endSetup(transition);
 		
+		//Sub Render Constructs
 		RendererRegistry.INSTANCE.bind(StellarLayerModel.class, StellarLayerRenderer.INSTANCE);
 	}
 	

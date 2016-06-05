@@ -1,4 +1,4 @@
-package stellarium.lib.hierarchy.test;
+package stellarium.lib.test;
 
 import stellarium.lib.hierarchy.Hierarchy;
 import stellarium.lib.hierarchy.HierarchyCall;

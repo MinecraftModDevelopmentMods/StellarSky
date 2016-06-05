@@ -68,7 +68,7 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 		loadedObjects.put(identifier, object);
 	}
 
-	public void addRenderCache(Obj object, IObjRenderCache<Obj,?,?> cache) {
+	public void addRenderCache(Obj object, IObjRenderCache<? extends Obj,?,?> cache) {
 		if(this.layerModel != null)
 			layerModel.addRenderCache(object, cache);
 	}

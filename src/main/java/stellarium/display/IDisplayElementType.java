@@ -11,7 +11,7 @@ public interface IDisplayElementType<Cfg extends PerDisplaySettings, Cache exten
 	public IDisplayRenderer<Cache> getRenderer();
 	
 	/**
-	 * Configuration Name
+	 * Configuration Name, can be used as identifier
 	 * */
 	public String getName();
 }

@@ -13,14 +13,14 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	/**
 	 * Size of atmosphere cache texture
 	 * */
-	public int cacheLong, cacheLat;
+	public int cacheLong = 2048, cacheLat = 1024;
 	
 	/**
 	 * Number of atmosphere fragments
 	 * */
-	public int fragLong, fragLat;
+	public int fragLong = 128, fragLat = 64;
 	
-	private boolean isChanged;
+	private boolean isChanged = true;
 	
 	@Override
 	public void setupConfig(Configuration config, String category) {

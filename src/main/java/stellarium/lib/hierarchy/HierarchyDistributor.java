@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import stellarium.lib.hierarchy.structure.IHierarchyStructure;
@@ -54,6 +55,7 @@ public enum HierarchyDistributor {
 	 * @param parameters the parameters for this call
 	 * */
 	public void call(Object instance, String callId, Object... parameters) {
+		Preconditions.checkNotNull(instance);
 		this.getSafely(instance.getClass()).call(instance, callId, parameters);
 	}
 	
@@ -65,6 +67,7 @@ public enum HierarchyDistributor {
 	 * @param subParams the parameters for sub-elements on the field
 	 * */
 	public void callFor(Object instance, Object fieldId, String callId, Object... subParams) {
+		Preconditions.checkNotNull(instance);
 		this.getSafely(instance.getClass()).callFor(instance, fieldId, callId, subParams);
 	}
 	
@@ -82,6 +85,7 @@ public enum HierarchyDistributor {
 	 * Only for external use, like metadata.
 	 * */
 	public Iterator iteratorFor(Object instance, Object fieldId) {
+		Preconditions.checkNotNull(instance);
 		return this.getSafely(instance.getClass()).elementIteOnField(instance, fieldId);
 	}
 

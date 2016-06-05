@@ -14,7 +14,6 @@ import stellarium.client.ClientSettings;
 import stellarium.common.DimensionSettings;
 import stellarium.common.ServerSettings;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.world.landscape.LandscapeCache;
 
 public class CommonProxy implements IProxy {
 
@@ -64,7 +63,7 @@ public class CommonProxy implements IProxy {
 	}
 
 	@Override
-	public void setupSkyRenderer(WorldProvider provider, CelestialManager celManager, String skyType, LandscapeCache cache) { }
+	public void setupSkyRenderer(WorldProvider provider, String skyType) { }
 
 	@Override
 	public HierarchicalConfig getDimensionSettings() {

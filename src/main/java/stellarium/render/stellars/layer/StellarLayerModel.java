@@ -80,7 +80,7 @@ public class StellarLayerModel<Obj extends StellarObject> {
 
 		if(this.cache != null)
 			this.fromCache = ImmutableList.copyOf(updateTracker.addUpdateOnIteration(
-					cache.query(new QueryStellarObject(update.currentDirection, update.currentRadius))));
+					cache.query(new QueryStellarObject(update.currentDirection, update.currentFOVRadius))));
 	}
 
 	public Iterable<IObjRenderCache> getRenderCaches() {

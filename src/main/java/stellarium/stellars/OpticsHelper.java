@@ -7,8 +7,6 @@ import stellarium.StellarSky;
 import stellarium.util.math.CachedGaussianRandom;
 
 public class OpticsHelper extends SimpleConfigHandler {
-	// TODO Change Optics
-	
 	public static final double ext_coeff_B_V=0.1;
 	public static final double ext_coeff_V=0.2;
 	
@@ -101,8 +99,8 @@ public class OpticsHelper extends SimpleConfigHandler {
 				- (bglight / 2.1333334f));
 	}*/
 
-	public static float turbulanceMultiplier() {
-		return (float) (instance.turbulance * instance.randomTurbulance.nextGaussian() * 0.1 + 0.9);
+	public static float turbulance() {
+		return (float) (instance.turbulance * instance.randomTurbulance.nextGaussian() * 0.25);
 	}
 
 	public static float getBrightnessFromMagnitude(double magnitude) {

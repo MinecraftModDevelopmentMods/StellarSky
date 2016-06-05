@@ -6,18 +6,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import stellarium.display.DisplayRenderInfo;
 import stellarium.display.IDisplayRenderer;
-import stellarium.stellars.render.EnumRenderPass;
 
 @SideOnly(Side.CLIENT)
 public class EcGridRenderer implements IDisplayRenderer<EcGridCache> {
 
 	@Override
 	public void render(DisplayRenderInfo info, EcGridCache cache) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
 		if(!cache.enabled || info.isPostCelesitals)
 			return;
 
+		GL11.glPushMatrix();
+		GL11.glScaled(info.deepDepth, info.deepDepth, info.deepDepth);
+		
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 
@@ -62,6 +62,7 @@ public class EcGridRenderer implements IDisplayRenderer<EcGridCache> {
 			GL11.glShadeModel(GL11.GL_FLAT);
 		}
 
+		GL11.glPopMatrix();
 		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}

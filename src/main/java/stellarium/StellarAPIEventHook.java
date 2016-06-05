@@ -6,7 +6,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraftforge.client.IRenderHandler;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.StellarAPIReference;
@@ -18,7 +17,6 @@ import stellarapi.api.event.world.ClientWorldEvent;
 import stellarapi.api.event.world.ServerWorldEvent;
 import stellarapi.api.helper.WorldProviderReplaceHelper;
 import stellarium.api.StellarSkyAPI;
-import stellarium.render.SkyCelestialRenderer;
 import stellarium.stellars.DefaultCelestialHelper;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
@@ -138,9 +136,9 @@ public class StellarAPIEventHook {
 		}
 		
 		if(world.isRemote)
-			StellarSky.proxy.setupSkyRenderer(world.provider, manager.getCelestialManager(), dimManager.getSettings().getSkyRendererType(), dimManager.getLandscapeCache());
+			StellarSky.proxy.setupSkyRenderer(world.provider, dimManager.getSettings().getSkyRendererType());
 	}
-	
+
 	
 	private static boolean mark = false;
 	

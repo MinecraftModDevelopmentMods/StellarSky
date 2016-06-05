@@ -5,13 +5,17 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
 
+import stellarium.display.DisplayModel;
+import stellarium.display.DisplayRenderer;
 import stellarium.lib.render.RendererRegistry;
 import stellarium.lib.render.hierarchy.IDistributionConfigurable;
-import stellarium.lib.render.hierarchy.IRenderedCollection;
 import stellarium.lib.render.hierarchy.IRenderState;
 import stellarium.lib.render.hierarchy.IRenderTransition;
+import stellarium.lib.render.hierarchy.IRenderedCollection;
 import stellarium.render.sky.SkyModel.EnumSkyRenderable;
 import stellarium.render.stellars.EnumStellarRenderState;
+import stellarium.world.landscape.LandscapeModel;
+import stellarium.world.landscape.LandscapeRenderer;
 
 public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformation> {
 	Initial() {
@@ -73,7 +77,6 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 		IRenderedCollection stellar = collection.getFiltered(Predicates.equalTo(EnumSkyRenderable.Stellar));
 		IRenderedCollection display = collection.getFiltered(Predicates.equalTo(EnumSkyRenderable.Display));
 		IRenderedCollection landscape = collection.getFiltered(Predicates.equalTo(EnumSkyRenderable.Landscape));
-		// TODO Settings for display and landscape
 
 		IRenderTransition transition = configurable.transitionBuilder(Functions.<SkyRenderInformation>identity(), Initial)
 				.appendState(DisplayRenderBack, false, display)
@@ -86,5 +89,7 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 		
 		//Sub Render Constructs
 		EnumStellarRenderState.constructRender();
+		RendererRegistry.INSTANCE.bind(DisplayModel.class, new DisplayRenderer());
+		RendererRegistry.INSTANCE.bind(LandscapeModel.class, new LandscapeRenderer());
 	}
 }

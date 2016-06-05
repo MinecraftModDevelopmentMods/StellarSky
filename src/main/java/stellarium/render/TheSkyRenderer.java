@@ -1,12 +1,6 @@
 package stellarium.render;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL32;
-import org.lwjgl.opengl.GL33;
-import org.lwjgl.opengl.GL40;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -14,22 +8,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import stellarapi.api.StellarAPIReference;
 import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.celestials.IEffectorType;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
-import stellarium.StellarSkyReferences;
 import stellarium.StellarSkyResources;
 import stellarium.api.ICelestialRenderer;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.shader.IUniformField;
 import stellarium.render.shader.ShaderHelper;
-import stellarium.stellars.render.EnumRenderPass;
 import stellarium.util.math.Allocator;
 
+@Deprecated
 public class TheSkyRenderer {
     private int skyList;
     private int skyListUnderPlayer;
@@ -75,7 +67,7 @@ public class TheSkyRenderer {
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				displayvec[longc][latc].set(new SpCoord(longc*360.0/longn, calculateLat(latc)).getVec());
-				displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth());
+//				displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth());
 			}
 		}
         

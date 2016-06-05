@@ -3,11 +3,11 @@ package stellarium.lib.hierarchy;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -21,6 +21,8 @@ import com.google.common.collect.Maps;
 
 import stellarium.lib.hierarchy.structure.IHierarchyStructure;
 import stellarium.lib.hierarchy.structure.SingletonStructure;
+import stellarium.render.sky.SkyModel;
+import stellarium.render.stellars.StellarModel;
 
 public class HierarchyWrapper {
 
@@ -37,9 +39,13 @@ public class HierarchyWrapper {
 	public static final String WRAPPER_REF_FIELD = "wrapper";
 	
 	public static Type getWrapperType(Class<?> loaded) {
+		return getWrapperType(loaded.getName());
+	}
+	
+	public static Type getWrapperType(String classFullName) {
 		return Type.getType(String.format("%s%s;",
-				Type.getDescriptor(HierarchyWrapper.class).replace("HierarchyWrapper;", ""),
-				loaded.getSimpleName().replace('.', '/')));
+				Type.getDescriptor(HierarchyWrapper.class).replace("HierarchyWrapper;", "Wrapped_"),
+				classFullName.substring(classFullName.lastIndexOf('.')+1)));
 	}
 	
 	/** For internal usage */
@@ -86,12 +92,27 @@ public class HierarchyWrapper {
 		}
 	}
 	
-	public void initialize() throws NoSuchMethodException, NoSuchFieldException {
-		ClassWriter cw = new ClassWriter(0);
+	public static void workOn(Object wrapped, Object wrapper) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		System.out.println(wrapped);
+		System.out.println(wrapper);
+		
+		Field field = wrapped.getClass().getField(WRAPPER_REF_FIELD);
+		field.set(wrapped, wrapper);
+		System.out.println(field.get(wrapped));
+	}
+	
+	private boolean initialized = false;
+	
+	public void initialize() throws ReflectiveOperationException {
+		if(this.initialized)
+			return;
+		
+		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 		Type wrapperType = getWrapperType(this.hierarchyType);
 		Type originType = Type.getType(this.hierarchyType);
 
-		//cw.visit(Opcodes.V1_6, access, name, signature, superName, interfaces);
+		cw.visit(Opcodes.V1_6, Opcodes.ACC_PUBLIC, wrapperType.getInternalName(),
+				null, Type.getInternalName(Object.class), null);
 		
 		cw.visitSource(".dynamic", null);
 		{
@@ -105,7 +126,7 @@ public class HierarchyWrapper {
 		GeneratorAdapter adapter = new GeneratorAdapter(
 				cw.visitMethod(Opcodes.ACC_PUBLIC, "<clinit>",
 						Type.getMethodDescriptor(Type.VOID_TYPE), null, null),
-				Opcodes.ACC_PUBLIC, "<clinit>", null);
+				Opcodes.ACC_PUBLIC, "<clinit>", Type.getMethodDescriptor(Type.VOID_TYPE));
 		
 		adapter.visitCode();
 		{
@@ -114,6 +135,8 @@ public class HierarchyWrapper {
 					org.objectweb.asm.commons.Method.getMethod(
 							HierarchyWrapper.class.getMethod("findHelper", Class.class)));
 			adapter.putStatic(wrapperType, HELPER_FIELD, Type.getType(HierarchyWrapper.class));
+			adapter.returnValue();
+			adapter.visitMaxs(1, 0);
 		}
 		adapter.visitEnd();
 
@@ -122,18 +145,30 @@ public class HierarchyWrapper {
 		adapter = new GeneratorAdapter(
 				cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>",
 						Type.getMethodDescriptor(Type.VOID_TYPE, originType), null, null),
-				Opcodes.ACC_PUBLIC, "<init>", null);
+				Opcodes.ACC_PUBLIC, "<init>", Type.getMethodDescriptor(Type.VOID_TYPE, originType));
 
 		adapter.visitCode();
 		{
 			adapter.loadThis();
 			adapter.invokeConstructor(Type.getType(Object.class),
 					org.objectweb.asm.commons.Method.getMethod(Object.class.getConstructor()));
+			
+			adapter.loadThis();
 			adapter.loadArg(0);
 			adapter.putField(wrapperType, MAIN_FIELD, originType);
-			adapter.swap();
-			adapter.putField(originType, WRAPPER_REF_FIELD, wrapperType);
+			
+			adapter.loadArg(0);
+			adapter.loadThis();
+			adapter.invokeStatic(Type.getType(HierarchyWrapper.class),
+					org.objectweb.asm.commons.Method.getMethod(HierarchyWrapper.class.getMethod("workOn", Object.class, Object.class)));
+
+			//adapter.loadArg(0);
+			//adapter.loadThis();
+			//adapter.putField(originType, WRAPPER_REF_FIELD, wrapperType);
+			//adapter.returnValue();
+			
 			adapter.returnValue();
+			
 			adapter.visitMaxs(2, 2);
 		}
 		adapter.visitEnd();
@@ -147,12 +182,12 @@ public class HierarchyWrapper {
 			adapter = new GeneratorAdapter(Opcodes.ACC_PUBLIC,
 					org.objectweb.asm.commons.Method.getMethod(parentDescription.method),
 					null, null, cw);
-			
+
 			adapter.visitCode();
 			{
 				if(parentDescription.callOrder.isParentFirst) {
 					adapter.loadThis();
-					adapter.getField(wrapperType, MAIN_FIELD, Type.getType(this.hierarchyType));
+					adapter.getField(wrapperType, MAIN_FIELD, originType);
 					this.generateCall(adapter, this.hierarchyType, parentDescription.method, null);
 				}
 
@@ -162,8 +197,10 @@ public class HierarchyWrapper {
 						HierarchyWrapper elementWrapper = HierarchyDistributor.INSTANCE.getSafely(element.elementType);
 
 						if(!elementWrapper.calls.containsKey(callId))
-							continue; // Pass if there is no such call available
-
+							break; // Pass if there is no such call available
+						elementWrapper.initialize();
+						Type subWrapperType = Type.getType(elementWrapper.wrapperClass);
+						
 						CallDescription childDescription = elementWrapper.calls.get(entry.getKey());
 						Class<?>[] parameterTypes = parentDescription.method.getParameterTypes();
 						Class<?>[] childParamTypes = childDescription.method.getParameterTypes();
@@ -175,60 +212,56 @@ public class HierarchyWrapper {
 						adapter.getStatic(wrapperType, HELPER_FIELD, Type.getType(HierarchyWrapper.class));
 						adapter.loadThis();
 						adapter.getField(wrapperType, MAIN_FIELD, originType);
-						adapter.swap();
-						// HELPER_FIELD / MAIN_FIELD / THIS
-						adapter.pop();
 						// HELPER_FIELD / MAIN_FIELD
 						adapter.getField(originType, element.field.getName(), Type.getType(element.field.getType()));
-						adapter.swap();
-						adapter.pop();
 						//  HELPER_FIELD / SUB_ELEMENT_CONTAINER
 						adapter.visitLdcInsn(fieldCount);
 						// HELPER_FIELD / SUB_ELEMENT_CONTAINER / CONTAINER_INDEX
 
 						adapter.invokeVirtual(Type.getType(HierarchyWrapper.class),
 								org.objectweb.asm.commons.Method.getMethod(
-										HierarchyWrapper.class.getMethod("iteFor", Object.class, Integer.class)));
+										HierarchyWrapper.class.getMethod("iteFor", Object.class, Integer.TYPE)));
 
-						// HELPER_FIELD / SUB_ELEMENT_CONTAINER / CONTAINER_INDEX / Iterator<Sub>
-						adapter.swap();
-						adapter.pop();
-						adapter.swap();
-						adapter.pop();
-						adapter.swap();
-						adapter.pop();
-						// Iterator<Sub>
-
+						// Iterator<Sub>, Should be stored
+						int iteratorLocal = adapter.newLocal(Type.getType(Iterator.class));
+						adapter.storeLocal(iteratorLocal);
+						
 						Label iteration = adapter.newLabel();
 						Label iterationEnd = adapter.newLabel();
 
 						adapter.mark(iteration);
+						//adapter.visitFrame(Opcodes.F_NEW, 0, null, 0, null);
 						{
+							//Empty
+							adapter.loadLocal(iteratorLocal);
+							//Iterator<sub>
+
 							//HasNext check
 							adapter.invokeInterface(Type.getType(Iterator.class),
 									org.objectweb.asm.commons.Method.getMethod(Iterator.class.getMethod("hasNext")));
 							adapter.ifZCmp(Opcodes.IFEQ, iterationEnd);
-							adapter.pop();
+
+							//Empty
+							adapter.loadLocal(iteratorLocal);
+							//Iterator<Sub>
 
 							//Gets next
 							adapter.invokeInterface(Type.getType(Iterator.class),
 									org.objectweb.asm.commons.Method.getMethod(Iterator.class.getMethod("next")));
-							// Iterator<Sub> / Sub
-							adapter.getField(Type.getType(element.elementType), WRAPPER_REF_FIELD, getWrapperType(element.elementType));
-							adapter.swap();
-							adapter.pop();
-							// Iterator<Sub> / SUB_WRAPPER
 							
-							this.generateCall(adapter, element.elementType, childDescription.method, args);
+							// Sub (Object)
+							adapter.checkCast(Type.getType(element.elementType));
+							// Sub (Proper Type)
+							adapter.getField(Type.getType(element.elementType), WRAPPER_REF_FIELD, subWrapperType);
+							// SUB_WRAPPER
+							
+							this.generateCall(adapter, elementWrapper.wrapperClass, childDescription.wrappedMethod, args);
 
-							// Pops next
-							adapter.pop();
+							//Empty
 							adapter.goTo(iteration);
 						}
 						adapter.mark(iterationEnd);
-
-						//Pops Iterator
-						adapter.pop();
+						//adapter.visitFrame(Opcodes.F_NEW, 0, null, 0, null);
 						
 						fieldCount++;
 					}
@@ -251,8 +284,8 @@ public class HierarchyWrapper {
 				}
 
 				if(parentDescription.callOrder.subCall) {
-					maxStack = Math.max(4, maxStack + 2);
-					maxLocals += 6;
+					maxStack = Math.max(3, maxStack);
+					maxLocals++;
 				}
 
 				adapter.visitMaxs(maxStack, maxLocals);
@@ -260,18 +293,48 @@ public class HierarchyWrapper {
 			}
 			adapter.visitEnd();
 		}
+
+		byte[] byteClass = cw.toByteArray();
 		
-		//Class<?> wrapperClass;
+		Method method = ClassLoader.class.getDeclaredMethod("defineClass", new Class[] { String.class, byte[].class, int.class, int.class });
+
+		// protected method invocaton
+		method.setAccessible(true);
+		try {
+			Object[] args = new Object[] { wrapperType.getClassName(), byteClass, new Integer(0), new Integer(byteClass.length)};
+			this.wrapperClass = (Class) method.invoke(this.getClass().getClassLoader(), args);
+		} finally {
+			method.setAccessible(false);
+		}
+
+		this.wrapperField = hierarchyType.getDeclaredField(WRAPPER_REF_FIELD);
 		
-		this.wrapperField = hierarchyType.getClass().getDeclaredField(WRAPPER_REF_FIELD);
+		System.out.println(wrapperClass.getClassLoader());
+		System.out.println(this.getClass().getClassLoader());
+		
+		assert wrapperClass.getClassLoader() == this.getClass().getClassLoader();
 		
 		for(CallDescription callDesc : calls.values()) {
 			Method rawCall = callDesc.method;
 			callDesc.wrappedMethod = wrapperClass.getMethod(rawCall.getName(), rawCall.getParameterTypes());
 		}
+		
+		this.initialized = true;
 	}
 	
-	// Generates call with instance from the top of the stack
+	private static final WrapperClassLoader loader = new WrapperClassLoader();
+
+	private static class WrapperClassLoader extends ClassLoader {
+		WrapperClassLoader() {
+			super(WrapperClassLoader.class.getClassLoader());
+		}
+		
+		Class<?> loadClass(String name, byte[] byteArray) {
+			return super.defineClass(name, byteArray, 0, byteArray.length);
+		}
+	}
+	
+	// Generates call with instance from the top of the stack, end with the top entry of the stack removed.
 	private void generateCall(GeneratorAdapter adapter, Class<?> invokedType, Method invokedMethod, int[] args) {
 		// Loads Arguments
 		for(int i = 0; i < invokedMethod.getParameterCount(); i++)
@@ -285,23 +348,18 @@ public class HierarchyWrapper {
 			adapter.invokeVirtual(Type.getType(invokedType),
 					org.objectweb.asm.commons.Method.getMethod(invokedMethod));
 		}
-		
-		if(args != null) {
-			// Pops Arguments
-			for(int i = 0; i < invokedMethod.getParameterCount(); i++) {
-				int size = Type.getType(invokedMethod.getParameterTypes()[i]).getSize();
-				if(size == 1)
-					adapter.pop();
-				else adapter.pop2();
-			}
-		}
 	}
-	
+
 	private int[] getArgumentPos(CallDescription childDescription, Class<?>[] parameterTypes, Class<?>[] childParamTypes, Method parent) {
 		int[] list = new int[childParamTypes.length];
 		BitSet set = new BitSet(parameterTypes.length);
 
 		for(int i = 0; i < childParamTypes.length; i++) {
+			if(childDescription.accepts.length != childParamTypes.length) {
+				list[i] = i;
+				continue;
+			}
+			
 			HierarchyCall.Accept accept = childDescription.accepts[i];
 			
 			set.clear();
@@ -360,11 +418,14 @@ public class HierarchyWrapper {
 			}
 		}
 
+		Object wrapper = null;
+		
 		try {
-			Object wrapper = wrapperField.get(instance);
-			if(wrapper == null)
-				wrapperField.set(
-						instance, wrapperClass.getConstructor(this.hierarchyType).newInstance(instance));
+			wrapper = wrapperField.get(instance);
+			if(wrapper == null) {
+				wrapper = wrapperClass.getConstructor(this.hierarchyType).newInstance(instance);
+				wrapperField.set(instance, wrapper);
+			}
 		} catch (IllegalAccessException cause) {
 			throw new IllegalStateException(
 					String.format("Access Denied on field %s, Unexpected", this.wrapperField), cause);
@@ -375,7 +436,7 @@ public class HierarchyWrapper {
 
 		CallDescription callDesc = calls.get(callId);
 		try {
-			callDesc.wrappedMethod.invoke(instance, parameters);
+			callDesc.wrappedMethod.invoke(wrapper, parameters);
 		} catch (IllegalAccessException cause) {
 			throw new IllegalStateException(
 					String.format("Access Denied on method %s, Unexpected", callDesc.wrappedMethod), cause);

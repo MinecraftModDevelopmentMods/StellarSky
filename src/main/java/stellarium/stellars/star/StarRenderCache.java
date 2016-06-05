@@ -53,7 +53,8 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 
 		StarColor starColor = StarColor.getColor(object.B_V);
 
-		double alpha = OpticsHelper.getBrightnessFromMagnitude(object.mag + airmass * info.sky.getExtinctionRate(Wavelength.visible));
+		double alpha = OpticsHelper.getBrightnessFromMagnitude(
+				OpticsHelper.turbulance() + object.mag + airmass * info.sky.getExtinctionRate(Wavelength.visible));
 		this.red = (float) (alpha * starColor.r / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.sky.getExtinctionRate(Wavelength.red)));
 		this.green = (float) (alpha * starColor.g / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.sky.getExtinctionRate(Wavelength.V)));
 		this.blue = (float) (alpha * starColor.b / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.sky.getExtinctionRate(Wavelength.B)));

@@ -6,7 +6,6 @@ import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
 import stellarium.display.DisplayCacheInfo;
 import stellarium.display.IDisplayCache;
-import stellarium.stellars.render.EnumRenderPass;
 import stellarium.util.math.Allocator;
 
 public class EqGridCache implements IDisplayCache<EqGridSettings> {
@@ -51,7 +50,7 @@ public class EqGridCache implements IDisplayCache<EqGridSettings> {
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, EqGridSettings specificSettings, DisplayCacheInfo info) {
+	public void updateCache(DisplayCacheInfo info) {
 		if(!this.enabled)
 			return;
 
@@ -69,7 +68,6 @@ public class EqGridCache implements IDisplayCache<EqGridSettings> {
 				info.applyAtmRefraction(coord);
 
 				equator[longc].set(coord.getVec());
-				equator[longc].scale(EnumRenderPass.getDeepDepth() + 1.0);
 			}
 
 			for(int latc=0; latc<=latn; latc++){
@@ -84,7 +82,6 @@ public class EqGridCache implements IDisplayCache<EqGridSettings> {
 					info.applyAtmRefraction(coord);
 
 					displayvec[longc][latc].set(coord.getVec());
-					displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth() + 2.0);
 
 					colorvec[longc][latc].set(this.baseColor);
 

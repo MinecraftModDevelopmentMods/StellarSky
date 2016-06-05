@@ -4,7 +4,9 @@ import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
-public class HierarchyManagerMod implements IFMLLoadingPlugin {
+@IFMLLoadingPlugin.Name("HierarchyLoader")
+@IFMLLoadingPlugin.TransformerExclusions("stellarium.lib.hierarchy")
+public class HierarchyLoadingPlugin implements IFMLLoadingPlugin {
 	@Override
 	public String[] getASMTransformerClass() {
 		return new String[] {"stellarium.lib.hierarchy.internal.HierarchyClassTransformer"};

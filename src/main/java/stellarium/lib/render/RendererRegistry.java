@@ -32,7 +32,7 @@ public enum RendererRegistry {
 	 * Returned renderer is wrapped version of the renderer
 	 * to be consistent through modification of renderers.
 	 * */
-	public <T> IGenericRenderer<?,?,T,?> evaluateRenderer(Class<T> modelClass) {
+	public <A,B,T,C> IGenericRenderer<A,B,T,C> evaluateRenderer(Class<T> modelClass) {
 		return this.evaluateRendererInternal(modelClass);
 	}
 	

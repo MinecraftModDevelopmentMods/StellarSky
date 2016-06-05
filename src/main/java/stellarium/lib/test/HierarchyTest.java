@@ -1,4 +1,4 @@
-package stellarium.lib.hierarchy.test;
+package stellarium.lib.test;
 
 import java.util.List;
 

@@ -1,5 +1,6 @@
 package stellarium.view;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
@@ -13,7 +14,7 @@ import stellarapi.api.optics.Wavelength;
 public class ViewerInfo {
 	
 	public final SpCoord currentDirection;
-	public final double currentRadius;
+	public final double currentFOVRadius;
 	
 	public final Vector3 currentPosition;
 	
@@ -29,11 +30,22 @@ public class ViewerInfo {
 	public final Vector3 resolutionColor = new Vector3();
 	public final double resolutionGeneral;
 	
-	public ViewerInfo(ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
+	public ViewerInfo(ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter, Entity viewer) {
 		this.coordinate = coordinate;
 		this.sky = sky;
 		
+		
+		this.currentPosition = new Vector3(viewer.posX, viewer.posY, viewer.posZ);
+		
+		float rotationYaw = viewer.getRotationYawHead();
+		float rotationPitch = viewer.rotationPitch;
+
+		this.currentDirection = new SpCoord(180 - rotationYaw, rotationPitch);
+		
+		
 		this.multiplyingPower = scope.getMP();
+		this.currentFOVRadius = Spmath.Radians(70.0) / this.multiplyingPower;
+		
 		
 		this.brightnessMultiplier = scope.getLGP() * filter.getFilterEfficiency(Wavelength.visible);
 		colorMultiplier.set(

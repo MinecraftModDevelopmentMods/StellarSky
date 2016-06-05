@@ -1,34 +1,18 @@
 package stellarium.render;
 
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.util.Random;
-
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.IRenderHandler;
-import stellarapi.api.StellarAPIReference;
-import stellarapi.api.celestials.ICelestialObject;
-import stellarapi.api.celestials.IEffectorType;
-import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.Wavelength;
 import stellarium.api.ICelestialRenderer;
-import stellarium.render.shader.ShaderHelper;
-import stellarium.stellars.render.EnumRenderPass;
-import stellarium.util.math.Allocator;
 
 public class SkyRendererSurface extends IRenderHandler {
 	

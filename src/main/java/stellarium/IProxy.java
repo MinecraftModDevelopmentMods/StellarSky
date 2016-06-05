@@ -13,7 +13,6 @@ import stellarapi.api.lib.config.HierarchicalConfig;
 import stellarium.client.ClientSettings;
 import stellarium.common.ServerSettings;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.world.landscape.LandscapeCache;
 
 public interface IProxy {
 	
@@ -35,7 +34,7 @@ public interface IProxy {
     
 	public CelestialManager getClientCelestialManager();
 	
-	public void setupSkyRenderer(WorldProvider provider, CelestialManager celestialManager, String skyType, LandscapeCache cache);
+	public void setupSkyRenderer(WorldProvider provider, String skyType);
 
 	public void updateTick();
 
