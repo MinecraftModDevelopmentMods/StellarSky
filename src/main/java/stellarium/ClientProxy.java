@@ -67,6 +67,8 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		OverlayRegistry.registerOverlay("clock", new OverlayClockType(), this.guiConfig);
 		OverlayRegistry.registerOverlay("clientconfig", new OverlayClientSettingsType(), this.guiConfig);
 		
+		skyModel.initializeSettings(this.clientSettings);
+		
 		EnumSkyRenderState.constructRender();
 	}
 
@@ -80,9 +82,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public void postInit(FMLPostInitializationEvent event) {
 		super.postInit(event);
 		
-		guiConfig.syncFromFile();
-		HierarchyDistributor.INSTANCE.call(this.skyModel, "initializeClientSettings", this.clientSettings);
-		
+		guiConfig.syncFromFile();		
     	celestialManager.initializeClient(this.clientSettings);
 	}
 
@@ -108,18 +108,15 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	public void setupStellarLoad(StellarManager manager) {
-		HierarchyDistributor.INSTANCE.call(
-				this.skyModel, "stellarLoad", manager);
+		skyModel.stellarLoad(manager);
 	}
 
 	public void setupDimensionLoad(StellarDimensionManager dimManager) {
-		HierarchyDistributor.INSTANCE.call(
-				this.skyModel, "dimensionLoad", dimManager);
+		skyModel.dimensionLoad(dimManager);
 	}
 	
 	public void onSettingsChanged(ClientSettings settings) {
-		HierarchyDistributor.INSTANCE.call(
-				this.skyModel, "updateClientSettings", settings);
+		skyModel.updateSettings(this.clientSettings);
 		RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class).initialize(settings);
 	}
 	
@@ -150,7 +147,6 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		IViewScope scope = StellarAPIReference.getScope(viewer);
 		IOpticalFilter filter = StellarAPIReference.getFilter(viewer);
 
-		HierarchyDistributor.INSTANCE.call(
-				this.skyModel, "onSkyTick", this.getDefWorld(), new ViewerInfo(coordinate, sky, scope, filter, viewer));
+		skyModel.onTick(this.getDefWorld(), new ViewerInfo(coordinate, sky, scope, filter, viewer));
 	}
 }

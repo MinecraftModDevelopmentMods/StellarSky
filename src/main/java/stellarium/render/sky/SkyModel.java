@@ -1,12 +1,10 @@
 package stellarium.render.sky;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import stellarium.client.ClientSettings;
 import stellarium.display.DisplayModel;
 import stellarium.lib.hierarchy.EnumIDEvaluator;
 import stellarium.lib.hierarchy.Hierarchy;
-import stellarium.lib.hierarchy.HierarchyCall;
 import stellarium.lib.hierarchy.HierarchyDistributor;
 import stellarium.lib.hierarchy.HierarchyElement;
 import stellarium.render.stellars.StellarModel;
@@ -45,18 +43,31 @@ public class SkyModel {
 		this.landscapeModel = new LandscapeModel();
 	}
 
-	@HierarchyCall(id = "initializeClientSettings")
-	public void initializeSettings(ClientSettings settings) { }
+	public void initializeSettings(ClientSettings settings) {
+		model.initializeSettings(settings);
+		displayModel.initializeSettings(settings);
+		landscapeModel.initializeSettings(settings);
+	}
 
-	@HierarchyCall(id = "updateClientSettings")
-	public void updateSettings(ClientSettings settings) { }
+	public void updateSettings(ClientSettings settings) {
+		model.updateSettings(settings);
+		displayModel.updateSettings(settings);
+		landscapeModel.updateSettings(settings);
+	}
 	
-	@HierarchyCall(id = "stellarLoad")
-	public void stellarLoad(StellarManager manager) { }
+	public void stellarLoad(StellarManager manager) {
+		model.stellarLoad(manager);
+		displayModel.stellarLoad(manager);
+	}
 	
-	@HierarchyCall(id = "dimensionLoad")
-	public void dimensionLoad(StellarDimensionManager dimManager) { }
+	public void dimensionLoad(StellarDimensionManager dimManager) {
+		model.dimensionLoad(dimManager);
+		displayModel.dimensionLoad(dimManager);
+		landscapeModel.dimensionLoad(dimManager);
+	}
 	
-	@HierarchyCall(id = "onSkyTick")
-	public void onTick(World world, ViewerInfo update) { }
+	public void onTick(World world, ViewerInfo update) {
+		model.onTick(world, update);
+		displayModel.onTick(world, update);
+	}
 }

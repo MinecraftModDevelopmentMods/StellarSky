@@ -4,7 +4,6 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.Hierarchy;
-import stellarium.lib.hierarchy.HierarchyCall;
 import stellarium.util.math.Allocator;
 import stellarium.world.StellarDimensionManager;
 
@@ -16,12 +15,10 @@ public class LandscapeModel {
 	
 	private int renderId;
 	
-	@HierarchyCall(id = "initializeClientSettings")
 	public void initializeSettings(ClientSettings settings) {
 		settings.putSubConfig(LandscapeClientSettings.KEY, new LandscapeClientSettings());
 	}
 
-	@HierarchyCall(id = "updateClientSettings")
 	public void updateSettings(ClientSettings settings) {
 		if(!this.rendered)
 			return;
@@ -32,7 +29,6 @@ public class LandscapeModel {
 		this.displayvec = Allocator.createAndInitialize(longn, latn+1);
 	}
 	
-	@HierarchyCall(id = "dimensionLoad")
 	public void dimensionLoad(StellarDimensionManager dimManager) {
 		this.rendered = dimManager.getSettings().isLandscapeEnabled();
 	}

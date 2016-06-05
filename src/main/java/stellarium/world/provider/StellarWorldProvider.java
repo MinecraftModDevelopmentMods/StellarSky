@@ -603,8 +603,7 @@ public class StellarWorldProvider extends WorldProvider {
     @Override
     @SideOnly(Side.CLIENT)
     public void setSkyRenderer(IRenderHandler skyRenderer) {
-    	for(Field field : skyRenderer.getClass().getDeclaredFields())
-    		if(ICelestialRenderer.class.isAssignableFrom(field.getType()))
-    			super.setSkyRenderer(skyRenderer);
+    	// TODO Sky Renderer Restriction
+    	super.setSkyRenderer(skyRenderer);
     }
 }

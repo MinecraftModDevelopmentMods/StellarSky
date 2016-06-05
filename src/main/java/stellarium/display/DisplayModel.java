@@ -8,7 +8,6 @@ import net.minecraft.world.World;
 import stellarapi.api.lib.config.SimpleHierarchicalConfig;
 import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.Hierarchy;
-import stellarium.lib.hierarchy.HierarchyCall;
 import stellarium.stellars.StellarManager;
 import stellarium.view.ViewerInfo;
 import stellarium.world.StellarDimensionManager;
@@ -31,24 +30,19 @@ public class DisplayModel implements IDisplayInjectable {
 		return displaySettings;
 	}
 
-	@HierarchyCall(id = "initializeClientSettings")
 	public void initializeSettings(ClientSettings settings) {
 		DisplayRegistry.getInstance().setupDisplay(settings, this);
 	}
 
-	@HierarchyCall(id = "updateClientSettings")
 	public void updateSettings(ClientSettings settings) {
 		for(Delegate delegate : this.displayList)
 			delegate.cache.initialize(settings, delegate.settings);
 	}
 
-	@HierarchyCall(id = "stellarLoad")
 	public void stellarLoad(StellarManager manager) { }
 
-	@HierarchyCall(id = "dimensionLoad")
 	public void dimensionLoad(StellarDimensionManager dimManager) { }
 
-	@HierarchyCall(id = "onSkyTick")
 	public void onTick(World world, ViewerInfo update) {
 		DisplayCacheInfo info = new DisplayCacheInfo(update.coordinate, update.sky);
 		for(Delegate delegate : this.displayList)

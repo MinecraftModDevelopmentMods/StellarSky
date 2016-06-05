@@ -11,7 +11,6 @@ import net.minecraft.server.MinecraftServer;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.Hierarchy;
-import stellarium.lib.hierarchy.HierarchyCall;
 import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarCollection;
@@ -65,14 +64,12 @@ public class StellarLayerModel<Obj extends StellarObject> {
 				this.cacheLoader = new RenderCacheLoader(manager), manager);
 	}
 	
-	@HierarchyCall(id = "updateClientSettings")
 	public void updateSettings(ClientSettings settings) {
 		cacheLoader.set(settings);
 		for(Map.Entry<Obj, IObjRenderCache> entry : cacheMap.entrySet())
 			entry.getValue().updateSettings(settings, this.getSubSettings(settings), entry.getKey());
 	}
 
-	@HierarchyCall(id = "onStellarTick")
 	public void onStellarTick(ViewerInfo update, IStellarChecker checker) {
 		cacheUpdater.set(update, checker);
 

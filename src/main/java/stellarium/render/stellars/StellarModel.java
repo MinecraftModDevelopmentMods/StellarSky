@@ -4,7 +4,6 @@ import net.minecraft.world.World;
 import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.EnumIDEvaluator;
 import stellarium.lib.hierarchy.Hierarchy;
-import stellarium.lib.hierarchy.HierarchyCall;
 import stellarium.lib.hierarchy.HierarchyDistributor;
 import stellarium.lib.hierarchy.HierarchyElement;
 import stellarium.render.stellars.atmosphere.AtmosphereModel;
@@ -38,18 +37,25 @@ public class StellarModel {
 		this.atmModel = new AtmosphereModel();
 	}
 
-	@HierarchyCall(id = "initializeClientSettings")
-	public void initializeSettings(ClientSettings settings) { }
+	public void initializeSettings(ClientSettings settings) {
+		atmModel.initializeSettings(settings);
+	}
 
-	@HierarchyCall(id = "updateClientSettings")
-	public void updateSettings(ClientSettings settings) { }
+	public void updateSettings(ClientSettings settings) {
+		layersModel.updateSettings(settings);
+	}
 
-	@HierarchyCall(id = "stellarLoad")
-	public void stellarLoad(StellarManager manager) { }
+	public void stellarLoad(StellarManager manager) {
+		layersModel.onStellarLoad(manager);
+	}
 
-	@HierarchyCall(id = "dimensionLoad")
-	public void dimensionLoad(StellarDimensionManager dimManager) { }
+	public void dimensionLoad(StellarDimensionManager dimManager) {
+		layersModel.onDimensionLoad(dimManager);
+		atmModel.dimensionLoad(dimManager);
+	}
 
-	@HierarchyCall(id = "onSkyTick")
-	public void onTick(World world, ViewerInfo update) { }
+	public void onTick(World world, ViewerInfo update) {
+		layersModel.onTick(world, update);
+		atmModel.onTick(world, update);
+	}
 }

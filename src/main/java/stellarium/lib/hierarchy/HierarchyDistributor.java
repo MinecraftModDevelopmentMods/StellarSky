@@ -46,30 +46,6 @@ public enum HierarchyDistributor {
 	public void registerEvaluator(String evaluatorId, IIDEvaluator evaluator) {
 		evaluatorMap.put(evaluatorId, evaluator);
 	}
-
-
-	/**
-	 * Triggers Hierarchical Call.
-	 * @param instance the hierarchy instance
-	 * @param callId specifies the call
-	 * @param parameters the parameters for this call
-	 * */
-	public void call(Object instance, String callId, Object... parameters) {
-		Preconditions.checkNotNull(instance);
-		this.getSafely(instance.getClass()).call(instance, callId, parameters);
-	}
-	
-	/**
-	 * Triggers Call for elements on certain field.
-	 * @param instance the parent hierarchy instance
-	 * @param fieldId specifies the field
-	 * @param callId specifies the call
-	 * @param subParams the parameters for sub-elements on the field
-	 * */
-	public void callFor(Object instance, Object fieldId, String callId, Object... subParams) {
-		Preconditions.checkNotNull(instance);
-		this.getSafely(instance.getClass()).callFor(instance, fieldId, callId, subParams);
-	}
 	
 	
 	/**
