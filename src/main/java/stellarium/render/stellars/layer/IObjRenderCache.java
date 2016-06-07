@@ -14,7 +14,12 @@ public interface IObjRenderCache<Obj extends StellarObject, Image extends IPerWo
 
 	public void updateSettings(ClientSettings settings, Config specificSettings, Obj object);
 
-	public void updateCache(Obj object, Image perWorldImage, ViewerInfo info, IStellarChecker checker);
+	/**
+	 * Updates this render cache.
+	 * @param object the object
+	 * @param image the image for this object, can be null
+	 * */
+	public void updateCache(Obj object, Image image, ViewerInfo info, IStellarChecker checker);
 
 	@SideOnly(Side.CLIENT)
 	ICelestialObjectRenderer getRenderer();

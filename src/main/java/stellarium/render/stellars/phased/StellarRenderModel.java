@@ -11,6 +11,7 @@ import stellarium.lib.hierarchy.HierarchyElement;
 import stellarium.render.stellars.layer.StellarLayerModel;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
+import stellarium.stellars.layer.StellarLayerRegistry;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.view.ViewerInfo;
 import stellarium.world.StellarDimensionManager;
@@ -30,9 +31,12 @@ public class StellarRenderModel {
 	public StellarRenderModel(CelestialManager celManager) {
 		for(StellarObjectContainer layer : celManager.getLayers()) {
 			StellarLayerModel layerModel = new StellarLayerModel(layer);
-			layer.bindRenderModel(layerModel);
 			baseModels.add(layerModel);
 		}
+	}
+	
+	public void initializeSettings(ClientSettings settings) {
+		StellarLayerRegistry.getInstance().composeSettings(settings);
 	}
 
 	public void updateSettings(ClientSettings settings) {

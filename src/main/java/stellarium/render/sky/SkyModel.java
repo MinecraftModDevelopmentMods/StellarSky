@@ -55,11 +55,19 @@ public class SkyModel {
 		landscapeModel.updateSettings(settings);
 	}
 	
+	/**
+	 * Called directly after the celestial manager is evaluated,
+	 * to initialize the state of render models.
+	 * */
 	public void stellarLoad(StellarManager manager) {
 		model.stellarLoad(manager);
 		displayModel.stellarLoad(manager);
 	}
 	
+	/**
+	 * Called directly after all the collections are collected,
+	 * to initialize the state of render models.
+	 * */
 	public void dimensionLoad(StellarDimensionManager dimManager) {
 		model.dimensionLoad(dimManager);
 		displayModel.dimensionLoad(dimManager);
@@ -69,5 +77,6 @@ public class SkyModel {
 	public void onTick(World world, ViewerInfo update) {
 		model.onTick(world, update);
 		displayModel.onTick(world, update);
+		landscapeModel.updateCache();
 	}
 }

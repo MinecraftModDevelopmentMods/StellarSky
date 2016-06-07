@@ -183,7 +183,7 @@ public class StellarTessellator implements IStellarTessellator {
 	public void end() {
 		if(this.hasTexture) {
 			;
-		} else {
+		} else if(!this.renderingDominate) {
 			float size = (2.5f * (float)viewer.resolutionGeneral + this.radius);
 			GL11.glPointSize(this.rasterizedAngleRatio * size);
 			if(this.radius > 0.0f)
@@ -201,7 +201,7 @@ public class StellarTessellator implements IStellarTessellator {
 		else {
 			for(int index = 0; index < this.rawBufferCount; index += this.currentContextSize) {
 				shader.getField("lightDir").setVector3(
-						new SpCoord(this.rawBuffer[index], this.rawBuffer[index+1]).getVec());
+						new SpCoord(Spmath.Degrees(this.rawBuffer[index]), Spmath.Degrees(this.rawBuffer[index+1])).getVec());
 				shader.getField("lightColor").setDouble3(
 						this.rawBuffer[index+3], this.rawBuffer[index+4], this.rawBuffer[index+5]);
 				GL11.glCallList(this.renderDominateList);
@@ -210,6 +210,10 @@ public class StellarTessellator implements IStellarTessellator {
 	}
 	
 	private void tessellation() {
+		if(this.rawBufferCount <= 0)
+			return;
+		
+		buffer.clear();
 		buffer.put(this.rawBuffer, 0, this.rawBufferCount);
 		buffer.limit(this.rawBufferCount);
 		

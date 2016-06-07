@@ -39,6 +39,7 @@ public class StellarModel {
 
 	public void initializeSettings(ClientSettings settings) {
 		atmModel.initializeSettings(settings);
+		layersModel.initializeSettings(settings);
 	}
 
 	public void updateSettings(ClientSettings settings) {

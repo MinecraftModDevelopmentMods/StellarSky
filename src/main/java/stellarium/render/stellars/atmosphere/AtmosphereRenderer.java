@@ -1,16 +1,19 @@
 package stellarium.render.stellars.atmosphere;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.lib.render.IGenericRenderer;
+import stellarium.render.shader.ShaderHelper;
 import stellarium.render.shader.SwitchableShaders;
 import stellarium.render.sky.SkyRenderInformation;
 import stellarium.render.stellars.access.EnumStellarPass;
@@ -31,33 +34,47 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 	private int renderedList = -1;
 	
 	private boolean previousFlag;
-	private boolean initialFlag = true;
+	private boolean cacheChangedFlag = false;
 	
-	private AtmShaderManager shaderManager = new AtmShaderManager();
+	private AtmShaderManager shaderManager;
+	
+	AtmosphereRenderer() {
+		this.shaderManager = new AtmShaderManager();
+	}
 	
 	@Override
 	public void initialize(AtmosphereSettings settings) {
+		shaderManager.reloadShaders();
+		
 		if(!settings.checkChange())
 			return;
 
 		if(dominateCache != null)
 			dominateCache.deleteFramebuffer();
 
-		this.dominateCache = new Framebuffer(settings.cacheLong, settings.cacheLat, false);
+		this.dominateCache = new FramebufferCustom(settings.cacheLong, settings.cacheLat, true);
 		dominateCache.setFramebufferFilter(GL11.GL_LINEAR);
 		dominateCache.unbindFramebuffer();
 		
-		this.renderBuffer = FloatBuffer.allocate(settings.fragLong * settings.fragLat * STRIDE_IN_FLOAT);
-		this.indicesBuffer = ByteBuffer.allocate((settings.fragLong * settings.fragLat * 4) << 1); // 4 Indices for Quad
+		int renderBufferNewSize = (settings.fragLong + 1) * (settings.fragLat + 1) * STRIDE_IN_FLOAT;
+		if(this.renderBuffer == null || renderBuffer.capacity() < renderBufferNewSize)
+			this.renderBuffer = ByteBuffer.allocateDirect(renderBufferNewSize << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+
+		int indicesBufferNewSize = (settings.fragLong * settings.fragLat * 4) << 2; // 4 Indices for Quad
+		if(this.indicesBuffer == null || indicesBuffer.capacity() < indicesBufferNewSize)
+			this.indicesBuffer = ByteBuffer.allocateDirect(indicesBufferNewSize).order(ByteOrder.nativeOrder()); 
+
 		this.setupIndicesBuffer(settings.fragLong, settings.fragLat);
+
+		this.cacheChangedFlag = true;
 	}
 
 	@Override
 	public void preRender(AtmosphereSettings settings, StellarRenderInformation info) {
-		if(this.initialFlag || this.previousFlag != info.isFrameBufferEnabled) {
+		if(this.cacheChangedFlag || this.previousFlag != info.isFrameBufferEnabled) {
 			this.reallocList(settings, info.isFrameBufferEnabled, info.deepDepth);
 			this.previousFlag = info.isFrameBufferEnabled;
-			this.initialFlag = false;
+			this.cacheChangedFlag = false;
 		}
 		
 		shaderManager.updateWorldInfo(info);
@@ -68,14 +85,19 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		switch(pass) {
 		case PrepareDominateScatter:
 			if(info.isFrameBufferEnabled) {
-				dominateCache.bindFramebuffer(false);
+				info.minecraft.getFramebuffer().unbindFramebuffer();
+
+				dominateCache.bindFramebuffer(true);
+		        GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 				GL11.glMatrixMode(GL11.GL_PROJECTION);
+				GL11.glPushMatrix();
 				GL11.glLoadIdentity();
-				GL11.glOrtho(0.0, 2.0 * Math.PI, 0.0, Math.PI, 100.0, 300.0);
+				GL11.glOrtho(0, 2 * Math.PI, -Math.PI/2, Math.PI/2, -1.0, 1.0);
 				GL11.glMatrixMode(GL11.GL_MODELVIEW);
+				GL11.glPushMatrix();
 				GL11.glLoadIdentity();
-				GL11.glTranslatef(0.0F, 0.0F, -200.0F);
 
 				info.setAtmCallList(this.renderToCacheList);
 			}
@@ -84,17 +106,36 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.DominateScatter));
 			break;
 		case FinalizeDominateScatter:
-			if(info.isFrameBufferEnabled)
+			if(info.isFrameBufferEnabled) {
 				dominateCache.unbindFramebuffer();
+				GL11.glMatrixMode(GL11.GL_PROJECTION);
+				GL11.glPopMatrix();
+				GL11.glMatrixMode(GL11.GL_MODELVIEW);
+				GL11.glPopMatrix();
+
+				info.minecraft.getFramebuffer().bindFramebuffer(true);
+			}
 			info.setActiveShader(null);
 			break;
 		
 		case RenderCachedDominate:
+			ShaderHelper.getInstance().releaseCurrentShader();
 			dominateCache.bindFramebufferTexture();
+			//GL11.glColor4f(20.0f, 20.0f, 20.0f, 2.0f);
 			GL11.glCallList(this.renderedList);
 			dominateCache.unbindFramebufferTexture();
-			break;
 			
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glPushMatrix();
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			GL11.glPushMatrix();
+			dominateCache.framebufferRender(400, 200);
+			GL11.glViewport(0, 0, info.minecraft.displayWidth, info.minecraft.displayHeight);
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glPopMatrix();
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			GL11.glPopMatrix();
+			break;
 		case SetupOpaque:
 			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.Opaque));
 			break;
@@ -127,8 +168,7 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 	
 	@Override
 	public void postRender(AtmosphereSettings settings, StellarRenderInformation info) {
-		if(info.isFrameBufferEnabled)
-			dominateCache.framebufferClear();
+
 	}
 	
 	/*
@@ -141,9 +181,9 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 
 
 	public void reallocList(AtmosphereSettings settings, boolean isFramebufferEnabled, double deepDepth) {
-		Vector3[][] displayvec = Allocator.createAndInitialize(settings.fragLong, settings.fragLat+1);
+		Vector3[][] displayvec = Allocator.createAndInitialize(settings.fragLong + 1, settings.fragLat+1);
 
-		for(int longc=0; longc<settings.fragLong; longc++)
+		for(int longc=0; longc<=settings.fragLong; longc++)
 			for(int latc=0; latc<=settings.fragLat; latc++)
 				displayvec[longc][latc].set(new SpCoord(longc*360.0/settings.fragLong, 180.0 * latc / settings.fragLat - 90.0).getVec());
         
@@ -160,9 +200,9 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
         if(isFramebufferEnabled) {
         	this.renderToCacheList = this.renderedList + 1;
         	
-    		for(int longc=0; longc<settings.fragLong; longc++)
+    		for(int longc=0; longc<=settings.fragLong; longc++)
     			for(int latc=0; latc<=settings.fragLat; latc++)
-    				displayvec[longc][latc].set(longc * 2.0 * Math.PI / settings.fragLong, latc * Math.PI / settings.fragLat, 0.0);
+    				displayvec[longc][latc].set(longc * 2.0 * Math.PI / settings.fragLong, (settings.fragLat - latc) * Math.PI / settings.fragLat - Math.PI / 2, 0.0);
         	
             GL11.glNewList(this.renderToCacheList, GL11.GL_COMPILE);
             this.drawDisplay(displayvec, settings.fragLong, settings.fragLat, 1.0, false, false);
@@ -176,18 +216,17 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		indicesBuffer.clear();
 		for(int longc=0; longc < fragLong; longc++) {
 			for(int latc=0; latc < fragLat; latc++) {
-				int longcd = (longc + 1) % fragLong;
-				indicesBuffer.putShort((short) (fragLong * longc + latc));
-				indicesBuffer.putShort((short) (fragLong * longc + latc + 1));
-				indicesBuffer.putShort((short) (fragLong * longcd + latc + 1));
-				indicesBuffer.putShort((short) (fragLong * longcd + latc));
+				indicesBuffer.putInt(((fragLat + 1) * longc + latc));
+				indicesBuffer.putInt(((fragLat + 1) * longc + latc + 1));
+				indicesBuffer.putInt(((fragLat + 1) * (longc + 1) + latc + 1));
+				indicesBuffer.putInt(((fragLat + 1) * (longc + 1) + latc));
 			}
 		}
 	}
 	
 	private void drawDisplay(Vector3[][] displayvec, int fragLong, int fragLat, double length, boolean hasTexture, boolean hasNormal) {
 		renderBuffer.clear();
-		
+
 		short longc = 0, latc;
 		for(Vector3[] vertRow : displayvec) {
 			latc = 0;
@@ -197,8 +236,8 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 				renderBuffer.put((float)temporal.getY());
 				renderBuffer.put((float)temporal.getZ());
 				
-				renderBuffer.put((float)longc / fragLong);
-				renderBuffer.put((float)latc / fragLat);
+				renderBuffer.put(((float)longc) / fragLong);
+				renderBuffer.put(((float)latc) / fragLat);
 				
 				renderBuffer.put((float)pos.getX());
 				renderBuffer.put((float)pos.getY());
@@ -225,14 +264,15 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 			GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
 		}
 
-		GL11.glDrawElements(GL11.GL_QUADS, fragLong * fragLat * 4, GL11.GL_UNSIGNED_SHORT, this.indicesBuffer);
+		indicesBuffer.position(0);
+		GL11.glDrawElements(GL11.GL_QUADS, fragLong * fragLat * 4, GL11.GL_UNSIGNED_INT, this.indicesBuffer);
 
 		if(hasNormal) {
-			GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+			GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
 		}
 
 		if(hasTexture) {
-			GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+			GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 		}
 		
 		GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);

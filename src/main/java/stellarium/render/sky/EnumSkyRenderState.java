@@ -12,6 +12,7 @@ import stellarium.lib.render.hierarchy.IDistributionConfigurable;
 import stellarium.lib.render.hierarchy.IRenderState;
 import stellarium.lib.render.hierarchy.IRenderTransition;
 import stellarium.lib.render.hierarchy.IRenderedCollection;
+import stellarium.render.shader.ShaderHelper;
 import stellarium.render.sky.SkyModel.EnumSkyRenderable;
 import stellarium.render.stellars.EnumStellarRenderState;
 import stellarium.world.landscape.LandscapeModel;
@@ -53,19 +54,23 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GL11.glEnable(GL11.GL_FOG);
 			return LandscapeRender;
 		}
 	},
 	LandscapeRender() {
 		@Override
 		public IRenderState<Void, SkyRenderInformation> transitionTo(Void pass, SkyRenderInformation resInfo) {
+			GL11.glDisable(GL11.GL_FOG);
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
 			GL11.glEnable(GL11.GL_ALPHA_TEST);
 
 			GL11.glDisable(GL11.GL_BLEND);
 
 			GL11.glDepthMask(true);
+			GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 			GL11.glPopMatrix();
+
 			return null;
 		}
 	};

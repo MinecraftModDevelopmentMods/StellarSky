@@ -33,7 +33,14 @@ public class AtmShaderManager {
 	
 	private EnumMap<EnumStellarPass, SwitchableShaders> shaderMap = Maps.newEnumMap(EnumStellarPass.class);
 
-	private void reloadShaders() {
+	public void reloadShaders() {
+		shaderMap.clear();
+		
+		SwitchableShaders atmosphere = this.injectAtmosphereHook(
+				new SwitchableShaders(
+						ShaderHelper.getInstance().buildShader("atmospherespcoord", StellarSkyResources.vertexAtmosphereSpCoord, StellarSkyResources.fragmentAtmosphereSpCoord),
+						ShaderHelper.getInstance().buildShader("atmospheresimple", StellarSkyResources.vertexAtmosphereSimple, StellarSkyResources.fragmentAtmosphereSimple)));
+		
 		SwitchableShaders scatterFuzzy = new SwitchableShaders(
 				ShaderHelper.getInstance().buildShader("fuzzymapped", StellarSkyResources.vertexScatterFuzzyMapped, StellarSkyResources.fragmentScatterFuzzyMapped),
 				ShaderHelper.getInstance().buildShader("fuzzyskylight", StellarSkyResources.vertexScatterFuzzySkylight, StellarSkyResources.fragmentScatterFuzzySkylight));
@@ -45,12 +52,6 @@ public class AtmShaderManager {
 		SwitchableShaders srcTexture = new SwitchableShaders(
 				ShaderHelper.getInstance().buildShader("srctexturemapped", StellarSkyResources.vertexTextureMapped, StellarSkyResources.fragmentTextureMapped),
 				ShaderHelper.getInstance().buildShader("srctextureskylight", StellarSkyResources.vertexTextureSkylight, StellarSkyResources.fragmentTextureSkylight));
-
-
-		SwitchableShaders atmosphere = this.injectAtmosphereHook(
-				new SwitchableShaders(
-						ShaderHelper.getInstance().buildShader("atmospherespcoord", StellarSkyResources.vertexAtmosphereSpCoord, StellarSkyResources.fragmentAtmosphereSpCoord),
-						ShaderHelper.getInstance().buildShader("atmospheresimple", StellarSkyResources.vertexAtmosphereSimple, StellarSkyResources.fragmentAtmosphereSimple)));
 
 
 		shaderMap.put(EnumStellarPass.DominateScatter, atmosphere);
@@ -127,28 +128,31 @@ public class AtmShaderManager {
 			
 			shader.bindShader();
 			
-			cameraHeight.setDouble(model.getHeight());
+			//cameraHeight.setDouble(model.getHeight());
+			cameraHeight.setDouble(0.01);
 			outerRadius.setDouble(model.getOuterRadius());
 			innerRadius.setDouble(model.getInnerRadius());
 			nSamples.setInteger(20);
 
 			exposure.setDouble(2.0);
-			depthToFogFactor.setDouble(10.0);
+			depthToFogFactor.setDouble(100.0);
 
 			Vector3 vec = new Vector3(0.09, 0.18, 0.27);
 			extinctionFactor.setVector3(vec.scale(1.0));
 			gScattering.setDouble(-0.85);
 
+			double mult = 1.0;
+			
 			rayleighFactor.setDouble4(
-					4 * this.weatherFactor * model.getSkyColorRed() / 0.45,
-					8 * this.weatherFactor * model.getSkyColorGreen() / 0.65,
-					16 * this.weatherFactor * model.getSkyColorBlue(),
+					mult * 4 * this.weatherFactor * model.getSkyColorRed() / 0.45,
+					mult * 8 * this.weatherFactor * model.getSkyColorGreen() / 0.65,
+					mult * 16 * this.weatherFactor * model.getSkyColorBlue(),
 					1.0);
 
 			mieFactor.setDouble4(
-					0.1 * this.rainStrengthFactor * this.weatherFactor,
-					0.2 * this.rainStrengthFactor * this.weatherFactor,
-					0.3 * this.rainStrengthFactor * this.weatherFactor,
+					mult * 0.1 * this.rainStrengthFactor * this.weatherFactor,
+					mult * 0.2 * this.rainStrengthFactor * this.weatherFactor,
+					mult * 0.3 * this.rainStrengthFactor * this.weatherFactor,
 					1.0);
 		}
 	}

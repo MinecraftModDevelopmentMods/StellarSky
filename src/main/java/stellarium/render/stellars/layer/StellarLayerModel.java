@@ -41,6 +41,7 @@ public class StellarLayerModel<Obj extends StellarObject> {
 	public StellarLayerModel(StellarObjectContainer container) {
 		this.container = container;
 		this.updateTracker = new MetadataUpdateTracker(this.cacheUpdater = new RenderCacheUpdater());
+		container.bindRenderModel(this);
 	}
 
 	public IStellarLayerType getLayerType() {
@@ -65,7 +66,8 @@ public class StellarLayerModel<Obj extends StellarObject> {
 	}
 	
 	public void updateSettings(ClientSettings settings) {
-		cacheLoader.set(settings);
+		if(cacheLoader != null)
+			cacheLoader.set(settings);
 		for(Map.Entry<Obj, IObjRenderCache> entry : cacheMap.entrySet())
 			entry.getValue().updateSettings(settings, this.getSubSettings(settings), entry.getKey());
 	}
@@ -81,7 +83,7 @@ public class StellarLayerModel<Obj extends StellarObject> {
 	}
 
 	public Iterable<IObjRenderCache> getRenderCaches() {
-		return Iterables.concat(cacheMap.values(), this.fromCache);
+		return this.fromCache != null? Iterables.concat(cacheMap.values(), this.fromCache) : cacheMap.values();
 	}
 	
 	private IConfigHandler getSubSettings(ClientSettings settings) {
@@ -131,7 +133,6 @@ public class StellarLayerModel<Obj extends StellarObject> {
 	public StellarLayerModel copy(StellarObjectContainer copied) {
 		StellarLayerModel model = new StellarLayerModel(copied);
 		model.cacheMap = Maps.newHashMap(this.cacheMap);
-		copied.bindRenderModel(this);
 		return model;
 	}
 }

@@ -15,9 +15,9 @@ public class DisplayRenderer implements IGenericRenderer<ClientSettings, Boolean
 
 	@Override
 	public void renderPass(DisplayModel model, Boolean pass, SkyRenderInformation info) {
+		DisplayRenderInfo subInfo = new DisplayRenderInfo(info.minecraft, info.tessellator, info.partialTicks, pass, info.deepDepth);
 		for(DisplayModel.Delegate delegate : model.displayList) {
-			delegate.renderer.render(new DisplayRenderInfo(info.minecraft, info.tessellator, info.partialTicks, pass, info.deepDepth),
-					delegate.cache);
+			delegate.renderer.render(subInfo, delegate.cache);
 		}
 	}
 

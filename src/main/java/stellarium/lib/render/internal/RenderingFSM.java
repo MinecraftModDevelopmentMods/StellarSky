@@ -33,11 +33,11 @@ public class RenderingFSM implements IGenericRenderer, IRenderTransition {
 
 	private Function infoTransformer;
 	private IRenderState initialState;
-	private Map<IRenderState, Pair<Object, RendererSettings>> stateMap;
+	private Map<IRenderState, Pair<Function, RendererSettings>> stateMap;
 	private Set<RendererSettings> setSettings;
 
 	public RenderingFSM(Function infoTransformer, IRenderState initialState,
-			ImmutableMap<IRenderState, Pair<Object, RendererSettings>> stateMap, ImmutableSet<RendererSettings> setSettings) {
+			ImmutableMap<IRenderState, Pair<Function, RendererSettings>> stateMap, ImmutableSet<RendererSettings> setSettings) {
 		this.infoTransformer = infoTransformer;
 		this.initialState = initialState;
 		this.stateMap = stateMap;
@@ -73,7 +73,7 @@ public class RenderingFSM implements IGenericRenderer, IRenderTransition {
 		IRenderState state = initialState.transitionTo(pass, resInfo);
 		while(state != null) {
 			RendererSettings settings = stateMap.get(state).getRight();
-			Object childPass = stateMap.get(state).getLeft();
+			Object childPass = stateMap.get(state).getLeft().apply(pass);
 			for(Map.Entry<Object, IGenericRenderer> idRenderer : settings.subModelRenderers.entrySet()) {
 				Iterator ite = HierarchyDistributor.INSTANCE.iteratorFor(model, idRenderer.getKey());
 				while(ite.hasNext())

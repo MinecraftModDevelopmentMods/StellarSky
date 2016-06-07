@@ -39,7 +39,6 @@ float airmass(float cosAngleToZenith, float viewRadiusScaled) {
 }
 
 void main() {
-
     float x = gl_Vertex.x;
     float y = gl_Vertex.y;
 
@@ -133,7 +132,14 @@ void main() {
 
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	scatteringColor4.rgb = integratedScatterColor * lightColor;
-	v3Direction = -invertFlag * v3Ray;
+	v3Direction.xyz = v3Pos;
+
+    scatteringColor4.r = gl_Vertex.x / PI * 2;
+    scatteringColor4.g = gl_Vertex.y;
+    
+    //if(gl_Vertex.x > 0.15)
+    //    scatteringColor4.b = 1;
+    //else scatteringColor4.b = 0;
 
 	gl_FogFragCoord = exp(invertFlag * (depthEnd - depthCamera) / depthToFogFactor);
 }

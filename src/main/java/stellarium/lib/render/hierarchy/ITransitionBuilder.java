@@ -1,9 +1,11 @@
 package stellarium.lib.render.hierarchy;
 
-public interface ITransitionBuilder<Pass, ResRCI> {
+import com.google.common.base.Function;
 
+public interface ITransitionBuilder<Pass, ResRCI> {
+	
 	/**
-	 * Appends state.
+	 * Appends state with constant pass.
 	 * @param state the state to append
 	 * @param pass the pass for the state
 	 * @param subDist the sub-distribution
@@ -11,6 +13,17 @@ public interface ITransitionBuilder<Pass, ResRCI> {
 	 * */
 	public <ChildPass> ITransitionBuilder<Pass, ResRCI> appendState(
 			IRenderState<Pass, ResRCI> state, ChildPass pass,
+			IRenderedCollection subDist);
+	
+	/**
+	 * Appends state with pass transition function.
+	 * @param state the state to append
+	 * @param pass the pass transition function for the state
+	 * @param subDist the sub-distribution
+	 * @return <code>this</code>
+	 * */
+	public <ChildPass> ITransitionBuilder<Pass, ResRCI> appendStateWithPassFn(
+			IRenderState<Pass, ResRCI> state, Function<Pass, ChildPass> pass,
 			IRenderedCollection subDist);
 
 	/**

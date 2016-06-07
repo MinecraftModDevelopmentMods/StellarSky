@@ -1,6 +1,7 @@
 package stellarium.render.stellars.phased;
 
 import com.google.common.base.Function;
+import com.google.common.base.Functions;
 
 import stellarium.lib.render.RendererRegistry;
 import stellarium.lib.render.hierarchy.IDistributionConfigurable;
@@ -18,6 +19,7 @@ public enum EnumPhasedRenderState implements IRenderState<EnumStellarPass, Layer
 		@Override
 		public IRenderState<EnumStellarPass, LayerRenderInformation> transitionTo(EnumStellarPass pass,
 				LayerRenderInformation resInfo) {
+			resInfo.initialize(pass);
 			return Instance;
 		}
 		
@@ -26,7 +28,6 @@ public enum EnumPhasedRenderState implements IRenderState<EnumStellarPass, Layer
 		@Override
 		public IRenderState<EnumStellarPass, LayerRenderInformation> transitionTo(EnumStellarPass pass,
 				LayerRenderInformation resInfo) {
-			resInfo.initialize(pass);
 			return null;
 		}
 	};
@@ -40,7 +41,7 @@ public enum EnumPhasedRenderState implements IRenderState<EnumStellarPass, Layer
 		IRenderedCollection def = configurable.overallCollection();
 		
 		IRenderTransition transition = configurable.transitionBuilder(new LayerTransformer(), Initial)
-				.appendState(Instance, null, def)
+				.appendStateWithPassFn(Instance, Functions.<EnumStellarPass>identity(), def)
 				.build();
 		
 		configurable.endSetup(transition);

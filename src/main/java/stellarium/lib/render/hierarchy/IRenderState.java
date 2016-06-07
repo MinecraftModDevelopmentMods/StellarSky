@@ -4,7 +4,7 @@ package stellarium.lib.render.hierarchy;
  * Representation for a render state, which should be immutable.
  * */
 public interface IRenderState<Pass, ResRCI> {
-
+	
 	/**
 	 * Transitions state <b>after</b> rendering.
 	 * @param pass the pass which is given to the rendering distributor

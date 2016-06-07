@@ -49,8 +49,9 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 
 	@Override
 	public void updateCache(Moon object, MoonImage image, ViewerInfo info, IStellarChecker checker) {
-		appCoord.x = image.appCoord.x;
-		appCoord.y = image.appCoord.y;
+		SpCoord currentPos = image.getCurrentHorizontalPos();
+		appCoord.x = currentPos.x;
+		appCoord.y = currentPos.y;
 
 		double airmass = info.sky.calculateAirmass(this.appCoord);
 		double appMag = object.currentMag + airmass * info.sky.getExtinctionRate(Wavelength.visible);

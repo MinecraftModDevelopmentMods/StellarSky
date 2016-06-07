@@ -1,5 +1,7 @@
 package stellarium.render.sky;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,6 +38,8 @@ public class NewSkyRenderer extends IRenderHandler {
 		SkyRenderInformation info = new SkyRenderInformation(mc, world, partialTicks,
 				new ViewerInfo(coordinate, sky, scope, filter, viewer));
 
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		renderer.preRender(StellarSky.proxy.getClientSettings(), info);
 		renderer.renderPass(this.model, null, info);
 		renderer.postRender(StellarSky.proxy.getClientSettings(), info);

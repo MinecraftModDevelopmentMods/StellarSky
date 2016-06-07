@@ -22,7 +22,6 @@ import stellarium.client.StellarClientFMLHook;
 import stellarium.client.overlay.StellarSkyOverlays;
 import stellarium.client.overlay.clientcfg.OverlayClientSettingsType;
 import stellarium.client.overlay.clock.OverlayClockType;
-import stellarium.lib.hierarchy.HierarchyDistributor;
 import stellarium.lib.render.RendererRegistry;
 import stellarium.render.sky.EnumSkyRenderState;
 import stellarium.render.sky.NewSkyRenderer;
@@ -43,7 +42,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	private ConfigManager guiConfig;
 	private CelestialManager celestialManager = new CelestialManager(true);
 	
-	private SkyModel skyModel = new SkyModel(this.celestialManager);
+	private SkyModel skyModel;
 	
 	public ClientSettings getClientSettings() {
 		return this.clientSettings;
@@ -67,6 +66,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		OverlayRegistry.registerOverlay("clock", new OverlayClockType(), this.guiConfig);
 		OverlayRegistry.registerOverlay("clientconfig", new OverlayClientSettingsType(), this.guiConfig);
 		
+		this.skyModel = new SkyModel(this.celestialManager);
 		skyModel.initializeSettings(this.clientSettings);
 		
 		EnumSkyRenderState.constructRender();
@@ -107,10 +107,12 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		return Minecraft.getMinecraft().gameSettings.renderDistanceChunks;
 	}
 	
+	@Override
 	public void setupStellarLoad(StellarManager manager) {
 		skyModel.stellarLoad(manager);
 	}
 
+	@Override
 	public void setupDimensionLoad(StellarDimensionManager dimManager) {
 		skyModel.dimensionLoad(dimManager);
 	}
@@ -122,11 +124,13 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	
 	@Override
 	public void setupSkyRenderer(WorldProvider provider, String skyType) {
+		skyModel.updateSettings(this.clientSettings);
 		RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class).initialize(this.clientSettings);
 
 		//IRenderHandler renderer = StellarSkyAPI.getRendererFor(skyType,
 		//		new SkyCelestialRenderer(this.clientSettings, celManager, this.displayManager, this.landscapeSettings, cache));
 		provider.setSkyRenderer(new NewSkyRenderer(this.skyModel));
+		//provider.setSkyRenderer(new TheSkyRenderer());
 	}
 	
 	@Override

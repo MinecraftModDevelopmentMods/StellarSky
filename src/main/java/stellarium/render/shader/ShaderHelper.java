@@ -1,24 +1,19 @@
 package stellarium.render.shader;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.ARBFragmentShader;
 import org.lwjgl.opengl.ARBShaderObjects;
-import org.lwjgl.opengl.ARBVertexShader;
 import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
@@ -49,12 +44,9 @@ public class ShaderHelper {
 			OpenGlHelper.func_153187_e(objectMap.get(id).programId);
 		}
 	 
-		try {
-			vertShader = createShader(vertloc, ARBVertexShader.GL_VERTEX_SHADER_ARB);
-			fragShader = createShader(fragloc, ARBFragmentShader.GL_FRAGMENT_SHADER_ARB);
-		} catch(Exception exc) {
-			throw new RuntimeException(exc);
-		}
+		vertShader = createShader(vertloc, OpenGlHelper.field_153209_q);
+		fragShader = createShader(fragloc, OpenGlHelper.field_153210_r);
+
 		
 		if(vertShader == 0 || fragShader == 0)
 			return null;
@@ -111,7 +103,7 @@ public class ShaderHelper {
 	}
 	
 	
-	private int createShader(ResourceLocation location, int shaderType) throws Exception{
+	private int createShader(ResourceLocation location, int shaderType) {
 		int shader = 0;
 		if(location == null)
 			return 0;
@@ -135,17 +127,17 @@ public class ShaderHelper {
 			
 			//Check compile
 			if (OpenGlHelper.func_153157_c(shader, OpenGlHelper.field_153208_p) == GL11.GL_FALSE)
-				throw new RuntimeException("Error creating shader: " + getLogInfo(shader));
+				throw new RuntimeException(String.format("Error creating shader %s: %s", location, OpenGlHelper.func_153158_d(shader, 32768)));
 			return shader;
 		}
-		catch(Exception exc) {
+		catch(IOException exc) {
 			OpenGlHelper.func_153180_a(shader);
-			throw exc;
+			throw Throwables.propagate(exc);
 		}
 	}
 	
 	private static String getLogInfo(int programObject) {
-		return OpenGlHelper.func_153166_e(programObject, ARBShaderObjects.GL_OBJECT_INFO_LOG_LENGTH_ARB);
+		return OpenGlHelper.func_153166_e(programObject, 32768);
 	}
 	
 	private class ShaderObject implements IShaderObject {
@@ -174,7 +166,7 @@ public class ShaderHelper {
 			//Gets the location
 			int location = OpenGlHelper.func_153194_a(this.programId, fieldName);
 			if(location == -1)
-				StellarSky.logger.error("Invalid field %s has claimed!", fieldName);
+				StellarSky.logger.error(String.format("Invalid field %s has claimed while loading shaders!", fieldName));
 			
 			ShaderUniform uniform = new ShaderUniform(location);
 			uniformMap.put(fieldName, uniform);

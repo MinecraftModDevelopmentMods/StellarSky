@@ -21,7 +21,7 @@ public class LandscapeRenderer implements IGenericRenderer<ClientSettings, Void,
 			return;
 		
 		GL11.glPushMatrix();
-		float depth = info.deepDepth * 0.7f;
+		float depth = info.deepDepth * 0.5f;
 		GL11.glScalef(depth, depth, depth);
 		
 		info.minecraft.renderEngine.bindTexture(StellarSkyResources.resourceLandscape.getLocation());

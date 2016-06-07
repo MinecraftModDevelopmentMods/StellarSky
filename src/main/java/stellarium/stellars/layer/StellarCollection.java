@@ -114,7 +114,9 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	public IPerWorldImage loadImageFor(Obj object) {
 		if(imageMap.containsKey(object))
 			return imageMap.get(object);
-		else return cache.lazyLoader().apply(object).getMetadata();
+		else if(cache != null)
+			return cache.lazyLoader().apply(object).getMetadata();
+		else return null;
 	}
 
 	@Override

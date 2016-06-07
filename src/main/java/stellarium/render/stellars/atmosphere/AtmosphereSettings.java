@@ -13,12 +13,12 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	/**
 	 * Size of atmosphere cache texture
 	 * */
-	public int cacheLong = 2048, cacheLat = 1024;
+	public int cacheLong = 1024, cacheLat = 512;
 	
 	/**
 	 * Number of atmosphere fragments
 	 * */
-	public int fragLong = 128, fragLat = 64;
+	public int fragLong = 256, fragLat = 128;
 	
 	private boolean isChanged = true;
 	
@@ -39,9 +39,9 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	}
 
 	public boolean checkChange() {
-		boolean ret = this.isChanged;
-		this.isChanged = false;
-		return ret;
+		/*boolean ret = this.isChanged;
+		this.isChanged = false;*/
+		return true;
 	}
 
 }

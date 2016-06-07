@@ -31,9 +31,16 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 
 	@Override
 	public void updateCache(BgStar object, StarImage image, ViewerInfo info, IStellarChecker checker) {
-		SpCoord appCoord = image.getCurrentHorizontalPos();
-		this.appPos.x = appCoord.x;
-		this.appPos.y = appCoord.y;
+		if(image == null) {
+			Vector3 ref = new Vector3(object.pos);
+			info.coordinate.getProjectionToGround().transform(ref);
+			appPos.setWithVec(ref);
+			info.sky.applyAtmRefraction(this.appPos);
+		} else {
+			SpCoord appCoord = image.getCurrentHorizontalPos();
+			this.appPos.x = appCoord.x;
+			this.appPos.y = appCoord.y;
+		}
 
 		double airmass = info.sky.calculateAirmass(this.appPos);
 

@@ -9,6 +9,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.client.IRenderHandler;
 import stellarapi.api.StellarAPIReference;
 import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.celestials.IEffectorType;
@@ -22,7 +23,7 @@ import stellarium.render.shader.ShaderHelper;
 import stellarium.util.math.Allocator;
 
 @Deprecated
-public class TheSkyRenderer {
+public class TheSkyRenderer extends IRenderHandler {
     private int skyList;
     private int skyListUnderPlayer;
     
@@ -36,7 +37,7 @@ public class TheSkyRenderer {
     private IUniformField depthToFogFactor;
     private IUniformField extinctionFactor, gScattering, rayleighFactor, mieFactor;
 
-	public TheSkyRenderer(ICelestialRenderer subRenderer) {
+	public TheSkyRenderer() {
         Tessellator tessellator = Tessellator.instance;
         
         this.atmosphere = ShaderHelper.getInstance().buildShader("atmosphere",
@@ -58,7 +59,6 @@ public class TheSkyRenderer {
 		this.mieFactor = atmosphere.getField("mieFactor");
 
 
-        this.celestials = subRenderer;
         this.latn = 99;
         this.longn = this.latn * 2;
         
@@ -123,6 +123,8 @@ public class TheSkyRenderer {
         atmosphere.bindShader();
 		
 		lightDir.setVector3(object.getCurrentHorizontalPos().getVec());
+		atmosphere.getField("lightColor").setDouble3(1.0, 1.0, 1.0);
+		
 		cameraHeight.setDouble(height);
 		outerRadius.setDouble(820.0);
 		innerRadius.setDouble(800.0);
@@ -133,7 +135,7 @@ public class TheSkyRenderer {
 		
 		Vector3 vec = new Vector3(0.09, 0.18, 0.27);
 		extinctionFactor.setVector3(vec.scale(1.0));
-		gScattering.setDouble(-0.8);
+		gScattering.setDouble(-0.85);
 		
 		rayleighFactor.setDouble4(
 				4 * weatherFactor * red / 0.45,
@@ -152,7 +154,8 @@ public class TheSkyRenderer {
         GL11.glPushMatrix();
         GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
         GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
-		
+		GL11.glScaled(100.0, 100.0, 100.0);
+        
         GL11.glCallList(this.skyList);
 		
         atmosphere.releaseShader();
@@ -160,8 +163,8 @@ public class TheSkyRenderer {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        celestials.renderCelestial(mc, theWorld, new float[] {
-        		red * groundFactor, green  * groundFactor, blue * groundFactor}, partialTicks);
+        //celestials.renderCelestial(mc, theWorld, new float[] {
+        //		red * groundFactor, green  * groundFactor, blue * groundFactor}, partialTicks);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(true);

@@ -12,7 +12,9 @@ import stellarapi.api.lib.config.ConfigManager;
 import stellarapi.api.lib.config.HierarchicalConfig;
 import stellarium.client.ClientSettings;
 import stellarium.common.ServerSettings;
+import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
+import stellarium.world.StellarDimensionManager;
 
 public interface IProxy {
 	
@@ -39,5 +41,8 @@ public interface IProxy {
 	public void updateTick();
 
 	public float getScreenWidth();
+
+	void setupStellarLoad(StellarManager manager);
+	void setupDimensionLoad(StellarDimensionManager dimManager);
 
 }

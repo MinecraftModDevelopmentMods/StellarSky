@@ -32,6 +32,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	private List<ICelestialObject> foundMoons = Lists.newArrayList();
 	
 	private String dimensionName;
+	private boolean isRemote;
 	
 	public static StellarDimensionManager loadOrCreate(World world, StellarManager manager, String dimName) {
 		WorldSavedData data = world.perWorldStorage.loadData(StellarDimensionManager.class, String.format(ID, dimName));
@@ -93,6 +94,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	}
 	
 	public void syncFromNBT(NBTTagCompound compound, StellarManager manager, boolean isRemote) {
+		this.isRemote = isRemote;
 		if(manager.isLocked() || isRemote) {
 			this.settings = new PerDimensionSettings(this.dimensionName);
 			settings.readFromNBT(compound);
@@ -122,9 +124,11 @@ public final class StellarDimensionManager extends WorldSavedData {
 		foundSuns.clear();
 		foundMoons.clear();
 		
-		StellarSky.logger.info("Starting Initial Update to Construct Images...");
+		StellarSky.logger.info("Evaluating Stellar Collections from Celestial State...");
+
+		StellarSky.logger.info("Starting Test Update.");
 		manager.update(0.0);
-		StellarSky.logger.info("Initial Update Ended.");
+		StellarSky.logger.info("Test Update Ended.");
 		
 		for(StellarObjectContainer container : manager.getCelestialManager().getLayers()) {
 			StellarCollection collection = new StellarCollection(container, coordinate, sky,
@@ -135,6 +139,12 @@ public final class StellarDimensionManager extends WorldSavedData {
 			foundSuns.addAll(collection.getSuns());
 			foundMoons.addAll(collection.getMoons());
 		}
+		
+		if(this.isRemote)
+			StellarSky.proxy.setupDimensionLoad(this);
+		
+		StellarSky.logger.info("Evaluated Stellar Collections.");
+		
 		return this.collections;
 	}
 	

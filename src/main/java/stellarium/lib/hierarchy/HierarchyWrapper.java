@@ -131,7 +131,8 @@ public class HierarchyWrapper {
 	}
 
 	Iterator elementIteOnField(Object instance, Object fieldId) {
-		return descriptionMap.get(fieldId).structure.iteratorFor(instance);
+		FieldElementDescription description = descriptionMap.get(fieldId);
+		return description.structure.iteratorFor(description.getElement(instance));
 	}
 
 	private class FieldElementDescription implements IFieldElementDescription {
@@ -146,7 +147,7 @@ public class HierarchyWrapper {
 			this.defaultId = elemDesc.id();
 
 			IHierarchyStructure customStr = HierarchyDistributor.INSTANCE.structureMap.get(elemDesc.structure());
-			IHierarchyStructure defaultStr = HierarchyDistributor.INSTANCE.defaultStrMap.get(field.getDeclaringClass());
+			IHierarchyStructure defaultStr = HierarchyDistributor.INSTANCE.defaultStrMap.get(field.getType());
 			IHierarchyStructure defDefStr = SingletonStructure.INSTANCE;
 
 			this.structure = customStr != null? customStr : (defaultStr != null? defaultStr : defDefStr);
