@@ -21,9 +21,12 @@ public class NonRefractiveSkySet implements IStellarSkySet {
 		this.lightPollutionFactor = (float) settings.getLightPollutionRate();
 		this.minimumSkyRenderBrightness = (float) settings.getMinimumSkyRenderBrightness();
 		
+		double[] rates = settings.extinctionRates();
 		this.interpolation = new WaveIntensive(
-				ImmutableMap.of(Wavelength.V, StellarMath.MagToLumWithoutSize(OpticsHelper.ext_coeff_V),
-						Wavelength.B,StellarMath.MagToLumWithoutSize(OpticsHelper.ext_coeff_B_V + OpticsHelper.ext_coeff_V))
+				ImmutableMap.of(
+						Wavelength.red, StellarMath.MagToLumWithoutSize(rates[0]),
+						Wavelength.V, StellarMath.MagToLumWithoutSize(rates[1]),
+						Wavelength.B,StellarMath.MagToLumWithoutSize(rates[2]))
 				);
 	}
 

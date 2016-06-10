@@ -86,10 +86,10 @@ public class AtmShaderManager {
 		this.weatherFactor = (float)(1.0D - (double)(rainStrength * 5.0F) / 16.0D);
 		weatherFactor *= (1.0D - (double)(info.world.getWeightedThunderStrength(info.partialTicks) * 5.0F) / 16.0D);
 
-		this.skyBrightness = info.world.getFogColor(info.partialTicks).lengthVector() * 10.0f;
+		this.skyBrightness = info.world.getSunBrightnessFactor(info.partialTicks) * 2.0f;
 		this.skyBrightness *= (info.info.brightnessMultiplier / Spmath.sqr(info.info.multiplyingPower));
 
-		this.dominationScale = 0.5;
+		this.dominationScale = 0.7;
 	}
 	
 	public IShaderObject bindShader(AtmosphereModel model, EnumStellarPass pass) {
@@ -136,9 +136,10 @@ public class AtmShaderManager {
 			exposure.setDouble(2.0);
 			depthToFogFactor.setDouble(100.0 * Math.exp(model.getHeight()));
 
-			Vector3 vec = new Vector3(0.09, 0.18, 0.27);
-			extinctionFactor.setVector3(vec.scale(1.0));
-			gScattering.setDouble(-0.85);
+			Vector3 vec = new Vector3(model.getSkyExtRed(),
+					model.getSkyColorGreen(), model.getSkyColorBlue());
+			extinctionFactor.setVector3(vec.scale(0.9));
+			gScattering.setDouble(-0.9);
 
 			double mult = 1.0;
 			

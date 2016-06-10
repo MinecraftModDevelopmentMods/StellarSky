@@ -79,7 +79,7 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
 			GL11.glEnable(GL20.GL_POINT_SPRITE);
-			//TODO ARBPointSprite.GL_POINT_SPRITE_ARB
+			//FIXME ARBPointSprite.GL_POINT_SPRITE_ARB
 			return RenderPointScatter;
 		}
 	}, RenderPointScatter() {
@@ -113,7 +113,7 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
 			GL11.glEnable(GL20.GL_POINT_SPRITE);
-			//TODO ARBPointSprite.GL_POINT_SPRITE_ARB
+			//FIXME ARBPointSprite.GL_POINT_SPRITE_ARB
 			return RenderOpaqueScatter;
 		}
 	}, RenderOpaqueScatter() {

@@ -7,8 +7,9 @@ import stellarium.StellarSky;
 import stellarium.util.math.CachedGaussianRandom;
 
 public class OpticsHelper extends SimpleConfigHandler {
-	public static final double ext_coeff_B_V=0.1;
+	public static final double ext_coeff_B=0.3;
 	public static final double ext_coeff_V=0.2;
+	public static final double ext_coeff_R=0.1;
 	
 	// MagOffset needs to be changed to whatever the maximum Magnitude of Venus is 
 	//private static final float magOffset = 5.50f;
@@ -16,7 +17,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 	//private static final float magCompressionBase = 6.50f;
 
 	private static final double sunMagnitude = -26.74;
-	private static final double upperMagLimit = -1.46;
+	private static final double upperMagLimit = -1.0;
 	
 	private static CachedGaussianRandom randomTurbulance = new CachedGaussianRandom(100, 3L);
 	
@@ -100,7 +101,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 	}*/
 
 	public static float turbulance() {
-		return (float) (instance.turbulance * instance.randomTurbulance.nextGaussian() * 0.15);
+		return (float) (instance.turbulance * instance.randomTurbulance.nextGaussian() * 0.1);
 	}
 
 	public static float getBrightnessFromMagnitude(double magnitude) {

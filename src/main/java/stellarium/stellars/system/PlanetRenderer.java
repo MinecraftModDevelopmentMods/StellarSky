@@ -11,7 +11,7 @@ public enum PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache
 	
 	@Override
 	public void render(PlanetRenderCache cache, EnumStellarPass pass, LayerRenderInformation info) {
-		if(pass != EnumStellarPass.OpaqueScatter)
+		if(pass != EnumStellarPass.OpaqueScatter || !cache.shouldRender)
 			return;
 		
 		IStellarTessellator tessellator = info.tessellator;

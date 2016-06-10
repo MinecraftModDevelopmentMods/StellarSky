@@ -115,8 +115,8 @@ config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brigh
 config.category.milkyway=Milky Way Configurations
 config.category.milkyway.tooltip=Configurations for Milky Way.
 
-config.property.client.moonfrac=Number of Moon fragment
-config.property.client.moonfrac.tooltip=Moon is drawn with fragments. Less fragments will increase FPS, but the moon become more defective.
+config.property.client.moonfrac=Number of Sun & Moon fragment
+config.property.client.moonfrac.tooltip=Surfaces of Sun and Moon are drawn with fragments. Less fragments will increase FPS, but the moon become more defective.
 
 config.property.client.milkywayfrac=Number of Milky way fragment
 config.property.client.milkywayfrac.tooltip=Milky way is drawn with fragments. Less fragments will increase FPS, but the milky way become more defective.

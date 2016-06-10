@@ -40,6 +40,8 @@ public class StellarTessellator implements IStellarTessellator {
 	
 	private float rasterizedAngleRatio;
 	
+	private float weatherFactor;
+	
 	
 	private int currentContextSize;
 	private boolean hasNormal;
@@ -57,6 +59,8 @@ public class StellarTessellator implements IStellarTessellator {
 	}
 	
 	public void initialize(StellarRenderInformation info) {
+		this.weatherFactor = 1.0f - info.world.getRainStrength(info.partialTicks);
+		
 		this.shader = info.getActiveShader();
 		this.viewer = info.info;
 
@@ -165,6 +169,10 @@ public class StellarTessellator implements IStellarTessellator {
 		
 		if(this.renderingDominate)
 			return;
+		
+		this.renderedRed *= this.weatherFactor;
+		this.renderedGreen *= this.weatherFactor;
+		this.renderedBlue *= this.weatherFactor;
 
 		double brightest = Math.max(this.renderedRed, Math.max(this.renderedGreen, this.blue));
 
@@ -247,6 +255,7 @@ public class StellarTessellator implements IStellarTessellator {
 		if(this.hasTexture) {
 			GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
 		}
+		// TODO migration to instanced rendering?
 		//org.lwjgl.opengl.ARBDrawInstanced.glDrawArraysInstancedARB(mode, first, count, primcount);
 		//org.lwjgl.opengl.EXTDrawInstanced.glDrawArraysInstancedEXT(mode, first, count, primcount);
 

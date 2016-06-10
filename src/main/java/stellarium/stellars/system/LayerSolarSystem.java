@@ -36,7 +36,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		///Sun
 		StellarSky.logger.info("Initializing Sun...");
 		Sun sun = new Sun("Sun");
-		sun.radius=0.00465469;
+		sun.radius=0.00465469 * 4;
 		sun.mass=1.0;
 		sun.initialize();
 		container.loadObject("Sun", sun);
@@ -52,7 +52,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		
 		earth.radius=4.2634e-5;
 		earth.mass=3.002458398e-6;
-		moon.radius = 4e-5 * settings.propMoonSize.getDouble();
+		moon.radius = 4 * 1.158e-5 * settings.propMoonSize.getDouble();
 		
 		//Initialization
 		//-Earth

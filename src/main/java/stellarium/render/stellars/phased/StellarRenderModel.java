@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.Hierarchy;
 import stellarium.lib.hierarchy.HierarchyElement;
+import stellarium.render.stellars.access.ICheckedAtmModel;
 import stellarium.render.stellars.layer.StellarLayerModel;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
@@ -28,11 +29,13 @@ public class StellarRenderModel {
 
 	private StellarChecker checker = new StellarChecker();
 
-	public StellarRenderModel(CelestialManager celManager) {
+	public StellarRenderModel(CelestialManager celManager, ICheckedAtmModel atmModel) {
 		for(StellarObjectContainer layer : celManager.getLayers()) {
 			StellarLayerModel layerModel = new StellarLayerModel(layer);
 			baseModels.add(layerModel);
 		}
+		
+		checker.setAtmModel(atmModel);
 	}
 	
 	public void initializeSettings(ClientSettings settings) {

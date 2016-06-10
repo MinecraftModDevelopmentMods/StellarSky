@@ -16,6 +16,9 @@ public class StellarSkyResources {
 	public static final PerDimensionResource resourceStar =
 			new PerDimensionResource("Star", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/star.png"));
 
+	public static final PerDimensionResource resourceSunSurface =
+			new PerDimensionResource("Sun_Surface", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/sun.png"));
+
 	public static final PerDimensionResource resourceSunHalo =
 			new PerDimensionResource("Sun_Halo", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/halo.png"));
 	
@@ -36,9 +39,11 @@ public class StellarSkyResources {
 		PerDimensionResourceRegistry.getInstance().registerResourceId("End_Sky");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Milkyway");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Star");
+		
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Sun_Surface");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Sun_Halo");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Surface");
-		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Halo");
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Halo");		
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Planet_Small");
 		
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Landscape");

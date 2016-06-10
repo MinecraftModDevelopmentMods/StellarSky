@@ -6,6 +6,7 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
+import stellarium.render.stellars.access.ICheckedAtmModel;
 import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.stellars.OpticsHelper;
 import stellarium.view.ViewerInfo;
@@ -16,15 +17,21 @@ public class StellarChecker implements IStellarChecker {
 	
 	private float leastBrightnessRendered;
 	private static final float leastBrightnessDominator = 1.0e-7f;
+
+	private ICheckedAtmModel atmChecker;
 	
 	private double multiplyingPower;
 	private Vector3 colorMultiplier;
 	private Vector3 resolutionColor;
 	private ISkyEffect sky;
 
-	private SpCoord cache = new SpCoord();
+	private SpCoord pos;
 	private float red, green, blue;
 	private float radius;
+
+	public void setAtmModel(ICheckedAtmModel atmModel) {
+		this.atmChecker = atmModel;
+	}
 
 	public void setView(World world, ViewerInfo info) {
 		this.multiplyingPower = info.multiplyingPower;
@@ -41,6 +48,11 @@ public class StellarChecker implements IStellarChecker {
 	public void startDescription() {
 		this.red = this.green = this.blue = 0;
 		this.radius = 0.0f;
+	}
+	
+	@Override
+	public void pos(SpCoord pos) {
+		this.pos = pos;
 	}
 
 	@Override
@@ -72,7 +84,7 @@ public class StellarChecker implements IStellarChecker {
 				Math.max(this.green * colorMultiplier.getY() / Spmath.sqr(multiplyingPower * (this.radius + resolutionColor.getY())),
 						this.blue * colorMultiplier.getZ() / Spmath.sqr(multiplyingPower * (this.radius + resolutionColor.getZ()))))
 				> leastBrightnessRendered / Spmath.sqr(DEFAULT_SIZE)) {
-			return true;
+			return atmChecker.isRendered(this.pos);
 		} else return false;
 	}
 }

@@ -33,8 +33,8 @@ public class StellarModel {
 	}
 	
 	public StellarModel(CelestialManager clientCelestialManager) {
-		this.layersModel = new StellarRenderModel(clientCelestialManager);
 		this.atmModel = new AtmosphereModel();
+		this.layersModel = new StellarRenderModel(clientCelestialManager, this.atmModel);
 	}
 
 	public void initializeSettings(ClientSettings settings) {

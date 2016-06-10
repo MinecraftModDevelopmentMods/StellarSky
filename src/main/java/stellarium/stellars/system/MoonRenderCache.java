@@ -66,6 +66,7 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 		
 		checker.startDescription();
 		checker.brightness(brightness, brightness, brightness);
+		checker.pos(new SpCoord(0.0, 90.0));
 		checker.radius(this.size);
 		this.shouldRender = checker.endCheckRendered();
 

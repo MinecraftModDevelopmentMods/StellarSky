@@ -47,7 +47,7 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 		/*this.appMag = (float) (object.mag + airmass * info.getExtinctionRate(EnumRGBA.Alpha)
 			+ StellarMath.LumToMagWithoutSize(multiplier));*/
 
-		this.shouldRender = true;
+		//this.shouldRender = true;
 		/*if(this.appMag > this.magLimit) {
 			this.shouldRender = false;
 			return;
@@ -67,6 +67,7 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 		this.blue = (float) (alpha * starColor.b / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.sky.getExtinctionRate(Wavelength.B)));
 
 		checker.startDescription();
+		checker.pos(this.appPos);
 		checker.brightness(red, green, blue);
 		this.shouldRender = checker.endCheckRendered();
 	}

@@ -3,30 +3,38 @@ package stellarium.render.stellars.atmosphere;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
+import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.Hierarchy;
+import stellarium.render.stellars.access.ICheckedAtmModel;
 import stellarium.view.ViewerInfo;
 import stellarium.world.StellarDimensionManager;
 
 @Hierarchy
-public class AtmosphereModel {
+public class AtmosphereModel implements ICheckedAtmModel {
 
 	private float outerRadius = 820.0f;
 	private float innerRadius = 800.0f;
 
 	private float height;
 	private float skyred, skygreen, skyblue;
-	//private float skyExtRed, skyExtGreen, skyExtBlue;
+	private float skyExtRed, skyExtGreen, skyExtBlue;
 	private float skyDispRed, skyDispGreen, skyDispBlue;
+	
+	private boolean azimuthCheckEnabled;
+	private double leastAzimuthRendered;
 
 	public void initializeSettings(ClientSettings settings) {
 		settings.putSubConfig(AtmosphereSettings.KEY, new AtmosphereSettings());
 	}
 
 	public void dimensionLoad(StellarDimensionManager dimManager) {
-		// TODO per-dimension atmosphere
-		;
+		this.azimuthCheckEnabled = dimManager.getSettings().hideObjectsUnderHorizon();
+		this.leastAzimuthRendered = -90.0f;
+		
+		this.outerRadius = (float) dimManager.getSettings().getOuterRadius();
+		this.innerRadius = (float) dimManager.getSettings().getInnerRadius();
 	}
 
 	public void onTick(World world, ViewerInfo update) {
@@ -41,8 +49,15 @@ public class AtmosphereModel {
 		this.skyDispRed = update.sky.getDispersionFactor(Wavelength.red, 0.0f);
 		this.skyDispGreen = update.sky.getDispersionFactor(Wavelength.V, 0.0f);
 		this.skyDispBlue = update.sky.getDispersionFactor(Wavelength.B, 0.0f);
+		
+		this.skyExtRed = update.sky.getExtinctionRate(Wavelength.red);
+		this.skyExtGreen = update.sky.getExtinctionRate(Wavelength.V);
+		this.skyExtBlue = update.sky.getExtinctionRate(Wavelength.B);
 
 		this.height = 0.2f + update.getHeight(world);
+		
+		if(this.azimuthCheckEnabled)
+			this.leastAzimuthRendered = Math.acos(1.0 / (1.0 + this.height / this.innerRadius));
 	}
 
 	public double getHeight() {
@@ -79,5 +94,22 @@ public class AtmosphereModel {
 
 	public float getSkyDispBlue() {
 		return this.skyDispBlue;
+	}
+	
+	public float getSkyExtRed() {
+		return this.skyExtRed;
+	}
+
+	public float getSkyExtGreen() {
+		return this.skyExtGreen;
+	}
+
+	public float getSkyExtBlue() {
+		return this.skyExtBlue;
+	}
+
+	@Override
+	public boolean isRendered(SpCoord pos) {
+		return pos.y >= this.leastAzimuthRendered;
 	}
 }

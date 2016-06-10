@@ -36,6 +36,7 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 		
 		checker.startDescription();
 		checker.brightness(brightness, brightness, brightness);
+		checker.pos(this.appCoord);
 		checker.radius(this.size);
 		this.shouldRender = checker.endCheckRendered();
 		

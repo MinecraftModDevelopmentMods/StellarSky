@@ -10,6 +10,11 @@ public interface IStellarChecker {
 	public void startDescription();
 	
 	/**
+	 * Provides the position of the object.
+	 * */
+	public void pos(SpCoord pos);
+	
+	/**
 	 * Provides radian radius to approximate the size for opaque sources.
 	 * */
 	public void radius(float radius);
