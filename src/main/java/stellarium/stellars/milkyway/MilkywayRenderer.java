@@ -1,5 +1,8 @@
 package stellarium.stellars.milkyway;
 
+import org.lwjgl.opengl.GL11;
+
+import stellarapi.lib.gui.util.GuiUtil;
 import stellarium.StellarSkyResources;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;

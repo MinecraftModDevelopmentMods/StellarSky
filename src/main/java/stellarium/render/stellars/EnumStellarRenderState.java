@@ -1,6 +1,8 @@
 package stellarium.render.stellars;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL20;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
@@ -76,11 +78,14 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	SetupPointScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
+			GL11.glEnable(GL20.GL_POINT_SPRITE);
+			//TODO ARBPointSprite.GL_POINT_SPRITE_ARB
 			return RenderPointScatter;
 		}
 	}, RenderPointScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
+			GL11.glDisable(GL20.GL_POINT_SPRITE);
 		    GL11.glDepthMask(true);
 		    GL11.glEnable(GL11.GL_DEPTH_TEST);
 			GL11.glDisable(GL11.GL_BLEND);
@@ -107,14 +112,17 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	SetupOpaqueScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
+			GL11.glEnable(GL20.GL_POINT_SPRITE);
+			//TODO ARBPointSprite.GL_POINT_SPRITE_ARB
 			return RenderOpaqueScatter;
 		}
 	}, RenderOpaqueScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
+			GL11.glDisable(GL20.GL_POINT_SPRITE);
 			GL11.glShadeModel(GL11.GL_SMOOTH);
 			if(resInfo.isFrameBufferEnabled)
-				return RenderCachedAtmosphere;
+				return UnbindDominateScatter;
 			else return PrepareDominateScatter;
 		}
 	},
@@ -122,7 +130,8 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	RenderCachedAtmosphere() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			return UnbindDominateScatter;
+			endRendering(resInfo);
+			return null;
 		}
 	},
 
@@ -137,8 +146,7 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	}, UnbindDominateScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			endRendering(resInfo);
-			return null;
+			return RenderCachedAtmosphere;
 		}
 	}
 	;

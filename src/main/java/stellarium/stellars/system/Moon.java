@@ -119,9 +119,7 @@ public class Moon extends SolarObject {
 	//Ecliptic Position of Moon's Local Region from Ground (Update Needed)
 	//Parameter: PosLocalM Result
 	public Vector3 posLocalG(Vector3 p){
-		Vector3 vec = new Vector3(p);
-		vec.add(this.earthPos);
-		return vec;
+		return new Vector3(p).add(this.earthPos);
 	}
 	
 	@Override

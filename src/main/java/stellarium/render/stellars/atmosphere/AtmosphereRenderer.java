@@ -3,19 +3,20 @@ package stellarium.render.stellars.atmosphere;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.regex.Matcher;
 
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.lib.gui.util.GuiUtil;
 import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.shader.ShaderHelper;
-import stellarium.render.shader.SwitchableShaders;
-import stellarium.render.sky.SkyRenderInformation;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.phased.StellarRenderInformation;
 import stellarium.util.math.Allocator;
@@ -29,6 +30,7 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 	private Framebuffer dominateCache = null;
 	private FloatBuffer renderBuffer;
 	private ByteBuffer indicesBuffer;
+	private ByteBuffer toTest = null;
 
 	private int renderToCacheList = -1;
 	private int renderedList = -1;
@@ -53,7 +55,6 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 			dominateCache.deleteFramebuffer();
 
 		this.dominateCache = new FramebufferCustom(settings.cacheLong, settings.cacheLat, true);
-		dominateCache.setFramebufferFilter(GL11.GL_LINEAR);
 		dominateCache.unbindFramebuffer();
 		
 		int renderBufferNewSize = (settings.fragLong + 1) * (settings.fragLat + 1) * STRIDE_IN_FLOAT;
@@ -88,9 +89,10 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 				info.minecraft.getFramebuffer().unbindFramebuffer();
 
 				dominateCache.bindFramebuffer(true);
+				
 		        GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-
+		        
 				GL11.glMatrixMode(GL11.GL_PROJECTION);
 				GL11.glPushMatrix();
 				GL11.glLoadIdentity();
@@ -98,7 +100,6 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 				GL11.glMatrixMode(GL11.GL_MODELVIEW);
 				GL11.glPushMatrix();
 				GL11.glLoadIdentity();
-
 				info.setAtmCallList(this.renderToCacheList);
 			}
 			else info.setAtmCallList(this.renderedList);
@@ -108,6 +109,7 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		case FinalizeDominateScatter:
 			if(info.isFrameBufferEnabled) {
 				dominateCache.unbindFramebuffer();
+				
 				GL11.glMatrixMode(GL11.GL_PROJECTION);
 				GL11.glPopMatrix();
 				GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -120,22 +122,24 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		
 		case RenderCachedDominate:
 			ShaderHelper.getInstance().releaseCurrentShader();
+
 			dominateCache.bindFramebufferTexture();
-			//GL11.glColor4f(20.0f, 20.0f, 20.0f, 2.0f);
-			GL11.glCallList(this.renderedList);
-			dominateCache.unbindFramebufferTexture();
 			
-			GL11.glMatrixMode(GL11.GL_PROJECTION);
-			GL11.glPushMatrix();
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-			GL11.glPushMatrix();
-			dominateCache.framebufferRender(400, 200);
-			GL11.glViewport(0, 0, info.minecraft.displayWidth, info.minecraft.displayHeight);
-			GL11.glMatrixMode(GL11.GL_PROJECTION);
-			GL11.glPopMatrix();
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-			GL11.glPopMatrix();
+			GL11.glCallList(this.renderedList);
+			
+			dominateCache.unbindFramebufferTexture();
+
 			break;
+		
+		case TestAtmCache:
+			dominateCache.bindFramebufferTexture();
+			GL11.glPushMatrix();
+			GL11.glTranslated(100, 50, 0);
+			GuiUtil.drawTexturedRectSimple(0, 0, -100, -50);
+			GL11.glPopMatrix();
+			dominateCache.unbindFramebufferTexture();
+			break;
+		
 		case SetupOpaque:
 			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.Opaque));
 			break;
@@ -202,10 +206,12 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
         	
     		for(int longc=0; longc<=settings.fragLong; longc++)
     			for(int latc=0; latc<=settings.fragLat; latc++)
-    				displayvec[longc][latc].set(longc * 2.0 * Math.PI / settings.fragLong, (settings.fragLat - latc) * Math.PI / settings.fragLat - Math.PI / 2, 0.0);
+    				displayvec[longc][latc].set(longc * 2.0 * Math.PI / settings.fragLong, latc * Math.PI / settings.fragLat - Math.PI / 2, 0.0);
         	
             GL11.glNewList(this.renderToCacheList, GL11.GL_COMPILE);
+            GL11.glFrontFace(GL11.GL_CW);
             this.drawDisplay(displayvec, settings.fragLong, settings.fragLat, 1.0, false, false);
+            GL11.glFrontFace(GL11.GL_CCW);
             GL11.glEndList();
         }
 	}

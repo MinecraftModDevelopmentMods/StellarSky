@@ -28,11 +28,11 @@ void main()
   
     gl_FragColor = scatteringColor4 * (getRayleighPhase(fCos2) * rayleighFactor + getMiePhase(fCos, fCos2, g, g*g) * mieFactor);
     gl_FragColor = 1.0 - exp(- exposure * gl_FragColor);
-    gl_FragColor = scatteringColor4;
+    //gl_FragColor = scatteringColor4;
 
-    //float fogFactor = gl_FogFragCoord;
-    //fogFactor = clamp(fogFactor, 0.0, 1.0);
-    //gl_FragColor = mix(gl_Fog.color, gl_FragColor, fogFactor);
+    float fogFactor = gl_FogFragCoord;
+    fogFactor = clamp(fogFactor, 0.0, 1.0);
+    gl_FragColor = mix(gl_FragColor, gl_Fog.color, fogFactor);
 
     gl_FragColor.a = 1.0;
 }

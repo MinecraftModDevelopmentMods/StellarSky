@@ -1,14 +1,9 @@
 package stellarium.lib.render.internal;
 
-import java.util.Set;
-
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Sets;
 
 import stellarium.lib.render.hierarchy.IRenderedCollection;
 

@@ -1,5 +1,7 @@
 package stellarium.stellars.system;
 
+import org.lwjgl.opengl.GL11;
+
 import stellarium.StellarSkyResources;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
@@ -19,6 +21,13 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 			tessellator.color(cache.domination, cache.domination, cache.domination);
 			tessellator.writeVertex();
 			tessellator.end();
+		} else if(pass == EnumStellarPass.OpaqueScatter && cache.shouldRender) {
+			/*tessellator.begin(false);
+			tessellator.radius(cache.size);
+			tessellator.pos(cache.appCoord, info.deepDepth);
+			tessellator.color(cache.brightness, cache.brightness, cache.brightness);
+			tessellator.writeVertex();
+			tessellator.end();*/
 		} else if(pass == EnumStellarPass.Opaque && cache.shouldRender) {
 			tessellator.bindTexture(StellarSkyResources.resourceMoonSurface.getLocation());
 			tessellator.begin(true);
@@ -29,9 +38,9 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 			for(longc=0; longc<cache.longn; longc++){
 				for(latc=0; latc<cache.latn; latc++){
 					int longcd=(longc+1)%cache.longn;
-					float longd=(float)longc/(float)cache.longn;
+					float longd=(float)longc/(float)cache.longn + 0.5f;
 					float latd=1.0f-(float)latc/(float)cache.latn;
-					float longdd=(float)(longc+1)/(float)cache.longn;
+					float longdd=(float)(longc+1)/(float)cache.longn + 0.5f;
 					float latdd=1.0f-(float)(latc+1)/(float)cache.latn;
 
 					tessellator.pos(cache.moonPos[longc][latc], info.deepDepth / 2.0f);

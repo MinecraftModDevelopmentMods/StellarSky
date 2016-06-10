@@ -16,7 +16,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 	//private static final float magCompressionBase = 6.50f;
 
 	private static final double sunMagnitude = -26.74;
-	private static final double upperMagLimit = 1.46;
+	private static final double upperMagLimit = -1.46;
 	
 	private static CachedGaussianRandom randomTurbulance = new CachedGaussianRandom(100, 3L);
 	
@@ -100,7 +100,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 	}*/
 
 	public static float turbulance() {
-		return (float) (instance.turbulance * instance.randomTurbulance.nextGaussian() * 0.25);
+		return (float) (instance.turbulance * instance.randomTurbulance.nextGaussian() * 0.15);
 	}
 
 	public static float getBrightnessFromMagnitude(double magnitude) {

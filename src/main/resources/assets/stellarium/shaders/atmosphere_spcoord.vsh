@@ -68,9 +68,9 @@ void main() {
 	float depth2 = (1.0 - cosViewAngle * cosViewAngle) * cameraRadius * cameraRadius;
 
 	if (cosViewAngle > 0.0 || depth2 > innerRadius * innerRadius)
-		fFar = sqrt(outerRadius * outerRadius - depth2) - sign(cosViewAngle) * sqrt(cameraRadius * cameraRadius - depth2);
+		fFar = sqrt(outerRadius * outerRadius - depth2) - cosViewAngle * cameraRadius;
 	else {
-		fFar = sqrt(cameraRadius * cameraRadius - depth2) - sqrt(innerRadius * innerRadius - depth2);
+		fFar = abs(cosViewAngle * cameraRadius) - sqrt(innerRadius * innerRadius - depth2);
 		cosViewAngle = -cosViewAngle;
 		v3Start += fFar * v3Ray;
 		v3Ray = -v3Ray;
@@ -129,17 +129,9 @@ void main() {
 
 
 	// Finally, scale the Mie and Rayleigh colors
-
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	scatteringColor4.rgb = integratedScatterColor * lightColor;
-	v3Direction.xyz = v3Pos;
+	v3Direction.xyz = -v3Pos;
 
-    scatteringColor4.r = gl_Vertex.x / PI * 2;
-    scatteringColor4.g = gl_Vertex.y;
-    
-    //if(gl_Vertex.x > 0.15)
-    //    scatteringColor4.b = 1;
-    //else scatteringColor4.b = 0;
-
-	gl_FogFragCoord = exp(invertFlag * (depthEnd - depthCamera) / depthToFogFactor);
+	gl_FogFragCoord = 1.0 - exp(invertFlag * (depthEnd - depthCamera) / depthToFogFactor);
 }

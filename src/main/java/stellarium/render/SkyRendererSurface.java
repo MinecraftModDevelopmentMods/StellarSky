@@ -73,7 +73,7 @@ public class SkyRendererSurface extends IRenderHandler {
 
         tessellator.draw();
         GL11.glEndList();*/
-        this.renderer = new TheSkyRenderer(subRenderer);
+        this.renderer = new TheSkyRenderer();
 	}
 	
 	@Override

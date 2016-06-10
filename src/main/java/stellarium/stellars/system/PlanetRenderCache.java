@@ -32,7 +32,7 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 		double appMag = (object.currentMag + airmass * OpticsHelper.ext_coeff_V);
 		this.brightness = OpticsHelper.getBrightnessFromMagnitude(appMag);
 
-		this.size = 0.6f;
+		this.size = 0.2f;
 		
 		checker.startDescription();
 		checker.brightness(brightness, brightness, brightness);
@@ -41,6 +41,8 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 		
 		/*if(appCoord.y < 0.0 && info.hideObjectsUnderHorizon)
 			this.shouldRender = false;*/
+		
+		this.brightness *= 0.1f;
 	}
 
 	@SideOnly(Side.CLIENT)

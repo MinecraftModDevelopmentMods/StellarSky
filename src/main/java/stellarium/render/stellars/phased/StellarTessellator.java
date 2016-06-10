@@ -141,7 +141,7 @@ public class StellarTessellator implements IStellarTessellator {
 		this.hasNormal = false;
 	}
 	
-	private static final float DEFAULT_SIZE = Spmath.Radians(0.3f);
+	private static final float DEFAULT_SIZE = Spmath.Radians(0.06f);
 
 	private void processColor() {
 		double multiplier = Spmath.sqr(DEFAULT_SIZE);
@@ -150,7 +150,7 @@ public class StellarTessellator implements IStellarTessellator {
 		this.renderedGreen = this.green;
 		this.renderedBlue = this.blue;
 
-		if(!this.hasTexture) {
+		if(!this.hasTexture && !this.renderingDominate) {
 			this.renderedRed *= (viewer.colorMultiplier.getX() * multiplier
 					/ Spmath.sqr(viewer.multiplyingPower * (viewer.resolutionColor.getX() + this.radius)));
 			this.renderedGreen *= (viewer.colorMultiplier.getY() * multiplier
@@ -184,8 +184,8 @@ public class StellarTessellator implements IStellarTessellator {
 		if(this.hasTexture) {
 			;
 		} else if(!this.renderingDominate) {
-			float size = (2.5f * (float)viewer.resolutionGeneral + this.radius);
-			GL11.glPointSize(this.rasterizedAngleRatio * size);
+			float size = 10.0f * (float)viewer.resolutionGeneral + 2.0f * this.radius;
+			GL11.glPointSize(Math.max(this.rasterizedAngleRatio * size, 10.0f));
 			if(this.radius > 0.0f)
 				shader.getField("scaledRadius").setDouble(this.radius / size);
 			
@@ -247,7 +247,9 @@ public class StellarTessellator implements IStellarTessellator {
 		if(this.hasTexture) {
 			GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
 		}
-		
+		//org.lwjgl.opengl.ARBDrawInstanced.glDrawArraysInstancedARB(mode, first, count, primcount);
+		//org.lwjgl.opengl.EXTDrawInstanced.glDrawArraysInstancedEXT(mode, first, count, primcount);
+
 		GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
 		GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 	}

@@ -1,10 +1,10 @@
 #version 130
 
-uniform vec4 invres2; // 0.5 * (particleSize / resolution)^2
+uniform vec4 invres2; // 0.5 * (pointSize / resolution)^2
 uniform float skyBrightness;
 uniform float dominationscale;
 
-uniform float radius; // radius / particleSize
+uniform float scaledRadius; // radius / particleSize
 
 in vec2 dominationCoord;
 in vec4 color;
@@ -13,7 +13,7 @@ const vec2 center = vec2(0.5, 0.5);
 
 void main()
 {
-    float dist = distance(gl_PointCoord, center) - radius;
+    float dist = max(distance(gl_PointCoord, center) - scaledRadius * 0.5, 0.0);
     vec4 curColor = color * exp(- dist * dist * invres2);
     gl_FragColor = curColor - vec4(sqrt(skyBrightness) * dominationscale);
 }

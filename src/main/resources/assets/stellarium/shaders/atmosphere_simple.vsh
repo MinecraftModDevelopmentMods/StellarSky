@@ -66,9 +66,9 @@ void main() {
 	float depth2 = (1.0 - cosViewAngle * cosViewAngle) * cameraRadius * cameraRadius;
 
 	if (cosViewAngle > 0.0 || depth2 > innerRadius * innerRadius)
-		fFar = sqrt(outerRadius * outerRadius - depth2) - sign(cosViewAngle) * sqrt(cameraRadius * cameraRadius - depth2);
+		fFar = sqrt(outerRadius * outerRadius - depth2) - cosViewAngle * cameraRadius;
 	else {
-		fFar = sqrt(cameraRadius * cameraRadius - depth2) - sqrt(innerRadius * innerRadius - depth2);
+		fFar = abs(cosViewAngle * cameraRadius) - sqrt(innerRadius * innerRadius - depth2);
 		cosViewAngle = -cosViewAngle;
 		v3Start += fFar * v3Ray;
 		v3Ray = -v3Ray;

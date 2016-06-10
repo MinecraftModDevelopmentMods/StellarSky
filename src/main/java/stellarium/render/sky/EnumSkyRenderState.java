@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
 
+import net.minecraft.client.renderer.RenderHelper;
 import stellarium.display.DisplayModel;
 import stellarium.display.DisplayRenderer;
 import stellarium.lib.render.RendererRegistry;
@@ -22,12 +23,18 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 	Initial() {
 		@Override
 		public IRenderState<Void, SkyRenderInformation> transitionTo(Void pass, SkyRenderInformation resInfo) {
+			RenderHelper.disableStandardItemLighting();
+			GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			
 			GL11.glPushMatrix();
 			GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
 			GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
 
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			GL11.glDepthMask(false);
+			
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
 
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -52,7 +59,6 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 		@Override
 		public IRenderState<Void, SkyRenderInformation> transitionTo(Void pass, SkyRenderInformation resInfo) {
 			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glDisable(GL11.GL_ALPHA_TEST);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			GL11.glEnable(GL11.GL_FOG);
 			return LandscapeRender;

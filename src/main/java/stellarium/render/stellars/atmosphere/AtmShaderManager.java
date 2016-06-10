@@ -86,10 +86,10 @@ public class AtmShaderManager {
 		this.weatherFactor = (float)(1.0D - (double)(rainStrength * 5.0F) / 16.0D);
 		weatherFactor *= (1.0D - (double)(info.world.getWeightedThunderStrength(info.partialTicks) * 5.0F) / 16.0D);
 
-		this.skyBrightness = info.world.getSunBrightnessFactor(info.partialTicks);
+		this.skyBrightness = info.world.getFogColor(info.partialTicks).lengthVector() * 10.0f;
 		this.skyBrightness *= (info.info.brightnessMultiplier / Spmath.sqr(info.info.multiplyingPower));
 
-		this.dominationScale = 0.8;
+		this.dominationScale = 0.5;
 	}
 	
 	public IShaderObject bindShader(AtmosphereModel model, EnumStellarPass pass) {
@@ -128,14 +128,13 @@ public class AtmShaderManager {
 			
 			shader.bindShader();
 			
-			//cameraHeight.setDouble(model.getHeight());
-			cameraHeight.setDouble(0.01);
+			cameraHeight.setDouble(model.getHeight());
 			outerRadius.setDouble(model.getOuterRadius());
 			innerRadius.setDouble(model.getInnerRadius());
 			nSamples.setInteger(20);
 
 			exposure.setDouble(2.0);
-			depthToFogFactor.setDouble(100.0);
+			depthToFogFactor.setDouble(100.0 * Math.exp(model.getHeight()));
 
 			Vector3 vec = new Vector3(0.09, 0.18, 0.27);
 			extinctionFactor.setVector3(vec.scale(1.0));
@@ -144,15 +143,15 @@ public class AtmShaderManager {
 			double mult = 1.0;
 			
 			rayleighFactor.setDouble4(
-					mult * 4 * this.weatherFactor * model.getSkyColorRed() / 0.45,
-					mult * 8 * this.weatherFactor * model.getSkyColorGreen() / 0.65,
-					mult * 16 * this.weatherFactor * model.getSkyColorBlue(),
+					mult * 4 * this.weatherFactor * model.getSkyColorRed() * model.getSkyDispRed() / 0.45,
+					mult * 8 * this.weatherFactor * model.getSkyColorGreen() * model.getSkyDispGreen() / 0.65,
+					mult * 16 * this.weatherFactor * model.getSkyColorBlue() * model.getSkyDispBlue(),
 					1.0);
 
 			mieFactor.setDouble4(
-					mult * 0.1 * this.rainStrengthFactor * this.weatherFactor,
-					mult * 0.2 * this.rainStrengthFactor * this.weatherFactor,
-					mult * 0.3 * this.rainStrengthFactor * this.weatherFactor,
+					mult * 0.1 * this.rainStrengthFactor * this.weatherFactor * model.getSkyDispRed(),
+					mult * 0.2 * this.rainStrengthFactor * this.weatherFactor * model.getSkyDispGreen(),
+					mult * 0.3 * this.rainStrengthFactor * this.weatherFactor * model.getSkyDispBlue(),
 					1.0);
 		}
 	}

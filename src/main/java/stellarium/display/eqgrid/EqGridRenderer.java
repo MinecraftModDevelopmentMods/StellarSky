@@ -16,16 +16,10 @@ public class EqGridRenderer implements IDisplayRenderer<EqGridCache> {
 			return;
 		
 		GL11.glPushMatrix();
-		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);
-		//GL11.glScaled(info.deepDepth, info.deepDepth, info.deepDepth);
+		GL11.glScaled(info.deepDepth, info.deepDepth, info.deepDepth);
 
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-		
-		/*info.tessellator.addVertex(1, 0, 0);
-		info.tessellator.addVertex(1, 1, 0);
-		info.tessellator.addVertex(0, 1, 0);
-		info.tessellator.addVertex(0, 0, 0);*/
 
 		if(cache.gridEnabled) {
 			GL11.glLineWidth(2.0f);

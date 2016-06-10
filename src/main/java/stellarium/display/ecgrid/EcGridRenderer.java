@@ -22,6 +22,8 @@ public class EcGridRenderer implements IDisplayRenderer<EcGridCache> {
 		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 
 		if(cache.gridEnabled) {
+			GL11.glLineWidth(2.0f);
+			
 			info.tessellator.startDrawingQuads();
 
 			for(int longc=0; longc<cache.longn; longc++){
@@ -39,6 +41,8 @@ public class EcGridRenderer implements IDisplayRenderer<EcGridCache> {
 			}
 
 			info.tessellator.draw();
+			
+			GL11.glLineWidth(1.0f);
 		}
 
 		if(cache.eclipticEnabled) {
@@ -57,7 +61,7 @@ public class EcGridRenderer implements IDisplayRenderer<EcGridCache> {
 
 			info.tessellator.draw();
 			
-			GL11.glLineWidth(2.0f);
+			GL11.glLineWidth(1.0f);
 			
 			GL11.glShadeModel(GL11.GL_FLAT);
 		}

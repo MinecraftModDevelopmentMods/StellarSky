@@ -28,7 +28,7 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 	protected Vector3 moonnormal[][];
 	protected float moonilum[][];
 	
-	protected float domination;
+	protected float domination, brightness;
 
 	protected Vector3 buf = new Vector3();
 	protected float size;
@@ -58,13 +58,11 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 		this.domination = OpticsHelper.getDominationFromMagnitude(appMag);
 
 		this.size = (float) (object.radius / object.earthPos.size());
-
 		checker.startDescription();
 		checker.brightness(domination, domination, domination);
 		this.shouldRenderDominate = checker.endCheckDominator();
 		
-		
-		float brightness = OpticsHelper.getBrightnessFromMagnitude(appMag);
+		this.brightness = OpticsHelper.getBrightnessFromMagnitude(appMag);
 		
 		checker.startDescription();
 		checker.brightness(brightness, brightness, brightness);
@@ -79,8 +77,8 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 			for(latc=0; latc<=latn; latc++){
 				buf.set(object.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0));
 				
-				moonilum[longc][latc] = (float) object.illumination(buf);
-				moonnormal[longc][latc].set(object.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0));
+				moonilum[longc][latc] = (float) Math.max(object.illumination(buf), 0.0);
+				moonnormal[longc][latc].set(buf);
 				moonnormal[longc][latc].normalize();
 				
 				buf.set(object.posLocalG(buf));
@@ -91,6 +89,8 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 				info.sky.applyAtmRefraction(moonPos[longc][latc]);
 			}
 		}
+		
+		this.brightness *= 0.00001f;
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -2,20 +2,14 @@ package stellarium.lib.render.internal;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 import stellarium.lib.hierarchy.HierarchyDistributor;
 import stellarium.lib.hierarchy.IFieldElementDescription;
 import stellarium.lib.render.IGenericRenderer;
 import stellarium.lib.render.RendererRegistry;
-import stellarium.lib.render.hierarchy.IRenderState;
 
 public class DefaultRenderer implements IGenericRenderer {
 

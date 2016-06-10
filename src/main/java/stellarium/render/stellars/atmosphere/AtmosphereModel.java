@@ -3,6 +3,7 @@ package stellarium.render.stellars.atmosphere;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
+import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.Hierarchy;
 import stellarium.view.ViewerInfo;
@@ -16,7 +17,8 @@ public class AtmosphereModel {
 
 	private float height;
 	private float skyred, skygreen, skyblue;
-	private float skyExtRed, skyExtGreen, skyExtBlue;
+	//private float skyExtRed, skyExtGreen, skyExtBlue;
+	private float skyDispRed, skyDispGreen, skyDispBlue;
 
 	public void initializeSettings(ClientSettings settings) {
 		settings.putSubConfig(AtmosphereSettings.KEY, new AtmosphereSettings());
@@ -36,8 +38,11 @@ public class AtmosphereModel {
 		this.skygreen = (float)(l >> 8 & 255) / 255.0F;
 		this.skyblue = (float)(l & 255) / 255.0F;
 
-		this.height = (float)update.getHeight(world);
-		
+		this.skyDispRed = update.sky.getDispersionFactor(Wavelength.red, 0.0f);
+		this.skyDispGreen = update.sky.getDispersionFactor(Wavelength.V, 0.0f);
+		this.skyDispBlue = update.sky.getDispersionFactor(Wavelength.B, 0.0f);
+
+		this.height = 0.2f + update.getHeight(world);
 	}
 
 	public double getHeight() {
@@ -62,5 +67,17 @@ public class AtmosphereModel {
 
 	public float getSkyColorBlue() {
 		return this.skyblue;
+	}
+	
+	public float getSkyDispRed() {
+		return this.skyDispRed;
+	}
+
+	public float getSkyDispGreen() {
+		return this.skyDispGreen;
+	}
+
+	public float getSkyDispBlue() {
+		return this.skyDispBlue;
 	}
 }

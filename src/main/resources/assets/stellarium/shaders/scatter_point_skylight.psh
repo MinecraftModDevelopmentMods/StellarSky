@@ -1,6 +1,6 @@
 #version 130
 
-uniform vec4 invres2; // 0.5 * (particleSize / resolution)^2
+uniform vec4 invres2; // 0.5 * (pointSize / resolution)^2
 uniform float skyBrightness;
 uniform float dominationscale;
 

@@ -13,8 +13,8 @@ const vec2 center = vec2(0.5, 0.5);
 
 void main()
 {
-    float dist = max(distance(gl_PointCoord, center) - scaledRadius, 0.0);
+    float dist = max(distance(gl_PointCoord, center) - scaledRadius * 0.5, 0.0);
     vec4 dominated = texture2D(skyDominationMap, dominationCoord);
     vec4 curColor = color * exp(- dist * dist * invres2);
-    gl_FragColor = curColor - sqrt(dominated) * dominationscale;
+    gl_FragColor = curColor - sqrt(dominated.b) * dominationscale;
 }

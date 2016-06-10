@@ -14,4 +14,6 @@ void main() {
 	gl_Position = gl_ModelViewProjectionMatrix * vertex;
 	dominationCoord = vec2(x / (2.0 * PI), y / PI + 0.5);
 	color = gl_Color;
+
+	gl_TexCoord[0]  = gl_MultiTexCoord0;
 }

@@ -10,5 +10,5 @@ in vec2 dominationCoord;
 void main()
 {
     vec4 dominated = texture2D(skyDominationMap, dominationCoord);
-    gl_FragColor = color * texture2D(texture, gl_TexCoord[0].st) - sqrt(dominated) * dominationscale;
+    gl_FragColor = color * texture2D(texture, gl_TexCoord[0].st) - vec4(sqrt(dominated.b) * dominationscale);
 }

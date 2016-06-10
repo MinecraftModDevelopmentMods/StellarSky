@@ -35,7 +35,7 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 		this.latn = specificSettings.imgFracMilkyway;
 		this.longn = 2*specificSettings.imgFracMilkyway;
 		this.milkywaypos = Allocator.createAndInitializeSp(longn, latn+1);
-		this.milkywayAbsBr = specificSettings.milkywayBrightness * OpticsHelper.getBrightnessFromMagnitude(4.0f);
+		this.milkywayAbsBr = specificSettings.milkywayBrightness * OpticsHelper.getBrightnessFromMagnitude(3.0f);
 	}
 
 	@Override

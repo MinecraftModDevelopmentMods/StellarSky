@@ -1,7 +1,6 @@
 package stellarium.lib.render.internal;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -10,7 +9,6 @@ import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import stellarium.lib.render.hierarchy.IRenderState;
 import stellarium.lib.render.hierarchy.IRenderTransition;

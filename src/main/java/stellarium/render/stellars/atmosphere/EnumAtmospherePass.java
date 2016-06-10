@@ -12,5 +12,7 @@ public enum EnumAtmospherePass {
 	SetupOpaque,
 	SetupOpaqueScatter,
 	
-	RenderCachedDominate;
+	RenderCachedDominate,
+	
+	TestAtmCache;
 }

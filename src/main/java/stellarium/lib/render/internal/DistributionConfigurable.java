@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
 
-import stellarium.lib.hierarchy.HierarchyDistributor;
 import stellarium.lib.render.RendererRegistry;
 import stellarium.lib.render.hierarchy.IDistributionConfigurable;
 import stellarium.lib.render.hierarchy.IRenderState;

@@ -12,4 +12,6 @@ void main() {
     vec4 vertex = vec4(z*cos(y)*cos(x), z*cos(y)*sin(x), z*sin(y), 1);
 	gl_Position = gl_ModelViewProjectionMatrix * vertex;
     color = gl_Color;
+    
+    gl_TexCoord[0]  = gl_MultiTexCoord0;
 }
