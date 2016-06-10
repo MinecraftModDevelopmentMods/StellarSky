@@ -56,11 +56,11 @@ public class ViewerInfo {
 		
 		
 		resolutionColor.set(
-				Spmath.Radians(Math.max(scope.getResolution(Wavelength.red)/5.0, sky.getSeeing(Wavelength.red))),
-				Spmath.Radians(Math.max(scope.getResolution(Wavelength.V)/5.0, sky.getSeeing(Wavelength.V))),
-				Spmath.Radians(Math.max(scope.getResolution(Wavelength.B)/5.0, sky.getSeeing(Wavelength.B)))
+				Spmath.Radians(Math.max(scope.getResolution(Wavelength.red), sky.getSeeing(Wavelength.red))),
+				Spmath.Radians(Math.max(scope.getResolution(Wavelength.V), sky.getSeeing(Wavelength.V))),
+				Spmath.Radians(Math.max(scope.getResolution(Wavelength.B), sky.getSeeing(Wavelength.B)))
 				);
-		this.resolutionGeneral = Spmath.Radians(Math.max(scope.getResolution(Wavelength.visible)/5.0, sky.getSeeing(Wavelength.visible)));
+		this.resolutionGeneral = Spmath.Radians(Math.max(scope.getResolution(Wavelength.visible), sky.getSeeing(Wavelength.visible)));
 	}
 
 	public float getHeight(World world) {
