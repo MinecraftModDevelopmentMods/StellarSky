@@ -117,14 +117,14 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
         propHideObjectsUnderHorizon.setRequiresWorldRestart(true);
         propHideObjectsUnderHorizon.setLanguageKey("config.property.dimension.hidehorizonobj");
         
-       	propAtmScaleHeight.setComment("Scale Height of the atmosphere relative to the viewer's radius.\n"
+       	propAtmScaleHeight.setComment("Scale Height of the atmosphere relative to the radius.\n"
        			+ "This determines the thickness of the atmosphere.");
        	propAtmScaleHeight.setRequiresWorldRestart(true);
        	propAtmScaleHeight.setLanguageKey("config.property.dimension.atmscaleheight");
        	propAtmScaleHeight.setMinValue(1.0e-4);
        	propAtmScaleHeight.setMaxValue(1.0);
        	
-       	propAtmTotalHeight.setComment("Total Height of the atmosphere relative to the viewer's radius.\n"
+       	propAtmTotalHeight.setComment("Total Height of the atmosphere relative to the radius.\n"
        			+ "This determines the accuracy of the atmosphere, relative to the scale height.");
        	propAtmTotalHeight.setRequiresWorldRestart(true);
        	propAtmTotalHeight.setLanguageKey("config.property.dimension.atmtotalheight");

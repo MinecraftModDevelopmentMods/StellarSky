@@ -137,7 +137,7 @@ public class AtmShaderManager {
 			depthToFogFactor.setDouble(100.0 * Math.exp(model.getHeight()));
 
 			Vector3 vec = new Vector3(model.getSkyExtRed(),
-					model.getSkyColorGreen(), model.getSkyColorBlue());
+					model.getSkyExtGreen(), model.getSkyExtBlue());
 			extinctionFactor.setVector3(vec.scale(0.9));
 			gScattering.setDouble(-0.9);
 
