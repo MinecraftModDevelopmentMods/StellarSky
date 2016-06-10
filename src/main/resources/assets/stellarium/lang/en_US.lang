@@ -206,7 +206,7 @@ config.property.landscape.fragments.tooltip=Landscape is drawn with fragments. L
 
 ///Atmosphere
 config.category.atmosphere=Atmosphere
-config.category.atmosphere=Configurations for the atmosphere accuracy.
+config.category.atmosphere.tooltip=Configurations for the atmosphere accuracy.
 config.property.atmosphere.cachelevel=Atmosphere Cache Size Level
 config.property.atmosphere.cachelevel.tooltip=Level of atmosphere cache texture size. Less level will increase FPS, but the atmosphere will become EXPONENTIALLY defective.
 config.property.atmosphere.fragnumber=Atmosphere Fragment Number
@@ -240,6 +240,12 @@ config.property.dimension.atmscaleheight.tooltip=Scale Height of the atmosphere 
 
 config.property.dimension.atmtotalheight=Atmosphere Total Height
 config.property.dimension.atmtotalheight.tooltip=Total Height of the atmosphere relative to the radius. This determines the accuracy of the atmosphere, relative to the scale height.
+
+config.property.dimension.atmheightoffset=Height Offset on Horizon
+config.property.dimension.atmheightoffset.tooltip=Height on horizon in the Atmosphere, in Scale Height unit.
+
+config.property.dimension.atmheightincscale=Height Increase Scale
+config.property.dimension.atmheightincscale.tooltip=Increase scale of height in the atmosphere, with Default 1.0.
 
 config.property.dimension.atmextinctionfactor=Atmosphere Extinction Rates
 config.property.dimension.atmextinctionfactor.tooltip=Extinction Factor for RVB(or RGB) of the atmosphere, affects both sky rendering and extinction of stellar objects.

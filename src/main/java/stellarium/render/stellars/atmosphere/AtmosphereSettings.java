@@ -26,6 +26,9 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	public AtmosphereSettings() {
 		this.propCacheSizeLevel = new ConfigPropertyInteger("Atmosphere_Cache_Level", "", 9);
 		this.propFragSize = new ConfigPropertyInteger("Atmosphere_Fragment_Number", "", 128);
+		
+		this.addConfigProperty(this.propCacheSizeLevel);
+		this.addConfigProperty(this.propFragSize);
 	}
 	
 	@Override
@@ -37,14 +40,14 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 		super.setupConfig(config, category);
 		
 		propCacheSizeLevel.setComment("Level of atmosphere cache texture size. Less level will increase FPS, but the atmosphere will become EXPONENTIALLY defective.");
-		propCacheSizeLevel.setRequiresWorldRestart(true);
+		propCacheSizeLevel.setRequiresMcRestart(false);
 		propCacheSizeLevel.setLanguageKey("config.property.atmosphere.cachelevel");
 		propCacheSizeLevel.setMinValue(6);
 		propCacheSizeLevel.setMaxValue(15);
        	
 		propFragSize.setComment("Atmosphere is drawn with fragments\n" +
         		"Less fragments will increase FPS, but the atmosphere will become more defective.");
-		propFragSize.setRequiresWorldRestart(true);
+		propFragSize.setRequiresMcRestart(false);
 		propFragSize.setLanguageKey("config.property.atmosphere.fragnumber");
 		propFragSize.setMinValue(8);
        	propFragSize.setMaxValue(512);

@@ -25,6 +25,8 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	private ConfigPropertyDouble propAtmScaleHeight;
 	private ConfigPropertyDouble propAtmTotalHeight;
+	private ConfigPropertyDouble propAtmHeightOffset;
+	private ConfigPropertyDouble propAtmHeightIncScale;
 	
 	private ConfigPropertyDoubleList propAtmExtinctionFactor;
 	
@@ -53,8 +55,11 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		
 		this.propAtmScaleHeight = new ConfigPropertyDouble("Atmosphere_Scale_Height", "atmScaleHeight", 1 / 800.0);
 		this.propAtmTotalHeight = new ConfigPropertyDouble("Atmosphere_Total_Height", "atmTotalHeight", 20.0 / 800.0);
-		
-		this.propAtmExtinctionFactor = new ConfigPropertyDoubleList("Sky_Extinction_Factors", "skyExtinctionFactors", new double[] {OpticsHelper.ext_coeff_R, OpticsHelper.ext_coeff_V, OpticsHelper.ext_coeff_B});
+		this.propAtmHeightOffset = new ConfigPropertyDouble("Atmosphere_Height_Offset", "atmHeightOffset", 0.2);
+		this.propAtmHeightIncScale = new ConfigPropertyDouble("Atmosphere_Height_Increase_Scale", "atmHeightIncreaseScale", 1.0);
+
+		this.propAtmExtinctionFactor = new ConfigPropertyDoubleList("Sky_Extinction_Factors", "skyExtinctionFactors",
+				dimensionName.equals("The End")? new double[] {0.0, 0.0, 0.0} : new double[] {OpticsHelper.ext_coeff_R, OpticsHelper.ext_coeff_V, OpticsHelper.ext_coeff_B});
 		
 		this.propAllowRefraction = new ConfigPropertyBoolean("Allow_Atmospheric_Refraction", "allowRefraction", !dimensionName.equals("The End"));
 
@@ -74,6 +79,8 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	this.addConfigProperty(this.propHideObjectsUnderHorizon);
        	this.addConfigProperty(this.propAtmScaleHeight);
        	this.addConfigProperty(this.propAtmTotalHeight);
+       	this.addConfigProperty(this.propAtmHeightOffset);
+       	this.addConfigProperty(this.propAtmHeightIncScale);
        	this.addConfigProperty(this.propAtmExtinctionFactor);
        	this.addConfigProperty(this.propAllowRefraction);
        	this.addConfigProperty(this.propSunlightMultiplier);
@@ -130,6 +137,18 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	propAtmTotalHeight.setLanguageKey("config.property.dimension.atmtotalheight");
        	propAtmTotalHeight.setMinValue(1.0e-4);
        	propAtmTotalHeight.setMaxValue(5.0);
+       	
+       	propAtmHeightOffset.setComment("Height on horizon in the Atmosphere, in Scale Height unit.");
+       	propAtmHeightOffset.setRequiresWorldRestart(true);
+       	propAtmHeightOffset.setLanguageKey("config.property.dimension.atmheightoffset");
+       	propAtmHeightOffset.setMinValue(0.0);
+       	propAtmHeightOffset.setMaxValue(100.0);
+       	
+       	propAtmHeightIncScale.setComment("Increase scale of height in the atmosphere, with Default 1.0.");
+       	propAtmHeightIncScale.setRequiresWorldRestart(true);
+       	propAtmHeightIncScale.setLanguageKey("config.property.dimension.atmheightincscale");
+       	propAtmHeightIncScale.setMinValue(-1.0);
+       	propAtmHeightIncScale.setMaxValue(10.0);
        	
        	propAtmExtinctionFactor.setComment("Extinction Factor for RVB(or RGB) of the atmosphere,"
        			+ "affects both sky rendering and extinction of stellar objects.");
@@ -244,6 +263,14 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	public double getOuterRadius() {
 		return (1.0 + propAtmTotalHeight.getDouble()) / propAtmScaleHeight.getDouble();
+	}
+	
+	public double getHeightOffset() {
+		return propAtmHeightOffset.getDouble();
+	}
+	
+	public double getHeightIncScale() {
+		return propAtmHeightIncScale.getDouble();
 	}
 	
 	public double[] extinctionRates() {

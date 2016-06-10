@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL30;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.shader.Framebuffer;
+import stellarium.util.OpenGlVersionUtil;
 
 public class FramebufferCustom extends Framebuffer {
 
@@ -43,8 +44,7 @@ public class FramebufferCustom extends Framebuffer {
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
-            //FIXME int i = ARBTextureFloat.GL_ALPHA16F_ARB;
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_RGB16F, this.framebufferTextureWidth, this.framebufferTextureHeight, 0, GL11.GL_RGB, GL11.GL_FLOAT, (FloatBuffer)null);
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, OpenGlVersionUtil.rgb16f(), this.framebufferTextureWidth, this.framebufferTextureHeight, 0, GL11.GL_RGB, GL11.GL_FLOAT, (FloatBuffer)null);
             OpenGlHelper.func_153171_g(OpenGlHelper.field_153198_e, this.framebufferObject);
             OpenGlHelper.func_153188_a(OpenGlHelper.field_153198_e, OpenGlHelper.field_153200_g, GL11.GL_TEXTURE_2D, this.framebufferTexture, 0);
 

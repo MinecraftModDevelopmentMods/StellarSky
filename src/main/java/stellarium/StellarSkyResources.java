@@ -223,4 +223,10 @@ public class StellarSkyResources {
 	public static final ResourceLocation milkywaybrightness =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/milkywaybrightness.png");
 
+
+	public static final ResourceLocation atmosphereSettings =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/atmosphere.png");
+	
+	public static final ResourceLocation atmosphereCacheLevel =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/atmospherecachelevel.png");
 }

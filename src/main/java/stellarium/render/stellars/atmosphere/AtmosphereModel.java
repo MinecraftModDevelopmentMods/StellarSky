@@ -16,6 +16,7 @@ public class AtmosphereModel implements ICheckedAtmModel {
 
 	private float outerRadius = 820.0f;
 	private float innerRadius = 800.0f;
+	private float heightOffset = 0.2f, heightIncScale = 1.0f;
 
 	private float height;
 	private float skyred, skygreen, skyblue;
@@ -35,6 +36,8 @@ public class AtmosphereModel implements ICheckedAtmModel {
 		
 		this.outerRadius = (float) dimManager.getSettings().getOuterRadius();
 		this.innerRadius = (float) dimManager.getSettings().getInnerRadius();
+		this.heightOffset = (float) dimManager.getSettings().getHeightOffset();
+		this.heightIncScale = (float) dimManager.getSettings().getHeightIncScale();
 	}
 
 	public void onTick(World world, ViewerInfo update) {
@@ -54,7 +57,7 @@ public class AtmosphereModel implements ICheckedAtmModel {
 		this.skyExtGreen = update.sky.getExtinctionRate(Wavelength.V);
 		this.skyExtBlue = update.sky.getExtinctionRate(Wavelength.B);
 
-		this.height = 0.2f + update.getHeight(world);
+		this.height = this.heightOffset + update.getHeight(world) * this.heightIncScale;
 		
 		if(this.azimuthCheckEnabled)
 			this.leastAzimuthRendered = Math.acos(1.0 / (1.0 + this.height / this.innerRadius));

@@ -23,6 +23,7 @@ import stellarium.render.stellars.atmosphere.AtmosphereSettings;
 import stellarium.render.stellars.atmosphere.EnumAtmospherePass;
 import stellarium.render.stellars.phased.EnumPhasedRenderState;
 import stellarium.render.stellars.phased.StellarRenderInformation;
+import stellarium.util.OpenGlVersionUtil;
 
 public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderInformation> {
 	Initial() {
@@ -78,14 +79,13 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	SetupPointScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			GL11.glEnable(GL20.GL_POINT_SPRITE);
-			//FIXME ARBPointSprite.GL_POINT_SPRITE_ARB
+			OpenGlVersionUtil.enablePointSprite();
 			return RenderPointScatter;
 		}
 	}, RenderPointScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			GL11.glDisable(GL20.GL_POINT_SPRITE);
+			OpenGlVersionUtil.disablePointSprite();
 		    GL11.glDepthMask(true);
 		    GL11.glEnable(GL11.GL_DEPTH_TEST);
 			GL11.glDisable(GL11.GL_BLEND);
@@ -112,14 +112,13 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	SetupOpaqueScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			GL11.glEnable(GL20.GL_POINT_SPRITE);
-			//FIXME ARBPointSprite.GL_POINT_SPRITE_ARB
+			OpenGlVersionUtil.enablePointSprite();
 			return RenderOpaqueScatter;
 		}
 	}, RenderOpaqueScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			GL11.glDisable(GL20.GL_POINT_SPRITE);
+			OpenGlVersionUtil.disablePointSprite();;
 			GL11.glShadeModel(GL11.GL_SMOOTH);
 			if(resInfo.isFrameBufferEnabled)
 				return UnbindDominateScatter;
