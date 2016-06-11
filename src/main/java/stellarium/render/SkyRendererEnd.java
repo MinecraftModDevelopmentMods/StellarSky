@@ -9,18 +9,19 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.client.IRenderHandler;
 import stellarium.StellarSkyResources;
-import stellarium.api.ICelestialRenderer;
 
 public class SkyRendererEnd extends IRenderHandler {
 
-	private ICelestialRenderer celestials;
+	private IRenderHandler subRenderer;
 	
-	public SkyRendererEnd(ICelestialRenderer subRenderer) {
-		this.celestials = subRenderer;
+	public SkyRendererEnd(IRenderHandler subRenderer) {
+		this.subRenderer = subRenderer;
 	}
-
+	
 	@Override
 	public void render(float partialTicks, WorldClient theWorld, Minecraft mc) {
+		subRenderer.render(partialTicks, theWorld, mc);
+		
 		/*
 		 * Render the end sky. This is rendered as cube which is on far away.
 		 */
@@ -66,7 +67,7 @@ public class SkyRendererEnd extends IRenderHandler {
             }
 
             tessellator.startDrawingQuads();
-            tessellator.setColorOpaque_I(2631720);
+            tessellator.setColorRGBA_I(2631720, 0x77);
             tessellator.addVertexWithUV(-100.0D, -100.0D, -100.0D, 0.0D, 0.0D);
             tessellator.addVertexWithUV(-100.0D, -100.0D, 100.0D, 0.0D, 16.0D);
             tessellator.addVertexWithUV(100.0D, -100.0D, 100.0D, 16.0D, 16.0D);
@@ -76,14 +77,6 @@ public class SkyRendererEnd extends IRenderHandler {
         }
         
         GL11.glEnable(GL11.GL_TEXTURE_2D);
-        
-        GL11.glPushMatrix();
-        GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-        celestials.renderCelestial(mc, theWorld, new float[] {0.0f, 0.0f, 0.0f}, partialTicks);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        celestials.renderSkyLandscape(mc, theWorld, partialTicks);
-        GL11.glPopMatrix();
-        
         GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         OpenGlHelper.glBlendFunc(770, 771, 1, 0);

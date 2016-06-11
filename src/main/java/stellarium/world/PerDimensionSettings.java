@@ -1,5 +1,10 @@
 package stellarium.world;
 
+import java.util.List;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.INBTConfig;
@@ -8,6 +13,9 @@ import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarapi.api.lib.config.property.ConfigPropertyDoubleList;
 import stellarapi.api.lib.config.property.ConfigPropertyString;
+import stellarium.api.EnumSkyProperty;
+import stellarium.api.ISkyRenderType;
+import stellarium.api.ISkyType;
 import stellarium.api.StellarSkyAPI;
 import stellarium.stellars.OpticsHelper;
 
@@ -40,35 +48,37 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	private ConfigPropertyString propRenderType;
 	
+	private ISkyType skyType;
+	
 	public PerDimensionSettings(String dimensionName) {
 		this.dimensionName = dimensionName;
 		
 		this.propPatchProvider = new ConfigPropertyBoolean("Patch_Provider", "patchProvider", true);
 		
-        String[] list = StellarSkyAPI.getRenderTypesForDimension(this.dimensionName);
-		this.propRenderType = new ConfigPropertyString("Sky_Renderer_Type", "skyRendererType", list[0]);
+		this.skyType = StellarSkyAPI.getSkyType(this.dimensionName);
+
+		this.propRenderType = new ConfigPropertyString("Sky_Renderer_Type", "skyRendererType", skyType.possibleTypes().get(0).getName());
 		
-		this.propLatitude = new ConfigPropertyDouble("Latitude", "lattitude", !dimensionName.equals("The End")? 37.5 : -52.5);
-		this.propLongitude = new ConfigPropertyDouble("Longitude", "longitude", !dimensionName.equals("The End")? 0.0 : 180.0);
+		this.propLatitude = new ConfigPropertyDouble("Latitude", "lattitude", skyType.getDefaultDouble(EnumSkyProperty.Lattitude));
+		this.propLongitude = new ConfigPropertyDouble("Longitude", "longitude", skyType.getDefaultDouble(EnumSkyProperty.Longitude));
 		
-		this.propHideObjectsUnderHorizon = new ConfigPropertyBoolean("Hide_Objects_Under_Horizon", "hideObjectsUnderHorizon", !dimensionName.equals("The End"));
+		this.propHideObjectsUnderHorizon = new ConfigPropertyBoolean("Hide_Objects_Under_Horizon", "hideObjectsUnderHorizon", skyType.getDefaultBoolean(EnumSkyProperty.HideObjectsUnderHorizon));
 		
 		this.propAtmScaleHeight = new ConfigPropertyDouble("Atmosphere_Scale_Height", "atmScaleHeight", 1 / 800.0);
 		this.propAtmTotalHeight = new ConfigPropertyDouble("Atmosphere_Total_Height", "atmTotalHeight", 20.0 / 800.0);
 		this.propAtmHeightOffset = new ConfigPropertyDouble("Atmosphere_Height_Offset", "atmHeightOffset", 0.2);
 		this.propAtmHeightIncScale = new ConfigPropertyDouble("Atmosphere_Height_Increase_Scale", "atmHeightIncreaseScale", 1.0);
 
-		this.propAtmExtinctionFactor = new ConfigPropertyDoubleList("Sky_Extinction_Factors", "skyExtinctionFactors",
-				dimensionName.equals("The End")? new double[] {0.0, 0.0, 0.0} : new double[] {OpticsHelper.ext_coeff_R, OpticsHelper.ext_coeff_V, OpticsHelper.ext_coeff_B});
+		this.propAtmExtinctionFactor = new ConfigPropertyDoubleList("Sky_Extinction_Factors", "skyExtinctionFactors", skyType.getDefaultDoubleList(EnumSkyProperty.SkyExtinctionFactors));
 		
-		this.propAllowRefraction = new ConfigPropertyBoolean("Allow_Atmospheric_Refraction", "allowRefraction", !dimensionName.equals("The End"));
+		this.propAllowRefraction = new ConfigPropertyBoolean("Allow_Atmospheric_Refraction", "allowRefraction", skyType.getDefaultBoolean(EnumSkyProperty.AllowRefraction));
 
 		// TODO Fix Sunlight Multiplier Property
 		this.propSunlightMultiplier = new ConfigPropertyDouble("SunLight_Multiplier", "sunlightMultiplier", 1.0);
        	
-		this.propSkyDispersionRate = new ConfigPropertyDouble("Sky_Dispersion_Rate", "skyDispersionRate", dimensionName.equals("The End")? 0.0 : 1.0);
+		this.propSkyDispersionRate = new ConfigPropertyDouble("Sky_Dispersion_Rate", "skyDispersionRate", skyType.getDefaultDouble(EnumSkyProperty.SkyDispersionRate));
        	this.propLightPollutionRate = new ConfigPropertyDouble("Light_Pollution_Rate", "lightPollutionRate", 1.0);
-       	this.propMinimumSkyRenderBrightness = new ConfigPropertyDouble("Minimum_Sky_Render_Brightness", "minimumSkyRenderBrightness", 0.2);
+       	this.propMinimumSkyRenderBrightness = new ConfigPropertyDouble("Minimum_Sky_Render_Brightness", "minimumSkyRenderBrightness", skyType.getDefaultDouble(EnumSkyProperty.SkyRenderBrightness));
        	
        	this.propLandscapeEnabled = new ConfigPropertyBoolean("Landscape_Enabled", "landscapeEnabled", false);
        	
@@ -101,12 +111,18 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		propPatchProvider.setRequiresWorldRestart(true);
 		propPatchProvider.setLanguageKey("config.property.dimension.patchprovider");
         
-        String[] list = StellarSkyAPI.getRenderTypesForDimension(this.dimensionName);
+		String[] transformed = Lists.transform(skyType.possibleTypes(), new Function<ISkyRenderType, String>() {
+			@Override
+			public String apply(ISkyRenderType input) {
+				return input.getName();
+			}
+		}).toArray(new String[0]);
+    
         propRenderType.setComment("Sky renderer type for this dimension.\n"
-        		+ "There are 'Overworld Sky', 'End Sky' and 'Skyblock Sky' type by default.");
+        		+ "There are 'Overworld Sky', 'End Sky' type by default.");
         propRenderType.setRequiresWorldRestart(true);
         propRenderType.setLanguageKey("config.property.dimension.skyrenderertype");
-        propRenderType.setValidValues(list);
+        propRenderType.setValidValues(transformed);
 		
        	propLatitude.setComment("Latitude on this world, in Degrees.");
        	propLatitude.setRequiresWorldRestart(true);

@@ -8,7 +8,7 @@ import net.minecraftforge.client.IRenderHandler;
  * Sky renderer type, there is overworld and end type by default. <p>
  * This type can be chosen on Configuration for each world.
  * */
-public interface ISkyRendererType {
+public interface ISkyRenderType {
 
 	/**
 	 * Name for this type. Will be used on configuration.
@@ -24,9 +24,9 @@ public interface ISkyRendererType {
 	
 	/**
 	 * Creates new SkyRenderer.
-	 * @param renderer the celestial renderer
+	 * @param renderer the celestial renderer which renders.
 	 * */
 	@SideOnly(Side.CLIENT)
-	public IRenderHandler createSkyRenderer(ICelestialRenderer renderer);
+	public IRenderHandler createSkyRenderer(IRenderHandler celestialRenderer);
 
 }

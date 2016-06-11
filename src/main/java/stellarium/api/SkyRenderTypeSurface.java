@@ -1,12 +1,10 @@
-package stellarium.render;
+package stellarium.api;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.client.IRenderHandler;
-import stellarium.api.ICelestialRenderer;
-import stellarium.api.ISkyRendererType;
 
-public class SkyRenderTypeSurface implements ISkyRendererType {
+public class SkyRenderTypeSurface implements ISkyRenderType {
 
 	@Override
 	public String getName() {
@@ -20,8 +18,8 @@ public class SkyRenderTypeSurface implements ISkyRendererType {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IRenderHandler createSkyRenderer(ICelestialRenderer subRenderer) {
-		return new SkyRendererSurface(subRenderer);
+	public IRenderHandler createSkyRenderer(IRenderHandler subRenderer) {
+		return subRenderer;
 	}
 
 }

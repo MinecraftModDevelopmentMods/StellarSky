@@ -17,6 +17,7 @@ import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
+import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.StellarClientFMLHook;
 import stellarium.client.overlay.StellarSkyOverlays;
@@ -123,13 +124,13 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	@Override
-	public void setupSkyRenderer(WorldProvider provider, String skyType) {
+	public void setupSkyRenderer(WorldProvider provider, String skyRenderType) {
 		skyModel.updateSettings(this.clientSettings);
 		RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class).initialize(this.clientSettings);
 
 		//IRenderHandler renderer = StellarSkyAPI.getRendererFor(skyType,
 		//		new SkyCelestialRenderer(this.clientSettings, celManager, this.displayManager, this.landscapeSettings, cache));
-		provider.setSkyRenderer(new NewSkyRenderer(this.skyModel));
+		provider.setSkyRenderer(StellarSkyAPI.getRendererFor(skyRenderType, new NewSkyRenderer(this.skyModel)));
 		//provider.setSkyRenderer(new TheSkyRenderer());
 	}
 	
