@@ -69,7 +69,7 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 		checker.startDescription();
 		checker.pos(this.appPos);
 		checker.brightness(red, green, blue);
-		this.shouldRender = checker.endCheckRendered();
+		this.shouldRender = checker.checkRendered();
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -25,6 +25,8 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 			tessellator.begin(true);
 			tessellator.radius(cache.size);
 
+			float brightness = 10000.0f;
+			
 			int longc, latc;
 
 			for(longc=0; longc<cache.longn; longc++){
@@ -37,25 +39,25 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 
 					tessellator.pos(cache.sunPos[longc][latc], info.deepDepth / 2.0f);
 					tessellator.texture(longd, latd);
-					tessellator.color(1.0f, 1.0f, 1.0f);
+					tessellator.color(brightness, brightness, brightness);
 					tessellator.normal(cache.sunNormal[longc][latc]);
 					tessellator.writeVertex();
 					
 					tessellator.pos(cache.sunPos[longcd][latc], info.deepDepth / 2.0f);
 					tessellator.texture(longdd, latd);
-					tessellator.color(1.0f, 1.0f, 1.0f);
+					tessellator.color(brightness, brightness, brightness);
 					tessellator.normal(cache.sunNormal[longcd][latc]);
 					tessellator.writeVertex();
 					
 					tessellator.pos(cache.sunPos[longcd][latc+1], info.deepDepth / 2.0f);
 					tessellator.texture(longdd, latdd);
-					tessellator.color(1.0f, 1.0f, 1.0f);
+					tessellator.color(brightness, brightness, brightness);
 					tessellator.normal(cache.sunNormal[longcd][latc+1]);
 					tessellator.writeVertex();
 					
 					tessellator.pos(cache.sunPos[longc][latc+1], info.deepDepth / 2.0f);
 					tessellator.texture(longd, latdd);
-					tessellator.color(1.0f, 1.0f, 1.0f);
+					tessellator.color(brightness, brightness, brightness);
 					tessellator.normal(cache.sunNormal[longc][latc+1]);
 					tessellator.writeVertex();
 				}

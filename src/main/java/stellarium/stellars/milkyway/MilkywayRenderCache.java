@@ -43,7 +43,7 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 		checker.startDescription();
 		checker.pos(new SpCoord(0.0, 90.0));
 		checker.brightness(this.milkywayAbsBr, this.milkywayAbsBr, this.milkywayAbsBr);
-		if(!checker.endCheckRendered()) {
+		if(!checker.checkRendered()) {
 			this.rendered = false;
 			return;
 		}

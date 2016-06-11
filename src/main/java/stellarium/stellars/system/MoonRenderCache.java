@@ -60,7 +60,7 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 		this.size = (float) (object.radius / object.earthPos.size());
 		checker.startDescription();
 		checker.brightness(domination, domination, domination);
-		this.shouldRenderDominate = checker.endCheckDominator();
+		this.shouldRenderDominate = checker.checkDominator();
 		
 		this.brightness = OpticsHelper.getBrightnessFromMagnitude(appMag);
 		
@@ -68,7 +68,7 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 		checker.brightness(brightness, brightness, brightness);
 		checker.pos(new SpCoord(0.0, 90.0));
 		checker.radius(this.size);
-		this.shouldRender = checker.endCheckRendered();
+		this.shouldRender = checker.checkRendered();
 
 		if(!this.shouldRender)
 			return;
@@ -91,7 +91,7 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 			}
 		}
 		
-		this.brightness *= 0.00001f;
+		this.brightness *= 1.0e-5f;
 	}
 
 	@SideOnly(Side.CLIENT)

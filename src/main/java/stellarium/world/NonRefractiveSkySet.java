@@ -69,7 +69,7 @@ public class NonRefractiveSkySet implements IStellarSkySet {
 
 	@Override
 	public double getSeeing(Wavelength wavelength) {
-		return 0.02;
+		return 0.0;
 	}
 
 	@Override

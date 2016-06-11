@@ -9,6 +9,7 @@ import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
+import stellarapi.api.optics.NakedScope;
 import stellarapi.api.optics.Wavelength;
 
 public class ViewerInfo {
@@ -61,7 +62,7 @@ public class ViewerInfo {
 				Spmath.Radians(Math.max(scope.getResolution(Wavelength.B), sky.getSeeing(Wavelength.B)))
 				);
 		this.resolutionGeneral = Spmath.Radians(Math.max(scope.getResolution(Wavelength.visible), sky.getSeeing(Wavelength.visible)));
-	}
+ 	}
 
 	public float getHeight(World world) {
 		return (float)((currentPosition.getY() - world.getHorizon()) / world.getHeight());

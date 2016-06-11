@@ -41,7 +41,7 @@ public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSyste
 		checker.brightness(1.0f, 1.0f, 1.0f);
 		checker.pos(this.appCoord);
 		checker.radius(this.size);
-		checker.endCheckDominator();
+		checker.checkDominator();
 		
 		int latc, longc;
 		for(longc=0; longc<longn; longc++){

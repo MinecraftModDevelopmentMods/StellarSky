@@ -30,11 +30,16 @@ public interface IStellarChecker {
 	/**
 	 * Checks if this object is a dominator, and end this description;
 	 * */
-	public boolean endCheckDominator();
+	public boolean checkDominator();
+	
+	/**
+	 * Checks if this object has enough radius not to be shown as a point.
+	 * */
+	public boolean checkEnoughRadius();
 	
 	/**
 	 * Checks if this object will be rendered.
 	 * */
-	public boolean endCheckRendered();
+	public boolean checkRendered();
 
 }
