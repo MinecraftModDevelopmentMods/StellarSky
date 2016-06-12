@@ -1,0 +1,14 @@
+{
+"name" : "Crab Nebula",
+"position" : ["5h34m31.94s", "22d00m52.2s"],
+"magnitude" : "8.4V",
+"size" : ["420s", "290s"],
+"textures" : {
+	"location" : "stellarium:deepsky/messier/crab_nebula.png",
+	"orientation" : "equatorial",
+   	"wavelength" : "visible",
+	"size" : ["6m", "6m"],
+	"attribution" : "By NASA, ESA, J. Hester and A. Loll (Arizona State University) (HubbleSite: gallery, release.) [Public domain]"
+	},
+"type" : "Nebula"
+}
