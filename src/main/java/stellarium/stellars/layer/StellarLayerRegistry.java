@@ -61,16 +61,10 @@ public class StellarLayerRegistry {
 				new ClassInstantiateCallable(commonConfigClass), new ClassInstantiateCallable(clientConfigClass));
 	}
 	
-	public void registerRenderers() {
-		// TODO prevent duplication from inherited renderers
-		for(RegistryDelegate delegate : this.registeredLayers)
-			delegate.layer.registerRenderers();
-	}
-	
 	public void composeLayer(boolean isRemote, List<StellarObjectContainer> list) {
 		for(RegistryDelegate delegate : this.registeredLayers)
 			try {
-				list.add(new StellarObjectContainer(isRemote, delegate.layer, delegate.configName));
+				list.add(new StellarObjectContainer(delegate.layer, delegate.configName));
 			} catch (Exception e) {
 				Throwables.propagateIfPossible(e);
 			}

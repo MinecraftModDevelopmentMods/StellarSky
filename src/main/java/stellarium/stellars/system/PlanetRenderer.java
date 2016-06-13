@@ -1,37 +1,28 @@
 package stellarium.stellars.system;
 
-import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.lib.math.Vector3;
-import stellarium.StellarSkyResources;
-import stellarium.render.EnumRenderPass;
-import stellarium.render.ICelestialObjectRenderer;
-import stellarium.render.StellarRenderInfo;
-import stellarium.stellars.Optics;
+import stellarium.render.stellars.access.EnumStellarPass;
+import stellarium.render.stellars.access.IStellarTessellator;
+import stellarium.render.stellars.layer.LayerRenderInformation;
+import stellarium.stellars.render.ICelestialObjectRenderer;
 
-public class PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache> {
-
+public enum PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache> {
+	
+	INSTANCE;
+	
 	@Override
-	public void render(StellarRenderInfo info, PlanetRenderCache cache) {
-		if(!cache.shouldRender || info.pass != EnumRenderPass.ShallowScattering)
+	public void render(PlanetRenderCache cache, EnumStellarPass pass, LayerRenderInformation info) {
+		if(pass != EnumStellarPass.OpaqueScatter || !cache.shouldRender)
 			return;
 		
-		float mag = cache.appMag;
-
-		float alpha=Optics.getAlphaFromMagnitude(mag, info.bglight) - (((1-info.weathereff)/1)*20f);
-
-		Vector3 pos = cache.pos;
-		Vector3 dif = cache.dif;
-		Vector3 dif2 = cache.dif2;
+		IStellarTessellator tessellator = info.tessellator;
 		
-		info.mc.renderEngine.bindTexture(StellarSkyResources.resourcePlanetSmall.getLocation());
+		tessellator.begin(false);
+		tessellator.pos(cache.appCoord, info.deepDepth);
+		tessellator.color(cache.brightness, cache.brightness, cache.brightness);
+		tessellator.radius(cache.size);
+		tessellator.writeVertex();
 		
-		info.tessellator.startDrawingQuads();
-		info.tessellator.setColorRGBA_F((float)cache.color[0], (float)cache.color[1], (float)cache.color[2], alpha*(float)cache.color[3]);
-		info.tessellator.addVertexWithUV(pos.getX()+dif.getX(), pos.getY()+dif.getY(), pos.getZ()+dif.getZ(),0.0,0.0);
-		info.tessellator.addVertexWithUV(pos.getX()+dif2.getX(), pos.getY()+dif2.getY(), pos.getZ()+dif2.getZ(),1.0,0.0);
-		info.tessellator.addVertexWithUV(pos.getX()-dif.getX(), pos.getY()-dif.getY(), pos.getZ()-dif.getZ(),1.0,1.0);
-		info.tessellator.addVertexWithUV(pos.getX()-dif2.getX(), pos.getY()-dif2.getY(), pos.getZ()-dif2.getZ(),0.0,1.0);
-		info.tessellator.draw();
+		tessellator.end();
 	}
 
 }

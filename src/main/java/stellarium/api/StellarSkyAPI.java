@@ -1,8 +1,10 @@
 package stellarium.api;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
@@ -12,7 +14,8 @@ public class StellarSkyAPI {
 	
 	private List<IWorldProviderReplacer> worldProviderReplacers = Lists.newArrayList();
 	private IWorldProviderReplacer defaultReplacer;
-	private List<ISkyRendererType> rendererTypes = Lists.newArrayList();
+	private Map<String, ISkyType> skyTypes = Maps.newHashMap();
+	private List<ISkyRenderType> rendererTypes = Lists.newArrayList();
 	
 	private static StellarSkyAPI INSTANCE = new StellarSkyAPI();
 	
@@ -35,11 +38,20 @@ public class StellarSkyAPI {
 	}
 	
 	/**
+	 * Register sky type for certain world name.
+	 * @param worldName the name for the world
+	 * @param type the type of the sky
+	 * */
+	public static void registerSkyType(String worldName, ISkyType type) {
+		INSTANCE.skyTypes.put(worldName, type);
+	}
+	
+	/**
 	 * Registers sky renderer type. <p>
 	 * Note that this should be done on both side.
 	 * @param rendererType the sky renderer type to register
 	 * */
-	public static void registerRendererType(ISkyRendererType rendererType) {
+	public static void registerRendererType(ISkyRenderType rendererType) {
 		INSTANCE.rendererTypes.add(rendererType);
 	}
 	
@@ -60,15 +72,20 @@ public class StellarSkyAPI {
 	}
 	
 	/**
-	 * Gets possible render types for certain dimension.
-	 * @param worldName the name of the world; only provided information on the world
+	 * Sets up and get the sky type for certain dimension.
+	 * @param dimensionName the name of the world; only provided information on the world
 	 * */
-	public static String[] getRenderTypesForDimension(String worldName) {
-		List<String> strlist = Lists.newArrayList();
-		for(ISkyRendererType type : INSTANCE.rendererTypes)
-			if(type.acceptFor(worldName))
-				strlist.add(type.getName());
-		return strlist.toArray(new String[0]);
+	public static ISkyType getSkyType(String dimensionName) {
+		ISkyType type = INSTANCE.skyTypes.get(dimensionName);
+		type = (type != null? type : new DefaultSkyType());
+		
+		if(type.needUpdate()) {
+			for(ISkyRenderType renderType : INSTANCE.rendererTypes)
+				if(renderType.acceptFor(dimensionName))
+					type.addRenderType(renderType);
+		}
+		
+		return type;
 	}
 	
 	/**
@@ -76,8 +93,8 @@ public class StellarSkyAPI {
 	 * @param option the sky renderer type
 	 * @param subRenderer renderer to be called for rendering celestial sphere
 	 * */
-	public static IRenderHandler getRendererFor(String option, ICelestialRenderer subRenderer) {
-		for(ISkyRendererType type : INSTANCE.rendererTypes)
+	public static IRenderHandler getRendererFor(String option, IRenderHandler subRenderer) {
+		for(ISkyRenderType type : INSTANCE.rendererTypes)
 			if(type.getName().equals(option))
 				return type.createSkyRenderer(subRenderer);
 		return null;

@@ -1,6 +1,7 @@
 package stellarium.world;
 
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.optics.Wavelength;
 import stellarium.stellars.util.ExtinctionRefraction;
 
 public class RefractiveSkySet extends NonRefractiveSkySet implements IStellarSkySet {
@@ -22,6 +23,11 @@ public class RefractiveSkySet extends NonRefractiveSkySet implements IStellarSky
 	@Override
 	public float calculateAirmass(SpCoord coord) {
 		return (float)ExtinctionRefraction.airmass(coord, false);
+	}
+	
+	@Override
+	public double getSeeing(Wavelength wavelength) {
+		return 0.002;
 	}
 
 }

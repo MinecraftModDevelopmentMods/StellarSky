@@ -1,9 +1,8 @@
 /**
  * API for Stellar Sky.
- * 2.4-2.5 changelog <p>
- *  - Introduced {@link ICelestialRenderer#renderSunriseSunsetEffect(net.minecraft.client.Minecraft, float[], float)}. <p>
- *  - Removed Per dimension resources from Stellar Sky, it moved to Stellar API. <p>
- *  - Rephrased Celestial Renderer to give actual sky color.
+ * 3.0 changelog <p>
+ *  - Added sky type, which determines acceptable render types and default config settings.
+ *  - Now the renderer receives complete render handler as celestial renderer.
  * */
 @API(apiVersion = "2.5", owner = "stellarsky", provides = "stellarsky|API")
 package stellarium.api;

@@ -115,8 +115,8 @@ config.property.server.moonbrightness.tooltip=Brightness of moon. (Default brigh
 config.category.milkyway=Milky Way Configurations
 config.category.milkyway.tooltip=Configurations for Milky Way.
 
-config.property.client.moonfrac=Number of Moon fragment
-config.property.client.moonfrac.tooltip=Moon is drawn with fragments. Less fragments will increase FPS, but the moon become more defective.
+config.property.client.moonfrac=Number of Sun & Moon fragment
+config.property.client.moonfrac.tooltip=Surfaces of Sun and Moon are drawn with fragments. Less fragments will increase FPS, but the moon become more defective.
 
 config.property.client.milkywayfrac=Number of Milky way fragment
 config.property.client.milkywayfrac.tooltip=Milky way is drawn with fragments. Less fragments will increase FPS, but the milky way become more defective.
@@ -134,10 +134,10 @@ config.property.display.alpha.tooltip=Alpha(Brightness) of this display.
 
 ////Display/Horizontal Coordinate Grid
 config.category.display.horcoord=Horizontal Coordinate Grid
-config.category.display.horcoord.tooltip=Configurations for the display element: Horizontal Coodrinate Grid.
+config.category.display.horcoord.tooltip=Configurations for the display element: Horizontal Coordinate Grid.
 
 config.property.display.horcoord.fragments=Fragment number
-config.property.display.horcoord.fragments.tooltip=Number of fragments of Horizontal Coodrinate Grid in direction of height.
+config.property.display.horcoord.fragments.tooltip=Number of fragments of Horizontal Coordinate Grid in direction of height.
 
 config.property.display.horcoord.color.base=Base color of Hor. Coordinate
 config.property.display.horcoord.color.base.tooltip=Base color factor, the grid tends to have this color as base.
@@ -156,10 +156,10 @@ config.property.display.horcoord.grid.displayed.tooltip=Enable display of the ho
 
 ////Display/Equatorial Coordinate Grid
 config.category.display.eqcoord=Equatorial Coordinate Grid
-config.category.display.eqcoord.tooltip=Configurations for the display element: Equatorial Coodrinate Grid.
+config.category.display.eqcoord.tooltip=Configurations for the display element: Equatorial Coordinate Grid.
 
 config.property.display.eqcoord.fragments=Fragment number
-config.property.display.eqcoord.fragments.tooltip=Number of fragments of Equatorial Coodrinate Grid in direction of declination.
+config.property.display.eqcoord.fragments.tooltip=Number of fragments of Equatorial Coordinate Grid in direction of declination.
 
 config.property.display.eqcoord.color.base=Base color of Eq. Coordinate
 config.property.display.eqcoord.color.base.tooltip=Base color factor, the grid tends to have this color as base.
@@ -178,10 +178,10 @@ config.property.display.eqcoord.grid.displayed.tooltip=Enable display of the equ
 
 ////Display/Ecliptic Coordinate Grid
 config.category.display.eccoord=Ecliptic Coordinate Grid
-config.category.display.eccoord.tooltip=Configurations for the display element: Ecliptic Coodrinate Grid.
+config.category.display.eccoord.tooltip=Configurations for the display element: Ecliptic Coordinate Grid.
 
 config.property.display.eccoord.fragments=Fragment number
-config.property.display.eccoord.fragments.tooltip=Number of fragments of Ecliptic Coodrinate Grid in direction of latitude.
+config.property.display.eccoord.fragments.tooltip=Number of fragments of Ecliptic Coordinate Grid in direction of latitude.
 
 config.property.display.eccoord.color.base=Base color of Ec. Coordinate
 config.property.display.eccoord.color.base.tooltip=Base color factor, the grid tends to have this color as base.
@@ -203,6 +203,16 @@ config.category.landscape=Landscape
 config.category.landscape.tooltip=Landscape is an overlay on Horizontal Coordinates which overlaps the celestial sphere.
 config.property.landscape.fragments=Number of Landscape fragment
 config.property.landscape.fragments.tooltip=Landscape is drawn with fragments. Less fragments will increase FPS, but the Landscape become more defective.
+
+///Atmosphere
+config.category.atmosphere=Atmosphere
+config.category.atmosphere.tooltip=Configurations for the atmosphere accuracy.
+config.property.atmosphere.cachelevel=Atmosphere Cache Size Level
+config.property.atmosphere.cachelevel.tooltip=Level of atmosphere cache texture size. Less level will increase FPS, but the atmosphere will become EXPONENTIALLY defective.
+config.property.atmosphere.fragnumber=Atmosphere Fragment Number
+config.property.atmosphere.fragnumber.tooltip=Atmosphere is drawn with fragments. Less fragments will increase FPS, but the atmosphere will become more defective.
+config.property.atmosphere.interpolation=Enable Interpolation on Atmosphere
+config.property.atmosphere.interpolation.tooltip=Enabling this will interpolate texture for better view, but there could be some trivial issues like 'black line' with this.
 
 
 ///Dimension
@@ -226,6 +236,21 @@ config.property.dimension.longitude.tooltip=Longitude on this world, in Degrees.
 
 config.property.dimension.hidehorizonobj=Hide Objects under Horizon
 config.property.dimension.hidehorizonobj.tooltip=Determine whether or not hide objects under horizon.
+
+config.property.dimension.atmscaleheight=Atmosphere Scale Height
+config.property.dimension.atmscaleheight.tooltip=Scale Height of the atmosphere relative to the radius. This determines the thickness of the atmosphere.
+
+config.property.dimension.atmtotalheight=Atmosphere Total Height
+config.property.dimension.atmtotalheight.tooltip=Total Height of the atmosphere relative to the radius. This determines the accuracy of the atmosphere, relative to the scale height.
+
+config.property.dimension.atmheightoffset=Height Offset on Horizon
+config.property.dimension.atmheightoffset.tooltip=Height on horizon in the Atmosphere, in Scale Height unit.
+
+config.property.dimension.atmheightincscale=Height Increase Scale
+config.property.dimension.atmheightincscale.tooltip=Increase scale of height in the atmosphere, with Default 1.0.
+
+config.property.dimension.atmextinctionfactor=Atmosphere Extinction Rates
+config.property.dimension.atmextinctionfactor.tooltip=Extinction Factor for RVB(or RGB) of the atmosphere, affects both sky rendering and extinction of stellar objects.
 
 config.property.dimension.allowrefraction=Apply Atmospheric Refraction
 config.property.dimension.allowrefraction.tooltip=Determine whether or not apply the atmospheric refraction.

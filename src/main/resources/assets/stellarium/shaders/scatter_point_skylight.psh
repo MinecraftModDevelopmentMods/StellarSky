@@ -1,0 +1,16 @@
+#version 120
+
+uniform vec4 invres2; // 0.5 * (pointSize / resolution)^2
+uniform float skyBrightness;
+uniform float dominationscale;
+
+varying vec4 color;
+
+const vec2 center = vec2(0.5, 0.5);
+
+void main()
+{
+    vec2 coord = gl_PointCoord - center;
+    vec4 curColor = color * exp(- dot(coord, coord) * invres2);
+    gl_FragColor = curColor - vec4(sqrt(skyBrightness) * dominationscale);
+}

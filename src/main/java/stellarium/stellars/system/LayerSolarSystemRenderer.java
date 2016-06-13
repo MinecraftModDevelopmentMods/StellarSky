@@ -1,25 +1,22 @@
 package stellarium.stellars.system;
 
-import org.lwjgl.opengl.GL11;
+import stellarium.render.stellars.access.EnumStellarPass;
+import stellarium.render.stellars.access.IStellarTessellator;
+import stellarium.stellars.render.ICelestialLayerRenderer;
 
-import stellarium.render.EnumRenderPass;
-import stellarium.render.ICelestialLayerRenderer;
-import stellarium.render.StellarRenderInfo;
-
-public class LayerSolarSystemRenderer implements ICelestialLayerRenderer {
+public enum LayerSolarSystemRenderer implements ICelestialLayerRenderer {
 	
-	@Override
-	public void preRender(StellarRenderInfo info) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, info.weathereff);
-	}
+	INSTANCE;
 
 	@Override
-	public void postRender(StellarRenderInfo info) { }
+	public void preRender(IStellarTessellator tessellator, EnumStellarPass pass) { }
 
 	@Override
-	public boolean acceptPass(EnumRenderPass pass) {
-		return pass == EnumRenderPass.OpaqueStellar ||
-				pass == EnumRenderPass.ShallowScattering;
+	public void postRender(IStellarTessellator tessellator, EnumStellarPass pass) { }
+
+	@Override
+	public boolean acceptPass(EnumStellarPass pass) {
+		return pass.isDominate || pass.isOpaque;
 	}
 
 }

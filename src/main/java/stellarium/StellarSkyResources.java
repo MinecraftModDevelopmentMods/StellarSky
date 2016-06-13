@@ -16,6 +16,9 @@ public class StellarSkyResources {
 	public static final PerDimensionResource resourceStar =
 			new PerDimensionResource("Star", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/star.png"));
 
+	public static final PerDimensionResource resourceSunSurface =
+			new PerDimensionResource("Sun_Surface", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/sun.png"));
+
 	public static final PerDimensionResource resourceSunHalo =
 			new PerDimensionResource("Sun_Halo", new ResourceLocation(StellarSkyReferences.resourceId, "stellar/halo.png"));
 	
@@ -36,13 +39,64 @@ public class StellarSkyResources {
 		PerDimensionResourceRegistry.getInstance().registerResourceId("End_Sky");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Milkyway");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Star");
+		
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Sun_Surface");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Sun_Halo");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Surface");
-		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Halo");
+		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Halo");		
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Planet_Small");
 		
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Landscape");
 	}
+	
+	
+	public static final ResourceLocation vertexAtmosphereSimple =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/atmosphere_simple.vsh");
+	
+	public static final ResourceLocation fragmentAtmosphereSimple =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/atmosphere_simple.psh");
+	
+	public static final ResourceLocation vertexAtmosphereSpCoord =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/atmosphere_spcoord.vsh");
+	
+	public static final ResourceLocation fragmentAtmosphereSpCoord =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/atmosphere_spcoord.psh");
+	
+	public static final ResourceLocation vertexScatterPointMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_point_mapped.vsh");
+	
+	public static final ResourceLocation fragmentScatterPointMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_point_mapped.psh");
+	
+	public static final ResourceLocation vertexScatterPointSkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_point_skylight.vsh");
+	
+	public static final ResourceLocation fragmentScatterPointSkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_point_skylight.psh");
+	
+	public static final ResourceLocation vertexScatterFuzzyMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_fuzzy_mapped.vsh");
+	
+	public static final ResourceLocation fragmentScatterFuzzyMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_fuzzy_mapped.psh");
+	
+	public static final ResourceLocation vertexScatterFuzzySkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_fuzzy_skylight.vsh");
+	
+	public static final ResourceLocation fragmentScatterFuzzySkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/scatter_fuzzy_skylight.psh");
+	
+	public static final ResourceLocation vertexTextureMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/src_texture_mapped.vsh");
+	
+	public static final ResourceLocation fragmentTextureMapped =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/src_texture_mapped.psh");
+	
+	public static final ResourceLocation vertexTextureSkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/src_texture_skylight.vsh");
+	
+	public static final ResourceLocation fragmentTextureSkylight =
+			new ResourceLocation(StellarSkyReferences.resourceId, "shaders/src_texture_skylight.psh");
 	
 	
 	public static final ResourceLocation unroll =
@@ -169,4 +223,10 @@ public class StellarSkyResources {
 	public static final ResourceLocation milkywaybrightness =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/milkywaybrightness.png");
 
+
+	public static final ResourceLocation atmosphereSettings =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/atmosphere.png");
+	
+	public static final ResourceLocation atmosphereCacheLevel =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/atmospherecachelevel.png");
 }

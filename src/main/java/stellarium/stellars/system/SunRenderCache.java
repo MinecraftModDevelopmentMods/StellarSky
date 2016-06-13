@@ -1,41 +1,72 @@
 package stellarium.stellars.system;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
-import stellarium.render.EnumRenderPass;
-import stellarium.stellars.layer.IRenderCache;
-import stellarium.stellars.layer.StellarCacheInfo;
+import stellarium.render.stellars.access.IStellarChecker;
+import stellarium.render.stellars.layer.IObjRenderCache;
+import stellarium.stellars.render.ICelestialObjectRenderer;
+import stellarium.util.math.Allocator;
+import stellarium.view.ViewerInfo;
 
-public class SunRenderCache implements IRenderCache<Sun, IConfigHandler> {
+public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSystemClientSettings> {
 	protected SpCoord appCoord = new SpCoord();
-	protected Vector3 pos = new Vector3(), dif = new Vector3(), dif2 = new Vector3();
+	protected float size;
+	protected int latn, longn;
+	
+	protected SpCoord sunPos[][];
+	protected Vector3 sunNormal[][];
+	
+	private Vector3 buf = new Vector3();
 
 	@Override
-	public void initialize(ClientSettings settings, IConfigHandler config, Sun sun) { }
-
-	@Override
-	public void updateCache(ClientSettings settings, IConfigHandler config, Sun object, StellarCacheInfo info) {
-		Vector3 ref = new Vector3(object.earthPos);
-		info.projectionToGround.transform(ref);
-		appCoord.setWithVec(ref);
-		info.applyAtmRefraction(this.appCoord);
+	public void updateSettings(ClientSettings settings, SolarSystemClientSettings specificSettings, Sun object) {
+		this.latn = specificSettings.imgFrac;
+		this.longn = 2*specificSettings.imgFrac;
 		
-		double size = object.radius / object.earthPos.size()*99.0*20;
-		
-		pos.set(appCoord.getVec());
-		dif.set(new SpCoord(appCoord.x+90, 0.0).getVec());
-		dif2.set(new SpCoord(appCoord.x, appCoord.y+90).getVec());
-
-		pos.scale(EnumRenderPass.DEFAULT_OPAQUE_DEPTH);
-		dif.scale(size);
-		dif2.scale(-size);
+		this.sunPos = Allocator.createAndInitializeSp(longn, latn+1);
+		this.sunNormal = Allocator.createAndInitialize(longn, latn+1);
 	}
 
 	@Override
-	public int getRenderId() {
-		return LayerSolarSystem.sunRenderId;
+	public void updateCache(Sun object, SunImage image, ViewerInfo info, IStellarChecker checker) {
+		appCoord.x = image.appCoord.x;
+		appCoord.y = image.appCoord.y;
+		this.size = (float) (object.radius / object.earthPos.size());
+		
+		checker.startDescription();
+		checker.brightness(1.0f, 1.0f, 1.0f);
+		checker.pos(this.appCoord);
+		checker.radius(this.size);
+		checker.checkDominator();
+		
+		int latc, longc;
+		for(longc=0; longc<longn; longc++){
+			for(latc=0; latc<=latn; latc++){
+				buf.set(object.posLocalSun((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0));
+				
+				sunNormal[longc][latc].set(buf);
+				sunNormal[longc][latc].normalize();
+				
+				buf.add(object.earthPos);
+				info.coordinate.getProjectionToGround().transform(buf);
+
+				double size = buf.size();
+				sunPos[longc][latc].setWithVec(buf);
+				info.sky.applyAtmRefraction(sunPos[longc][latc]);
+			}
+		}
 	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ICelestialObjectRenderer getRenderer() {
+		return SunRenderer.INSTANCE;
+	}
+
+
 
 }

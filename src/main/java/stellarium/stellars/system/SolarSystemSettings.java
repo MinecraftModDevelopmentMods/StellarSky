@@ -25,7 +25,8 @@ public class SolarSystemSettings extends SimpleNBTConfig {
 		
 		super.setupConfig(config, category);
 		
-       	propMoonSize.setComment("Size of moon. (Default size is 1.0)");
+       	propMoonSize.setComment("Size of moon. (Default size is 1.0)\n"
+       			+ "Note that the default size is 4 times bigger than realistic size.");
        	propMoonSize.setRequiresWorldRestart(true);
        	propMoonSize.setLanguageKey("config.property.server.moonsize");
         

@@ -1,30 +1,69 @@
 package stellarium.stellars.system;
 
-import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.lib.math.Vector3;
 import stellarium.StellarSkyResources;
-import stellarium.render.EnumRenderPass;
-import stellarium.render.ICelestialObjectRenderer;
-import stellarium.render.StellarRenderInfo;
+import stellarium.render.stellars.access.EnumStellarPass;
+import stellarium.render.stellars.access.IStellarTessellator;
+import stellarium.render.stellars.layer.LayerRenderInformation;
+import stellarium.stellars.render.ICelestialObjectRenderer;
 
-public class SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
+public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 	
-	@Override
-	public void render(StellarRenderInfo info, SunRenderCache cache) {
-		if(info.pass != EnumRenderPass.ShallowScattering)
-			return;
-		
-		Vector3 pos = cache.pos;
-		Vector3 dif = cache.dif;
-		Vector3 dif2 = cache.dif2;
-		
-		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceSunHalo.getLocation());
-		info.tessellator.startDrawingQuads();
-		info.tessellator.addVertexWithUV(pos.getX()+dif.getX(),  pos.getY()+dif.getY(),  pos.getZ()+dif.getZ(), 0.0,0.0);
-		info.tessellator.addVertexWithUV(pos.getX()+dif2.getX(), pos.getY()+dif2.getY(), pos.getZ()+dif2.getZ(),1.0,0.0);
-		info.tessellator.addVertexWithUV(pos.getX()-dif.getX(),  pos.getY()-dif.getY(),  pos.getZ()-dif.getZ(), 1.0,1.0);
-		info.tessellator.addVertexWithUV(pos.getX()-dif2.getX(), pos.getY()-dif2.getY(), pos.getZ()-dif2.getZ(),0.0,1.0);
-		info.tessellator.draw();
-	}
+	INSTANCE;
 
+	@Override
+	public void render(SunRenderCache cache, EnumStellarPass pass, LayerRenderInformation info) {
+		IStellarTessellator tessellator = info.tessellator;
+
+		if(pass == EnumStellarPass.DominateScatter) {
+			tessellator.begin(false);
+			tessellator.pos(cache.appCoord, info.deepDepth);
+			tessellator.color(1.0f, 1.0f, 1.0f);
+			tessellator.writeVertex();
+			tessellator.end();
+		} else if(pass == EnumStellarPass.Opaque) {
+			tessellator.bindTexture(StellarSkyResources.resourceSunSurface.getLocation());
+			tessellator.begin(true);
+			tessellator.radius(cache.size);
+
+			float brightness = 10000.0f;
+			
+			int longc, latc;
+
+			for(longc=0; longc<cache.longn; longc++){
+				for(latc=0; latc<cache.latn; latc++){
+					int longcd=(longc+1)%cache.longn;
+					float longd=(float)longc/(float)cache.longn;
+					float latd=1.0f-(float)latc/(float)cache.latn;
+					float longdd=(float)(longc+1)/(float)cache.longn;
+					float latdd=1.0f-(float)(latc+1)/(float)cache.latn;
+
+					tessellator.pos(cache.sunPos[longc][latc], info.deepDepth / 2.0f);
+					tessellator.texture(longd, latd);
+					tessellator.color(brightness, brightness, brightness);
+					tessellator.normal(cache.sunNormal[longc][latc]);
+					tessellator.writeVertex();
+					
+					tessellator.pos(cache.sunPos[longcd][latc], info.deepDepth / 2.0f);
+					tessellator.texture(longdd, latd);
+					tessellator.color(brightness, brightness, brightness);
+					tessellator.normal(cache.sunNormal[longcd][latc]);
+					tessellator.writeVertex();
+					
+					tessellator.pos(cache.sunPos[longcd][latc+1], info.deepDepth / 2.0f);
+					tessellator.texture(longdd, latdd);
+					tessellator.color(brightness, brightness, brightness);
+					tessellator.normal(cache.sunNormal[longcd][latc+1]);
+					tessellator.writeVertex();
+					
+					tessellator.pos(cache.sunPos[longc][latc+1], info.deepDepth / 2.0f);
+					tessellator.texture(longd, latdd);
+					tessellator.color(brightness, brightness, brightness);
+					tessellator.normal(cache.sunNormal[longc][latc+1]);
+					tessellator.writeVertex();
+				}
+			}
+			
+			tessellator.end();
+		}
+	}
 }

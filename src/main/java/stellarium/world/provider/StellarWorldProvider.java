@@ -18,7 +18,7 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IRenderHandler;
 import stellarapi.api.optics.EnumRGBA;
 import stellarium.api.ICelestialHelper;
-import stellarium.api.ICelestialRenderer;
+import stellarium.render.sky.NewSkyRenderer;
 
 public class StellarWorldProvider extends WorldProvider {
 	
@@ -604,7 +604,9 @@ public class StellarWorldProvider extends WorldProvider {
     @SideOnly(Side.CLIENT)
     public void setSkyRenderer(IRenderHandler skyRenderer) {
     	for(Field field : skyRenderer.getClass().getDeclaredFields())
-    		if(ICelestialRenderer.class.isAssignableFrom(field.getType()))
+    		if(IRenderHandler.class.isAssignableFrom(field.getDeclaringClass()))
     			super.setSkyRenderer(skyRenderer);
+    	if(skyRenderer instanceof NewSkyRenderer)
+    		super.setSkyRenderer(skyRenderer);
     }
 }

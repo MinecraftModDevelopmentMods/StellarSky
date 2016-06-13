@@ -17,7 +17,6 @@ import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.layer.StellarObjectContainer;
-import stellarium.world.landscape.LandscapeCache;
 
 public final class StellarDimensionManager extends WorldSavedData {
 	
@@ -33,8 +32,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	private List<ICelestialObject> foundMoons = Lists.newArrayList();
 	
 	private String dimensionName;
-	
-	private LandscapeCache landscapeCache;
+	private boolean isRemote;
 	
 	public static StellarDimensionManager loadOrCreate(World world, StellarManager manager, String dimName) {
 		WorldSavedData data = world.perWorldStorage.loadData(StellarDimensionManager.class, String.format(ID, dimName));
@@ -81,6 +79,10 @@ public final class StellarDimensionManager extends WorldSavedData {
 		return this.skyset;
 	}
 	
+	public List<StellarCollection> getCollections() {
+		return this.collections;
+	}
+	
 	private void loadSettingsFromConfig() {
 		this.settings = (PerDimensionSettings) ((INBTConfig) StellarSky.proxy.getDimensionSettings().getSubConfig(this.dimensionName)).copy();
 		this.markDirty();
@@ -92,6 +94,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 	}
 	
 	public void syncFromNBT(NBTTagCompound compound, StellarManager manager, boolean isRemote) {
+		this.isRemote = isRemote;
 		if(manager.isLocked() || isRemote) {
 			this.settings = new PerDimensionSettings(this.dimensionName);
 			settings.readFromNBT(compound);
@@ -112,9 +115,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 		else this.skyset = new NonRefractiveSkySet(this.settings);
 		this.coordinate = new StellarCoordinate(manager.getSettings(), this.settings);
 		coordinate.update(manager.getSkyTime(0.0) / manager.getSettings().day / manager.getSettings().year);
-		
-		this.landscapeCache = settings.isLandscapeEnabled()? new LandscapeCache() : null;
-		
+
 		StellarSky.logger.info(String.format("Initialized Dimension Settings on Dimension %s.", this.dimensionName));
 	}
 	
@@ -123,9 +124,11 @@ public final class StellarDimensionManager extends WorldSavedData {
 		foundSuns.clear();
 		foundMoons.clear();
 		
-		StellarSky.logger.info("Starting Initial Update to Construct Images...");
+		StellarSky.logger.info("Evaluating Stellar Collections from Celestial State...");
+
+		StellarSky.logger.info("Starting Test Update.");
 		manager.update(0.0);
-		StellarSky.logger.info("Initial Update Ended.");
+		StellarSky.logger.info("Test Update Ended.");
 		
 		for(StellarObjectContainer container : manager.getCelestialManager().getLayers()) {
 			StellarCollection collection = new StellarCollection(container, coordinate, sky,
@@ -136,6 +139,12 @@ public final class StellarDimensionManager extends WorldSavedData {
 			foundSuns.addAll(collection.getSuns());
 			foundMoons.addAll(collection.getMoons());
 		}
+		
+		if(this.isRemote)
+			StellarSky.proxy.setupDimensionLoad(this);
+		
+		StellarSky.logger.info("Evaluated Stellar Collections.");
+		
 		return this.collections;
 	}
 	
@@ -156,12 +165,5 @@ public final class StellarDimensionManager extends WorldSavedData {
 			StellarObjectContainer container = manager.getCelestialManager().getLayers().get(i);
 			container.updateCollection(collection, currentUniversalTick);
 		}
-		
-		if(world.isRemote && this.landscapeCache != null)
-			landscapeCache.updateCache();
-	}
-
-	public LandscapeCache getLandscapeCache() {
-		return this.landscapeCache;
 	}
 }
