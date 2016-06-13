@@ -1,4 +1,4 @@
-#version 130
+#version 120
 uniform vec3 lightDir;      // Direction vectors to the light source
 uniform vec3 lightColor;    // Brightness of the light source
 
@@ -10,8 +10,8 @@ uniform vec3 extinctionFactor;
 uniform float depthToFogFactor;
 
 const vec3 zenithDir = vec3(0.0, 0.0, 1.0);
-out vec4 scatteringColor4;
-out vec3 v3Direction;
+varying vec4 scatteringColor4;
+varying vec3 v3Direction;
 #define PI 3.1415926535897932384626433832795
 #define ERFC_FACTOR 0.147
 

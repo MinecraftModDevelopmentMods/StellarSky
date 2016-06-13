@@ -1,11 +1,10 @@
-#version 130
+#version 120
 
 uniform vec4 invres2; // 0.5 * (pointSize / resolution)^2
 uniform float skyBrightness;
 uniform float dominationscale;
 
-in vec2 dominationCoord;
-in vec4 color;
+varying vec4 color;
 
 const vec2 center = vec2(0.5, 0.5);
 

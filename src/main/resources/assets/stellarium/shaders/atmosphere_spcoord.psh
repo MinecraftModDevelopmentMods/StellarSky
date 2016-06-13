@@ -1,4 +1,4 @@
-#version 130
+#version 120
 
 uniform vec3 lightDir;      // Direction vector to the light source
 uniform float g;			  // Factor g
@@ -6,8 +6,8 @@ uniform vec4 rayleighFactor;
 uniform vec4 mieFactor;
 uniform float exposure;
 
-in vec4 scatteringColor4;
-in vec3 v3Direction;
+varying vec4 scatteringColor4;
+varying vec3 v3Direction;
 
 float getRayleighPhase(float cos2) {
 	return 3.0 / 4.0 * (1 + cos2);

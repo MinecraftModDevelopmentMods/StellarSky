@@ -1,11 +1,10 @@
-#version 130
+#version 120
 
 uniform float dominationscale;
 uniform float skyBrightness;
 uniform sampler2D texture;
 
-in vec4 color;
-in vec2 dominationCoord;
+varying vec4 color;
 
 void main()
 {

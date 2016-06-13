@@ -1,6 +1,6 @@
-#version 130
+#version 120
 
-out vec4 color;
+varying vec4 color;
 
 #define PI 3.1415926535897932384626433832795
 
