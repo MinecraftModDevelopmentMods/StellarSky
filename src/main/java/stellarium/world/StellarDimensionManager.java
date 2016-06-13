@@ -102,6 +102,10 @@ public final class StellarDimensionManager extends WorldSavedData {
 			this.loadSettingsFromConfig();
 		}
 	}
+	
+	public void setIsRemote(boolean isRemote) {
+		this.isRemote = isRemote;
+	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {

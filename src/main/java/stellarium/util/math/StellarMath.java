@@ -56,6 +56,11 @@ public class StellarMath {
 		return btoi(istr.getBytes(), 0, istr.getBytes().length);
 	}
 	
+	//extract double from String
+	public static final double StrtoD(String istr){
+		return btoD(istr.getBytes(), 0, istr.getBytes().length);
+	}
+	
 	//extract signal of number and set
 	public static final double sgnize(byte b, double num){
 		if(b=='-') return -num;

@@ -128,10 +128,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		skyModel.updateSettings(this.clientSettings);
 		RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class).initialize(this.clientSettings);
 
-		//IRenderHandler renderer = StellarSkyAPI.getRendererFor(skyType,
-		//		new SkyCelestialRenderer(this.clientSettings, celManager, this.displayManager, this.landscapeSettings, cache));
 		provider.setSkyRenderer(StellarSkyAPI.getRendererFor(skyRenderType, new NewSkyRenderer(this.skyModel)));
-		//provider.setSkyRenderer(new TheSkyRenderer());
 	}
 	
 	@Override

@@ -160,6 +160,7 @@ public class StellarAPIEventHook {
 		if(StellarSky.proxy.getDimensionSettings().hasSubConfig(dimName)) {
 			update.resetProgresAndWorkingMessage(I18n.format("progress.text.injection.dimmanager", dimName));
 			StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(world, manager, dimName);
+			dimManager.setIsRemote(true);
 			setupDimension(world, manager, dimManager);
 			update.resetProgresAndWorkingMessage("");
 		}
