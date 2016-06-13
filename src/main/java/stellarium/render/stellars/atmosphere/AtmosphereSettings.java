@@ -2,6 +2,7 @@ package stellarium.render.stellars.atmosphere;
 
 import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.SimpleConfigHandler;
+import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
 import stellarapi.api.lib.config.property.ConfigPropertyInteger;
 
 public class AtmosphereSettings extends SimpleConfigHandler {
@@ -10,6 +11,7 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	
 	private ConfigPropertyInteger propCacheSizeLevel;
 	private ConfigPropertyInteger propFragSize;
+	private ConfigPropertyBoolean propInterpolation;
 
 	/**
 	 * Size of atmosphere cache texture
@@ -21,14 +23,18 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	 * */
 	public int fragLong = 256, fragLat = 128;
 	
+	public boolean isInterpolated = false;
+	
 	private boolean isChanged = true;
 	
 	public AtmosphereSettings() {
 		this.propCacheSizeLevel = new ConfigPropertyInteger("Atmosphere_Cache_Level", "", 9);
 		this.propFragSize = new ConfigPropertyInteger("Atmosphere_Fragment_Number", "", 128);
-		
+		this.propInterpolation = new ConfigPropertyBoolean("Atmosphere_Interpolation", "", false);
+
 		this.addConfigProperty(this.propCacheSizeLevel);
 		this.addConfigProperty(this.propFragSize);
+		this.addConfigProperty(this.propInterpolation);
 	}
 	
 	@Override
@@ -51,6 +57,10 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 		propFragSize.setLanguageKey("config.property.atmosphere.fragnumber");
 		propFragSize.setMinValue(8);
        	propFragSize.setMaxValue(512);
+       	
+       	propInterpolation.setComment("Enabling this will interpolate texture for better view, but there could be some trivial issues like 'black line' with this.");
+       	propInterpolation.setRequiresMcRestart(false);
+       	propInterpolation.setLanguageKey("config.property.atmosphere.interpolation");
 	}
 
 	@Override
@@ -69,6 +79,12 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 			this.isChanged = true;
 			this.fragLat = fragNumber;
 			this.fragLong = 2 * fragNumber;
+		}
+		
+		boolean interpolated = propInterpolation.getBoolean();
+		if(this.isInterpolated != interpolated) {
+			this.isChanged = true;
+			this.isInterpolated = interpolated;
 		}
 	}
 	

@@ -55,6 +55,9 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 			dominateCache.deleteFramebuffer();
 
 		this.dominateCache = new FramebufferCustom(settings.cacheLong, settings.cacheLat, true);
+		if(settings.isInterpolated) {
+			dominateCache.setFramebufferFilter(GL11.GL_LINEAR);
+		}
 		dominateCache.unbindFramebuffer();
 		
 		int renderBufferNewSize = (settings.fragLong + 1) * (settings.fragLat + 1) * STRIDE_IN_FLOAT;

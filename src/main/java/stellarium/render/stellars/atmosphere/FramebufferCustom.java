@@ -12,9 +12,11 @@ import net.minecraft.client.shader.Framebuffer;
 import stellarium.util.OpenGlVersionUtil;
 
 public class FramebufferCustom extends Framebuffer {
+	
+	private boolean isInterpolated;
 
-	public FramebufferCustom(int p_i45078_1_, int p_i45078_2_, boolean p_i45078_3_) {
-		super(p_i45078_1_, p_i45078_2_, p_i45078_3_);
+	public FramebufferCustom(int width, int height, boolean withDepth) {
+		super(width, height, withDepth);
 	}
 	
 	@Override
@@ -40,8 +42,8 @@ public class FramebufferCustom extends Framebuffer {
             }
 
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.framebufferTexture);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, OpenGlVersionUtil.rgb16f(), this.framebufferTextureWidth, this.framebufferTextureHeight, 0, GL11.GL_RGB, GL11.GL_FLOAT, (FloatBuffer)null);

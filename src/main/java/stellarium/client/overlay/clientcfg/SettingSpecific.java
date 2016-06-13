@@ -51,6 +51,7 @@ public class SettingSpecific {
 		model.addSubModel("config.category.atmosphere", new ModelSimpleTextured(StellarSkyResources.atmosphereSettings));
 		model.addSubModel("config.property.atmosphere.cachelevel", new ModelSimpleTextured(StellarSkyResources.atmosphereCacheLevel));
 		model.addSubModel("config.property.atmosphere.fragnumber", new ModelSimpleTextured(StellarSkyResources.fragment));
+		model.addSubModel("config.property.atmosphere.interpolation", new ModelTF(StellarSkyResources.fillfragment, StellarSkyResources.fragment));
 
 		return model;
 	}
