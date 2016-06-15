@@ -26,9 +26,7 @@ public class SkyRenderInformation {
 		
 		this.isFrameBufferEnabled = OpenGlHelper.isFramebufferEnabled();
 		
-		int renderDistance = mc.gameSettings.renderDistanceChunks;
-		
-		this.deepDepth = 30.0f * renderDistance;
+		this.deepDepth = 100.0f;
 
 		this.info = viewer;
 		this.screenSize = mc.displayWidth;

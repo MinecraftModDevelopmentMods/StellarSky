@@ -26,7 +26,6 @@ public interface IProxy {
     
 	public World getDefWorld();
 	public Entity getDefViewerEntity();
-	public int getRenderDistanceSettings();
 	
 	public void setupCelestialConfigManager(ConfigManager manager);
 	

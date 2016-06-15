@@ -60,11 +60,6 @@ public class CommonProxy implements IProxy {
 	}
 
 	@Override
-	public int getRenderDistanceSettings() {
-		return 0;
-	}
-
-	@Override
 	public void setupSkyRenderer(WorldProvider provider, String skyType) { }
 
 	@Override

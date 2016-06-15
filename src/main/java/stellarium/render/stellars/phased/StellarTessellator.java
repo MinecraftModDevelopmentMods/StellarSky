@@ -20,7 +20,7 @@ import stellarium.view.ViewerInfo;
 public class StellarTessellator implements IStellarTessellator {
 
 	//Limits size per draw call
-	private static final int maxBufferSize = 0x40000;
+	private static final int maxBufferSize = 0x80000;
 	
 	
 	private float radius;

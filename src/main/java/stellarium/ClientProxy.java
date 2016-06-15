@@ -104,11 +104,6 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	@Override
-	public int getRenderDistanceSettings() {
-		return Minecraft.getMinecraft().gameSettings.renderDistanceChunks;
-	}
-	
-	@Override
 	public void setupStellarLoad(StellarManager manager) {
 		skyModel.stellarLoad(manager);
 	}
