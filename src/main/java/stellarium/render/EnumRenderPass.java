@@ -34,8 +34,9 @@ public enum EnumRenderPass {
 	 * Gets Distance(depth) for scatters from far objects.
 	 * */
 	public static final double getDeepDepth() {
-		int renderDistance = StellarSky.proxy.getRenderDistanceSettings();
-		return 30.0 * renderDistance;
+		/*int renderDistance = StellarSky.proxy.getRenderDistanceSettings();
+		return 30.0 * renderDistance;*/
+		return 101.0;
 	}
 	
 	/**

@@ -22,7 +22,7 @@ public class LandscapeCache {
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				displayvec[longc][latc].set(new SpCoord(longc*360.0/longn, latc*180.0/latn - 90.0).getVec());
-				displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth() * 0.7);
+				displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth() * 1.5);
 			}
 		}
 	}
