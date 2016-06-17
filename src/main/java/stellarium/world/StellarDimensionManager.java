@@ -17,6 +17,7 @@ import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.util.WorldUtil;
 
 public final class StellarDimensionManager extends WorldSavedData {
 	
@@ -54,7 +55,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 
 	public static StellarDimensionManager get(World world) {
 		WorldSavedData data = world.perWorldStorage.loadData(StellarDimensionManager.class,
-				String.format(ID, world.provider.getDimensionName()));
+				String.format(ID, WorldUtil.getWorldName(world)));
 		
 		if(!(data instanceof StellarDimensionManager))
 			return null;

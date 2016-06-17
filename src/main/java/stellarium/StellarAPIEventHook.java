@@ -20,6 +20,7 @@ import stellarium.api.StellarSkyAPI;
 import stellarium.stellars.DefaultCelestialHelper;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
+import stellarium.util.WorldUtil;
 import stellarium.world.StellarDimensionManager;
 
 public class StellarAPIEventHook {
@@ -78,7 +79,7 @@ public class StellarAPIEventHook {
 		if(!manager.getSettings().serverEnabled)
 			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
 		
-		String dimName = event.getWorld().provider.getDimensionName();
+		String dimName = WorldUtil.getWorldName(event.getWorld());
 		if(!StellarSky.proxy.getServerSettings().serverEnabled)
 			handleDimOnServerDisabled(event.getWorld(), manager,update);
 		
@@ -111,7 +112,7 @@ public class StellarAPIEventHook {
 	@SubscribeEvent
 	public void onServerWorldLoad(ServerWorldEvent.Load event) {
 		StellarManager manager = StellarManager.getServerManager(event.getServer());
-		String dimName = event.getWorld().provider.getDimensionName();
+		String dimName = WorldUtil.getWorldName(event.getWorld());
 		if(StellarSky.proxy.getDimensionSettings().hasSubConfig(dimName)) {
 			StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(event.getWorld(), manager, dimName);
 			setupDimension(event.getWorld(), manager, dimManager);
@@ -156,7 +157,7 @@ public class StellarAPIEventHook {
 	}
 	
 	private static void handleDimOnServerDisabled(World world, StellarManager manager, IProgressUpdate update) {
-		String dimName = world.provider.getDimensionName();
+		String dimName = WorldUtil.getWorldName(world);
 		if(StellarSky.proxy.getDimensionSettings().hasSubConfig(dimName)) {
 			update.resetProgresAndWorkingMessage(I18n.format("progress.text.injection.dimmanager", dimName));
 			StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(world, manager, dimName);
