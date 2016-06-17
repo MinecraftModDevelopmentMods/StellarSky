@@ -4,10 +4,10 @@
 "magnitude" : "4.0V",
 "size" : ["85m", "60m"],
 "textures" : {
-	"location" : "stellarium:deepsky/messier/m42.png",
+	"location" : "stellarium:deepsky/messier/m42dumont.png",
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
-	"size" : ["1.4d", "4.2d"],
+	"size" : ["1.4d", "1.4d"],
 	"attribution" : "Stephane Dumont"
 	},
 "Type" : "Nebula"

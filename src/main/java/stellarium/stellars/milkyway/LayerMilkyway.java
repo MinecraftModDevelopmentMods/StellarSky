@@ -43,7 +43,7 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 
 	@Override
 	public int searchOrder() {
-		return 2;
+		return 3;
 	}
 
 	@Override

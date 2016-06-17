@@ -51,7 +51,7 @@ public class StellarTessellator implements IStellarTessellator {
 	private int rawBufferCount;
 	private short vertexCount;
 	
-	private static final double LOWER_LIMIT_FACTOR = 1.0e-4;
+	private static final double LOWER_LIMIT_FACTOR = 1.0e-3;
 	
 	StellarTessellator() {
 		this.buffer = GLAllocation.createDirectFloatBuffer(maxBufferSize);

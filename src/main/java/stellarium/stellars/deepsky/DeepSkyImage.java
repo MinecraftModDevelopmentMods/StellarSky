@@ -13,15 +13,17 @@ public class DeepSkyImage implements IPerWorldImage<DeepSkyObject> {
 
 	private DeepSkyObject object;
 	private CelestialPeriod horizontalPeriod;
-	private Vector3 absPos;
-	private SpCoord appPos;
-	private double magnitude;
-	private String name;
+	protected SpCoord appPos = new SpCoord();
+	protected double radius;
 	
 	@Override
 	public void initialize(DeepSkyObject object, ICelestialCoordinate coordinate, ISkyEffect sky,
 			CelestialPeriod yearPeriod) {
 		this.object = object;
+		this.horizontalPeriod = new CelestialPeriod(String.format("Day; for %s", object.name),
+				coordinate.getPeriod().getPeriodLength(),
+				coordinate.calculateInitialOffset(object.centerPos, coordinate.getPeriod().getPeriodLength()));
+		this.radius = object.getRadius();
 	}
 
 	@Override
@@ -39,7 +41,7 @@ public class DeepSkyImage implements IPerWorldImage<DeepSkyObject> {
 
 	@Override
 	public Vector3 getCurrentAbsolutePos() {
-		return this.absPos;
+		return object.centerPos;
 	}
 
 	@Override
@@ -74,7 +76,7 @@ public class DeepSkyImage implements IPerWorldImage<DeepSkyObject> {
 
 	@Override
 	public double getStandardMagnitude() {
-		return this.magnitude;
+		return object.magnitude;
 	}
 
 }

@@ -16,10 +16,13 @@ public enum MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRenderC
 	@Override
 	public void render(MilkywayRenderCache cache, EnumStellarPass pass, LayerRenderInformation info) {
 		IStellarTessellator tessellator = info.tessellator;
-		
+
 		tessellator.begin(true);
 		tessellator.bindTexture(StellarSkyResources.resourceMilkyway.getLocation());
 		tessellator.color(cache.milkywayAbsBr, cache.milkywayAbsBr, cache.milkywayAbsBr);
+		
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 
 		for(int longc=0; longc<cache.longn; longc++){
 			for(int latc=0; latc<cache.latn; latc++){

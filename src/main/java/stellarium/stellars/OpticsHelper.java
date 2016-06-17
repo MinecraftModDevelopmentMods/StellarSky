@@ -68,11 +68,11 @@ public class OpticsHelper extends SimpleConfigHandler {
 
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
+		super.loadFromConfig(config, category);
+		
 		this.brightnessContrast = propBrightnessContrast.getDouble();
 		this.turbulance = propTurb.getDouble() * 4.0;
-		//float magCompression = magCompressionBase / StellarSky.proxy.getClientSettings().mag_Limit;
 		this.brightnessPower = 1.0f / ((float)this.brightnessContrast);
-		//this.magContrast = (float) Math.pow(2.512, (1.0/(brightnessContrast * magCompression)));
 	}
 	
 	@Override

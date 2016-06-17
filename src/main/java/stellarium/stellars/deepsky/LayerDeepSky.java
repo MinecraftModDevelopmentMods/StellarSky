@@ -41,8 +41,11 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	@Override
 	public void initializeCommon(INBTConfig config, StellarObjectContainer<DeepSkyObject, IConfigHandler> container)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		for(DeepSkyObject object : this.deepSkyObjects) {
+			container.loadObject("Messier", object);
+			container.addRenderCache(object, new DeepSkyObjectCache());
+			container.addImageType(object, DeepSkyImage.class);
+		}
 	}
 	
 	private static final String messierParent = "/assets/stellarium/deepsky/messier/";
@@ -69,63 +72,73 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	}
 
 	@Override
-	public void updateLayer(StellarObjectContainer<DeepSkyObject, IConfigHandler> container, double year) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void updateLayer(StellarObjectContainer<DeepSkyObject, IConfigHandler> container, double year) { }
 
 	@Override
 	public ICelestialLayerRenderer getLayerRenderer() {
-		// TODO Auto-generated method stub
-		return null;
+		return DeepSkyRenderer.INSTANCE;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "DeepSky";
 	}
 
 	@Override
 	public int searchOrder() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 2;
 	}
 
 	@Override
 	public boolean isBackground() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public EnumCelestialCollectionType getCollectionType() {
-		// TODO Auto-generated method stub
-		return null;
+		return EnumCelestialCollectionType.DeepSkyObjects;
 	}
 
 	@Override
 	public Collection<DeepSkyObject> getSuns(StellarObjectContainer container) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Collection<DeepSkyObject> getMoons(StellarObjectContainer container) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Comparator<ICelestialObject> getDistanceComparator(SpCoord pos) {
-		// TODO Auto-generated method stub
-		return null;
+	public Comparator<ICelestialObject> getDistanceComparator(final SpCoord pos) {
+		return new Comparator<ICelestialObject>() {
+			@Override
+			public int compare(ICelestialObject obj1, ICelestialObject obj2) {
+				if(obj1 instanceof DeepSkyImage && obj2 instanceof DeepSkyImage) {
+					DeepSkyImage image = (DeepSkyImage) obj1;
+					DeepSkyImage image2 = (DeepSkyImage) obj2;
+
+					if(pos.distanceTo(image.appPos) - image.radius < pos.distanceTo(image2.appPos) - image2.radius)
+						return -1;
+					else return 1;
+				}
+				return 1;
+			}
+		};
 	}
 
 	@Override
-	public Predicate<ICelestialObject> conditionInRange(SpCoord pos, double radius) {
-		// TODO Auto-generated method stub
-		return null;
+	public Predicate<ICelestialObject> conditionInRange(final SpCoord pos, final double radius) {
+		return new Predicate<ICelestialObject>() {
+			@Override
+			public boolean apply(ICelestialObject input) {
+				if(input instanceof DeepSkyImage) {
+					DeepSkyImage image = (DeepSkyImage) input;
+					return pos.distanceTo(image.appPos) < radius + image.radius;
+				}
+				return false;
+			}
+		};
 	}
 
 	@Override
