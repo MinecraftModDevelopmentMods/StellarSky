@@ -55,7 +55,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 		propBrightnessContrast.setRequiresMcRestart(false);
 		propBrightnessContrast.setLanguageKey("config.property.client.brcontrast");
 		propBrightnessContrast.setMaxValue(4.0);
-		propBrightnessContrast.setMinValue(0.0);
+		propBrightnessContrast.setMinValue(0.5);
 		
         propTurb.setComment("Degree of the twinkling effect of star.\n"
         		+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect. "

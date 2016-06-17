@@ -26,16 +26,15 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 			RenderHelper.disableStandardItemLighting();
 			GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-			
+
 			GL11.glPushMatrix();
 			GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
 			GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
 
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			GL11.glDepthMask(false);
-			
+
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
