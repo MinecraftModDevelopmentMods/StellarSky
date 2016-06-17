@@ -108,7 +108,7 @@ public class StellarAPIEventHook {
 		StellarManager manager = StellarManager.loadOrCreateServerManager(event.getServer());
 		manager.setup(new CelestialManager(false));
 	}
-	
+
 	@SubscribeEvent
 	public void onServerWorldLoad(ServerWorldEvent.Load event) {
 		StellarManager manager = StellarManager.getServerManager(event.getServer());
@@ -118,8 +118,8 @@ public class StellarAPIEventHook {
 			setupDimension(event.getWorld(), manager, dimManager);
 		}
 	}
-	
-	
+
+
 	public static void setupDimension(World world, StellarManager manager, StellarDimensionManager dimManager) {
 		dimManager.setup();
 		

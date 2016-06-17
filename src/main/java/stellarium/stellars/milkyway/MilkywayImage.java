@@ -67,4 +67,9 @@ public class MilkywayImage implements IPerWorldImage<Milkyway> {
 	public EnumCelestialObjectType getObjectType() {
 		return EnumCelestialObjectType.DeepSkyObject;
 	}
+
+	@Override
+	public String getName() {
+		return "Milkyway";
+	}
 }

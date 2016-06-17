@@ -82,4 +82,9 @@ public class SunImage implements IPerWorldImage<Sun> {
 	public EnumCelestialObjectType getObjectType() {
 		return EnumCelestialObjectType.Star;
 	}
+
+	@Override
+	public String getName() {
+		return "Sun";
+	}
 }

@@ -12,6 +12,7 @@ import stellarium.stellars.layer.IPerWorldImage;
 public class PlanetImage implements IPerWorldImage<Planet> {
 
 	private double mag;
+	private String name;
 	private Vector3 pos;
 	protected SpCoord appCoord = new SpCoord();
 	private double phase;
@@ -22,6 +23,7 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 	public void initialize(Planet object, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
 		double LvsSun=object.radius*object.radius*object.albedo*1.4/(object.a0*object.a0*object.a0*object.a0);
 		this.mag=-26.74-2.5*Math.log10(LvsSun);
+		this.name = object.getID();
 		
 		double period = object.getRevolutionPeriod() * yearPeriod.getPeriodLength();
 		this.siderealPeriod = new CelestialPeriod(String.format("Sidereal Period of %s", object.getID()), period, object.absoluteOffset());
@@ -87,6 +89,11 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 	@Override
 	public EnumCelestialObjectType getObjectType() {
 		return EnumCelestialObjectType.Planet;
+	}
+
+	@Override
+	public String getName() {
+		return this.name;
 	}
 
 }

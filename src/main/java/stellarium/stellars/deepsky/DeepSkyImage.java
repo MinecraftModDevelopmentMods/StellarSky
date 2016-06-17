@@ -79,4 +79,9 @@ public class DeepSkyImage implements IPerWorldImage<DeepSkyObject> {
 		return object.magnitude;
 	}
 
+	@Override
+	public String getName() {
+		return object.name;
+	}
+
 }
