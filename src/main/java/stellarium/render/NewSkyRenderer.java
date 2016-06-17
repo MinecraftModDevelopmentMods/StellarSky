@@ -1,4 +1,4 @@
-package stellarium.render.sky;
+package stellarium.render;
 
 import org.lwjgl.opengl.GL11;
 
@@ -15,6 +15,8 @@ import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
 import stellarium.lib.render.IGenericRenderer;
 import stellarium.lib.render.RendererRegistry;
+import stellarium.render.sky.SkyModel;
+import stellarium.render.sky.SkyRenderInformation;
 import stellarium.view.ViewerInfo;
 
 public class NewSkyRenderer extends IRenderHandler {

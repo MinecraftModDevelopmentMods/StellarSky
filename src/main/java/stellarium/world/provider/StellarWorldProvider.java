@@ -18,7 +18,7 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IRenderHandler;
 import stellarapi.api.optics.EnumRGBA;
 import stellarium.api.ICelestialHelper;
-import stellarium.render.sky.NewSkyRenderer;
+import stellarium.render.NewSkyRenderer;
 
 public class StellarWorldProvider extends WorldProvider {
 	

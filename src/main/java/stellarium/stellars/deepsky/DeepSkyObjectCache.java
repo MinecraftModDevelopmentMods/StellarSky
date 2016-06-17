@@ -1,5 +1,7 @@
 package stellarium.stellars.deepsky;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ResourceLocation;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.Matrix3;
@@ -65,6 +67,7 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 		this.shouldRender = checker.checkRendered();
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public ICelestialObjectRenderer getRenderer() {
 		return DSObjectRenderer.INSTANCE;

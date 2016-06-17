@@ -74,6 +74,7 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	@Override
 	public void updateLayer(StellarObjectContainer<DeepSkyObject, IConfigHandler> container, double year) { }
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public ICelestialLayerRenderer getLayerRenderer() {
 		return DeepSkyRenderer.INSTANCE;

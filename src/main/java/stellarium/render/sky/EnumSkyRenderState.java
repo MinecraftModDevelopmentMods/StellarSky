@@ -35,6 +35,7 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 			GL11.glDepthMask(false);
 			
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
