@@ -11,71 +11,70 @@ import stellarium.stellars.layer.IPerWorldImage;
 
 public class DeepSkyImage implements IPerWorldImage<DeepSkyObject> {
 
+	private DeepSkyObject object;
+	private CelestialPeriod horizontalPeriod;
+	private Vector3 absPos;
+	private SpCoord appPos;
+	private double magnitude;
+	private String name;
+	
+	@Override
+	public void initialize(DeepSkyObject object, ICelestialCoordinate coordinate, ISkyEffect sky,
+			CelestialPeriod yearPeriod) {
+		this.object = object;
+	}
+
+	@Override
+	public void updateCache(DeepSkyObject object, ICelestialCoordinate coordinate, ISkyEffect sky) {
+		Vector3 ref = new Vector3(object.centerPos);
+		coordinate.getProjectionToGround().transform(ref);
+		appPos.setWithVec(ref);
+		sky.applyAtmRefraction(this.appPos);
+	}
+
 	@Override
 	public CelestialPeriod getAbsolutePeriod() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Vector3 getCurrentAbsolutePos() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.absPos;
 	}
 
 	@Override
 	public double getCurrentBrightness(Wavelength arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1.0;
 	}
 
 	@Override
 	public SpCoord getCurrentHorizontalPos() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.appPos;
 	}
 
 	@Override
 	public double getCurrentPhase() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1.0;
 	}
 
 	@Override
 	public CelestialPeriod getHorizontalPeriod() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.horizontalPeriod;
 	}
 
 	@Override
 	public EnumCelestialObjectType getObjectType() {
-		// TODO Auto-generated method stub
-		return null;
+		return EnumCelestialObjectType.DeepSkyObject;
 	}
 
 	@Override
 	public CelestialPeriod getPhasePeriod() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public double getStandardMagnitude() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void initialize(DeepSkyObject object, ICelestialCoordinate coordinate, ISkyEffect sky,
-			CelestialPeriod yearPeriod) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateCache(DeepSkyObject object, ICelestialCoordinate coordinate, ISkyEffect sky) {
-		// TODO Auto-generated method stub
-		
+		return this.magnitude;
 	}
 
 }

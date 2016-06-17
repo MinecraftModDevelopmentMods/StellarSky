@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.util.ResourceLocation;
+import stellarapi.api.lib.math.Vector3;
 
 public class DeepSkyTexture {
 	
@@ -17,6 +18,10 @@ public class DeepSkyTexture {
 		this.width = PositionUtil.getDegreeFromDMS(size.get(0).getAsString());
 		this.height = PositionUtil.getDegreeFromDMS(size.get(1).getAsString());
 		this.attribution = textureInfo.get("attribution").getAsString();
+	}
+	
+	public void fill(Vector3 center, Vector3 dirWidth, Vector3 dirHeight, Vector3[] points) {
+		
 	}
 
 }

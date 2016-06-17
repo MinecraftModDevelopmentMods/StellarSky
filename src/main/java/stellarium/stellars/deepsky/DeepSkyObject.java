@@ -22,7 +22,7 @@ public class DeepSkyObject extends StellarObject {
 
 	private String id;
 	private String name;
-	private Vector3 centerPos;
+	protected Vector3 centerPos;
 	private double magnitude;
 	private double width, height;
 	private DeepSkyTexture texture;
