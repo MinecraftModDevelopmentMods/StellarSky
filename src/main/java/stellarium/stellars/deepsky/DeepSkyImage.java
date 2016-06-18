@@ -4,7 +4,9 @@ import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
+import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.stellars.layer.IPerWorldImage;
@@ -23,12 +25,13 @@ public class DeepSkyImage implements IPerWorldImage<DeepSkyObject> {
 		this.horizontalPeriod = new CelestialPeriod(String.format("Day; for %s", object.name),
 				coordinate.getPeriod().getPeriodLength(),
 				coordinate.calculateInitialOffset(object.centerPos, coordinate.getPeriod().getPeriodLength()));
-		this.radius = object.getRadius();
+		this.radius = Spmath.Degrees(object.getRadius());
 	}
 
 	@Override
 	public void updateCache(DeepSkyObject object, ICelestialCoordinate coordinate, ISkyEffect sky) {
 		Vector3 ref = new Vector3(object.centerPos);
+		DeepSkyObjectCache.EqtoEc.transform(ref);
 		coordinate.getProjectionToGround().transform(ref);
 		appPos.setWithVec(ref);
 		sky.applyAtmRefraction(this.appPos);

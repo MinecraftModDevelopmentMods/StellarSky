@@ -99,6 +99,6 @@ public class StarImage implements IPerWorldImage<BgStar> {
 
 	@Override
 	public String getName() {
-		return this.bayerId;
+		return this.constellation + this.flamsteedId + this.bayerId;
 	}
 }

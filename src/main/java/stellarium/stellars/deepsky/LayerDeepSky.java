@@ -137,7 +137,8 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 					DeepSkyImage image = (DeepSkyImage) input;
 					return pos.distanceTo(image.appPos) < radius + image.radius;
 				}
-				return false;
+
+				return true;
 			}
 		};
 	}

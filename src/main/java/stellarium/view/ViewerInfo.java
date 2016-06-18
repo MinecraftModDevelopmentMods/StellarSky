@@ -38,8 +38,8 @@ public class ViewerInfo {
 		
 		this.currentPosition = new Vector3(viewer.posX, viewer.posY, viewer.posZ);
 		
-		float rotationYaw = viewer.getRotationYawHead();
-		float rotationPitch = viewer.rotationPitch;
+		float rotationYaw = viewer.rotationYaw;
+		float rotationPitch = -viewer.rotationPitch;
 
 		this.currentDirection = new SpCoord(180 - rotationYaw, rotationPitch);
 		
