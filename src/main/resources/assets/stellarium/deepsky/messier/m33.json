@@ -1,15 +1,14 @@
 {
-"name" : "Andromeda Galaxy",
-"position" : ["00h42m44.3s", "41d16m09s"],
-"magnitude" : "3.44V",
-"size" : ["3.167d", "1d"],
+"name" : "Triangulum Galaxy",
+"position" : ["01h33m50.02s", "30d39m36.7s"],
+"magnitude" : "5.72V",
+"size" : ["70.8m", "41.7m"],
 "textures" : {
-	"location" : "stellarium:deepsky/messier/m31.png",
+	"location" : "stellarium:deepsky/messier/m33.png",
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
-	"size" : ["6.4d", "4.2d"],
-	"attribution" : "CC BY-NC 2.0, by Adam Evans",
-	"attributionURL" : "http://www.flickr.com/photos/astroporn/4999978603/"
+	"size" : ["57.04m", "68.01m"],
+	"attribution" : "CCL BY 4.0, Credit: ESO"
 	},
 "Type" : "Galaxy"
 }
