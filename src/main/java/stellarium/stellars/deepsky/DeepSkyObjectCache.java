@@ -39,12 +39,18 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 			this.quads[i] = new Vector3();
 		}
 
-		this.location = object.getTexture().getTextureLocation();
+		if(object.getTexture().isPresent())
+			this.location = object.getTexture().get().getTextureLocation();
 	}
 
 	@Override
 	public void updateCache(DeepSkyObject object, DeepSkyImage image, ViewerInfo info, IStellarChecker checker) {		
-		DeepSkyTexture texture = object.getTexture();
+		if(!object.getTexture().isPresent()) {
+			this.shouldRender = false;
+			return;
+		}
+
+		DeepSkyTexture texture = object.getTexture().get();
 		
 		Vector3 center = new Vector3(object.centerPos);
 		Vector3 dirWidth = new Vector3().setCross(center, new Vector3(0.0, 0.0, 1.0)).normalize();

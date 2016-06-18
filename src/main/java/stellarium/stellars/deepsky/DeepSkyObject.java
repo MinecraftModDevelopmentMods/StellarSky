@@ -2,10 +2,10 @@ package stellarium.stellars.deepsky;
 
 import java.io.IOException;
 
+import com.google.common.base.Optional;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
@@ -18,7 +18,7 @@ public class DeepSkyObject extends StellarObject {
 	protected Vector3 centerPos;
 	protected double magnitude;
 	private double width, height;
-	private DeepSkyTexture texture;
+	private Optional<DeepSkyTexture> texture;
 
 	public DeepSkyObject(String objectId, JsonObject object) throws IOException {
 		this.id = objectId;
@@ -34,7 +34,9 @@ public class DeepSkyObject extends StellarObject {
 		double dec = PositionUtil.getDegreeFromDMS(pos.get(1).getAsString());
 		this.centerPos = new SpCoord(ra, dec).getVec();
 		
-		this.texture = new DeepSkyTexture(object.get("textures").getAsJsonObject());
+		if(object.has("textures"))
+			this.texture = Optional.of(new DeepSkyTexture(object.get("textures").getAsJsonObject()));
+		else this.texture = Optional.absent();
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class DeepSkyObject extends StellarObject {
 		return this.id;
 	}
 
-	public DeepSkyTexture getTexture() {
+	public Optional<DeepSkyTexture> getTexture() {
 		return this.texture;
 	}
 

@@ -7,7 +7,7 @@
 	"location" : "stellarium:deepsky/messier/m101-vasey.png",
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
-	"size" : ["1.2d", "0.7d"],
+	"size" : ["0.8d", "0.8d"],
 	"attribution" : "Plover Hill Observatory",
 	"attributionURL" : "http://www.madpc.co.uk/~peterv/"
 	},
