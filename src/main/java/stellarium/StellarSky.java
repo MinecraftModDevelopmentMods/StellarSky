@@ -44,15 +44,15 @@ public class StellarSky {
         private StellarTickHandler tickHandler = new StellarTickHandler();
         private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
         private StellarNetworkManager networkManager;
-        
+
         public StellarNetworkManager getNetworkManager() {
         	return this.networkManager;
         }
-        
+
 		public ConfigManager getCelestialConfigManager() {
 			return this.celestialConfigManager;
 		}
-        
+
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) { 
         	logger = event.getModLog();
