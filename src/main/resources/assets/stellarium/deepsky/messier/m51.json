@@ -1,0 +1,14 @@
+{
+"name" : "Whirlpool Galaxy",
+"position" : ["13h29m52.7s", "47d11m43s"],
+"magnitude" : "8.4V",
+"size" : ["11.2m", "6.9m"],
+"textures" : {
+	"location" : "stellarium:deepsky/messier/m51.png",
+	"orientation" : "equatorial",
+   	"wavelength" : "visible",
+	"size" : ["6.64m", "9.56m"],
+	"attribution" : "NASA, ESA, S. Beckwith (STScI), and The Hubble Heritage Team STScI/AURA)[Public Domain]"
+	},
+"Type" : "Galaxy"
+}

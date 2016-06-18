@@ -1,0 +1,15 @@
+{
+"name" : "Pinwheel Galaxy",
+"position" : ["14h03m12.6s", "54d20m57s"],
+"magnitude" : "7.86V",
+"size" : ["28.8m", "26.9m"],
+"textures" : {
+	"location" : "stellarium:deepsky/messier/m101-vasey.png",
+	"orientation" : "equatorial",
+   	"wavelength" : "visible",
+	"size" : ["1.2d", "0.7d"],
+	"attribution" : "Plover Hill Observatory",
+	"attributionURL" : "http://www.madpc.co.uk/~peterv/"
+	},
+"Type" : "Galaxy"
+}

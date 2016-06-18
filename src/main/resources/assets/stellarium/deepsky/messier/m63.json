@@ -1,0 +1,14 @@
+{
+"name" : "Sunflower Galaxy",
+"position" : ["13h15m49.3s", "42d01m45s"],
+"magnitude" : "9.3V",
+"size" : ["12.6m", "7.2m"],
+"textures" : {
+	"location" : "stellarium:deepsky/messier/m63.png",
+	"orientation" : "equatorial",
+   	"wavelength" : "visible",
+	"size" : ["0.19d", "0.13d"],
+	"attribution" : "NASA, ESA, S. Beckwith (STScI), and The Hubble Heritage Team STScI/AURA)[Public Domain]"
+	},
+"Type" : "Galaxy"
+}
