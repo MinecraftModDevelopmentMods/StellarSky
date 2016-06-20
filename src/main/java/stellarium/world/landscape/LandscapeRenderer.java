@@ -17,8 +17,14 @@ public class LandscapeRenderer implements IGenericRenderer<ClientSettings, Void,
 
 	@Override
 	public void renderPass(LandscapeModel model, Void pass, SkyRenderInformation info) {
+		if(!model.rendered)
+			return;
+		
 		info.minecraft.renderEngine.bindTexture(StellarSkyResources.resourceLandscape.getLocation());
 		info.worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+
+		GL11.glPushMatrix();
+		GL11.glScaled(info.deepDepth, info.deepDepth, info.deepDepth);
 
 		for(int longc=0; longc<model.longn; longc++){
 			for(int latc=0; latc<model.latn; latc++){

@@ -1,12 +1,11 @@
 package stellarium.render.stellars;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 
+import net.minecraft.client.renderer.GlStateManager;
 import stellarium.client.ClientSettings;
 import stellarium.lib.render.RendererRegistry;
 import stellarium.lib.render.hierarchy.IDistributionConfigurable;
@@ -32,7 +31,7 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 			if(resInfo.isFrameBufferEnabled) {
 				return PrepareDominateScatter;
 			} else {
-				GL11.glShadeModel(GL11.GL_SMOOTH);
+				GlStateManager.shadeModel(GL11.GL_SMOOTH);
 				return SetupSurfaceScatter;
 			}
 		}
@@ -72,7 +71,7 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	}, RenderSurfaceScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			GL11.glShadeModel(GL11.GL_FLAT);
+			GlStateManager.shadeModel(GL11.GL_FLAT);
 			return SetupPointScatter;
 		}
 	},
@@ -86,10 +85,10 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
 			OpenGlVersionUtil.disablePointSprite();
-		    GL11.glDepthMask(true);
-		    GL11.glEnable(GL11.GL_DEPTH_TEST);
-			GL11.glDisable(GL11.GL_BLEND);
-			GL11.glShadeModel(GL11.GL_SMOOTH);
+		    GlStateManager.enableDepth();
+		    GlStateManager.depthMask(true);
+		    GlStateManager.enableBlend();
+		    GlStateManager.shadeModel(GL11.GL_SMOOTH);
 			return SetupOpaque;
 		}
 	},
@@ -101,11 +100,11 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	}, RenderOpaque() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-		    GL11.glDepthMask(false);
-		    GL11.glDisable(GL11.GL_DEPTH_TEST);
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-			GL11.glShadeModel(GL11.GL_FLAT);
+		    GlStateManager.depthMask(false);
+		    GlStateManager.disableDepth();
+			GlStateManager.enableBlend();
+			GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
+			GlStateManager.shadeModel(GL11.GL_FLAT);
 			return SetupOpaqueScatter;
 		}
 	},
@@ -118,8 +117,8 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	}, RenderOpaqueScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			OpenGlVersionUtil.disablePointSprite();;
-			GL11.glShadeModel(GL11.GL_SMOOTH);
+			OpenGlVersionUtil.disablePointSprite();
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 			if(resInfo.isFrameBufferEnabled)
 				return UnbindDominateScatter;
 			else return PrepareDominateScatter;
@@ -139,7 +138,7 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
 			resInfo.setAtmCallList(-1);
-			GL11.glShadeModel(GL11.GL_SMOOTH);
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 			return SetupSurfaceScatter;
 		}
 	}, UnbindDominateScatter() {
@@ -153,10 +152,10 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	private static void endRendering(StellarRenderInformation resInfo) {
 		ShaderHelper.getInstance().releaseCurrentShader();
 
-	    GL11.glDepthMask(true);
-	    GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-	    GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.depthMask(true);
+		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+		GlStateManager.enableDepth();
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public static void constructRender() {

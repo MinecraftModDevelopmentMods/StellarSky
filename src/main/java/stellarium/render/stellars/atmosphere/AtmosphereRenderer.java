@@ -3,18 +3,15 @@ package stellarium.render.stellars.atmosphere;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.util.regex.Matcher;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
-import stellarapi.lib.gui.util.GuiUtil;
 import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
@@ -138,7 +135,8 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 			dominateCache.bindFramebufferTexture();
 			GL11.glPushMatrix();
 			GL11.glTranslated(100, 50, 0);
-			GuiUtil.drawTexturedRectSimple(0, 0, -100, -50);
+			// TODO Simple Test
+			//GuiUtil.drawTexturedRectSimple(0, 0, -100, -50);
 			GL11.glPopMatrix();
 			dominateCache.unbindFramebufferTexture();
 			break;
@@ -157,16 +155,16 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 			break;
 		
 		case BindDomination:
-			OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+			GlStateManager.enableTexture2D();
 			dominateCache.bindFramebufferTexture();
-			OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+			GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 			break;
 		case UnbindDomination:
-			OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+			GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
 			dominateCache.unbindFramebufferTexture();
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+			GlStateManager.disableTexture2D();
+			GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 			break;
 		default:
 			break;
@@ -177,14 +175,6 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 	public void postRender(AtmosphereSettings settings, StellarRenderInformation info) {
 
 	}
-	
-	/*
-	public float brightnessScale(SpCoord curPos, ISkyEffect sky) {
-		double newYAngle = 90.0 * (curPos.y + this.angle) / (90.0 + this.angle);
-		float airmass = sky.calculateAirmass(new SpCoord(curPos.x, newYAngle));
-		
-		return Optics.getAlphaFromMagnitude(airmass, 0.0f);
-	}*/
 
 
 	public void reallocList(AtmosphereSettings settings, boolean isFramebufferEnabled, double deepDepth) {

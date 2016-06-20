@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import stellarium.display.DisplayModel;
 import stellarium.display.DisplayRenderer;
@@ -24,58 +25,58 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 		@Override
 		public IRenderState<Void, SkyRenderInformation> transitionTo(Void pass, SkyRenderInformation resInfo) {
 			RenderHelper.disableStandardItemLighting();
-			GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);
 
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();;
 			GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
 			GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
 
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
-			GL11.glDepthMask(false);
+			GlStateManager.disableDepth();
+			GlStateManager.depthMask(false);
 
-			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			GlStateManager.disableAlpha();
+			GlStateManager.disableFog();
 
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GlStateManager.enableBlend();
+			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			return DisplayRenderBack;
 		}
 	},
 	DisplayRenderBack() {
 		@Override
 		public IRenderState<Void, SkyRenderInformation> transitionTo(Void pass, SkyRenderInformation resInfo) {
-			GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+			GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
 			return StellarRender;
 		}
 	},
 	StellarRender() {
 		@Override
 		public IRenderState<Void, SkyRenderInformation> transitionTo(Void pass, SkyRenderInformation resInfo) {
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			return DisplayRenderFront;
 		}
 	},
 	DisplayRenderFront() {
 		@Override
 		public IRenderState<Void, SkyRenderInformation> transitionTo(Void pass, SkyRenderInformation resInfo) {
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			GL11.glEnable(GL11.GL_FOG);
+			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GlStateManager.enableFog();
 			return LandscapeRender;
 		}
 	},
 	LandscapeRender() {
 		@Override
 		public IRenderState<Void, SkyRenderInformation> transitionTo(Void pass, SkyRenderInformation resInfo) {
-			GL11.glDisable(GL11.GL_FOG);
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
-			GL11.glEnable(GL11.GL_ALPHA_TEST);
+			GlStateManager.disableFog();
+			GlStateManager.enableDepth();
+			GlStateManager.enableAlpha();
 
 			GL11.glDisable(GL11.GL_BLEND);
 
-			GL11.glDepthMask(true);
-			GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-			GL11.glPopMatrix();
+			GlStateManager.depthMask(true);
+			GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+			GlStateManager.popMatrix();
 
 			return null;
 		}
