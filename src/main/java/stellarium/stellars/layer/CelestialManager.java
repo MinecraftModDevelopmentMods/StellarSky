@@ -66,35 +66,24 @@ public class CelestialManager {
     	this.commonInitialized = true;
 	}
 	
-	public void reloadClientSettings(ClientSettings settings) {
+	/*public void reloadClientSettings(ClientSettings settings) {
 		StellarSky.logger.info("Reloading Client Settings...");
 		
-		for(StellarObjectContainer layer : this.layers)
-		{
+		for(StellarObjectContainer layer : this.layers) {
 			String layerName = layer.getConfigName();
 			layer.reloadClientSettings(settings, layerName != null? settings.getSubConfig(layerName) : null);
 		}
 
 		StellarSky.logger.info("Client Settings reloaded.");
-	}
+	}*/
 	
 	public void update(double year) {
 		for(StellarObjectContainer layer : this.layers)
 			layer.getType().updateLayer(layer, year);
 	}
-	
-	public void updateClient(ClientSettings settings,
-			ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {		
-		for(StellarObjectContainer layer : this.layers)
-		{
-			String layerName = layer.getConfigName();
-			layer.updateClient(settings, layerName != null? settings.getSubConfig(layerName) : null,
-					new StellarCacheInfo(coordinate, sky, scope, filter));
-		}
-	}
-	
 
-	public CelestialManager copy() {
+
+	public CelestialManager copyFromClient() {
 		CelestialManager copied = new CelestialManager();
 		copied.isRemote = this.isRemote;
 		copied.layers = Lists.newArrayList(
@@ -102,7 +91,7 @@ public class CelestialManager {
 						new Function<StellarObjectContainer, StellarObjectContainer>() {
 							@Override
 							public StellarObjectContainer apply(StellarObjectContainer input) {
-								return input.copy();
+								return input.copyFromClient();
 							}
 				}));
 		

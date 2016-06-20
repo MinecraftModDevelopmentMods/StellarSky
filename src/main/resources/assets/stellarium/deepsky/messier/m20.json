@@ -1,0 +1,14 @@
+{
+"name" : "Trifid Nebula",
+"position" : ["18h02m23s", "-23d01m48s"],
+"magnitude" : "6.3V",
+"size" : ["28m", "28m"],
+"textures" : {
+	"location" : "stellarium:deepsky/messier/trifid_nebula.png",
+	"orientation" : "equatorial",
+   	"wavelength" : "visible",
+	"size" : ["70m", "70m"],
+	"attribution" : "CCL BY-SA 3.0, by Hewholooks"
+	},
+"type" : "Nebula"
+}

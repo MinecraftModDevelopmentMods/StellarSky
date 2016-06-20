@@ -124,6 +124,7 @@ public final class StellarManager extends WorldSavedData {
 		if(!this.setup) {
 			StellarSky.logger.info("Starting Common Initialization...");
 			this.celestialManager = manager;
+			StellarSky.proxy.setupStellarLoad(this);
 			manager.initializeCommon(this.settings);
 			StellarSky.logger.info("Common Initialization Ended.");
 		}
@@ -153,15 +154,6 @@ public final class StellarManager extends WorldSavedData {
 	public void update(double time){
 		time = this.getSkyTime(time);
 		celestialManager.update(time / settings.day / settings.year);
-	}
-	
-	public void updateClient(ClientSettings clientSettings) {
-		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(StellarSky.proxy.getDefWorld());
-		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
-		IViewScope scope = StellarAPIReference.getScope(StellarSky.proxy.getDefViewerEntity());
-		IOpticalFilter filter = StellarAPIReference.getFilter(StellarSky.proxy.getDefViewerEntity());
-		
-		celestialManager.updateClient(clientSettings, coordinate, sky, scope, filter);
 	}
 	
 	public void setLocked(boolean locked) {

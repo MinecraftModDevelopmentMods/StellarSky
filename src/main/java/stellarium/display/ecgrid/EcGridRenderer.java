@@ -20,6 +20,8 @@ public class EcGridRenderer implements IDisplayRenderer<EcGridCache> {
 			return;
 		
 		GlStateManager.disableTexture2D();
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(info.deepDepth, info.deepDepth, info.deepDepth);
 		
 		if(cache.gridEnabled) {
 			GL11.glLineWidth(2.0f);
@@ -81,11 +83,11 @@ public class EcGridRenderer implements IDisplayRenderer<EcGridCache> {
 			info.tessellator.draw();
 			
 			GL11.glLineWidth(1.0f);
-
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 		}
 		
 		GlStateManager.enableTexture2D();
+		GlStateManager.popMatrix();
 	}
 
 }

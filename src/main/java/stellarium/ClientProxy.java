@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -16,20 +15,23 @@ import stellarapi.api.ISkyEffect;
 import stellarapi.api.StellarAPIReference;
 import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
+import stellarapi.api.optics.IOpticalFilter;
+import stellarapi.api.optics.IViewScope;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.StellarClientFMLHook;
 import stellarium.client.overlay.StellarSkyOverlays;
 import stellarium.client.overlay.clientcfg.OverlayClientSettingsType;
 import stellarium.client.overlay.clock.OverlayClockType;
-import stellarium.display.DisplayManager;
-import stellarium.display.DisplayRegistry;
-import stellarium.render.SkyCelestialRenderer;
-import stellarium.stellars.Optics;
+import stellarium.lib.render.RendererRegistry;
+import stellarium.render.NewSkyRenderer;
+import stellarium.render.sky.EnumSkyRenderState;
+import stellarium.render.sky.SkyModel;
+import stellarium.stellars.OpticsHelper;
+import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.stellars.layer.StellarLayerRegistry;
-import stellarium.world.landscape.LandscapeCache;
-import stellarium.world.landscape.LandscapeClientSettings;
+import stellarium.view.ViewerInfo;
+import stellarium.world.StellarDimensionManager;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
@@ -37,11 +39,11 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	private static final String clientConfigOpticsCategory = "clientconfig.optics";
 	
 	private ClientSettings clientSettings = new ClientSettings();
-	private LandscapeClientSettings landscapeSettings = new LandscapeClientSettings();
 	
 	private ConfigManager guiConfig;
 	private CelestialManager celestialManager = new CelestialManager(true);
-	private DisplayManager displayManager = new DisplayManager();
+	
+	private SkyModel skyModel;
 	
 	public ClientSettings getClientSettings() {
 		return this.clientSettings;
@@ -58,36 +60,38 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		this.guiConfig = new ConfigManager(
 				StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
 						StellarSkyReferences.guiSettings));
-						
+		
 		FMLCommonHandler.instance().bus().register(new StellarClientFMLHook());
 		
 		OverlayRegistry.registerOverlaySet("stellarsky", new StellarSkyOverlays());
 		OverlayRegistry.registerOverlay("clock", new OverlayClockType(), this.guiConfig);
 		OverlayRegistry.registerOverlay("clientconfig", new OverlayClientSettingsType(), this.guiConfig);
+		
+		this.skyModel = new SkyModel(this.celestialManager);
+		skyModel.initializeSettings(this.clientSettings);
+		
+		EnumSkyRenderState.constructRender();
 	}
 
 	@Override
 	public void load(FMLInitializationEvent event) throws IOException {
 		super.load(event);
-		
-		StellarLayerRegistry.getInstance().composeSettings(this.clientSettings);
-		DisplayRegistry.getInstance().setupDisplay(this.clientSettings, this.displayManager);
-		clientSettings.putSubConfig("landscape", this.landscapeSettings);
+
 	}
 
 	@Override
 	public void postInit(FMLPostInitializationEvent event) {
 		super.postInit(event);
 		
-		guiConfig.syncFromFile();
+		guiConfig.syncFromFile();		
     	celestialManager.initializeClient(this.clientSettings);
 	}
-	
+
 	@Override
 	public void setupCelestialConfigManager(ConfigManager manager) {
 		super.setupCelestialConfigManager(manager);
 		manager.register(clientConfigCategory, this.clientSettings);
-		manager.register(clientConfigOpticsCategory, Optics.instance);
+		manager.register(clientConfigOpticsCategory, OpticsHelper.instance);
 	}
 	
 	@Override
@@ -100,22 +104,47 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	@Override
-	public int getRenderDistanceSettings() {
-		return Minecraft.getMinecraft().gameSettings.renderDistanceChunks;
+	public void setupStellarLoad(StellarManager manager) {
+		skyModel.stellarLoad(manager);
+	}
+
+	@Override
+	public void setupDimensionLoad(StellarDimensionManager dimManager) {
+		skyModel.dimensionLoad(dimManager);
+	}
+	
+	public void onSettingsChanged(ClientSettings settings) {
+		skyModel.updateSettings(this.clientSettings);
+		RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class).initialize(settings);
 	}
 	
 	@Override
-	public void setupSkyRenderer(WorldProvider provider, CelestialManager celManager, String skyType, LandscapeCache cache) {
-		IRenderHandler renderer = StellarSkyAPI.getRendererFor(skyType,
-				new SkyCelestialRenderer(this.clientSettings, celManager, this.displayManager, this.landscapeSettings, cache));
-		provider.setSkyRenderer(renderer);
+	public void setupSkyRenderer(WorldProvider provider, String skyRenderType) {
+		skyModel.updateSettings(this.clientSettings);
+		RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class).initialize(this.clientSettings);
+
+		provider.setSkyRenderer(StellarSkyAPI.getRendererFor(skyRenderType, new NewSkyRenderer(this.skyModel)));
+	}
+	
+	@Override
+	public float getScreenWidth() {
+		return Minecraft.getMinecraft().displayWidth;
 	}
 	
 	@Override
 	public void updateTick() {
-		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(StellarSky.proxy.getDefWorld());
-		ISkyEffect sky = StellarAPIReference.getSkyEffect(StellarSky.proxy.getDefWorld());
-		displayManager.updateDisplay(this.clientSettings, coordinate, sky);
+		if(clientSettings.checkDirty())
+			this.onSettingsChanged(this.clientSettings);
+
+		World world = Minecraft.getMinecraft().theWorld;
+		Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+		
+		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(world);
+		ISkyEffect sky = StellarAPIReference.getSkyEffect(world);
+		IViewScope scope = StellarAPIReference.getScope(viewer);
+		IOpticalFilter filter = StellarAPIReference.getFilter(viewer);
+
+		skyModel.onTick(this.getDefWorld(), new ViewerInfo(coordinate, sky, scope, filter, viewer));
 	}
 	
 	@Override

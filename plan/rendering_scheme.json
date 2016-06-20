@@ -1,0 +1,49 @@
+{
+Universal : Time
+Time : {
+	Loop,
+	Interpolator
+}
+Viewer : {
+	Sub-Universal : {
+		ViewPointCoord,
+		Atmosphere
+		},
+	Local : {
+		Scope,
+		Filter
+		},
+	Dynamic : View Range
+	},
+Object : {
+	ObjectPointCoord,
+	Brightness,
+	Shape
+	}
+PointCoord : {
+	Parent,
+	RelPos,
+	RelCoord
+	}
+
+Layer : {
+	CommonPointCoord,
+	Range,
+	MinBrightness,
+	Shape
+	}
+
+Render : {
+	Prepare,
+	Transversal : {
+		Check,
+		RenderFar,
+		RenderMain,
+		RenderNear
+		},
+	ApplyEffect
+	}
+}
+
+// Layer can be served as Object sometimes
+// Tree transversal

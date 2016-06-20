@@ -44,7 +44,6 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 		super.loadFromConfig(config, category);
 		
 		this.mag_Limit=(float)propMagLimit.getDouble();
-                
         this.isDirty = true;
 	}
 	

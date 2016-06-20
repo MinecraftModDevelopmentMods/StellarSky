@@ -18,6 +18,8 @@ import stellarapi.api.optics.Wavelength;
 import stellarium.StellarSky;
 import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.layer.query.ILayerTempManager;
+import stellarium.stellars.render.ICelestialLayerRenderer;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
 import stellarium.stellars.star.StarImage;
@@ -178,7 +180,7 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	}
 
 	@Override
-	public Map<BgStar, IPerWorldImage> temporalLoadImagesInRange(SpCoord pos, double radius) {
+	public ILayerTempManager<BgStar> getTempLoadManager() {
 		return null;
 	}
 

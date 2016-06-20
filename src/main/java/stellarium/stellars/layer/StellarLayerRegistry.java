@@ -12,6 +12,7 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarium.client.ClientSettings;
 import stellarium.common.ServerSettings;
+import stellarium.stellars.deepsky.LayerDeepSky;
 import stellarium.stellars.milkyway.LayerMilkyway;
 import stellarium.stellars.milkyway.MilkywaySettings;
 import stellarium.stellars.star.brstar.LayerBrStar;
@@ -36,6 +37,7 @@ public class StellarLayerRegistry {
 		this.registerLayer(new LayerBrStar(), null, (Callable)null, (Callable)null);
 		this.registerLayer(new LayerMilkyway(), "MilkyWay", (Callable)null, MilkywaySettings.class);
 		this.registerLayer(new LayerSolarSystem(), "SolarSystem", SolarSystemSettings.class, SolarSystemClientSettings.class);
+		this.registerLayer(new LayerDeepSky(), "DeepSky", (Callable)null, (Callable)null);
 	}
 	
 	public void registerLayer(IStellarLayerType layer, String configName, Callable<INBTConfig> commonConfigFactory, Callable<IConfigHandler> clientConfigFactory)
@@ -61,16 +63,10 @@ public class StellarLayerRegistry {
 				new ClassInstantiateCallable(commonConfigClass), new ClassInstantiateCallable(clientConfigClass));
 	}
 	
-	public void registerRenderers() {
-		// TODO prevent duplication from inherited renderers
-		for(RegistryDelegate delegate : this.registeredLayers)
-			delegate.layer.registerRenderers();
-	}
-	
 	public void composeLayer(boolean isRemote, List<StellarObjectContainer> list) {
 		for(RegistryDelegate delegate : this.registeredLayers)
 			try {
-				list.add(new StellarObjectContainer(isRemote, delegate.layer, delegate.configName));
+				list.add(new StellarObjectContainer(delegate.layer, delegate.configName));
 			} catch (Exception e) {
 				Throwables.propagateIfPossible(e);
 			}

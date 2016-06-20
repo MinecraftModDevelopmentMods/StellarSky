@@ -1,23 +1,21 @@
 package stellarium.stellars.system;
 
-import net.minecraft.client.renderer.GlStateManager;
-import stellarium.render.EnumRenderPass;
-import stellarium.render.ICelestialLayerRenderer;
-import stellarium.render.StellarRenderInfo;
+import stellarium.render.stellars.access.EnumStellarPass;
+import stellarium.render.stellars.access.IStellarTessellator;
+import stellarium.stellars.render.ICelestialLayerRenderer;
 
-public class LayerSolarSystemRenderer implements ICelestialLayerRenderer {
-
-	@Override
-	public void preRender(StellarRenderInfo info) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, info.weathereff);
-	}
-
-	@Override
-	public void postRender(StellarRenderInfo info) { }
+public enum LayerSolarSystemRenderer implements ICelestialLayerRenderer {
 	
+	INSTANCE;
+
 	@Override
-	public boolean acceptPass(EnumRenderPass pass) {
-		return pass == EnumRenderPass.OpaqueStellar ||
-				pass == EnumRenderPass.ShallowScattering;
+	public void preRender(IStellarTessellator tessellator, EnumStellarPass pass) { }
+
+	@Override
+	public void postRender(IStellarTessellator tessellator, EnumStellarPass pass) { }
+
+	@Override
+	public boolean acceptPass(EnumStellarPass pass) {
+		return pass.isDominate || pass.isOpaque;
 	}
 }

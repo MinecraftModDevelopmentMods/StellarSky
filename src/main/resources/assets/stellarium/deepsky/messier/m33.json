@@ -1,0 +1,14 @@
+{
+"name" : "Triangulum Galaxy",
+"position" : ["01h33m50.02s", "30d39m36.7s"],
+"magnitude" : "5.72V",
+"size" : ["70.8m", "41.7m"],
+"textures" : {
+	"location" : "stellarium:deepsky/messier/m33.png",
+	"orientation" : "equatorial",
+   	"wavelength" : "visible",
+	"size" : ["57.04m", "68.01m"],
+	"attribution" : "CCL BY 4.0, Credit: ESO"
+	},
+"Type" : "Galaxy"
+}

@@ -13,7 +13,9 @@ public class LandscapeClientSettings implements IConfigHandler {
 	public int displayFrag;
 	
 	private Property propDisplayFrag;
-	
+
+	public static String KEY = "landscape";
+
 	@Override
 	public void setupConfig(Configuration config, String category) {
 		config.setCategoryComment(category, "Configurations for Landscape.");

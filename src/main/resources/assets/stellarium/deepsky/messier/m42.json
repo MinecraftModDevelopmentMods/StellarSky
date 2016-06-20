@@ -1,0 +1,14 @@
+{
+"name" : "Orion Nebula",
+"position" : ["05h35m17.3s", "-05d23m28s"],
+"magnitude" : "4.0V",
+"size" : ["85m", "60m"],
+"textures" : {
+	"location" : "stellarium:deepsky/messier/m42dumont.png",
+	"orientation" : "equatorial",
+   	"wavelength" : "visible",
+	"size" : ["1.4d", "1.4d"],
+	"attribution" : "Stephane Dumont"
+	},
+"Type" : "Nebula"
+}

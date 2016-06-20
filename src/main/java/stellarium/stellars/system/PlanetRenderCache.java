@@ -1,73 +1,53 @@
 package stellarium.stellars.system;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.EnumRGBA;
-import stellarapi.api.optics.EyeDetector;
 import stellarium.client.ClientSettings;
-import stellarium.render.EnumRenderPass;
-import stellarium.stellars.Optics;
-import stellarium.stellars.layer.IRenderCache;
-import stellarium.stellars.layer.StellarCacheInfo;
+import stellarium.render.stellars.access.IStellarChecker;
+import stellarium.render.stellars.layer.IObjRenderCache;
+import stellarium.stellars.OpticsHelper;
+import stellarium.stellars.render.ICelestialObjectRenderer;
+import stellarium.view.ViewerInfo;
 
-public class PlanetRenderCache implements IRenderCache<Planet, IConfigHandler> {
+public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, IConfigHandler> {
 	
-	protected boolean shouldRender;
+	protected boolean shouldRender, shouldRenderSurface;
 	protected SpCoord appCoord = new SpCoord();
-	protected Vector3 pos = new Vector3(), dif = new Vector3(), dif2 = new Vector3();
-	protected float appMag;
-	protected float multiplier;
-	protected double[] color = new double[4];
-	
-	@Override
-	public void initialize(ClientSettings settings, IConfigHandler config, Planet planet) { }
+	protected float brightness;
+	protected float size;
 
 	@Override
-	public void updateCache(ClientSettings settings, IConfigHandler config, Planet object, StellarCacheInfo info) {
-		Vector3 ref = new Vector3(object.earthPos);
-		info.projectionToGround.transform(ref);
-		appCoord.setWithVec(ref);
-		double airmass = info.calculateAirmass(this.appCoord);
-		info.applyAtmRefraction(this.appCoord);
+	public void updateSettings(ClientSettings settings, IConfigHandler specificSettings, Planet object) {
 
-		this.appMag = (float) (object.currentMag + airmass * Optics.ext_coeff_V);
-		this.shouldRender = true;
-		if(this.appMag > settings.mag_Limit)
-		{
-			this.shouldRender = false;
-			return;
-		}
-		
-		if(appCoord.y < 0.0 && info.hideObjectsUnderHorizon)
-			this.shouldRender = false;
-		
-		pos.set(appCoord.getVec());
-		dif.set(new SpCoord(appCoord.x+90, 0.0).getVec());
-		dif2.set(new SpCoord(appCoord.x, appCoord.y+90).getVec());
-		
-		double size = (info.getResolution(EnumRGBA.Alpha) / 0.3);
-		this.multiplier = (float)(info.lgp / (size * size * info.mp * info.mp));
-		size *= 0.6f;
-		System.arraycopy(
-				EyeDetector.getInstance().process(this.multiplier, info.filter, new double[] {1.0, 1.0, 1.0, 0.1}),
-				0, this.color, 0, color.length);
-		
-		pos.set(appCoord.getVec());
-		appCoord.y += 90.0;
-		dif2.set(appCoord.getVec());
-		appCoord.x += 90.0;
-		appCoord.y = 0.0;
-		dif.set(appCoord.getVec());
-		
-		pos.scale(EnumRenderPass.DEFAULT_OPAQUE_DEPTH);
-		dif.scale(size);
-		dif2.scale(-size);
 	}
 
 	@Override
-	public int getRenderId() {
-		return LayerSolarSystem.planetRenderId;
+	public void updateCache(Planet object, PlanetImage image, ViewerInfo info, IStellarChecker checker) {
+		appCoord.x = image.appCoord.x;
+		appCoord.y = image.appCoord.y;
+		
+		double airmass = info.sky.calculateAirmass(this.appCoord);
+		double appMag = (object.currentMag + airmass * OpticsHelper.ext_coeff_V);
+		this.brightness = OpticsHelper.getBrightnessFromMagnitude(appMag);
+
+		this.size = (float) (object.radius / object.earthPos.size());
+		
+		checker.startDescription();
+		checker.brightness(brightness, brightness, brightness);
+		checker.pos(this.appCoord);
+		checker.radius(this.size);
+		this.shouldRender = checker.checkRendered();
+		this.shouldRenderSurface = this.shouldRender && checker.checkEnoughRadius();
+		// TODO planet rendering, which needs over 100x multiplier
+		this.brightness *= 0.5f;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ICelestialObjectRenderer getRenderer() {
+		return PlanetRenderer.INSTANCE;
 	}
 
 }

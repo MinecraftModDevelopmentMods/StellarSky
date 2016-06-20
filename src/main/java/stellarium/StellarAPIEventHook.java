@@ -20,6 +20,7 @@ import stellarium.api.StellarSkyAPI;
 import stellarium.stellars.DefaultCelestialHelper;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
+import stellarium.util.WorldUtil;
 import stellarium.world.StellarDimensionManager;
 
 public class StellarAPIEventHook {
@@ -76,9 +77,9 @@ public class StellarAPIEventHook {
 		StellarManager manager = StellarManager.loadOrCreateClientManager(event.getWorld());
 		
 		if(!manager.getSettings().serverEnabled)
-			manager.setup(StellarSky.proxy.getClientCelestialManager().copy());
+			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
 		
-		String dimName = event.getWorld().provider.getDimensionType().getName();
+		String dimName = WorldUtil.getWorldName(event.getWorld());
 		if(!StellarSky.proxy.getServerSettings().serverEnabled)
 			handleDimOnServerDisabled(event.getWorld(), manager,update);
 		
@@ -107,18 +108,19 @@ public class StellarAPIEventHook {
 		StellarManager manager = StellarManager.loadOrCreateServerManager(event.getServer());
 		manager.setup(new CelestialManager(false));
 	}
-	
+
 	@SubscribeEvent
 	public void onServerWorldLoad(ServerWorldEvent.Load event) {
 		StellarManager manager = StellarManager.getServerManager(event.getServer());
-		String dimName = event.getWorld().provider.getDimensionType().getName();
+
+		String dimName = WorldUtil.getWorldName(event.getWorld());
 		if(StellarSky.proxy.getDimensionSettings().hasSubConfig(dimName)) {
 			StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(event.getWorld(), manager, dimName);
 			setupDimension(event.getWorld(), manager, dimManager);
 		}
 	}
-	
-	
+
+
 	public static void setupDimension(World world, StellarManager manager, StellarDimensionManager dimManager) {
 		dimManager.setup();
 		
@@ -136,9 +138,9 @@ public class StellarAPIEventHook {
 		}
 		
 		if(world.isRemote)
-			StellarSky.proxy.setupSkyRenderer(world.provider, manager.getCelestialManager(), dimManager.getSettings().getSkyRendererType(), dimManager.getLandscapeCache());
+			StellarSky.proxy.setupSkyRenderer(world.provider, dimManager.getSettings().getSkyRendererType());
 	}
-	
+
 	
 	private static boolean mark = false;
 	
@@ -150,16 +152,17 @@ public class StellarAPIEventHook {
 		manager.handleServerWithoutMod();
 		
 		if(manager.getCelestialManager() == null) {
-			manager.setup(StellarSky.proxy.getClientCelestialManager().copy());
+			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
 			handleDimOnServerDisabled(world, manager, update);
 		}
 	}
 	
 	private static void handleDimOnServerDisabled(World world, StellarManager manager, IProgressUpdate update) {
-		String dimName = world.provider.getDimensionType().getName();
+		String dimName = WorldUtil.getWorldName(world);
 		if(StellarSky.proxy.getDimensionSettings().hasSubConfig(dimName)) {
 			update.displayLoadingString(I18n.format("progress.text.injection.dimmanager", dimName));
 			StellarDimensionManager dimManager = StellarDimensionManager.loadOrCreate(world, manager, dimName);
+			dimManager.setIsRemote(true);
 			setupDimension(world, manager, dimManager);
 			update.displayLoadingString("");
 		}

@@ -23,7 +23,7 @@ public class SolarSystemClientSettings implements IConfigHandler {
 		List<String> propNameList = Lists.newArrayList();
         
         propMoonFrac=config.get(category, "Moon_Fragments_Number", 16);
-        propMoonFrac.setComment("Moon is drawn with fragments\n" +
+        propMoonFrac.setComment("Surfaces of Sun & Moon is drawn with fragments\n" +
         		"Less fragments will increase FPS, but the moon will become more defective");
         propMoonFrac.setRequiresMcRestart(false);
         propMoonFrac.setLanguageKey("config.property.client.moonfrac");

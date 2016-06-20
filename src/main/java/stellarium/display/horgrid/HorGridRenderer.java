@@ -20,6 +20,8 @@ public class HorGridRenderer implements IDisplayRenderer<HorGridCache> {
 			return;
 		
 		GlStateManager.disableTexture2D();
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(info.deepDepth, info.deepDepth, info.deepDepth);
 		
 		if(cache.gridEnabled) {
 			GL11.glLineWidth(2.0f);
@@ -86,6 +88,7 @@ public class HorGridRenderer implements IDisplayRenderer<HorGridCache> {
 		}
 		
 		GlStateManager.enableTexture2D();
+		GlStateManager.popMatrix();
 	}
 
 }

@@ -1,0 +1,14 @@
+{
+"name" : "Ring Nebula",
+"position" : ["18h53m35.079s", "33d01m45.03s"],
+"magnitude" : "8.8V",
+"size" : ["230s", "230s"],
+"textures" : {
+	"location" : "stellarium:deepsky/messier/ring_nebula.png",
+	"orientation" : "equatorial",
+   	"wavelength" : "visible",
+	"size" : ["2m", "2m"],
+	"attribution" : "By NASA and The Hubble Heritage Team (STScI/AURA))[Public domain]"
+	},
+"type" : "Nebula"
+}

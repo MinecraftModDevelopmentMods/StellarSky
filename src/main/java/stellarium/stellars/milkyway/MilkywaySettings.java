@@ -23,13 +23,12 @@ public class MilkywaySettings implements IConfigHandler {
 		
 		List<String> propNameList = Lists.newArrayList();
 		
-		// TODO Migrate into classification.
-        propMilkywayBrightness=config.get(category, "Milkyway_Brightness", 1.5);
+        propMilkywayBrightness=config.get(category, "Milkyway_Brightness", 2.0);
         propMilkywayBrightness.setComment("Brightness of milky way.\n"
-        		+ "For real world it should be 1.0 or lower, but default is set to 1.5 for visual effect.");
+        		+ "For real world it should be 1.0 or lower, but default is set to 2.0 for visual effect.");
         propMilkywayBrightness.setRequiresMcRestart(false);
         propMilkywayBrightness.setLanguageKey("config.property.client.milkywaybrightness");
-        propMilkywayBrightness.setMinValue(0.0).setMaxValue(3.0);
+        propMilkywayBrightness.setMinValue(0.0).setMaxValue(5.0);
         propNameList.add(propMilkywayBrightness.getName());
         
 		propMilkywayFrac=config.get(category, "Milkyway_Fragments_Number", 16);

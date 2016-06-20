@@ -3,10 +3,9 @@ package stellarium.render;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import stellarium.api.ICelestialRenderer;
-import stellarium.api.ISkyRendererType;
+import stellarium.api.ISkyRenderType;
 
-public class SkyRenderTypeEnd implements ISkyRendererType {
+public class SkyRenderTypeEnd implements ISkyRenderType {
 
 	@Override
 	public String getName() {
@@ -17,10 +16,10 @@ public class SkyRenderTypeEnd implements ISkyRendererType {
 	public boolean acceptFor(String worldName) {
 		return true;
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IRenderHandler createSkyRenderer(ICelestialRenderer subRenderer) {
+	public IRenderHandler createSkyRenderer(IRenderHandler subRenderer) {
 		return new SkyRendererEnd(subRenderer);
 	}
 

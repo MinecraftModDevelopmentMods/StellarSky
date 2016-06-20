@@ -1,0 +1,38 @@
+#version 120
+
+uniform vec3 lightDir;      // Direction vector to the light source
+uniform float g;			  // Factor g
+uniform vec4 rayleighFactor;
+uniform vec4 mieFactor;
+uniform float exposure;
+
+varying vec4 scatteringColor4;
+varying vec3 v3Direction;
+
+float getRayleighPhase(float cos2) {
+	return 3.0 / 4.0 * (1 + cos2);
+}
+
+float powHalfThree(float x) {
+	return x * sqrt(x);
+}
+
+float getMiePhase(float cos, float cos2, float g, float g2) {
+	return 3.0 * (1 - g2) / (2 * (2 + g2)) * (1 + cos2) / powHalfThree(1 + g2 - 2 * g * cos);
+}
+
+void main()
+{
+    float fCos = dot(lightDir, v3Direction);
+    float fCos2 = fCos * fCos;
+  
+    gl_FragColor = scatteringColor4 * (getRayleighPhase(fCos2) * rayleighFactor + getMiePhase(fCos, fCos2, g, g*g) * mieFactor);
+    gl_FragColor = 1.0 - exp(- exposure * gl_FragColor);
+    //gl_FragColor = scatteringColor4;
+
+    float fogFactor = gl_FogFragCoord;
+    fogFactor = clamp(fogFactor, 0.0, 1.0);
+    gl_FragColor = mix(gl_FragColor, gl_Fog.color, fogFactor);
+
+    gl_FragColor.a = 1.0;
+}

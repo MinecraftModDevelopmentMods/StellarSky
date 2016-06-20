@@ -15,17 +15,18 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import stellarapi.api.StellarAPIReference;
 import stellarapi.api.lib.config.ConfigManager;
+import stellarium.api.DefaultSkyType;
+import stellarium.api.SkyRenderTypeSurface;
 import stellarium.api.StellarSkyAPI;
 import stellarium.command.CommandLock;
 import stellarium.render.SkyRenderTypeEnd;
-import stellarium.render.SkyRenderTypeSkyblock;
-import stellarium.render.SkyRenderTypeSurface;
+import stellarium.render.SkyTypeEnd;
 import stellarium.sync.StellarNetworkManager;
 import stellarium.world.provider.DefaultWorldProviderReplacer;
 import stellarium.world.provider.EndReplacer;
 
 @Mod(modid=StellarSkyReferences.modid, version=StellarSkyReferences.version,
-	dependencies="required-after:StellarAPI@[0.4.3.1, 0.4.4.0)", guiFactory="stellarium.client.config.StellarConfigGuiFactory")
+	dependencies="required-after:StellarAPI@[0.4.4.1, 0.4.5.0)", guiFactory="stellarium.client.config.StellarConfigGuiFactory")
 public class StellarSky {
 	
 		// The instance of Stellarium
@@ -42,15 +43,15 @@ public class StellarSky {
         private StellarTickHandler tickHandler = new StellarTickHandler();
         private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
         private StellarNetworkManager networkManager;
-        
+
         public StellarNetworkManager getNetworkManager() {
         	return this.networkManager;
         }
-        
+
 		public ConfigManager getCelestialConfigManager() {
 			return this.celestialConfigManager;
 		}
-        
+
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) { 
         	logger = event.getModLog();
@@ -74,9 +75,11 @@ public class StellarSky {
     		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
     		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());
     		
+    		StellarSkyAPI.registerSkyType("Overworld", new DefaultSkyType());
+    		StellarSkyAPI.registerSkyType("The End", new SkyTypeEnd());
+    		
     		StellarSkyAPI.registerRendererType(new SkyRenderTypeSurface());
     		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
-    		StellarSkyAPI.registerRendererType(new SkyRenderTypeSkyblock());
     		
     		StellarSkyResources.init();
         }

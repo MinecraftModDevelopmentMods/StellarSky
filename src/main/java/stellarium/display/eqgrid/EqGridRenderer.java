@@ -20,7 +20,9 @@ public class EqGridRenderer implements IDisplayRenderer<EqGridCache> {
 			return;
 		
 		GlStateManager.disableTexture2D();
-		
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(info.deepDepth, info.deepDepth, info.deepDepth);
+
 		if(cache.gridEnabled) {
 			GL11.glLineWidth(2.0f);
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
@@ -86,6 +88,7 @@ public class EqGridRenderer implements IDisplayRenderer<EqGridCache> {
 		}
 		
 		GlStateManager.enableTexture2D();
+		GlStateManager.popMatrix();
 	}
 
 }

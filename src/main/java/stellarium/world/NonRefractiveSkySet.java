@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.WaveIntensive;
 import stellarapi.api.optics.Wavelength;
-import stellarium.stellars.Optics;
+import stellarium.stellars.OpticsHelper;
 import stellarium.util.math.StellarMath;
 
 public class NonRefractiveSkySet implements IStellarSkySet {
@@ -21,9 +21,12 @@ public class NonRefractiveSkySet implements IStellarSkySet {
 		this.lightPollutionFactor = (float) settings.getLightPollutionRate();
 		this.minimumSkyRenderBrightness = (float) settings.getMinimumSkyRenderBrightness();
 		
+		double[] rates = settings.extinctionRates();
 		this.interpolation = new WaveIntensive(
-				ImmutableMap.of(Wavelength.V, StellarMath.MagToLumWithoutSize(Optics.ext_coeff_V),
-						Wavelength.B,StellarMath.MagToLumWithoutSize(Optics.ext_coeff_B_V + Optics.ext_coeff_V))
+				ImmutableMap.of(
+						Wavelength.red, StellarMath.MagToLumWithoutSize(rates[0]),
+						Wavelength.V, StellarMath.MagToLumWithoutSize(rates[1]),
+						Wavelength.B,StellarMath.MagToLumWithoutSize(rates[2]))
 				);
 	}
 
@@ -66,7 +69,7 @@ public class NonRefractiveSkySet implements IStellarSkySet {
 
 	@Override
 	public double getSeeing(Wavelength wavelength) {
-		return 0.02;
+		return 0.0;
 	}
 
 	@Override

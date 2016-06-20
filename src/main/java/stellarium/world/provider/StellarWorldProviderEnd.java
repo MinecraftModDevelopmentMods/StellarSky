@@ -19,11 +19,12 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.optics.EnumRGBA;
 import stellarium.api.ICelestialHelper;
-import stellarium.api.ICelestialRenderer;
+import stellarium.render.NewSkyRenderer;
 
 public class StellarWorldProviderEnd extends WorldProviderEnd {
 	
@@ -250,11 +251,11 @@ public class StellarWorldProviderEnd extends WorldProviderEnd {
     @SideOnly(Side.CLIENT)
     public void setSkyRenderer(net.minecraftforge.client.IRenderHandler skyRenderer)
     {
-    	try {
-        	for(Field field : skyRenderer.getClass().getDeclaredFields())
-        		if(ICelestialRenderer.class.isAssignableFrom(field.getType()))
-        			super.setSkyRenderer(skyRenderer);
-    	} catch(Exception exc) { }
+    	for(Field field : skyRenderer.getClass().getDeclaredFields())
+    		if(IRenderHandler.class.isAssignableFrom(field.getDeclaringClass()))
+    			super.setSkyRenderer(skyRenderer);
+    	if(skyRenderer instanceof NewSkyRenderer)
+    		super.setSkyRenderer(skyRenderer);
     }
     
     

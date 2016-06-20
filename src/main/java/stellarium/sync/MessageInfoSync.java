@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import stellarium.StellarAPIEventHook;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
+import stellarium.util.WorldUtil;
 import stellarium.world.StellarDimensionManager;
 
 public class MessageInfoSync implements IMessage {
@@ -51,15 +52,15 @@ public class MessageInfoSync implements IMessage {
 			
 					if(!message.compoundInfo.hasNoTags())
 						manager.syncFromNBT(message.compoundInfo, true);
-			
+
 					if(!message.dimensionInfo.hasNoTags())
 						dimManager = StellarDimensionManager.loadOrCreate(
-								world, manager, world.provider.getDimensionType().getName());
-			
+								world, manager, WorldUtil.getWorldName(world));
+
 					if(dimManager != null)
 						dimManager.syncFromNBT(message.dimensionInfo, manager, true);
 
-					manager.setup(StellarSky.proxy.getClientCelestialManager().copy());
+					manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
 
 					if(dimManager != null)
 						StellarAPIEventHook.setupDimension(world, manager, dimManager);

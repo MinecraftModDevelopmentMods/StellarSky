@@ -18,11 +18,12 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.optics.EnumRGBA;
 import stellarium.api.ICelestialHelper;
-import stellarium.api.ICelestialRenderer;
+import stellarium.render.NewSkyRenderer;
 
 public class StellarWorldProvider extends WorldProvider {
 	
@@ -264,17 +265,6 @@ public class StellarWorldProvider extends WorldProvider {
         }
 
         return f2 * f2 * 0.5F;
-    }
-    
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void setSkyRenderer(net.minecraftforge.client.IRenderHandler skyRenderer)
-    {
-    	try {
-        	for(Field field : skyRenderer.getClass().getDeclaredFields())
-        		if(ICelestialRenderer.class.isAssignableFrom(field.getType()))
-        			super.setSkyRenderer(skyRenderer);
-    	} catch(Exception exc) { }
     }
     
     
@@ -667,5 +657,14 @@ public class StellarWorldProvider extends WorldProvider {
     public boolean canDropChunk(int x, int z)
     {
         return parProvider.canDropChunk(x, z);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setSkyRenderer(IRenderHandler skyRenderer) {
+    	for(Field field : skyRenderer.getClass().getDeclaredFields())
+    		if(IRenderHandler.class.isAssignableFrom(field.getDeclaringClass()))
+    			super.setSkyRenderer(skyRenderer);
+    	if(skyRenderer instanceof NewSkyRenderer)
+    		super.setSkyRenderer(skyRenderer);
     }
 }

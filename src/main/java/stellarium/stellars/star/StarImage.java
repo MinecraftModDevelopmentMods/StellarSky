@@ -96,4 +96,9 @@ public class StarImage implements IPerWorldImage<BgStar> {
 	public EnumCelestialObjectType getObjectType() {
 		return EnumCelestialObjectType.Star;
 	}
+
+	@Override
+	public String getName() {
+		return (this.constellation + this.flamsteedId + this.bayerId).trim();
+	}
 }

@@ -14,8 +14,9 @@ import stellarapi.api.lib.config.HierarchicalConfig;
 import stellarium.client.ClientSettings;
 import stellarium.common.DimensionSettings;
 import stellarium.common.ServerSettings;
+import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.world.landscape.LandscapeCache;
+import stellarium.world.StellarDimensionManager;
 
 public class CommonProxy implements IProxy {
 
@@ -60,12 +61,7 @@ public class CommonProxy implements IProxy {
 	}
 
 	@Override
-	public int getRenderDistanceSettings() {
-		return 0;
-	}
-
-	@Override
-	public void setupSkyRenderer(WorldProvider provider, CelestialManager celManager, String skyType, LandscapeCache cache) { }
+	public void setupSkyRenderer(WorldProvider provider, String skyType) { }
 
 	@Override
 	public HierarchicalConfig getDimensionSettings() {
@@ -84,4 +80,15 @@ public class CommonProxy implements IProxy {
 
 	@Override
 	public void updateTick() { }
+
+	@Override
+	public float getScreenWidth() {
+		return 0;
+	}
+
+	@Override
+	public void setupStellarLoad(StellarManager manager) { }
+
+	@Override
+	public void setupDimensionLoad(StellarDimensionManager dimManager) { }
 }

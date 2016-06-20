@@ -90,4 +90,9 @@ public class MoonImage implements IPerWorldImage<Moon> {
 		return EnumCelestialObjectType.Planet;
 	}
 
+	@Override
+	public String getName() {
+		return "Moon";
+	}
+
 }

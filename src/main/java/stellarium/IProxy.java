@@ -12,8 +12,9 @@ import stellarapi.api.lib.config.ConfigManager;
 import stellarapi.api.lib.config.HierarchicalConfig;
 import stellarium.client.ClientSettings;
 import stellarium.common.ServerSettings;
+import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.world.landscape.LandscapeCache;
+import stellarium.world.StellarDimensionManager;
 
 public interface IProxy {
 	
@@ -25,19 +26,22 @@ public interface IProxy {
     
 	public World getDefWorld();
 	public Entity getDefViewerEntity();
-	public int getRenderDistanceSettings();
 	
-	public void setupCelestialConfigManager(ConfigManager manager);    
+	public void setupCelestialConfigManager(ConfigManager manager);
+	
     public ClientSettings getClientSettings();
 	public ServerSettings getServerSettings();
 	public HierarchicalConfig getDimensionSettings();
     
 	public CelestialManager getClientCelestialManager();
 	
-	public void setupSkyRenderer(WorldProvider provider, CelestialManager celestialManager, String skyType, LandscapeCache cache);
+	public void setupSkyRenderer(WorldProvider provider, String skyType);
 
 	public void updateTick();
 
 	void addScheduledTask(Runnable runnable);
+	public float getScreenWidth();
 
+	void setupStellarLoad(StellarManager manager);
+	void setupDimensionLoad(StellarDimensionManager dimManager);
 }

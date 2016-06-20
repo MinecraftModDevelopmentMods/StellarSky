@@ -1,32 +1,29 @@
 package stellarium.stellars.star;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import stellarium.StellarSkyResources;
-import stellarium.render.EnumRenderPass;
-import stellarium.render.ICelestialLayerRenderer;
 import stellarium.render.StellarRenderInfo;
+import stellarium.render.stellars.access.EnumStellarPass;
+import stellarium.render.stellars.access.IStellarTessellator;
+import stellarium.stellars.render.ICelestialLayerRenderer;
 
-public class LayerStarRenderer implements ICelestialLayerRenderer {
+public enum LayerStarRenderer implements ICelestialLayerRenderer {
+	
+	INSTANCE;
 
 	@Override
-	public void preRender(StellarRenderInfo info) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, info.weathereff);
-
-		info.mc.renderEngine.bindTexture(StellarSkyResources.resourceStar.getLocation());
-		info.worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+	public void preRender(IStellarTessellator tessellator, EnumStellarPass pass) {
+		tessellator.bindTexture(StellarSkyResources.resourceStar.getLocation());
+		tessellator.begin(false);
 	}
 
 	@Override
-	public void postRender(StellarRenderInfo info) {
-		info.tessellator.draw();
+	public void postRender(IStellarTessellator tessellator, EnumStellarPass pass) {
+		tessellator.end();
 	}
 
 	@Override
-	public boolean acceptPass(EnumRenderPass pass) {
-		return pass == EnumRenderPass.DeepScattering;
+	public boolean acceptPass(EnumStellarPass pass) {
+		return pass == EnumStellarPass.PointScatter;
 	}
 
 }

@@ -1,0 +1,15 @@
+{
+"name" : "Andromeda Galaxy",
+"position" : ["00h42m44.3s", "41d16m09s"],
+"magnitude" : "3.44V",
+"size" : ["3.167d", "1d"],
+"textures" : {
+	"location" : "stellarium:deepsky/messier/m31.png",
+	"orientation" : "equatorial",
+   	"wavelength" : "visible",
+	"size" : ["6.4d", "4.2d"],
+	"attribution" : "CC BY-NC 2.0, by Adam Evans",
+	"attributionURL" : "http://www.flickr.com/photos/astroporn/4999978603/"
+	},
+"Type" : "Galaxy"
+}

@@ -5,8 +5,7 @@ import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
 import stellarium.display.DisplayCacheInfo;
 import stellarium.display.IDisplayCache;
-import stellarium.render.EnumRenderPass;
-import stellarium.util.math.VectorHelper;
+import stellarium.util.math.Allocator;
 
 public class HorGridCache implements IDisplayCache<HorGridSettings> {
 	
@@ -29,12 +28,12 @@ public class HorGridCache implements IDisplayCache<HorGridSettings> {
 		this.horizonEnabled = specificSettings.horizonEnabled;
 		if(this.enabled) {
 			if(this.gridEnabled) {
-				this.displayvec = VectorHelper.createAndInitialize(longn, latn+1);
-				this.colorvec = VectorHelper.createAndInitialize(longn, latn+1);
+				this.displayvec = Allocator.createAndInitialize(longn, latn+1);
+				this.colorvec = Allocator.createAndInitialize(longn, latn+1);
 			}
 			
 			if(this.horizonEnabled)
-				this.horizon = VectorHelper.createAndInitialize(longn);
+				this.horizon = Allocator.createAndInitialize(longn);
 		}
 		this.brightness = (float) specificSettings.displayAlpha;
 		this.baseColor = new Vector3(specificSettings.displayBaseColor);
@@ -45,20 +44,18 @@ public class HorGridCache implements IDisplayCache<HorGridSettings> {
 	}
 
 	@Override
-	public void updateCache(ClientSettings settings, HorGridSettings specificSettings, DisplayCacheInfo info) {
+	public void updateCache(DisplayCacheInfo info) {
 		if(!this.enabled)
 			return;
 		
 		for(int longc=0; longc<longn; longc++){
 			if(this.horizonEnabled) {
 				horizon[longc].set(new SpCoord(-longc*360.0/longn, 0.0).getVec());
-				horizon[longc].scale(EnumRenderPass.getDeepDepth() + 1.0);
 			}
 			
 			if(this.gridEnabled) {
 				for(int latc=0; latc<=latn; latc++){
 					displayvec[longc][latc].set(new SpCoord(-longc*360.0/longn, latc*180.0/latn - 90.0).getVec());
-					displayvec[longc][latc].scale(EnumRenderPass.getDeepDepth() + 2.0);
 
 					colorvec[longc][latc].set(this.baseColor);
 

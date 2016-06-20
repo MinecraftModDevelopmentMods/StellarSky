@@ -8,6 +8,10 @@ public class StellarMath {
 	
 	public static final double infmin=1.0e-2;
 	
+	public static final float sqr(float val) {
+		return val * val;
+	}
+	
 	//extract double from String
 	public static final double btoD(byte[] dbs, int start, int size){
 		int i;
@@ -50,6 +54,11 @@ public class StellarMath {
 	//extract int from String
 	public static final int StrtoI(String istr){
 		return btoi(istr.getBytes(), 0, istr.getBytes().length);
+	}
+	
+	//extract double from String
+	public static final double StrtoD(String istr){
+		return btoD(istr.getBytes(), 0, istr.getBytes().length);
 	}
 	
 	//extract signal of number and set
