@@ -10,9 +10,9 @@ import net.minecraft.util.ResourceLocation;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.EnumRGBA;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.stellars.access.EnumStellarPass;
+import stellarium.render.stellars.access.IAtmSphereRenderer;
 import stellarium.render.stellars.access.IStellarTessellator;
 import stellarium.stellars.OpticsHelper;
 import stellarium.view.ViewerInfo;
@@ -36,7 +36,7 @@ public class StellarTessellator implements IStellarTessellator {
 	private boolean renderingDominate, hasTexture;
 	private IShaderObject shader;
 	private ViewerInfo viewer;
-	private int renderDominateList;
+	private IAtmSphereRenderer renderDominateList;
 	
 	private float rasterizedAngleRatio;
 	
@@ -64,7 +64,7 @@ public class StellarTessellator implements IStellarTessellator {
 		this.shader = info.getActiveShader();
 		this.viewer = info.info;
 
-		this.renderDominateList = info.getAtmCallList();
+		this.renderDominateList = info.getAtmSphereRenderer();
 		
 		this.rasterizedAngleRatio = (float) (viewer.multiplyingPower / Spmath.Radians(70.0f) * info.screenSize);
 	}
@@ -212,7 +212,7 @@ public class StellarTessellator implements IStellarTessellator {
 						new SpCoord(Spmath.Degrees(this.rawBuffer[index]), Spmath.Degrees(this.rawBuffer[index+1])).getVec());
 				shader.getField("lightColor").setDouble3(
 						this.rawBuffer[index+3], this.rawBuffer[index+4], this.rawBuffer[index+5]);
-				GL11.glCallList(this.renderDominateList);
+				renderDominateList.renderAtmSphere();
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.sky.SkyRenderInformation;
+import stellarium.render.stellars.access.IAtmSphereRenderer;
 import stellarium.view.ViewerInfo;
 
 public class StellarRenderInformation {
@@ -28,7 +29,7 @@ public class StellarRenderInformation {
 	}
 	
 	private IShaderObject activeShader;
-	private int callList;
+	private IAtmSphereRenderer renderer;
 	
 	public void setActiveShader(IShaderObject activeShader) {
 		this.activeShader = activeShader;
@@ -38,11 +39,11 @@ public class StellarRenderInformation {
 		return this.activeShader;
 	}
 	
-	public int getAtmCallList() {
-		return this.callList;
+	public IAtmSphereRenderer getAtmSphereRenderer() {
+		return this.renderer;
 	}
 
-	public void setAtmCallList(int list) {
-		this.callList = list;
+	public void setAtmSphereRenderer(IAtmSphereRenderer list) {
+		this.renderer = list;
 	}
 }
