@@ -21,6 +21,7 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 	protected boolean shouldRender;
 	protected SpCoord appPos = new SpCoord();
 	protected float red, green, blue;
+	protected Vector3 ref = new Vector3();
 
 	@Override
 	public void updateSettings(ClientSettings settings, IConfigHandler config, BgStar star) {
@@ -30,9 +31,9 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 	@Override
 	public void updateCache(BgStar object, StarImage image, ViewerInfo info, IStellarChecker checker) {
 		if(image == null) {
-			Vector3 ref = new Vector3(object.pos);
-			info.coordinate.getProjectionToGround().transform(ref);
-			appPos.setWithVec(ref);
+			ref.set(object.pos);
+			info.coordinate.getProjectionToGround().transform(this.ref);
+			appPos.setWithVec(this.ref);
 			info.sky.applyAtmRefraction(this.appPos);
 		} else {
 			SpCoord appCoord = image.getCurrentHorizontalPos();
