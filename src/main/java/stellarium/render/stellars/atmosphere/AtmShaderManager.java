@@ -137,10 +137,10 @@ public class AtmShaderManager {
 			extinctionFactor.setVector3(vec.scale(0.9));
 			gScattering.setDouble(-0.9);
 
-			double mult = 1.0;
+			double mult = 1.2;
 			
 			rayleighFactor.setDouble4(
-					mult * 4 * this.weatherFactor * model.getSkyColorRed() * model.getSkyDispRed() / 0.45,
+					mult * 4 * this.weatherFactor * model.getSkyColorRed() * model.getSkyDispRed() / 0.56,
 					mult * 8 * this.weatherFactor * model.getSkyColorGreen() * model.getSkyDispGreen() / 0.65,
 					mult * 16 * this.weatherFactor * model.getSkyColorBlue() * model.getSkyDispBlue(),
 					1.0);
