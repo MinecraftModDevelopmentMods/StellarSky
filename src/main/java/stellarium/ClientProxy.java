@@ -1,15 +1,20 @@
 package stellarium;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Set;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.StellarAPIReference;
@@ -38,12 +43,16 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public static final String clientConfigCategory = "clientconfig";
 	private static final String clientConfigOpticsCategory = "clientconfig.optics";
 	
+	private Field fieldLightUpdateSet = ReflectionHelper.findField(RenderGlobal.class, "setLightUpdates", "field_184387_ae");
+	
 	private ClientSettings clientSettings = new ClientSettings();
 	
 	private ConfigManager guiConfig;
 	private CelestialManager celestialManager = new CelestialManager(true);
 	
 	private SkyModel skyModel;
+	
+	
 	
 	public ClientSettings getClientSettings() {
 		return this.clientSettings;
@@ -131,13 +140,33 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		return Minecraft.getMinecraft().displayWidth;
 	}
 	
+	private int counter = 0;
+	
 	@Override
 	public void updateTick() {
 		if(clientSettings.checkDirty())
 			this.onSettingsChanged(this.clientSettings);
 
-		World world = Minecraft.getMinecraft().theWorld;
-		Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+		Minecraft mc = Minecraft.getMinecraft();
+		World world = mc.theWorld;
+		Entity viewer = mc.getRenderViewEntity();
+		
+		try {
+			if(this.counter > 5) {
+				this.counter = 0;
+				Set<BlockPos> lightUpdates = (Set<BlockPos>) fieldLightUpdateSet.get(mc.renderGlobal);
+				for(BlockPos pos : lightUpdates) {
+					if(pos.distanceSq(viewer.posX, viewer.posY, viewer.posZ) < 24.0) {
+						int x = pos.getX();
+						int y = pos.getY();
+						int z = pos.getZ();
+						mc.renderGlobal.markBlockRangeForRenderUpdate(x-1, y-1, z-1, x+1, y+1, z+1);
+					}
+				}
+			} else this.counter++;
+		} catch(IllegalAccessException exception) {
+			throw new IllegalStateException("Illegal access to field " + fieldLightUpdateSet.getName() + ", Unexpected.");
+		}
 		
 		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(world);
 		ISkyEffect sky = StellarAPIReference.getSkyEffect(world);

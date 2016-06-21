@@ -1,12 +1,8 @@
 package stellarium.render;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.client.IRenderHandler;
 import stellarapi.api.ICelestialCoordinate;
 import stellarapi.api.ISkyEffect;
