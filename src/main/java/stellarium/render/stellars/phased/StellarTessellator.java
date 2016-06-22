@@ -59,7 +59,7 @@ public class StellarTessellator implements IStellarTessellator {
 	}
 	
 	public void initialize(StellarRenderInformation info) {
-		this.weatherFactor = 1.0f - (1.0f - 1.0e-3f) * info.world.getRainStrength(info.partialTicks);
+		this.weatherFactor = 1.0f - (1.0f - 5.0e-5f) * info.world.getRainStrength(info.partialTicks);
 		
 		this.shader = info.getActiveShader();
 		this.viewer = info.info;
