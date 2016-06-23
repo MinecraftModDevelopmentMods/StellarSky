@@ -53,7 +53,6 @@ public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSyste
 				buf.add(object.earthPos);
 				info.coordinate.getProjectionToGround().transform(buf);
 
-				double size = buf.size();
 				sunPos[longc][latc].setWithVec(buf);
 				info.sky.applyAtmRefraction(sunPos[longc][latc]);
 			}

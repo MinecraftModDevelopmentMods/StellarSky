@@ -61,6 +61,7 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 			EqtoEc.transform(quads[i]);
 			info.coordinate.getProjectionToGround().transform(quads[i]);
 			coords[i].setWithVec(quads[i]);
+			info.sky.applyAtmRefraction(this.coords[i]);
 		}
 		
 		double airmass = info.sky.calculateAirmass(image.getCurrentHorizontalPos());

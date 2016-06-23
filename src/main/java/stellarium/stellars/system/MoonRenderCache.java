@@ -82,7 +82,6 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 				buf.set(object.posLocalG(buf));
 				info.coordinate.getProjectionToGround().transform(buf);
 
-				double size = buf.size();
 				moonPos[longc][latc].setWithVec(buf);
 				info.sky.applyAtmRefraction(moonPos[longc][latc]);
 			}
