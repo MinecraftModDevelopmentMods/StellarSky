@@ -1,7 +1,6 @@
 package stellarium.display;
 
 import stellarium.client.ClientSettings;
-import stellarium.display.DisplayModel.Delegate;
 import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.sky.SkyRenderInformation;
 

@@ -9,7 +9,6 @@ import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
-import stellarapi.api.optics.NakedScope;
 import stellarapi.api.optics.Wavelength;
 
 public class ViewerInfo {

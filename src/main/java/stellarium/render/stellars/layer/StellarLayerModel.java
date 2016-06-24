@@ -3,12 +3,10 @@ package stellarium.render.stellars.layer;
 import java.util.Map;
 
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarium.client.ClientSettings;

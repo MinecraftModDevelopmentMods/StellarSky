@@ -8,6 +8,8 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
+import net.minecraft.client.renderer.GlStateManager;
+
 public class OpenGlVersionUtil {
 	
 	private static int spriteFlag;

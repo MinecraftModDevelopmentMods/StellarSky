@@ -5,13 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinate;
-import stellarapi.api.ISkyEffect;
-import stellarapi.api.StellarAPIReference;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
-import stellarium.client.ClientSettings;
 import stellarium.common.ServerSettings;
 import stellarium.stellars.layer.CelestialManager;
 

@@ -1,7 +1,5 @@
 package stellarium.client.overlay.clock.model;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -32,7 +30,7 @@ public class ModelFixButton implements IRenderModel {
 	@Override
 	public void renderModel(String info, IRectangleBound totalBound, IRectangleBound clipBound, Tessellator tessellator,
 			VertexBuffer worldRenderer, TextureManager textureManager, float[] color) {
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		if(info.equals("select")) {
 			GlStateManager.scale(0.9f, 0.9f, 0.9f);
 			color[3] *= 0.2f;

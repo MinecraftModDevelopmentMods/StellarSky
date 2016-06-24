@@ -14,7 +14,6 @@ import stellarium.lib.render.hierarchy.IDistributionConfigurable;
 import stellarium.lib.render.hierarchy.IRenderState;
 import stellarium.lib.render.hierarchy.IRenderTransition;
 import stellarium.lib.render.hierarchy.IRenderedCollection;
-import stellarium.render.shader.ShaderHelper;
 import stellarium.render.sky.SkyModel.EnumSkyRenderable;
 import stellarium.render.stellars.EnumStellarRenderState;
 import stellarium.world.landscape.LandscapeModel;
@@ -29,8 +28,8 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 			GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);
 
 			GlStateManager.pushMatrix();;
-			GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-			GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
+			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
 
 			GlStateManager.disableDepth();
 			GlStateManager.depthMask(false);
@@ -72,7 +71,7 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 			GlStateManager.enableDepth();
 			GlStateManager.enableAlpha();
 
-			GL11.glDisable(GL11.GL_BLEND);
+			GlStateManager.disableBlend();
 
 			GlStateManager.depthMask(true);
 			GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);

@@ -1,7 +1,5 @@
 package stellarium.render;
 
-import stellarium.StellarSky;
-
 /**
  * Enumeration for Stellar Render Pass.
  * @see #OpaqueStellar

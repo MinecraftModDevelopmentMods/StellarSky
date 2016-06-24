@@ -1,9 +1,5 @@
 package stellarium.render.shader;
 
-import org.lwjgl.opengl.ARBShaderObjects;
-
-import stellarapi.api.lib.math.Vector3;
-
 public interface IShaderObject {
 
 	public void bindShader();

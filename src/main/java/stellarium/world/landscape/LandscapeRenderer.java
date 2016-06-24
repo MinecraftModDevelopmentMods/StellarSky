@@ -2,6 +2,7 @@ package stellarium.world.landscape;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import stellarium.StellarSkyResources;
 import stellarium.client.ClientSettings;
@@ -23,8 +24,8 @@ public class LandscapeRenderer implements IGenericRenderer<ClientSettings, Void,
 		info.minecraft.renderEngine.bindTexture(StellarSkyResources.resourceLandscape.getLocation());
 		info.worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
-		GL11.glPushMatrix();
-		GL11.glScaled(info.deepDepth, info.deepDepth, info.deepDepth);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(info.deepDepth, info.deepDepth, info.deepDepth);
 
 		for(int longc=0; longc<model.longn; longc++){
 			for(int latc=0; latc<model.latn; latc++){
@@ -43,7 +44,7 @@ public class LandscapeRenderer implements IGenericRenderer<ClientSettings, Void,
 		
 		info.tessellator.draw();
 		
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	@Override

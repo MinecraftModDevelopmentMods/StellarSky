@@ -90,16 +90,16 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 
 				dominateCache.bindFramebuffer(true);
 				
-		        GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		        GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		        GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		        
-				GL11.glMatrixMode(GL11.GL_PROJECTION);
-				GL11.glPushMatrix();
-				GL11.glLoadIdentity();
-				GL11.glOrtho(0, 2 * Math.PI, -Math.PI/2, Math.PI/2, -1.0, 1.0);
-				GL11.glMatrixMode(GL11.GL_MODELVIEW);
-				GL11.glPushMatrix();
-				GL11.glLoadIdentity();
+		        GlStateManager.matrixMode(GL11.GL_PROJECTION);
+		        GlStateManager.pushMatrix();
+		        GlStateManager.loadIdentity();
+		        GlStateManager.ortho(0, 2 * Math.PI, -Math.PI/2, Math.PI/2, -1.0, 1.0);
+				GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+				GlStateManager.pushMatrix();
+				GlStateManager.loadIdentity();
 				info.setAtmCallList(this.renderToCacheList);
 			}
 			else info.setAtmCallList(this.renderedList);
@@ -110,10 +110,10 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 			if(info.isFrameBufferEnabled) {
 				dominateCache.unbindFramebuffer();
 				
-				GL11.glMatrixMode(GL11.GL_PROJECTION);
-				GL11.glPopMatrix();
-				GL11.glMatrixMode(GL11.GL_MODELVIEW);
-				GL11.glPopMatrix();
+				GlStateManager.matrixMode(GL11.GL_PROJECTION);
+				GlStateManager.popMatrix();
+				GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+				GlStateManager.popMatrix();
 
 				info.minecraft.getFramebuffer().bindFramebuffer(true);
 			}
@@ -125,7 +125,7 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 
 			dominateCache.bindFramebufferTexture();
 			
-			GL11.glCallList(this.renderedList);
+			GlStateManager.callList(this.renderedList);
 			
 			dominateCache.unbindFramebufferTexture();
 
@@ -133,11 +133,11 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		
 		case TestAtmCache:
 			dominateCache.bindFramebufferTexture();
-			GL11.glPushMatrix();
-			GL11.glTranslated(100, 50, 0);
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(100, 50, 0);
 			// TODO Simple Test
 			//GuiUtil.drawTexturedRectSimple(0, 0, -100, -50);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 			dominateCache.unbindFramebufferTexture();
 			break;
 		
@@ -156,20 +156,32 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		
 		case BindDomination:
 			GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-			GlStateManager.enableTexture2D();
-			dominateCache.bindFramebufferTexture();
+			this.prevEnabled = GlStateManager.glGetInteger(GL11.GL_TEXTURE_2D);
+			if(this.prevEnabled == GL11.GL_FALSE)
+				GlStateManager.enableTexture2D();
+
+			this.prevTexture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+			GlStateManager.bindTexture(dominateCache.framebufferTexture);
+			
 			GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 			break;
 		case UnbindDomination:
 			GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-			dominateCache.unbindFramebufferTexture();
-			GlStateManager.disableTexture2D();
+			
+			GlStateManager.bindTexture(this.prevTexture);
+			
+			if(this.prevEnabled == GL11.GL_FALSE)
+				GlStateManager.disableTexture2D();
+			
 			GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 			break;
 		default:
 			break;
 		}
 	}
+	
+	private int prevEnabled = GL11.GL_FALSE;
+	private int prevTexture = 0;
 	
 	@Override
 	public void postRender(AtmosphereSettings settings, StellarRenderInformation info) {
@@ -190,9 +202,9 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
         this.renderedList = GLAllocation.generateDisplayLists(
         		isFramebufferEnabled? 1 : 2);
         
-        GL11.glNewList(this.renderedList, GL11.GL_COMPILE);
+        GlStateManager.glNewList(this.renderedList, GL11.GL_COMPILE);
         this.drawDisplay(displayvec, settings.fragLong, settings.fragLat, deepDepth, isFramebufferEnabled, true);
-        GL11.glEndList();
+        GlStateManager.glEndList();
         
         if(isFramebufferEnabled) {
         	this.renderToCacheList = this.renderedList + 1;
@@ -201,11 +213,11 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
     			for(int latc=0; latc<=settings.fragLat; latc++)
     				displayvec[longc][latc].set(longc * 2.0 * Math.PI / settings.fragLong, latc * Math.PI / settings.fragLat - Math.PI / 2, 0.0);
         	
-            GL11.glNewList(this.renderToCacheList, GL11.GL_COMPILE);
-            GL11.glFrontFace(GL11.GL_CW);
+    		GlStateManager.glNewList(this.renderToCacheList, GL11.GL_COMPILE);
+    		GL11.glFrontFace(GL11.GL_CW);
             this.drawDisplay(displayvec, settings.fragLong, settings.fragLat, 1.0, false, false);
             GL11.glFrontFace(GL11.GL_CCW);
-            GL11.glEndList();
+            GlStateManager.glEndList();
         }
 	}
 	

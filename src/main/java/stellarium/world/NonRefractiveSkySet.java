@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.WaveIntensive;
 import stellarapi.api.optics.Wavelength;
-import stellarium.stellars.OpticsHelper;
 import stellarium.util.math.StellarMath;
 
 public class NonRefractiveSkySet implements IStellarSkySet {

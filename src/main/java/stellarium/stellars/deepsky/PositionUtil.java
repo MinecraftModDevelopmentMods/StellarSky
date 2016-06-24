@@ -1,7 +1,5 @@
 package stellarium.stellars.deepsky;
 
-import java.util.regex.Pattern;
-
 import stellarium.util.math.StellarMath;
 
 public class PositionUtil {

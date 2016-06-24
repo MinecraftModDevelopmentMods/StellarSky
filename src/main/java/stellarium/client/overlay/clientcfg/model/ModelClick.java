@@ -1,7 +1,6 @@
 package stellarium.client.overlay.clientcfg.model;
 
-import org.lwjgl.opengl.GL11;
-
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -30,13 +29,13 @@ public class ModelClick implements IRenderModel {
 	public void renderModel(String info, IRectangleBound totalBound, IRectangleBound clipBound, Tessellator tessellator,
 			VertexBuffer worldRenderer, TextureManager textureManager, float[] color) {
 		
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		if(info.contains("select")) {
-			GL11.glScalef(0.9f, 0.9f, 0.9f);
+			GlStateManager.scale(0.9f, 0.9f, 0.9f);
 			color[3] *= 0.15f;
 			selectModel.renderModel(info, totalBound, clipBound, tessellator, worldRenderer, textureManager, color);
 		}
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 }

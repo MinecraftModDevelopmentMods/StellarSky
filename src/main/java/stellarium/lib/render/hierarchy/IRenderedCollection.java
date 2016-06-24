@@ -3,8 +3,6 @@ package stellarium.lib.render.hierarchy;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
-import stellarium.lib.render.IGenericRenderer;
-
 public interface IRenderedCollection<SubID> {
 	
 	/**

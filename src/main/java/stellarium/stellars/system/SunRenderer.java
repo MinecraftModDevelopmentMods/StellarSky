@@ -1,13 +1,6 @@
 package stellarium.stellars.system;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import stellarapi.api.lib.math.Vector3;
 import stellarium.StellarSkyResources;
-import stellarium.render.EnumRenderPass;
-import stellarium.render.StellarRenderInfo;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
 import stellarium.render.stellars.layer.LayerRenderInformation;

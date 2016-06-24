@@ -6,7 +6,6 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.NakedScope;
-import stellarapi.api.optics.Wavelength;
 import stellarium.render.stellars.access.ICheckedAtmModel;
 import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.stellars.OpticsHelper;

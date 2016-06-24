@@ -1,28 +1,19 @@
 package stellarium.lib.hierarchy;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import stellarium.lib.hierarchy.structure.IHierarchyStructure;
 import stellarium.lib.hierarchy.structure.SingletonStructure;
-import stellarium.render.sky.SkyModel;
-import stellarium.render.stellars.StellarModel;
 
 public class HierarchyWrapper {
 

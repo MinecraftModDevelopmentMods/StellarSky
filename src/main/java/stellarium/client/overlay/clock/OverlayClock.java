@@ -27,8 +27,6 @@ import stellarapi.lib.gui.list.GuiHasFixedList;
 import stellarapi.lib.gui.list.IHasFixedListController;
 import stellarapi.lib.gui.model.basic.ModelSimpleRect;
 import stellarapi.lib.gui.model.font.ModelFont;
-import stellarium.render.stellars.atmosphere.AtmosphereRenderer;
-import stellarium.render.stellars.atmosphere.EnumAtmospherePass;
 
 public class OverlayClock implements IOverlayElement<ClockSettings> {
 	

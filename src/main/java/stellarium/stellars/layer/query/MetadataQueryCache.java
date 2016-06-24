@@ -1,12 +1,9 @@
 package stellarium.stellars.layer.query;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
@@ -15,7 +12,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Iterables;
 
-import net.minecraft.server.MinecraftServer;
 import stellarium.stellars.layer.StellarObject;
 
 public class MetadataQueryCache<Obj extends StellarObject, T> implements IMetadataQueryable<Obj, T> {

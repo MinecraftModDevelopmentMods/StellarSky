@@ -5,7 +5,6 @@ import java.util.Map;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 
-import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.StellarObject;
 
 public class MetadataUpdateTracker<Obj extends StellarObject, T> {

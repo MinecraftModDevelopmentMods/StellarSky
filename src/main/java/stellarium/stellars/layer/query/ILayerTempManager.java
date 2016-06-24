@@ -6,7 +6,6 @@ import com.google.common.cache.LoadingCache;
 
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.Matrix3;
-import stellarapi.api.lib.math.SpCoord;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.StellarObject;

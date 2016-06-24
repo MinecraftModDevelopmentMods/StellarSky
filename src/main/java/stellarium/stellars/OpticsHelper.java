@@ -3,7 +3,6 @@ package stellarium.stellars;
 import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.SimpleConfigHandler;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
-import stellarium.StellarSky;
 import stellarium.util.math.CachedGaussianRandom;
 
 public class OpticsHelper extends SimpleConfigHandler {

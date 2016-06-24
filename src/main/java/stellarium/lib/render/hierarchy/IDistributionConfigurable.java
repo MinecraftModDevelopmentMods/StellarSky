@@ -2,8 +2,6 @@ package stellarium.lib.render.hierarchy;
 
 import com.google.common.base.Function;
 
-import stellarium.lib.render.IGenericRenderer;
-
 public interface IDistributionConfigurable<Pass, RCI> {
 	
 	/**

@@ -1,6 +1,5 @@
 package stellarium.stellars.layer.query;
 
-import java.util.Collection;
 import java.util.Map;
 
 import com.google.common.base.Function;

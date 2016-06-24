@@ -15,7 +15,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinate;

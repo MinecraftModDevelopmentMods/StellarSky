@@ -17,6 +17,7 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 import stellarapi.api.lib.math.SpCoord;
@@ -32,6 +33,7 @@ public class ShaderHelper {
 	
 	private Map<String, ShaderObject> objectMap = Maps.newHashMap();
 	private ShaderObject current = null;
+	private int prevShader = 0;
 	
 	private ContextCapabilities contextcapabilities = GLContext.getCapabilities();
 	
@@ -80,14 +82,16 @@ public class ShaderHelper {
 		return object;
 	}
 	
-	private void bindShader(ShaderObject object){		
+	private void bindShader(ShaderObject object){
+		if(this.current == null)
+			this.prevShader = GlStateManager.glGetInteger(GL20.GL_CURRENT_PROGRAM);
+
 		if(this.current != object) {
-			this.releaseCurrentShader();
 			this.current = object;
 			
 			//Use program
 			OpenGlHelper.glUseProgram(object.programId);
-		}
+		}		
 	}
 	
 	private void releaseShader(ShaderObject object) {
@@ -99,7 +103,7 @@ public class ShaderHelper {
 		this.current = null;
 		
 		//Use empty program
-		OpenGlHelper.glUseProgram(0);
+		OpenGlHelper.glUseProgram(this.prevShader);
 	}
 	
 	

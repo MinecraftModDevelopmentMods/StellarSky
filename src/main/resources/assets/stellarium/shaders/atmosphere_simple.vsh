@@ -5,9 +5,11 @@ uniform vec3 lightColor;    // Brightness of the light source
 uniform float cameraHeight;     // Camera height scaled by scale height
 uniform float outerRadius;     // The outer (atmosphere) radius scaled by scale height
 uniform float innerRadius;     // The inner (planetary) radius scaled by scale height
+///uniform float cloudRadius;     // The radius for clouds
 uniform int nSamples;
 uniform vec3 extinctionFactor;
-uniform float depthToFogFactor;
+uniform float depthToFogFactor; // Depth to fog
+//uniform float cloudFactor;       // Additional airmass factor caused by clouds
 
 const vec3 zenithDir = vec3(0.0, 0.0, 1.0);
 varying vec4 scatteringColor4;

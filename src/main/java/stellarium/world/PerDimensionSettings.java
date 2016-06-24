@@ -1,7 +1,5 @@
 package stellarium.world;
 
-import java.util.List;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
@@ -17,7 +15,6 @@ import stellarium.api.EnumSkyProperty;
 import stellarium.api.ISkyRenderType;
 import stellarium.api.ISkyType;
 import stellarium.api.StellarSkyAPI;
-import stellarium.stellars.OpticsHelper;
 
 public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 

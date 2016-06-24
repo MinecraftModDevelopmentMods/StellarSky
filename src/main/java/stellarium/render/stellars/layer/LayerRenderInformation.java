@@ -2,7 +2,6 @@ package stellarium.render.stellars.layer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import stellarium.render.sky.SkyRenderInformation;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
 import stellarium.render.stellars.phased.StellarRenderInformation;

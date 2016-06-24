@@ -24,8 +24,8 @@ public class HorGridRenderer implements IDisplayRenderer<HorGridCache> {
 		GlStateManager.scale(info.deepDepth, info.deepDepth, info.deepDepth);
 		
 		if(cache.gridEnabled) {
-			GL11.glLineWidth(2.0f);
-			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+			GlStateManager.glLineWidth(2.0f);
+			GlStateManager.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 
 			info.worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
@@ -61,14 +61,14 @@ public class HorGridRenderer implements IDisplayRenderer<HorGridCache> {
 
 			info.tessellator.draw();
 
-			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-			GL11.glLineWidth(1.0f);
+			GlStateManager.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+			GlStateManager.glLineWidth(1.0f);
 		}
 
 		if(cache.horizonEnabled) {
 			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 			
-			GL11.glLineWidth(5.0f);
+			GlStateManager.glLineWidth(5.0f);
 
 			GlStateManager.color(0.3f, 0.7f, 1.0f, 2.0f * cache.brightness);
 			
@@ -82,7 +82,7 @@ public class HorGridRenderer implements IDisplayRenderer<HorGridCache> {
 
 			info.tessellator.draw();
 			
-			GL11.glLineWidth(1.0f);
+			GlStateManager.glLineWidth(1.0f);
 
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 		}

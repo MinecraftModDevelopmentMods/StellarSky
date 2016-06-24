@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
 import com.google.common.collect.Lists;
 
@@ -16,10 +15,8 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.StellarSky;
-import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.layer.query.ILayerTempManager;
-import stellarium.stellars.render.ICelestialLayerRenderer;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
 import stellarium.stellars.star.StarImage;

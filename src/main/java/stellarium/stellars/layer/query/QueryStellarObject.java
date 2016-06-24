@@ -4,7 +4,6 @@ import com.google.common.base.Predicate;
 
 import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.lib.math.Spmath;
 
 public class QueryStellarObject implements Predicate<ICelestialObject> {
 	private SpCoord pos;
