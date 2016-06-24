@@ -55,6 +55,7 @@ public class StellarTessellator implements IStellarTessellator {
 	StellarTessellator() {
 		this.buffer = GLAllocation.createDirectFloatBuffer(maxBufferSize);
 		this.rawBuffer = new float[maxBufferSize];
+		// TODO Vertex Buffer Object
 	}
 	
 	public void initialize(StellarRenderInformation info) {
