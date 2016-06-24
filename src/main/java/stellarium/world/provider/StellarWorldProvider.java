@@ -221,7 +221,7 @@ public class StellarWorldProvider extends WorldProvider {
         if (f6 > 0.0F)
         {
             f7 = (f3 * 0.3F + f4 * 0.59F + f5 * 0.11F) * 0.6F;
-            f8 = 1.0F - f5 * 0.95F;
+            f8 = 1.0F - f6 * 0.95F;
             f3 = f3 * f8 + f7 * (1.0F - f8);
             f4 = f4 * f8 + f7 * (1.0F - f8);
             f5 = f5 * f8 + f7 * (1.0F - f8);
