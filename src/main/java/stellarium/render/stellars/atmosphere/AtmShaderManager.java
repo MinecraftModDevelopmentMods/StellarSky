@@ -130,7 +130,7 @@ public class AtmShaderManager {
 			nSamples.setInteger(20);
 
 			exposure.setDouble(2.0);
-			depthToFogFactor.setDouble(100.0 * Math.exp(model.getHeight()));
+			depthToFogFactor.setDouble(100.0 * Math.exp(model.getHeight()) * Math.exp(-20.0 * this.rainStrengthFactor));
 
 			Vector3 vec = new Vector3(model.getSkyExtRed(),
 					model.getSkyExtGreen(), model.getSkyExtBlue());
