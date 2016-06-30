@@ -3,6 +3,7 @@ package stellarium.stellars;
 import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.SimpleConfigHandler;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
+import stellarapi.api.lib.math.Spmath;
 import stellarium.util.math.CachedGaussianRandom;
 
 public class OpticsHelper extends SimpleConfigHandler {
@@ -24,19 +25,24 @@ public class OpticsHelper extends SimpleConfigHandler {
 	
 	private ConfigPropertyDouble propBrightnessContrast;
 	private ConfigPropertyDouble propTurb;
+	private ConfigPropertyDouble propSpriteScale;
 	
-	private double brightnessContrast = 1.5;
+	private double brightnessContrast = 2.0;
 	//private float magCompression;
 	//private float magContrast;
 	private float brightnessPower;
 	private double turbulance;
-	
+	private float invSpriteScale;
+	private double invSpriteScale2;
+
 	public OpticsHelper() {
-		this.propBrightnessContrast = new ConfigPropertyDouble("Brightness_Contrast", "", 1.5);
+		this.propBrightnessContrast = new ConfigPropertyDouble("Brightness_Contrast", "", 2.0);
 		this.propTurb = new ConfigPropertyDouble("Twinkling(Turbulance)", "", 1.0);
-		
+		this.propSpriteScale = new ConfigPropertyDouble("Sprite_Scale", "", 0.8);
+
 		this.addConfigProperty(this.propBrightnessContrast);
 		this.addConfigProperty(this.propTurb);
+		this.addConfigProperty(this.propSpriteScale);
 	}
 	
 	@Override
@@ -63,6 +69,14 @@ public class OpticsHelper extends SimpleConfigHandler {
         propTurb.setLanguageKey("config.property.client.turbulance");
         propTurb.setMinValue(0.0);
         propTurb.setMaxValue(2.0);
+        
+        propSpriteScale.setComment("Sprite Scale determines the size of stars and planets. "
+				+ "The bigger the value, the fuzzier stars/planets gets. "
+				+ "Real world = 1.0. Default = 0.8 for visual effect.");
+        propSpriteScale.setRequiresMcRestart(false);
+        propSpriteScale.setLanguageKey("config.property.client.spritescale");
+        propSpriteScale.setMaxValue(1.2);
+        propSpriteScale.setMinValue(0.4);
 	}
 
 	@Override
@@ -72,6 +86,8 @@ public class OpticsHelper extends SimpleConfigHandler {
 		this.brightnessContrast = propBrightnessContrast.getDouble();
 		this.turbulance = propTurb.getDouble() * 4.0;
 		this.brightnessPower = 1.0f / ((float)this.brightnessContrast);
+		this.invSpriteScale = 1.0f / (float)propSpriteScale.getDouble();
+		this.invSpriteScale2 = 1.0 / Spmath.sqr(propSpriteScale.getDouble());
 	}
 	
 	@Override
@@ -98,6 +114,14 @@ public class OpticsHelper extends SimpleConfigHandler {
 				((Math.pow(Math.log(bglight + 1.0f)/constantBgDiv, magOffset)))))
 				- (bglight / 2.1333334f));
 	}*/
+	
+	public static final float invSpriteScalef() {
+		return instance.invSpriteScale;
+	}
+	
+	public static final double invSpriteScale2() {
+		return instance.invSpriteScale2;
+	}
 
 	public static float turbulance() {
 		return (float) (instance.turbulance * instance.randomTurbulance.nextGaussian() * 0.1);

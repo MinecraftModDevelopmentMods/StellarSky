@@ -66,25 +66,14 @@ config.property.client.turbulance.tooltip=Degree of the twinkling effect of star
 config.property.client.brcontrast=Brightness Contrast
 config.property.client.brcontrast.tooltip=Brightness Contrast determines the contrast between bright stars and faint stars. The bigger the value, the less difference between bright stars and faint stars. For real world, 1.0 is right. Though default value is 1.75 for visual effect.
 
-<<<<<<< HEAD
-config.property.client.lockbtnpos=Position of Lock Button
-config.property.client.lockbtnpos.tooltip=Position of sky lock button. Now there are upright and downleft.
+config.property.client.spritescale=Sprite Scale
+config.property.client.spritescale.tooltip=Sprite Scale determines the size of stars and planets. The bigger the value, the fuzzier stars/planets gets. Real world = 1.0. Default = 0.8 for visual effect.
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
-=======
->>>>>>> refs/remotes/origin/master
->>>>>>> 1.8.9
+
 ///Optics
 config.category.optics=Optics
 config.category.optics.tooltip=Configuration for Optical settings.
 
->>>>>>> refs/remotes/origin/master
->>>>>>> 1.8.9
 
 //Server Configs
 config.category.server=Server(Common) Configurations

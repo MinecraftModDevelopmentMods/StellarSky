@@ -148,7 +148,7 @@ public class StellarTessellator implements IStellarTessellator {
 	private static final float DEFAULT_SIZE = Spmath.Radians(0.06f);
 
 	private void processColor() {
-		double multiplier = Spmath.sqr(DEFAULT_SIZE);
+		double multiplier = Spmath.sqr(DEFAULT_SIZE) * OpticsHelper.invSpriteScalef();
 		
 		this.renderedRed = this.red;
 		this.renderedGreen = this.green;
@@ -198,10 +198,10 @@ public class StellarTessellator implements IStellarTessellator {
 				shader.getField("scaledRadius").setDouble(this.radius / size);
 			
 			shader.getField("invres2").setDouble4(
-					this.toInvRes2(size, (float)viewer.resolutionColor.getX()),
-					this.toInvRes2(size, (float)viewer.resolutionColor.getY()),
-					this.toInvRes2(size, (float)viewer.resolutionColor.getZ()),
-					this.toInvRes2(size, (float)viewer.resolutionGeneral));
+					OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionColor.getX()),
+					OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionColor.getY()),
+					OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionColor.getZ()),
+					OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionGeneral));
 		}
 		
 		if(!this.renderingDominate)

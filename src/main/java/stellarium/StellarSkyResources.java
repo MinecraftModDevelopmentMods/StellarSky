@@ -206,6 +206,9 @@ public class StellarSkyResources {
 	public static final ResourceLocation brcontrast =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/brcontrast.png");
 	
+	public static final ResourceLocation spritescale =
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/spritescale.png");
+	
 	
 	public static final ResourceLocation solarsystem =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/solarsystem.png");

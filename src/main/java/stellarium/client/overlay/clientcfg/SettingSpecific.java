@@ -48,6 +48,7 @@ public class SettingSpecific {
 		model.addSubModel("config.category.optics", new ModelSimpleTextured(StellarSkyResources.optics));
 		model.addSubModel("config.property.client.turbulance", new ModelSimpleTextured(StellarSkyResources.turbulance));
 		model.addSubModel("config.property.client.brcontrast", new ModelSimpleTextured(StellarSkyResources.brcontrast));
+		model.addSubModel("config.property.client.spritescale", new ModelSimpleTextured(StellarSkyResources.spritescale));
 
 		model.addSubModel("config.category.atmosphere", new ModelSimpleTextured(StellarSkyResources.atmosphereSettings));
 		model.addSubModel("config.property.atmosphere.cachelevel", new ModelSimpleTextured(StellarSkyResources.atmosphereCacheLevel));
