@@ -25,14 +25,14 @@ public class OpticsHelper extends SimpleConfigHandler {
 	private ConfigPropertyDouble propBrightnessContrast;
 	private ConfigPropertyDouble propTurb;
 	
-	private double brightnessContrast = 2.0;
+	private double brightnessContrast = 1.5;
 	//private float magCompression;
 	//private float magContrast;
 	private float brightnessPower;
 	private double turbulance;
 	
 	public OpticsHelper() {
-		this.propBrightnessContrast = new ConfigPropertyDouble("Brightness_Contrast", "", 2.0);
+		this.propBrightnessContrast = new ConfigPropertyDouble("Brightness_Contrast", "", 1.5);
 		this.propTurb = new ConfigPropertyDouble("Twinkling(Turbulance)", "", 1.0);
 		
 		this.addConfigProperty(this.propBrightnessContrast);
