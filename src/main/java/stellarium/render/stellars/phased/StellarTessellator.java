@@ -67,11 +67,15 @@ public class StellarTessellator implements IStellarTessellator {
 		this.renderDominateList = info.getAtmCallList();
 		
 		this.rasterizedAngleRatio = (float) (viewer.multiplyingPower / Spmath.Radians(70.0f) * info.screenSize);
+		
+		this.preCalculateColorInfo();
 	}
 	
 	public void initializePass(EnumStellarPass pass) {
 		this.renderingDominate = pass.isDominate;
 		this.hasTexture = pass.hasTexture;
+		
+		this.onPrePassRender();
 	}
 	
 	@Override
@@ -85,6 +89,8 @@ public class StellarTessellator implements IStellarTessellator {
 		
 		this.rawBufferCount = 0;
 		this.vertexCount = 0;
+		
+		this.recalcColorInfoObj(true);
 	}
 
 	@Override
@@ -146,40 +152,70 @@ public class StellarTessellator implements IStellarTessellator {
 	}
 	
 	private static final float DEFAULT_SIZE = Spmath.Radians(0.06f);
+	
+	private float surfMultRed, surfMultGreen, surfMultBlue;
+	private float pointMultRed, pointMultGreen, pointMultBlue;
+	private float radiusMultRed, radiusMultGreen, radiusMultBlue;
+	private float currentMultRed, currentMultGreen, currentMultBlue;
+
+	private void preCalculateColorInfo() {
+		float multiplier = (float) (Spmath.sqr(DEFAULT_SIZE) * OpticsHelper.invSpriteScalef());
+
+		this.surfMultRed = (float) (viewer.colorMultiplier.getX() / Spmath.sqr(viewer.multiplyingPower));
+		this.surfMultGreen = (float) (viewer.colorMultiplier.getY() / Spmath.sqr(viewer.multiplyingPower));
+		this.surfMultBlue = (float) (viewer.colorMultiplier.getZ() / Spmath.sqr(viewer.multiplyingPower));
+		
+		this.radiusMultRed = this.surfMultRed * multiplier;
+		this.radiusMultGreen = this.surfMultGreen * multiplier;
+		this.radiusMultBlue = this.surfMultBlue * multiplier;
+
+		this.pointMultRed = (float) (this.radiusMultRed / Spmath.sqr(viewer.resolutionColor.getX()));
+		this.pointMultGreen = (float) (this.radiusMultGreen / Spmath.sqr(viewer.resolutionColor.getY()));
+		this.pointMultBlue = (float) (this.radiusMultBlue / Spmath.sqr(viewer.resolutionColor.getZ()));
+	}
+	
+	private void onPrePassRender() {
+		if(this.hasTexture || this.renderingDominate) {
+			this.currentMultRed = this.surfMultRed;
+			this.currentMultGreen = this.surfMultGreen;
+			this.currentMultBlue = this.surfMultBlue;
+		}
+	}
+
+	private void recalcColorInfoObj(boolean isCompletelyPoint) {
+		if(!this.hasTexture && !this.renderingDominate) {
+			if(isCompletelyPoint) {
+				this.currentMultRed = this.pointMultRed;
+				this.currentMultGreen = this.pointMultGreen;
+				this.currentMultBlue = this.pointMultBlue;
+			} else {
+				this.currentMultRed = (float) (this.radiusMultRed / Spmath.sqr(viewer.resolutionColor.getX() + this.radius));
+				this.currentMultGreen = (float) (this.radiusMultGreen / Spmath.sqr(viewer.resolutionColor.getY() + this.radius));
+				this.currentMultBlue = (float) (this.radiusMultBlue / Spmath.sqr(viewer.resolutionColor.getZ() + this.radius));
+			}
+		}
+
+		if(!this.renderingDominate) {
+			this.currentMultRed *= this.weatherFactor;
+			this.currentMultGreen *= this.weatherFactor;
+			this.currentMultBlue *= this.weatherFactor;
+		}
+	}
 
 	private void processColor() {
-		double multiplier = Spmath.sqr(DEFAULT_SIZE) * OpticsHelper.invSpriteScalef();
-		
-		this.renderedRed = this.red;
-		this.renderedGreen = this.green;
-		this.renderedBlue = this.blue;
+		this.renderedRed = this.red * this.currentMultRed;
+		this.renderedGreen = this.green * this.currentMultGreen;
+		this.renderedBlue = this.blue * this.currentMultRed;
 
-		if(!this.hasTexture && !this.renderingDominate) {
-			this.renderedRed *= (viewer.colorMultiplier.getX() * multiplier
-					/ Spmath.sqr(viewer.multiplyingPower * (viewer.resolutionColor.getX() + this.radius)));
-			this.renderedGreen *= (viewer.colorMultiplier.getY() * multiplier
-					/ Spmath.sqr(viewer.multiplyingPower * (viewer.resolutionColor.getY() + this.radius)));
-			this.renderedBlue *= (viewer.colorMultiplier.getZ() * multiplier
-					/ Spmath.sqr(viewer.multiplyingPower * (viewer.resolutionColor.getZ() + this.radius)));
-		} else {
-			this.renderedRed *= (viewer.colorMultiplier.getX() / Spmath.sqr(viewer.multiplyingPower));
-			this.renderedGreen *= (viewer.colorMultiplier.getY() / Spmath.sqr(viewer.multiplyingPower));
-			this.renderedBlue *= (viewer.colorMultiplier.getZ() / Spmath.sqr(viewer.multiplyingPower));
-		}
-		
 		if(this.renderingDominate)
 			return;
-		
-		this.renderedRed *= this.weatherFactor;
-		this.renderedGreen *= this.weatherFactor;
-		this.renderedBlue *= this.weatherFactor;
 
-		double brightest = Math.max(this.renderedRed, Math.max(this.renderedGreen, this.blue));
+		float brightest = Math.max(this.renderedRed, Math.max(this.renderedGreen, this.blue));
 
 		if(brightest < LOWER_LIMIT_FACTOR) {
-			this.renderedRed = (float) ((this.renderedRed * 2 * brightest + 1.0 - 2 * brightest) * brightest);
-			this.renderedGreen = (float) ((this.renderedGreen * 2 * brightest + 1.0 - 2 * brightest) * brightest);
-			this.renderedBlue = (float) ((this.renderedBlue * 2 * brightest + 1.0 - 2 * brightest) * brightest);
+			this.renderedRed = ((this.renderedRed * 2 * brightest + 1.0f - 2 * brightest) * brightest);
+			this.renderedGreen = ((this.renderedGreen * 2 * brightest + 1.0f - 2 * brightest) * brightest);
+			this.renderedBlue = ((this.renderedBlue * 2 * brightest + 1.0f - 2 * brightest) * brightest);
 		}
 
 		this.renderedRed = OpticsHelper.getCompressed(this.renderedRed);
@@ -271,8 +307,10 @@ public class StellarTessellator implements IStellarTessellator {
 	
 	@Override
 	public void radius(float angularRadius) {
-		if(!this.hasTexture)
+		if(!this.hasTexture) {
 			this.radius = angularRadius;
+			this.recalcColorInfoObj(false);
+		}
 	}
 
 	@Override

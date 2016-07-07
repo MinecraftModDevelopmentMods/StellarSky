@@ -76,10 +76,10 @@ public class AtmShaderManager {
 
 	public void updateWorldInfo(StellarRenderInformation info) {
 		this.isFrameBufferEnabled = info.isFrameBufferEnabled;
-
+		
 		float rainStrength = info.world.getRainStrength(info.partialTicks);
-		this.rainStrengthFactor = rainStrength * 0.2f;
-		this.weatherFactor = (float)(1.0D - (double)(rainStrength * 8.0F) / 16.0D);
+		this.rainStrengthFactor = rainStrength > 0.0f? 0.05f + rainStrength * 0.15f : 0.0f;
+		this.weatherFactor = (float) (1.0f - Math.sqrt(rainStrength) * 0.8f);
 		weatherFactor *= (1.0D - (double)(info.world.getThunderStrength(info.partialTicks) * 8.0F) / 16.0D);
 
 		this.skyBrightness = info.world.getSunBrightnessFactor(info.partialTicks) * 2.0f;
@@ -130,7 +130,7 @@ public class AtmShaderManager {
 			nSamples.setInteger(20);
 
 			exposure.setDouble(2.0);
-			depthToFogFactor.setDouble(100.0 * Math.exp(model.getHeight()) * Math.exp(-20.0 * this.rainStrengthFactor));
+			depthToFogFactor.setDouble(100.0 * Math.exp(model.getHeight()) * Math.exp(-22.5 * this.rainStrengthFactor));
 
 			Vector3 vec = new Vector3(model.getSkyExtRed(),
 					model.getSkyExtGreen(), model.getSkyExtBlue());

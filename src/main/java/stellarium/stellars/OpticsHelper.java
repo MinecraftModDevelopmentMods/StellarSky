@@ -5,6 +5,7 @@ import stellarapi.api.lib.config.SimpleConfigHandler;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarapi.api.lib.math.Spmath;
 import stellarium.util.math.CachedGaussianRandom;
+import stellarium.util.math.PowerCache;
 
 public class OpticsHelper extends SimpleConfigHandler {
 	public static final double ext_coeff_B=0.3;
@@ -34,6 +35,8 @@ public class OpticsHelper extends SimpleConfigHandler {
 	private double turbulance;
 	private float invSpriteScale;
 	private double invSpriteScale2;
+	
+	private PowerCache cache = new PowerCache();
 
 	public OpticsHelper() {
 		this.propBrightnessContrast = new ConfigPropertyDouble("Brightness_Contrast", "", 2.0);
@@ -44,7 +47,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 		this.addConfigProperty(this.propTurb);
 		this.addConfigProperty(this.propSpriteScale);
 	}
-	
+
 	@Override
 	public void setupConfig(Configuration config, String category) {
 		config.setCategoryLanguageKey(category, "config.category.optics");
@@ -88,6 +91,8 @@ public class OpticsHelper extends SimpleConfigHandler {
 		this.brightnessPower = 1.0f / ((float)this.brightnessContrast);
 		this.invSpriteScale = 1.0f / (float)propSpriteScale.getDouble();
 		this.invSpriteScale2 = 1.0 / Spmath.sqr(propSpriteScale.getDouble());
+		
+		cache.initialize(this.brightnessPower);
 	}
 	
 	@Override
@@ -136,6 +141,6 @@ public class OpticsHelper extends SimpleConfigHandler {
 	}
 
 	public static float getCompressed(float brightness) {
-		return (float) Math.pow(brightness, instance.brightnessPower);
+		return instance.cache.getPower(brightness);
 	}
 }
