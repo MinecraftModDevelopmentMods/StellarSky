@@ -113,8 +113,11 @@ public class StellarSkyResources {
 	
 	public static final ResourceLocation tick = 
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/tick.png");
-
 	
+	public static final ResourceLocation ampm = 
+			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/ampm.png");
+	
+
 	public static final ResourceLocation round =
 			new ResourceLocation(StellarSkyReferences.resourceId, "textures/gui/round.png");
 	

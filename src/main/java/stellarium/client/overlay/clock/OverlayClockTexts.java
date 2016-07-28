@@ -155,7 +155,7 @@ public class OverlayClockTexts {
 	public class Day implements IStringGetter {
 		@Override
 		public String getString() {
-			String ad = settings.viewMode.showTick()? "  " : "  ";
+			String ad = "  ";
 			return I18n.format("hud.text.day", String.format(ad + "%-5d", day), String.format("%.2f", yearToDay));
 		}
 	}
@@ -163,13 +163,33 @@ public class OverlayClockTexts {
 	public class Additional implements IStringGetter {
 		@Override
 		public String getString() {
-			if(settings.viewMode.showTick())
+			switch(settings.viewMode) {
+			case TICK:
 				return I18n.format("hud.text.tick", String.format("%-6d", tick), String.format("%.2f", daylength));
-			else return I18n.format("hud.text.time",
+			case HHMM:
+				return I18n.format("hud.text.time",
 					String.format("%3d", hour), 
 					String.format("%02d ", minute),
 					String.format("%3d", totalhour),
 					String.format("%02d", restMinuteInDay));
+			case AMPM:
+				return 2 * hour < totalhour? I18n.format("hud.text.timeam",
+						String.format("%3d", processHourAMPM(hour)), 
+						String.format("%02d", minute),
+						String.format("%3d", totalhour),
+						String.format("%02d", restMinuteInDay)) :
+							I18n.format("hud.text.timepm",
+								String.format("%3d", processHourAMPM(hour - (totalhour + 1) / 2)), 
+								String.format("%02d", minute),
+								String.format("%3d", totalhour),
+								String.format("%02d", restMinuteInDay));
+			}
+
+			return "";
+		}
+		
+		private int processHourAMPM(int hour) {
+			return hour != 0? hour : (totalhour + 1) / 2;
 		}
 	}
 	

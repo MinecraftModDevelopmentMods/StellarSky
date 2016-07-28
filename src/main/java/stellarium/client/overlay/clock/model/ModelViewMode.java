@@ -17,15 +17,16 @@ public class ModelViewMode implements IRenderModel {
 	public static ModelViewMode getInstance() {
 		return instance;
 	}
-	
+
 	private ModelSimpleRect selectModel = ModelSimpleRect.getInstance();
 	private ModelSimpleTextured clickedModel;
-	private ModelSimpleTextured hhmmModel, tickModel;
-	
+	private ModelSimpleTextured hhmmModel, tickModel, ampmModel;
+
 	public ModelViewMode() {
 		this.clickedModel = new ModelSimpleTextured(StellarSkyResources.clicked);
 		this.hhmmModel = new ModelSimpleTextured(StellarSkyResources.hhmm);
 		this.tickModel = new ModelSimpleTextured(StellarSkyResources.tick);
+		this.ampmModel = new ModelSimpleTextured(StellarSkyResources.ampm);
 	}
 
 	@Override
@@ -42,6 +43,9 @@ public class ModelViewMode implements IRenderModel {
 		} else if(info.equals("tick")) {
 			GlStateManager.scale(0.9f, 0.9f, 0.9f);
 			tickModel.renderModel(info, totalBound, clipBound, tessellator, worldRenderer, textureManager, color);
+		} else if(info.equals("ampm")) {
+			GlStateManager.scale(0.9f, 0.9f, 0.9f);
+			ampmModel.renderModel(info, totalBound, clipBound, tessellator, worldRenderer, textureManager, color);
 		}
 		GlStateManager.popMatrix();
 	}

@@ -3,14 +3,15 @@ package stellarium.client.overlay.clock;
 public enum EnumViewMode {
 	
 	HHMM("hhmm", true, false, 135),
-	TICK("tick", true, true, 150);
+	TICK("tick", true, true, 150),
+	AMPM("ampm", true, false, 140);
 	
 	private String name;
 	private boolean showOnHUD;
 	private boolean showTick;
 	private int guiWidth;
 	
-	public static String[] names = {"hhmm", "tick"};
+	public static String[] names = {"hhmm", "tick", "ampm"};
 	
 	EnumViewMode(String name, boolean showOnHUD, boolean showTick, int guiWidth) {
 		this.name = name;
