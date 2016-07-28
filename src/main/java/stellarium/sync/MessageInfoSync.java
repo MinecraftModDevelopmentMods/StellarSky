@@ -45,11 +45,11 @@ public class MessageInfoSync implements IMessage {
 				public void run() {
 					StellarManager manager = StellarManager.getClientManager();
 					manager.syncFromNBT(message.compoundInfo, true);
-			
+
 					World world = StellarSky.proxy.getDefWorld();
-					
+
 					StellarDimensionManager dimManager = null;
-			
+
 					if(!message.compoundInfo.hasNoTags())
 						manager.syncFromNBT(message.compoundInfo, true);
 

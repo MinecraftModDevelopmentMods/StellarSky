@@ -33,6 +33,11 @@ public class StellarFMLEventHook {
 			this.handleNotHave();
 	}
 	
+	@SubscribeEvent
+	public void handleDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+		StellarAPIEventHook.clearState();
+	}
+	
 	private void handleNotHave() {
 		StellarAPIEventHook.markNotHave();
 	}

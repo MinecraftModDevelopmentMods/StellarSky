@@ -85,7 +85,6 @@ public class StellarAPIEventHook {
 		
 		if(mark) {
 			handleNotHaveModOnServer(event.getWorld(), manager, update);
-			mark = false;
 		} else if(StellarSky.proxy.getServerSettings().serverEnabled) {
 			update.displayLoadingString(I18n.format("progress.text.injection.query", dimName));
 			update.setLoadingProgress(0);
@@ -147,6 +146,11 @@ public class StellarAPIEventHook {
 	public static void markNotHave() {
 		mark = true;
 	}
+	
+	public static void clearState() {
+		mark = false;
+	}
+	
 	
 	private static void handleNotHaveModOnServer(World world, StellarManager manager, IProgressUpdate update) {
 		manager.handleServerWithoutMod();

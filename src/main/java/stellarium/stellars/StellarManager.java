@@ -112,7 +112,7 @@ public final class StellarManager extends WorldSavedData {
 		settings.writeToNBT(compound);
 		return compound;
 	}
-	
+
 	
 	public void setup(CelestialManager manager) {
 		if(!this.setup) {
