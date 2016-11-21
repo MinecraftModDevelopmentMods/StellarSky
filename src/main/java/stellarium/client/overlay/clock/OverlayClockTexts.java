@@ -96,20 +96,20 @@ public class OverlayClockTexts {
 	}
 	
 	public void update(float partialTicks) {
-		if(Minecraft.getMinecraft().theWorld == null)
+		if(Minecraft.getMinecraft().world == null)
 			return;
 		
 		if(partialTicks != 0.0f && this.partialTicksBefore == partialTicks)
 			return;
 		this.partialTicksBefore = partialTicks;
 		
-		CelestialPeriod periodDay = PeriodHelper.getDayPeriod(Minecraft.getMinecraft().theWorld);
-		CelestialPeriod periodYear = PeriodHelper.getYearPeriod(Minecraft.getMinecraft().theWorld);
+		CelestialPeriod periodDay = PeriodHelper.getDayPeriod(Minecraft.getMinecraft().world);
+		CelestialPeriod periodYear = PeriodHelper.getYearPeriod(Minecraft.getMinecraft().world);
 		
 		if(periodDay == null || periodYear == null)
 			return;
 		
-		long currentTick = Minecraft.getMinecraft().theWorld.getWorldTime();
+		long currentTick = Minecraft.getMinecraft().world.getWorldTime();
 		
 		double dayOffset = periodDay.getOffset(currentTick, partialTicks);
 		double yearOffset = periodYear.getBiasedOffset(currentTick, partialTicks, 0.25);

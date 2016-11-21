@@ -36,7 +36,7 @@ public class StellarWorldProvider extends WorldProvider {
 	
 	public StellarWorldProvider(World world, WorldProvider provider, ICelestialHelper celestialHelper) {
 		this.parProvider = provider;
-		this.worldObj = world;
+		this.world = world;
 		this.celestialHelper = celestialHelper;
 	}
 	
@@ -54,16 +54,16 @@ public class StellarWorldProvider extends WorldProvider {
     public float getSunBrightness(float par1) {
         float f2 = (celestialHelper.getSunlightRenderBrightnessFactor(par1));
         f2 *= celestialHelper.getSkyTransmissionFactor(par1);
-        f2 = (float)((double)f2 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
-        f2 = (float)((double)f2 * (1.0D - (double)(worldObj.getThunderStrength(par1) * 5.0F) / 16.0D));
+        f2 = (float)((double)f2 * (1.0D - (double)(world.getRainStrength(par1) * 5.0F) / 16.0D));
+        f2 = (float)((double)f2 * (1.0D - (double)(world.getThunderStrength(par1) * 5.0F) / 16.0D));
         return f2 + celestialHelper.minimumSkyRenderBrightness() * (1.0f - f2);
     }
 	
 	@Override
 	public float getSunBrightnessFactor(float par1) {
         float f1 = celestialHelper.getSunlightFactor(EnumRGBA.Alpha, par1) * celestialHelper.getSkyTransmissionFactor(par1);
-        f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getRainStrength(par1) * 5.0F) / 16.0D));
-        f1 = (float)((double)f1 * (1.0D - (double)(worldObj.getThunderStrength(par1) * 5.0F) / 16.0D));
+        f1 = (float)((double)f1 * (1.0D - (double)(world.getRainStrength(par1) * 5.0F) / 16.0D));
+        f1 = (float)((double)f1 * (1.0D - (double)(world.getThunderStrength(par1) * 5.0F) / 16.0D));
         return f1;
 	}
 	
@@ -132,15 +132,15 @@ public class StellarWorldProvider extends WorldProvider {
     @SideOnly(Side.CLIENT)
     public Vec3d getSkyColor(Entity cameraEntity, float partialTicks)
     {
-		int i = MathHelper.floor_double(cameraEntity.posX);
-		int j = MathHelper.floor_double(cameraEntity.posY);
-		int k = MathHelper.floor_double(cameraEntity.posZ);
+		int i = MathHelper.floor(cameraEntity.posX);
+		int j = MathHelper.floor(cameraEntity.posY);
+		int k = MathHelper.floor(cameraEntity.posZ);
 		BlockPos blockpos = new BlockPos(i, j, k);
 
 		float mixedBrightness = this.getMixedBrightnessOn(cameraEntity.posX, cameraEntity.posY, cameraEntity.posZ,
 				i, j, k);
 
-		int l = ForgeHooksClient.getSkyBlendColour(this.worldObj, blockpos);
+		int l = ForgeHooksClient.getSkyBlendColour(this.world, blockpos);
 		float f4 = (float) (l >> 16 & 255) / 255.0F * celestialHelper.getDispersionFactor(EnumRGBA.Red, partialTicks);
 		float f5 = (float) (l >> 8 & 255) / 255.0F * celestialHelper.getDispersionFactor(EnumRGBA.Green, partialTicks);
 		float f6 = (float) (l & 255) / 255.0F * celestialHelper.getDispersionFactor(EnumRGBA.Blue, partialTicks);
@@ -152,7 +152,7 @@ public class StellarWorldProvider extends WorldProvider {
 		f6 *= (celestialHelper.getSunlightFactor(EnumRGBA.Blue, partialTicks)
 				+ mixedBrightness * celestialHelper.getLightPollutionFactor(EnumRGBA.Blue, partialTicks));
 
-		float f7 = worldObj.getRainStrength(partialTicks);
+		float f7 = world.getRainStrength(partialTicks);
 		float f8;
 		float f9;
 
@@ -164,7 +164,7 @@ public class StellarWorldProvider extends WorldProvider {
 			f6 = f6 * f9 + f8 * (1.0F - f9);
 		}
 
-		f8 = worldObj.getThunderStrength(partialTicks);
+		f8 = world.getThunderStrength(partialTicks);
 
 		if (f8 > 0.0F) {
 			f9 = (f4 * 0.3F + f5 * 0.59F + f6 * 0.11F) * 0.2F;
@@ -174,8 +174,8 @@ public class StellarWorldProvider extends WorldProvider {
 			f6 = f6 * f10 + f9 * (1.0F - f10);
 		}
 
-		if (worldObj.getLastLightningBolt() > 0) {
-			f9 = (float) worldObj.getLastLightningBolt() - partialTicks;
+		if (world.getLastLightningBolt() > 0) {
+			f9 = (float) world.getLastLightningBolt() - partialTicks;
 
 			if (f9 > 1.0F) {
 				f9 = 1.0F;
@@ -203,8 +203,8 @@ public class StellarWorldProvider extends WorldProvider {
     
     public float getMixedBrightnessOnBlock(int i, int j, int k) {
     	BlockPos pos = new BlockPos(i, j, k);
-    	IBlockState state = worldObj.getBlockState(pos);
-    	return ((state.getBlock().getPackedLightmapCoords(state, this.worldObj, pos) & 0xff)>>4) * 0.005f;
+    	IBlockState state = world.getBlockState(pos);
+    	return ((state.getBlock().getPackedLightmapCoords(state, this.world, pos) & 0xff)>>4) * 0.005f;
     }
 
     @Override
@@ -214,7 +214,7 @@ public class StellarWorldProvider extends WorldProvider {
         float f3 = (float)(this.cloudColour >> 16 & 255L) / 255.0F;
         float f4 = (float)(this.cloudColour >> 8 & 255L) / 255.0F;
         float f5 = (float)(this.cloudColour & 255L) / 255.0F;
-        float f6 = worldObj.getRainStrength(partialTicks);
+        float f6 = world.getRainStrength(partialTicks);
         float f7;
         float f8;
 
@@ -233,7 +233,7 @@ public class StellarWorldProvider extends WorldProvider {
         		* celestialHelper.getDispersionFactor(EnumRGBA.Green, partialTicks) * 0.9F + 0.1F;
         f5 *= celestialHelper.getSunlightFactor(EnumRGBA.Blue, partialTicks)
         		* celestialHelper.getDispersionFactor(EnumRGBA.Blue, partialTicks) * 0.85F + 0.15F;
-        f7 = worldObj.getThunderStrength(partialTicks);
+        f7 = world.getThunderStrength(partialTicks);
 
         if (f7 > 0.0F)
         {
@@ -371,9 +371,15 @@ public class StellarWorldProvider extends WorldProvider {
     }
     
     @Override
-    public boolean getHasNoSky()
+    public boolean hasNoSky()
     {
-        return parProvider.getHasNoSky();
+        return parProvider.hasNoSky();
+    }
+
+    @Override
+    public boolean hasSkyLight()
+    {
+        return parProvider.hasSkyLight();
     }
     
     @Override

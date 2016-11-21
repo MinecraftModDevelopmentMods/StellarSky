@@ -10,7 +10,7 @@ import stellarium.stellars.StellarManager;
 public class CommandLock extends CommandBase {
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "locksky";
 	}
 	
@@ -29,7 +29,7 @@ public class CommandLock extends CommandBase {
     }
 
 	@Override
-	public String getCommandUsage(ICommandSender p_71518_1_) {
+	public String getUsage(ICommandSender p_71518_1_) {
 		return "stellarsky.command.lock.usage";
 	}
 

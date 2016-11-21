@@ -42,9 +42,9 @@ public class AtmosphereModel implements ICheckedAtmModel {
 	}
 
 	public void onTick(World world, ViewerInfo update) {
-		int i = MathHelper.floor_double(update.currentPosition.getX());
-		int j = MathHelper.floor_double(update.currentPosition.getY());
-		int k = MathHelper.floor_double(update.currentPosition.getZ());
+		int i = MathHelper.floor(update.currentPosition.getX());
+		int j = MathHelper.floor(update.currentPosition.getY());
+		int k = MathHelper.floor(update.currentPosition.getZ());
 		int l = ForgeHooksClient.getSkyBlendColour(world, new BlockPos(i,j,k));
 		this.skyred = (float)(l >> 16 & 255) / 255.0F;
 		this.skygreen = (float)(l >> 8 & 255) / 255.0F;

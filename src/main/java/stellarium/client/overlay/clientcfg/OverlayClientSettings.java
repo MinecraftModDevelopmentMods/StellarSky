@@ -356,7 +356,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 				@Override
 				public void confirmClicked(boolean ok, int index) {
 					if(ok)
-						mc.thePlayer.sendChatMessage(
+						mc.player.sendChatMessage(
 								String.format("/locksky %s", !locked));
 					mc.displayGuiScreen(null);
 				}

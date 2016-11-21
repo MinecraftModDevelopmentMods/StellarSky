@@ -105,7 +105,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	
 	@Override
 	public World getDefWorld() {
-		return Minecraft.getMinecraft().theWorld;
+		return Minecraft.getMinecraft().world;
 	}
 	
 	public Entity getDefViewerEntity() {
@@ -148,7 +148,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 			this.onSettingsChanged(this.clientSettings);
 
 		Minecraft mc = Minecraft.getMinecraft();
-		World world = mc.theWorld;
+		World world = mc.world;
 		Entity viewer = mc.getRenderViewEntity();
 		
 		try {

@@ -275,8 +275,8 @@ public class OverlayClock implements IOverlayElement<ClockSettings> {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		CelestialPeriod periodDay = PeriodHelper.getDayPeriod(Minecraft.getMinecraft().theWorld);
-		CelestialPeriod periodYear = PeriodHelper.getYearPeriod(Minecraft.getMinecraft().theWorld);
+		CelestialPeriod periodDay = PeriodHelper.getDayPeriod(Minecraft.getMinecraft().world);
+		CelestialPeriod periodYear = PeriodHelper.getYearPeriod(Minecraft.getMinecraft().world);
 		if(periodDay == null || periodYear == null)
 			return;
 		

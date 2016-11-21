@@ -521,7 +521,7 @@ public class OverlayClockControllers {
 						if(hourFormatAsDay)
 							settings.daylengthToHour = value;
 						else {
-							double daylength = PeriodHelper.getDayPeriod(Minecraft.getMinecraft().theWorld).getPeriodLength();
+							double daylength = PeriodHelper.getDayPeriod(Minecraft.getMinecraft().world).getPeriodLength();
 							settings.daylengthToHour = daylength / value;
 						}
 
@@ -532,7 +532,7 @@ public class OverlayClockControllers {
 				if(hourFormatAsDay) {
 					return String.format("%3.2f", settings.daylengthToHour);
 				} else {
-					CelestialPeriod day = PeriodHelper.getDayPeriod(Minecraft.getMinecraft().theWorld);
+					CelestialPeriod day = PeriodHelper.getDayPeriod(Minecraft.getMinecraft().world);
 					if(day != null) {
 						double daylength = day.getPeriodLength();
 						return String.format("%5f", daylength / settings.daylengthToHour);

@@ -26,8 +26,8 @@ import stellarium.world.provider.DefaultWorldProviderReplacer;
 import stellarium.world.provider.EndReplacer;
 
 @Mod(modid=StellarSkyReferences.modid, version=StellarSkyReferences.version,
-acceptedMinecraftVersions="[1.9.4, 1.11.0)",
-dependencies="required-after:StellarAPI@[0.5.4.1.0, 0.5.5.0.0)", guiFactory="stellarium.client.config.StellarConfigGuiFactory")
+acceptedMinecraftVersions="[1.11.0, 1.12.0)",
+dependencies="required-after:stellarapi@[0.6.4.1.0, 0.6.5.0.0)", guiFactory="stellarium.client.config.StellarConfigGuiFactory")
 public class StellarSky {
 
 		// The instance of Stellarium
