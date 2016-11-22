@@ -13,7 +13,7 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 	private boolean isDirty = false;
 	
 	public ClientSettings() {
-		this.propMagLimit = new ConfigPropertyDouble("Mag_Limit", "", 6.0);
+		this.propMagLimit = new ConfigPropertyDouble("Mag_Limit", "", 4.5);
 		
 		this.addConfigProperty(this.propMagLimit);
 	}
@@ -29,7 +29,7 @@ public class ClientSettings extends SimpleHierarchicalConfig {
         
         propMagLimit.setComment("Limit of magnitude can be seen on naked eye.\n" +
         		"If you want to increase FPS, lower the Mag_Limit.\n" +
-        		"(Realistic = 6.5, Default = 6.0)\n" +
+        		"(Realistic = 6.5, Default = 4.5)\n" +
         		"The lower you set it, the fewer stars you will see\n" +
         		"but the better FPS you will get");
         propMagLimit.setRequiresMcRestart(true);
