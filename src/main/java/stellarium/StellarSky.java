@@ -30,74 +30,74 @@ acceptedMinecraftVersions="[1.11.0, 1.12.0)",
 dependencies="required-after:stellarapi@[0.6.4.1.0, 0.6.5.0.0)", guiFactory="stellarium.client.config.StellarConfigGuiFactory")
 public class StellarSky {
 
-		// The instance of Stellarium
-        @Instance(StellarSkyReferences.modid)
-        public static StellarSky instance;
-        
-        @SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
-        public static IProxy proxy;
-        
-        public static Logger logger;
-        
-        private ConfigManager celestialConfigManager;
-        private StellarForgeEventHook eventHook = new StellarForgeEventHook();
-        private StellarTickHandler tickHandler = new StellarTickHandler();
-        private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
-        private StellarNetworkManager networkManager;
+	// The instance of Stellar Sky
+	@Instance(StellarSkyReferences.modid)
+	public static StellarSky instance;
 
-        public StellarNetworkManager getNetworkManager() {
-        	return this.networkManager;
-        }
+	@SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
+	public static IProxy proxy;
 
-		public ConfigManager getCelestialConfigManager() {
-			return this.celestialConfigManager;
-		}
+	public static Logger logger;
 
-        @EventHandler
-        public void preInit(FMLPreInitializationEvent event) { 
-        	logger = event.getModLog();
-        	
-        	this.celestialConfigManager = new ConfigManager(
-        			StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
-        					StellarSkyReferences.celestialSettings));
-        	
-        	
-            proxy.setupCelestialConfigManager(this.celestialConfigManager);
-        	proxy.preInit(event);
-        	
-        	this.networkManager = new StellarNetworkManager();
-        	
-    		MinecraftForge.EVENT_BUS.register(this.eventHook);
-    		MinecraftForge.EVENT_BUS.register(this.tickHandler);
-    		MinecraftForge.EVENT_BUS.register(this.fmlEventHook);
+	private ConfigManager celestialConfigManager;
+	private StellarForgeEventHook eventHook = new StellarForgeEventHook();
+	private StellarTickHandler tickHandler = new StellarTickHandler();
+	private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
+	private StellarNetworkManager networkManager;
 
-    		StellarAPIReference.getEventBus().register(new StellarAPIEventHook());
-    		
-    		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
-    		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());
-    		
-    		StellarSkyAPI.registerSkyType("Overworld", new DefaultSkyType());
-    		StellarSkyAPI.registerSkyType("The End", new SkyTypeEnd());
-    		
-    		StellarSkyAPI.registerRendererType(new SkyRenderTypeSurface());
-    		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
-    		
-    		StellarSkyResources.init();
-        }
-        
-        @EventHandler
-        public void load(FMLInitializationEvent event) throws IOException {
-        	proxy.load(event);
-        }
-        
-        @EventHandler
-        public void postInit(FMLPostInitializationEvent event) {
-        	celestialConfigManager.syncFromFile();
-        	proxy.postInit(event);
-        }
-        
-        @EventHandler
-        public void serverStarting(FMLServerStartingEvent event) {
-        	event.registerServerCommand(new CommandLock());
-        }
+	public StellarNetworkManager getNetworkManager() {
+		return this.networkManager;
+	}
+
+	public ConfigManager getCelestialConfigManager() {
+		return this.celestialConfigManager;
+	}
+
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent event) { 
+		logger = event.getModLog();
+
+		this.celestialConfigManager = new ConfigManager(
+				StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
+						StellarSkyReferences.celestialSettings));
+
+
+		proxy.setupCelestialConfigManager(this.celestialConfigManager);
+		proxy.preInit(event);
+
+		this.networkManager = new StellarNetworkManager();
+
+		MinecraftForge.EVENT_BUS.register(this.eventHook);
+		MinecraftForge.EVENT_BUS.register(this.tickHandler);
+		MinecraftForge.EVENT_BUS.register(this.fmlEventHook);
+
+		StellarAPIReference.getEventBus().register(new StellarAPIEventHook());
+
+		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
+		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());
+
+		StellarSkyAPI.registerSkyType("Overworld", new DefaultSkyType());
+		StellarSkyAPI.registerSkyType("The End", new SkyTypeEnd());
+
+		StellarSkyAPI.registerRendererType(new SkyRenderTypeSurface());
+		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
+
+		StellarSkyResources.init();
+	}
+
+	@EventHandler
+	public void load(FMLInitializationEvent event) throws IOException {
+		proxy.load(event);
+	}
+
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event) {
+		celestialConfigManager.syncFromFile();
+		proxy.postInit(event);
+	}
+
+	@EventHandler
+	public void serverStarting(FMLServerStartingEvent event) {
+		event.registerServerCommand(new CommandLock());
+	}
 }

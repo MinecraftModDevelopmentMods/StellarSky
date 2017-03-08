@@ -135,7 +135,6 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 			dominateCache.bindFramebufferTexture();
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(100, 50, 0);
-			// TODO Simple Test
 			//GuiUtil.drawTexturedRectSimple(0, 0, -100, -50);
 			GlStateManager.popMatrix();
 			dominateCache.unbindFramebufferTexture();

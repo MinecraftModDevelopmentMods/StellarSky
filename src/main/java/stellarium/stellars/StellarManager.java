@@ -63,12 +63,12 @@ public final class StellarManager extends WorldSavedData {
 		World world = StellarSky.proxy.getDefWorld();
 		return getManager(world);
 	}
-	
+
 	public static StellarManager getServerManager(MinecraftServer server) {
 		World world = server.getEntityWorld();
 		return getManager(world);
 	}
-	
+
 	private static StellarManager getManager(World world) {
 		WorldSavedData data = world.getMapStorage().getOrLoadData(StellarManager.class, ID);
 		

@@ -20,25 +20,25 @@ import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.util.WorldUtil;
 
 public final class StellarDimensionManager extends WorldSavedData {
-	
+
 	public static String ID = "stellarskydimension%s";
-	
+
 	private StellarManager manager;
-	
+
 	private PerDimensionSettings settings;
 	private IStellarSkySet skyset;
 	private StellarCoordinate coordinate;
 	private List<StellarCollection> collections = Lists.newArrayList();
 	private List<ICelestialObject> foundSuns = Lists.newArrayList();
 	private List<ICelestialObject> foundMoons = Lists.newArrayList();
-	
+
 	private String dimensionName;
 	private boolean isRemote;
-	
+
 	public static StellarDimensionManager loadOrCreate(World world, StellarManager manager, String dimName) {
 		WorldSavedData data = world.getPerWorldStorage().getOrLoadData(StellarDimensionManager.class, String.format(ID, dimName));
 		StellarDimensionManager dimManager;
-		
+
 		if(!(data instanceof StellarDimensionManager))
 		{
 			dimManager = new StellarDimensionManager(String.format(ID, dimName));
@@ -67,23 +67,23 @@ public final class StellarDimensionManager extends WorldSavedData {
 		super(id);
 		this.dimensionName = id.replaceFirst("stellarskydimension", "");
 	}
-	
+
 	public PerDimensionSettings getSettings() {
 		return this.settings;
 	}
-	
+
 	public ICelestialCoordinate getCoordinate() {
 		return this.coordinate;
 	}
-	
+
 	public IStellarSkySet getSkySet() {
 		return this.skyset;
 	}
-	
+
 	public List<StellarCollection> getCollections() {
 		return this.collections;
 	}
-	
+
 	private void loadSettingsFromConfig() {
 		this.settings = (PerDimensionSettings) ((INBTConfig) StellarSky.proxy.getDimensionSettings().getSubConfig(this.dimensionName)).copy();
 		this.markDirty();
@@ -94,7 +94,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 		// TODO fix this mess; Change to get server in better way
 		this.syncFromNBT(compound, StellarManager.getServerManager(FMLCommonHandler.instance().getMinecraftServerInstance()), false);
 	}
-	
+
 	public void syncFromNBT(NBTTagCompound compound, StellarManager manager, boolean isRemote) {
 		this.isRemote = isRemote;
 		if(manager.isLocked() || isRemote) {
@@ -104,7 +104,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 			this.loadSettingsFromConfig();
 		}
 	}
-	
+
 	public void setIsRemote(boolean isRemote) {
 		this.isRemote = isRemote;
 	}
@@ -125,7 +125,7 @@ public final class StellarDimensionManager extends WorldSavedData {
 
 		StellarSky.logger.info(String.format("Initialized Dimension Settings on Dimension %s.", this.dimensionName));
 	}
-	
+
 	public Collection<StellarCollection> constructCelestials(ICelestialCoordinate coordinate, ISkyEffect sky) {
 		collections.clear();
 		foundSuns.clear();

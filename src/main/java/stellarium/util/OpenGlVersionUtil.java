@@ -19,7 +19,7 @@ public class OpenGlVersionUtil {
 		ContextCapabilities contextcapabilities = GLContext.getCapabilities();
 		spriteFlag = contextcapabilities.OpenGL20? GL20.GL_POINT_SPRITE : ARBPointSprite.GL_POINT_SPRITE_ARB;
 		rgb16f = contextcapabilities.OpenGL30? GL30.GL_RGB16F :
-			(contextcapabilities.GL_ARB_texture_float? ARBTextureFloat.GL_RGB16F_ARB : GL11.GL_RGB);
+			(contextcapabilities.GL_ARB_texture_float? ARBTextureFloat.GL_RGB16F_ARB : GL11.GL_RGB16);
 	}
 
 	public static void enablePointSprite() {

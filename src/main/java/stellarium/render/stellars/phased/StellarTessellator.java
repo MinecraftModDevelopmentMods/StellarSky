@@ -55,9 +55,9 @@ public class StellarTessellator implements IStellarTessellator {
 	StellarTessellator() {
 		this.buffer = GLAllocation.createDirectFloatBuffer(maxBufferSize);
 		this.rawBuffer = new float[maxBufferSize];
-		// TODO Vertex Buffer Object
+		// TODO Vertex Buffer
 	}
-	
+
 	public void initialize(StellarRenderInformation info) {
 		this.weatherFactor = 1.0f - (1.0f - 5.0e-5f) * info.world.getRainStrength(info.partialTicks);
 		
@@ -291,9 +291,6 @@ public class StellarTessellator implements IStellarTessellator {
 		if(this.hasTexture) {
 			GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
 		}
-		// TODO migration to instanced rendering?
-		//org.lwjgl.opengl.ARBDrawInstanced.glDrawArraysInstancedARB(mode, first, count, primcount);
-		//org.lwjgl.opengl.EXTDrawInstanced.glDrawArraysInstancedEXT(mode, first, count, primcount);
 
 		GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
 		GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);

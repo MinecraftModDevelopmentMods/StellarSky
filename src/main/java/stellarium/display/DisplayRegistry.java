@@ -15,14 +15,14 @@ public class DisplayRegistry {
 	public static DisplayRegistry getInstance() {
 		return instance;
 	}
-	
+
 	static {
 		// TODO Interaction with existing objects
 		instance.register(new HorGridType());
 		instance.register(new EqGridType());
 		instance.register(new EcGridType());
 	}
-	
+
 	private ImmutableList.Builder<RegistryDelegate> builder = ImmutableList.builder();
 	
 	public <Cfg extends PerDisplaySettings, Cache extends IDisplayCache<Cfg>>

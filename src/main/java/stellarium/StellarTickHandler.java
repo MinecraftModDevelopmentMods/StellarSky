@@ -48,10 +48,9 @@ public class StellarTickHandler {
 	@SubscribeEvent
 	public void tickStart(TickEvent.ServerTickEvent e) {
 		if(e.phase == TickEvent.Phase.START) {
-			// TODO fix this mess; Should not get minecraft server instance from there
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 			World world = server.getEntityWorld();
-			
+
 			if(world != null) {
 				StellarManager manager = StellarManager.getServerManager(server);
 				

@@ -32,10 +32,10 @@ public class StellarAPIEventHook {
 			StellarSky.logger.info("Startng Construction of Celestial Images...");
 			StellarAPIReference.resetCoordinate(event.getWorld());
 			StellarAPIReference.resetSkyEffect(event.getWorld());
-			
+
 			ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(event.getWorld());
 			ISkyEffect sky = StellarAPIReference.getSkyEffect(event.getWorld());
-			
+
 			event.getCollections().addAll(dimManager.constructCelestials(coordinate, sky));
 			event.getEffectors(IEffectorType.Light).addAll(dimManager.getSuns());
 			event.getEffectors(IEffectorType.Tide).addAll(dimManager.getMoons());
