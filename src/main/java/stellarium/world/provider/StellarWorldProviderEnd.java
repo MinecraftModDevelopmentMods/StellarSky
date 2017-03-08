@@ -251,6 +251,8 @@ public class StellarWorldProviderEnd extends WorldProviderEnd {
     @SideOnly(Side.CLIENT)
     public void setSkyRenderer(net.minecraftforge.client.IRenderHandler skyRenderer)
     {
+    	if(skyRenderer == null)
+    		return;
     	for(Field field : skyRenderer.getClass().getDeclaredFields())
     		if(IRenderHandler.class.isAssignableFrom(field.getDeclaringClass()))
     			super.setSkyRenderer(skyRenderer);
