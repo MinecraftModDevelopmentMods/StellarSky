@@ -261,6 +261,34 @@ public class StellarWorldProviderEnd extends WorldProviderEnd {
     }
     
     
+    @Override
+    @SideOnly(Side.CLIENT)
+    public net.minecraftforge.client.IRenderHandler getCloudRenderer()
+    {
+        return parProvider.getCloudRenderer();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void setCloudRenderer(net.minecraftforge.client.IRenderHandler renderer)
+    {
+        parProvider.setCloudRenderer(renderer);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public net.minecraftforge.client.IRenderHandler getWeatherRenderer()
+    {
+        return parProvider.getWeatherRenderer();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void setWeatherRenderer(net.minecraftforge.client.IRenderHandler renderer)
+    {
+        parProvider.setWeatherRenderer(renderer);
+    }
+    
     
     /**
      * Returns a new chunk provider which generates chunks for this world
