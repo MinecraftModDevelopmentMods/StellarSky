@@ -39,7 +39,7 @@ public class StellarWorldProvider extends WorldProvider {
 		this.world = world;
 		this.celestialHelper = celestialHelper;
 	}
-	
+
 	@Override
     public float calculateCelestialAngle(long worldTime, float partialTicks) {
 		return celestialHelper.calculateCelestialAngle(worldTime, partialTicks);
@@ -267,8 +267,46 @@ public class StellarWorldProvider extends WorldProvider {
         return f2 * f2 * 0.5F;
     }
     
-    
-    
+    @SideOnly(Side.CLIENT)
+    public void setSkyRenderer(IRenderHandler skyRenderer) {
+    	if(skyRenderer == null)
+    		return;
+    	for(Field field : skyRenderer.getClass().getDeclaredFields())
+    		if(IRenderHandler.class.isAssignableFrom(field.getDeclaringClass()))
+    			super.setSkyRenderer(skyRenderer);
+    	if(skyRenderer instanceof NewSkyRenderer)
+    		super.setSkyRenderer(skyRenderer);
+    }
+
+    /*
+     * Propagation methods start here
+     * */
+
+    @SideOnly(Side.CLIENT)
+    public net.minecraftforge.client.IRenderHandler getCloudRenderer()
+    {
+        return parProvider.getCloudRenderer();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setCloudRenderer(net.minecraftforge.client.IRenderHandler renderer)
+    {
+        parProvider.setCloudRenderer(renderer);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public net.minecraftforge.client.IRenderHandler getWeatherRenderer()
+    {
+        return parProvider.getWeatherRenderer();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setWeatherRenderer(net.minecraftforge.client.IRenderHandler renderer)
+    {
+        parProvider.setWeatherRenderer(renderer);
+    }
+
+
     /**
      * Returns a new chunk provider which generates chunks for this world
      */
@@ -663,16 +701,5 @@ public class StellarWorldProvider extends WorldProvider {
     public boolean canDropChunk(int x, int z)
     {
         return parProvider.canDropChunk(x, z);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void setSkyRenderer(IRenderHandler skyRenderer) {
-    	if(skyRenderer == null)
-    		return;
-    	for(Field field : skyRenderer.getClass().getDeclaredFields())
-    		if(IRenderHandler.class.isAssignableFrom(field.getDeclaringClass()))
-    			super.setSkyRenderer(skyRenderer);
-    	if(skyRenderer instanceof NewSkyRenderer)
-    		super.setSkyRenderer(skyRenderer);
     }
 }
