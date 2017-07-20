@@ -155,6 +155,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		try {
 			if(this.counter > 5) {
 				this.counter = 0;
+				@SuppressWarnings("unchecked")
 				Set<BlockPos> lightUpdates = (Set<BlockPos>) fieldLightUpdateSet.get(mc.renderGlobal);
 				for(BlockPos pos : lightUpdates) {
 					if(pos.distanceSq(viewer.posX, viewer.posY, viewer.posZ) < 24.0) {
