@@ -147,7 +147,7 @@ public final class StellarManager extends WorldSavedData {
 	
 	public void update(double time){
 		time = this.getSkyTime(time);
-		celestialManager.update(time / settings.day / settings.year); // Why an NPE here?
+		celestialManager.update(time / settings.day / settings.year);
 	}
 	
 	public void setLocked(boolean locked) {

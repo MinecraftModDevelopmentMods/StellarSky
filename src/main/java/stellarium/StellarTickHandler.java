@@ -54,7 +54,7 @@ public class StellarTickHandler {
 			if(world != null) {
 				StellarManager manager = StellarManager.getServerManager(server);
 				
-				if(manager.getSettings().serverEnabled)
+				if(manager.getCelestialManager() != null && manager.getSettings().serverEnabled)
 					manager.update(world.getWorldTime());
 			}
 		}
