@@ -87,13 +87,13 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public void load(FMLInitializationEvent event) throws IOException {
 		super.load(event);
 
+		guiConfig.syncFromFile();
 	}
 
 	@Override
 	public void postInit(FMLPostInitializationEvent event) {
 		super.postInit(event);
-		
-		guiConfig.syncFromFile();		
+				
     	celestialManager.initializeClient(this.clientSettings);
 	}
 
