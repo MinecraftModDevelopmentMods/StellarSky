@@ -247,17 +247,16 @@ public class StellarWorldProviderEnd extends WorldProviderEnd {
         return f2 * f2 * 0.5F;
     }
     
-    @Override
     @SideOnly(Side.CLIENT)
-    public void setSkyRenderer(net.minecraftforge.client.IRenderHandler skyRenderer)
-    {
-    	for(Field field : skyRenderer.getClass().getDeclaredFields())
-    		if(IRenderHandler.class.isAssignableFrom(field.getDeclaringClass()))
-    			super.setSkyRenderer(skyRenderer);
-    	if(skyRenderer instanceof NewSkyRenderer)
-    		super.setSkyRenderer(skyRenderer);
+    public IRenderHandler getSkyRenderer() {
+    	return parProvider.getSkyRenderer();
     }
-    
+
+    @SideOnly(Side.CLIENT)
+    public void setSkyRenderer(IRenderHandler skyRenderer) {
+    	parProvider.setSkyRenderer(skyRenderer);
+    }
+
     /*
      * Propagation methods start here
      * */

@@ -3,6 +3,7 @@ package stellarium.render;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarium.api.IAdaptiveRenderer;
 import stellarium.api.ISkyRenderType;
 
 public class SkyRenderTypeEnd implements ISkyRenderType {
@@ -19,7 +20,7 @@ public class SkyRenderTypeEnd implements ISkyRenderType {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IRenderHandler createSkyRenderer(IRenderHandler subRenderer) {
+	public IAdaptiveRenderer createSkyRenderer(IRenderHandler subRenderer) {
 		return new SkyRendererEnd(subRenderer);
 	}
 

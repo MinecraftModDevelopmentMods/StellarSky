@@ -135,9 +135,9 @@ public class StellarAPIEventHook {
 			WorldProvider newProvider = StellarSkyAPI.getReplacedWorldProvider(world, world.provider, helper);
 			WorldProviderReplaceHelper.patchWorldProviderWith(world, newProvider);
 		}
-		
+
 		if(world.isRemote)
-			StellarSky.proxy.setupSkyRenderer(world.provider, dimManager.getSettings().getSkyRendererType());
+			StellarSky.proxy.setupSkyRenderer(world, world.provider, dimManager.getSettings().getSkyRendererType());
 	}
 
 	

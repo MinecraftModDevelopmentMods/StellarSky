@@ -11,18 +11,31 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.IRenderHandler;
 import stellarium.StellarSkyResources;
+import stellarium.api.IAdaptiveRenderer;
 
-public class SkyRendererEnd extends IRenderHandler {
+public class SkyRendererEnd extends IAdaptiveRenderer {
 
 	private IRenderHandler subRenderer;
+	private IRenderHandler otherRenderer;
 	
 	public SkyRendererEnd(IRenderHandler subRenderer) {
 		this.subRenderer = subRenderer;
 	}
-	
+
+	@Override
+	public IAdaptiveRenderer setReplacedRenderer(IRenderHandler handler) {
+		this.otherRenderer = handler;
+		return this;
+	}
+
 	@Override
 	public void render(float partialTicks, WorldClient theWorld, Minecraft mc) {
 		subRenderer.render(partialTicks, theWorld, mc);
+
+		if(otherRenderer != null) {
+			otherRenderer.render(partialTicks, theWorld, mc);
+			return;
+		}
 
 		GlStateManager.disableFog();
 		GlStateManager.disableAlpha();

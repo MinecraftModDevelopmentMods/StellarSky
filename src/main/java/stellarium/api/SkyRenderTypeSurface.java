@@ -18,8 +18,8 @@ public class SkyRenderTypeSurface implements ISkyRenderType {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IRenderHandler createSkyRenderer(IRenderHandler subRenderer) {
-		return subRenderer;
+	public IAdaptiveRenderer createSkyRenderer(IRenderHandler subRenderer) {
+		return new SkyRendererSurface(subRenderer);
 	}
 
 }

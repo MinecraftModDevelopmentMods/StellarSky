@@ -4,7 +4,11 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -16,8 +20,10 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import stellarapi.api.StellarAPIReference;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.DefaultSkyType;
+import stellarium.api.IRendererHolder;
 import stellarium.api.SkyRenderTypeSurface;
 import stellarium.api.StellarSkyAPI;
+import stellarium.client.RendererHolder;
 import stellarium.command.CommandLock;
 import stellarium.render.SkyRenderTypeEnd;
 import stellarium.render.SkyTypeEnd;
@@ -83,6 +89,14 @@ public class StellarSky {
 		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
 
 		StellarSkyResources.init();
+
+		CapabilityManager.INSTANCE.register(
+				IRendererHolder.class, new Capability.IStorage() {
+					@Override
+					public NBTBase writeNBT(Capability capability, Object instance, EnumFacing side) { return null; }
+					@Override
+					public void readNBT(Capability capability, Object instance, EnumFacing side, NBTBase nbt) { }					
+				}, RendererHolder.class);
 	}
 
 	@EventHandler

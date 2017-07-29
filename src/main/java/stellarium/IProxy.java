@@ -35,13 +35,14 @@ public interface IProxy {
     
 	public CelestialManager getClientCelestialManager();
 	
-	public void setupSkyRenderer(WorldProvider provider, String skyType);
+	public void setupSkyRenderer(World world, WorldProvider provider, String skyRenderType);
 
 	public void updateTick();
 
-	void addScheduledTask(Runnable runnable);
+	public void addScheduledTask(Runnable runnable);
 	public float getScreenWidth();
 
-	void setupStellarLoad(StellarManager manager);
-	void setupDimensionLoad(StellarDimensionManager dimManager);
+	public void setupStellarLoad(StellarManager manager);
+	public void setupDimensionLoad(StellarDimensionManager dimManager);
+
 }

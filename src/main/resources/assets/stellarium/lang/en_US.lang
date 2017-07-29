@@ -243,6 +243,9 @@ config.property.dimension.longitude.tooltip=Longitude on this world, in Degrees.
 config.property.dimension.hidehorizonobj=Hide Objects under Horizon
 config.property.dimension.hidehorizonobj.tooltip=Determine whether or not hide objects under horizon.
 
+config.property.dimension.renderprevsky=Render Other Modded Skybox
+config.property.dimension.renderprevsky.tooltip=Determine whether this renderer will render previous renderer as a background for stellar objects
+
 config.property.dimension.atmscaleheight=Atmosphere Scale Height
 config.property.dimension.atmscaleheight.tooltip=Scale Height of the atmosphere relative to the radius. This determines the thickness of the atmosphere.
 

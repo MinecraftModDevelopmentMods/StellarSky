@@ -10,8 +10,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -23,6 +23,7 @@ import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
+import stellarium.api.IAdaptiveRenderer;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.StellarClientFMLHook;
@@ -129,13 +130,16 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	@Override
-	public void setupSkyRenderer(WorldProvider provider, String skyRenderType) {
+	public void setupSkyRenderer(World world, WorldProvider provider, String skyRenderType) {
 		skyModel.updateSettings(this.clientSettings);
 		RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class).initialize(this.clientSettings);
 
-		provider.setSkyRenderer(StellarSkyAPI.getRendererFor(skyRenderType, new NewSkyRenderer(this.skyModel)));
+		IRenderHandler preRenderer = provider.getSkyRenderer();
+		IAdaptiveRenderer renderer = StellarSkyAPI.getRendererFor(skyRenderType, new NewSkyRenderer(this.skyModel))
+				.setReplacedRenderer(preRenderer);
+		world.getCapability(StellarSkyAPI.SKY_RENDER_HOLDER, null).setRenderer(renderer);
 	}
-	
+
 	@Override
 	public float getScreenWidth() {
 		return Minecraft.getMinecraft().displayWidth;

@@ -266,17 +266,15 @@ public class StellarWorldProvider extends WorldProvider {
 
         return f2 * f2 * 0.5F;
     }
-    
+
+    @SideOnly(Side.CLIENT)
+    public IRenderHandler getSkyRenderer() {
+    	return parProvider.getSkyRenderer();
+    }
+
     @SideOnly(Side.CLIENT)
     public void setSkyRenderer(IRenderHandler skyRenderer) {
-    	if(skyRenderer == null)
-    		return;
-
-    	for(Field field : skyRenderer.getClass().getDeclaredFields())
-    		if(IRenderHandler.class.isAssignableFrom(field.getDeclaringClass()))
-    			super.setSkyRenderer(skyRenderer);
-    	if(skyRenderer instanceof NewSkyRenderer)
-    		super.setSkyRenderer(skyRenderer);
+    	parProvider.setSkyRenderer(skyRenderer);
     }
 
     /*

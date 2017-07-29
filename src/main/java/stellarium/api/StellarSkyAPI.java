@@ -9,8 +9,13 @@ import com.google.common.collect.Maps;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.IRenderHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public class StellarSkyAPI {
+
+	@CapabilityInject(IRendererHolder.class)
+	public static final Capability<IRendererHolder> SKY_RENDER_HOLDER = null;
 	
 	private List<IWorldProviderReplacer> worldProviderReplacers = Lists.newArrayList();
 	private IWorldProviderReplacer defaultReplacer;
@@ -93,7 +98,7 @@ public class StellarSkyAPI {
 	 * @param option the sky renderer type
 	 * @param subRenderer renderer to be called for rendering celestial sphere
 	 * */
-	public static IRenderHandler getRendererFor(String option, IRenderHandler subRenderer) {
+	public static IAdaptiveRenderer getRendererFor(String option, IRenderHandler subRenderer) {
 		for(ISkyRenderType type : INSTANCE.rendererTypes)
 			if(type.getName().equals(option))
 				return type.createSkyRenderer(subRenderer);

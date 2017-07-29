@@ -27,6 +27,6 @@ public interface ISkyRenderType {
 	 * @param renderer the celestial renderer which renders.
 	 * */
 	@SideOnly(Side.CLIENT)
-	public IRenderHandler createSkyRenderer(IRenderHandler celestialRenderer);
+	public IAdaptiveRenderer createSkyRenderer(IRenderHandler celestialRenderer);
 
 }

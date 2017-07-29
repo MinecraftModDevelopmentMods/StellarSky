@@ -27,7 +27,8 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	private ConfigPropertyDouble propLatitude, propLongitude;
 	
 	private ConfigPropertyBoolean propHideObjectsUnderHorizon;
-	
+	private ConfigPropertyBoolean propRenderPreviousSky;
+
 	private ConfigPropertyDouble propAtmScaleHeight;
 	private ConfigPropertyDouble propAtmTotalHeight;
 	private ConfigPropertyDouble propAtmHeightOffset;
@@ -61,6 +62,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		this.propLongitude = new ConfigPropertyDouble("Longitude", "longitude", skyType.getDefaultDouble(EnumSkyProperty.Longitude));
 		
 		this.propHideObjectsUnderHorizon = new ConfigPropertyBoolean("Hide_Objects_Under_Horizon", "hideObjectsUnderHorizon", skyType.getDefaultBoolean(EnumSkyProperty.HideObjectsUnderHorizon));
+		this.propRenderPreviousSky = new ConfigPropertyBoolean("Render_Other_Modded_Skybox", "renderOtherModdedSkybox", false);
 		
 		this.propAtmScaleHeight = new ConfigPropertyDouble("Atmosphere_Scale_Height", "atmScaleHeight", 1 / 800.0);
 		this.propAtmTotalHeight = new ConfigPropertyDouble("Atmosphere_Total_Height", "atmTotalHeight", 20.0 / 800.0);
@@ -85,6 +87,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	this.addConfigProperty(this.propLatitude);
        	this.addConfigProperty(this.propLongitude);
        	this.addConfigProperty(this.propHideObjectsUnderHorizon);
+       	this.addConfigProperty(this.propRenderPreviousSky);
        	this.addConfigProperty(this.propAtmScaleHeight);
        	this.addConfigProperty(this.propAtmTotalHeight);
        	this.addConfigProperty(this.propAtmHeightOffset);
@@ -134,10 +137,14 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	propLongitude.setLanguageKey("config.property.dimension.longitude");
        	propLongitude.setMaxValue(360.0);
        	propLongitude.setMinValue(0.0);
-        
+
         propHideObjectsUnderHorizon.setComment("Determine whether or not hide objects under horizon.");
         propHideObjectsUnderHorizon.setRequiresWorldRestart(true);
         propHideObjectsUnderHorizon.setLanguageKey("config.property.dimension.hidehorizonobj");
+
+        propRenderPreviousSky.setComment("Determine whether this renderer will render previous renderer as a background for stellar objects");
+        propRenderPreviousSky.setRequiresWorldRestart(true);
+        propRenderPreviousSky.setLanguageKey("config.property.dimension.renderprevsky");
         
        	propAtmScaleHeight.setComment("Scale Height of the atmosphere relative to the radius.\n"
        			+ "This determines the thickness of the atmosphere.");
@@ -246,6 +253,10 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	public boolean hideObjectsUnderHorizon() {
 		return propHideObjectsUnderHorizon.getBoolean();
+	}
+
+	public boolean renderPrevSky() {
+		return propRenderPreviousSky.getBoolean();
 	}
 	
 	public double getSunlightMultiplier() {

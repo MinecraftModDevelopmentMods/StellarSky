@@ -92,7 +92,7 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 				
 		        GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		        GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-		        
+
 		        GlStateManager.matrixMode(GL11.GL_PROJECTION);
 		        GlStateManager.pushMatrix();
 		        GlStateManager.loadIdentity();

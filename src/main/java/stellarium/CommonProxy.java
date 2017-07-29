@@ -61,7 +61,7 @@ public class CommonProxy implements IProxy {
 	}
 
 	@Override
-	public void setupSkyRenderer(WorldProvider provider, String skyType) { }
+	public void setupSkyRenderer(World world, WorldProvider provider, String skyRenderType) { }
 
 	@Override
 	public HierarchicalConfig getDimensionSettings() {
@@ -91,4 +91,5 @@ public class CommonProxy implements IProxy {
 
 	@Override
 	public void setupDimensionLoad(StellarDimensionManager dimManager) { }
+
 }
