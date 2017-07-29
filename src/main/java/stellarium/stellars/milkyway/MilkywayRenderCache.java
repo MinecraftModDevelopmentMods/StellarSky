@@ -28,6 +28,7 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 	protected double[] color = new double[3];
 	protected float milkywayAbsBr;
 	protected boolean rendered;
+	private Vector3 buffer = new Vector3();
 
 	@Override
 	public void updateSettings(ClientSettings settings, MilkywaySettings specificSettings,  Milkyway dummy) {
@@ -49,12 +50,12 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 		
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
-				Vector3 Buf = new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec();
-				EqtoEc.transform(Buf);
-				info.coordinate.getProjectionToGround().transform(Buf);
+				buffer.set(new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec());
+				EqtoEc.transform(this.buffer);
+				info.coordinate.getProjectionToGround().transform(this.buffer);
 
 				SpCoord coord = new SpCoord();
-				coord.setWithVec(Buf);
+				coord.setWithVec(this.buffer);
 
 				info.sky.applyAtmRefraction(coord);
 

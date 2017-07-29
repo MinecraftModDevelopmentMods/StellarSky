@@ -30,35 +30,25 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 
 	@Override
 	public void updateCache(BgStar object, StarImage image, ViewerInfo info, IStellarChecker checker) {
+		// TODO more optimization
+		// Bad Performance Here
 		if(image == null) {
 			ref.set(object.pos);
 			info.coordinate.getProjectionToGround().transform(this.ref);
-			appPos.setWithVec(this.ref);
-			info.sky.applyAtmRefraction(this.appPos);
+			appPos.setWithVec(this.ref); // TODO optimize - linear approach
+			info.sky.applyAtmRefraction(this.appPos); // TODO optimize - linear approach
 		} else {
 			SpCoord appCoord = image.getCurrentHorizontalPos();
 			this.appPos.x = appCoord.x;
 			this.appPos.y = appCoord.y;
 		}
 
+		long t2 = System.nanoTime();
 		double airmass = info.sky.calculateAirmass(this.appPos);
-
-		/*this.appMag = (float) (object.mag + airmass * info.getExtinctionRate(EnumRGBA.Alpha)
-			+ StellarMath.LumToMagWithoutSize(multiplier));*/
-
-		//this.shouldRender = true;
-		/*if(this.appMag > this.magLimit) {
-			this.shouldRender = false;
-			return;
-		}
-		
-		if(appCoord.y < 0.0 && info.hideObjectsUnderHorizon) {
-			this.shouldRender = false;
-			return;
-		}*/
 
 		StarColor starColor = StarColor.getColor(object.B_V);
 
+		// TODO Optimize Performance Hotspot
 		double alpha = OpticsHelper.getBrightnessFromMagnitude(
 				OpticsHelper.turbulance() + object.mag + airmass * info.sky.getExtinctionRate(Wavelength.visible));
 		this.red = (float) (alpha * starColor.r / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.sky.getExtinctionRate(Wavelength.red)));

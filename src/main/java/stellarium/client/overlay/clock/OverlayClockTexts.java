@@ -121,8 +121,8 @@ public class OverlayClockTexts {
 		double fixedYearOffset = (yearOffset - dayOffset / yearToDay)%1.0;
 		double year = currentTick / yearlength - fixedYearOffset;
 		
-		this.yr = (int)Math.floor(year) + 2;
-		this.day = (int)Math.floor(fixedYearOffset * yearToDay) + 1;
+		this.yr = (int)Math.floor(year) + 1 + settings.startingYear;
+		this.day = (int)Math.floor(fixedYearOffset * yearToDay + settings.dateOffset) + 1;
 		this.tick = (int)Math.floor(dayOffset * daylength);
 		
 		this.hour = (int)Math.floor(dayOffset * settings.daylengthToHour);

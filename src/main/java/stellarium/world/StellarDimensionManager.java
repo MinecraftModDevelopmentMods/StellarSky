@@ -91,7 +91,6 @@ public final class StellarDimensionManager extends WorldSavedData {
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
-		// TODO fix this mess; Change to get server in better way
 		this.syncFromNBT(compound, StellarManager.getServerManager(FMLCommonHandler.instance().getMinecraftServerInstance()), false);
 	}
 

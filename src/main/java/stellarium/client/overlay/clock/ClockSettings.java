@@ -4,6 +4,7 @@ import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.gui.overlay.PerOverlaySettings;
 import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
+import stellarapi.api.lib.config.property.ConfigPropertyInteger;
 import stellarapi.api.lib.config.property.ConfigPropertyString;
 
 public class ClockSettings extends PerOverlaySettings {
@@ -13,6 +14,8 @@ public class ClockSettings extends PerOverlaySettings {
 	float alpha = 0.5f;
 	boolean textShadow = false;
 	double daylengthToHour = 24.0;
+	int startingYear = 1;
+	int dateOffset = 0;
 	
 	float wordHue = 0.0f;
 	float wordBrightness = 0.7f;
@@ -27,7 +30,8 @@ public class ClockSettings extends PerOverlaySettings {
 	private ConfigPropertyBoolean propTextShadow;
 	
 	private ConfigPropertyDouble propDaylengthInHour;
-	
+	private ConfigPropertyInteger propStartingYear, propClockDateOffset;
+
 	public ClockSettings() {
 		this.propFixed = new ConfigPropertyBoolean("Fixed", "", this.isFixed);
 		this.propViewMode = new ConfigPropertyString("Mode_HUD_Time_View", "", viewMode.getName());
@@ -38,7 +42,8 @@ public class ClockSettings extends PerOverlaySettings {
 		this.propWordSaturation = new ConfigPropertyDouble("Saturation_Words", "", this.wordBrightness);
 		
 		this.propDaylengthInHour = new ConfigPropertyDouble("Daylength_In_Hour", "", this.daylengthToHour);
-		
+        this.propStartingYear = new ConfigPropertyInteger("Starting_Year", "", 1);
+        this.propClockDateOffset = new ConfigPropertyInteger("Clock_Date_Offset", "", 0);
 		
 		this.addConfigProperty(this.propFixed);
 		this.addConfigProperty(this.propViewMode);
@@ -50,6 +55,9 @@ public class ClockSettings extends PerOverlaySettings {
 		this.addConfigProperty(this.propWordSaturation);
 		
 		this.addConfigProperty(this.propDaylengthInHour);
+
+       	this.addConfigProperty(this.propStartingYear);
+       	this.addConfigProperty(this.propClockDateOffset);
 	}
 
 	@Override
@@ -90,6 +98,12 @@ public class ClockSettings extends PerOverlaySettings {
 		propDaylengthInHour.setComment("Day length in hour, 1 day = 24 hour by default.");
 		propDaylengthInHour.setRequiresMcRestart(false);
         //propMinuteLength.setLanguageKey("config.property.client.minutelength");
+		
+       	propStartingYear.setComment("Starting year displayed on the clock.");
+       	propStartingYear.setRequiresMcRestart(false);
+
+       	propClockDateOffset.setComment("Offset on the displayed date. Control displayed date with this cfg option.");
+       	propClockDateOffset.setRequiresMcRestart(false);
 	}
 
 	@Override
@@ -105,6 +119,8 @@ public class ClockSettings extends PerOverlaySettings {
 		this.wordSaturation = (float) propWordSaturation.getDouble();
 		
 		this.daylengthToHour = propDaylengthInHour.getDouble();
+		this.startingYear = propStartingYear.getInt();
+		this.dateOffset = propClockDateOffset.getInt();
 	}
 
 	@Override
@@ -119,6 +135,8 @@ public class ClockSettings extends PerOverlaySettings {
 		propWordSaturation.setDouble(this.wordSaturation);
 		
 		propDaylengthInHour.setDouble(this.daylengthToHour);
+		propStartingYear.setInt(this.startingYear);
+		propClockDateOffset.setInt(this.dateOffset);
 		
 		super.saveToConfig(config, category);
 	}
