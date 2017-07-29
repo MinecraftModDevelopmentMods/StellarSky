@@ -11,6 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarium.api.IAdaptiveRenderer;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.RendererHolder;
+import stellarium.world.StellarDimensionManager;
 
 public class StellarForgeEventHook {
 
@@ -28,7 +29,10 @@ public class StellarForgeEventHook {
 		if(world.hasCapability(StellarSkyAPI.SKY_RENDER_HOLDER, null)) {
 			IAdaptiveRenderer renderer = world.getCapability(StellarSkyAPI.SKY_RENDER_HOLDER, null).getRenderer();
 			if(renderer != null && !(world.provider.getSkyRenderer() instanceof IAdaptiveRenderer)) {
-				renderer.setReplacedRenderer(world.provider.getSkyRenderer());
+				StellarDimensionManager dimManager = StellarDimensionManager.get(world);
+				if(dimManager.getSettings().renderPrevSky())
+					renderer.setReplacedRenderer(world.provider.getSkyRenderer());
+				else renderer.setReplacedRenderer(null);
 				world.provider.setSkyRenderer(renderer);
 			}
 		}
