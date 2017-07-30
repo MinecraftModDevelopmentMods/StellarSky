@@ -2,9 +2,10 @@ package stellarium.stellars.layer.query;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
-import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
@@ -30,7 +31,7 @@ public class MetadataMap<Obj extends StellarObject, T> implements IMetadataQuery
 	@Override
 	public Iterable<T> query(QueryStellarObject query) {
 		return Iterables.filter(wrappedMap.values(),
-				Objects.firstNonNull(inRange.apply(query), Predicates.<T>alwaysTrue()));
+				ObjectUtils.firstNonNull(inRange.apply(query), Predicates.<T>alwaysTrue()));
 	}
 	
 	@Override

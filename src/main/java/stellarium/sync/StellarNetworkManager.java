@@ -40,7 +40,7 @@ public final class StellarNetworkManager {
 	}
 
 	public MessageInfoSync onQueryInformation(MinecraftServer server, int dimensionId) {
-		WorldServer world = server.worldServerForDimension(dimensionId);
+		WorldServer world = server.getWorld(dimensionId);
 		
 		StellarManager manager = StellarManager.getServerManager(server);
 		StellarDimensionManager dimManager = StellarDimensionManager.get(world);

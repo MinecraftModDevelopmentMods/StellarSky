@@ -1,7 +1,7 @@
 package stellarium.client.overlay.clientcfg.model;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import stellarapi.lib.gui.IRectangleBound;
 import stellarapi.lib.gui.IRenderModel;
@@ -38,7 +38,7 @@ public class ModelRollButton implements IRenderModel {
 	 * */
 	@Override
 	public void renderModel(String info, IRectangleBound totalBound, IRectangleBound clipBound, Tessellator tessellator,
-			VertexBuffer worldRenderer, TextureManager textureManager, float[] color) {
+			BufferBuilder worldRenderer, TextureManager textureManager, float[] color) {
 		if(info.equals("down") || info.equals("up")) {
 			if(info.equals("down")) {
 				round1.setTransformer(this.transformer);

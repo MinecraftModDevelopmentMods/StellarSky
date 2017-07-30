@@ -1,7 +1,5 @@
 package stellarium.world.provider;
 
-import java.lang.reflect.Field;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,15 +14,14 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.end.DragonFightManager;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.optics.EnumRGBA;
 import stellarium.api.ICelestialHelper;
-import stellarium.render.NewSkyRenderer;
 
 public class StellarWorldProviderEnd extends WorldProviderEnd {
 	
@@ -387,12 +384,6 @@ public class StellarWorldProviderEnd extends WorldProviderEnd {
     }
     
     @Override
-    public boolean hasNoSky()
-    {
-        return parProvider.hasNoSky();
-    }
-    
-    @Override
     public boolean hasSkyLight()
     {
         return parProvider.hasSkyLight();
@@ -437,28 +428,6 @@ public class StellarWorldProviderEnd extends WorldProviderEnd {
     public String getSaveFolder()
     {
         return parProvider.getSaveFolder();
-    }
-
-    /**
-     * A message to display to the user when they transfer to this dimension.
-     *
-     * @return The message to be displayed
-     */
-    @Override
-    public String getWelcomeMessage()
-    {
-        return parProvider.getWelcomeMessage();
-    }
-
-    /**
-     * A Message to display to the user when they transfer out of this dismension.
-     *
-     * @return The message to be displayed
-     */
-    @Override
-    public String getDepartMessage()
-    {
-        return parProvider.getDepartMessage();
     }
 
     /**

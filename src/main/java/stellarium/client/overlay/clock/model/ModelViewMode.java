@@ -1,8 +1,8 @@
 package stellarium.client.overlay.clock.model;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import stellarapi.lib.gui.IRectangleBound;
 import stellarapi.lib.gui.IRenderModel;
@@ -31,7 +31,7 @@ public class ModelViewMode implements IRenderModel {
 
 	@Override
 	public void renderModel(String info, IRectangleBound totalBound, IRectangleBound clipBound, Tessellator tessellator,
-			VertexBuffer worldRenderer, TextureManager textureManager, float[] color) {
+			BufferBuilder worldRenderer, TextureManager textureManager, float[] color) {
 		GlStateManager.pushMatrix();
 		if(info.equals("select")) {
 			GlStateManager.scale(0.9f, 0.9f, 0.9f);

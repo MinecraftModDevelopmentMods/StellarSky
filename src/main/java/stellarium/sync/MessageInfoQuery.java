@@ -32,7 +32,7 @@ public class MessageInfoQuery implements IMessage {
 		public IMessage onMessage(MessageInfoQuery message, MessageContext ctx) {
 			//Just a callback, will be okay
 			return StellarSky.instance.getNetworkManager().onQueryInformation(
-					ctx.getServerHandler().playerEntity.mcServer,
+					ctx.getServerHandler().player.mcServer,
 					message.dimensionId);
 		}
 		

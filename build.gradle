@@ -1,28 +1,25 @@
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "0.6.5.1.5"
+version = "0.7.5.1.1"
 group= "stellarium" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Stellar Sky"
 
 minecraft {
-    version = "1.11.2-13.20.1.2386"
+    version = "1.12-14.21.1.2387"
     runDir = "run"
 
-    mappings = "snapshot_20170109"
-    replace "@VERSION@", project.version
-}
+    mappings = "snapshot_20170730"
+}    replace "@VERSION@", project.version
+
 
 dependencies {
 

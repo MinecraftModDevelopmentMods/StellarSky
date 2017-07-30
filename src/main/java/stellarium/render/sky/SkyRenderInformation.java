@@ -2,16 +2,16 @@ package stellarium.render.sky;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import stellarium.view.ViewerInfo;
 
 public class SkyRenderInformation {
 	public final Minecraft minecraft;
 	public final WorldClient world;
 	public final Tessellator tessellator;
-	public final VertexBuffer worldRenderer;
+	public final BufferBuilder worldRenderer;
 	public final float partialTicks;
 	
 	public final boolean isFrameBufferEnabled;

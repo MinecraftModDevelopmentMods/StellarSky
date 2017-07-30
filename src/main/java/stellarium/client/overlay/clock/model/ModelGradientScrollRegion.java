@@ -2,9 +2,9 @@ package stellarium.client.overlay.clock.model;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -42,7 +42,7 @@ public class ModelGradientScrollRegion implements IRenderModel {
 
 	@Override
 	public void renderModel(String info, IRectangleBound totalBound, IRectangleBound clipBound, Tessellator tessellator,
-			VertexBuffer worldRenderer, TextureManager textureManager, float[] color) {
+			BufferBuilder worldRenderer, TextureManager textureManager, float[] color) {
 		if(info.equals("select")) {
 			color[3] *= 0.2f;
 			selectModel.renderModel(info, totalBound, clipBound, tessellator, worldRenderer, textureManager, color);
@@ -52,7 +52,7 @@ public class ModelGradientScrollRegion implements IRenderModel {
 	}
 	
 	public void renderGradient(String info, IRectangleBound totalBound, IRectangleBound clipBound, Tessellator tessellator,
-			VertexBuffer worldRenderer, TextureManager textureManager, float[] color) {
+			BufferBuilder worldRenderer, TextureManager textureManager, float[] color) {
 		float leftX = clipBound.getLeftX();
 		float upY = clipBound.getUpY();
 		float rightX = clipBound.getRightX();

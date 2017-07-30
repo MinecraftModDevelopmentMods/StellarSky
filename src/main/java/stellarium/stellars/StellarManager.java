@@ -3,7 +3,7 @@ package stellarium.stellars;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldSavedData;
+import net.minecraft.world.storage.WorldSavedData;
 import stellarapi.api.CelestialPeriod;
 import stellarium.StellarSky;
 import stellarium.common.ServerSettings;

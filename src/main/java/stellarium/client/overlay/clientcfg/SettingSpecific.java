@@ -1,7 +1,7 @@
 package stellarium.client.overlay.clientcfg;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import stellarapi.lib.gui.IRectangleBound;
@@ -68,7 +68,7 @@ public class SettingSpecific {
 		
 		@Override
 		public void renderModel(String info, IRectangleBound totalBound, IRectangleBound clipBound,
-				Tessellator tessellator, VertexBuffer worldRenderer, TextureManager textureManager, float[] colors) {
+				Tessellator tessellator, BufferBuilder worldRenderer, TextureManager textureManager, float[] colors) {
 			if(info.equals("true")) {
 				model.renderModel(info, totalBound, clipBound, tessellator, worldRenderer, textureManager, colors);
 			} else {
@@ -92,7 +92,7 @@ public class SettingSpecific {
 		
 		@Override
 		public void renderModel(String info, IRectangleBound totalBound, IRectangleBound clipBound,
-				Tessellator tessellator, VertexBuffer worldRenderer, TextureManager textureManager, float[] colors) {
+				Tessellator tessellator, BufferBuilder worldRenderer, TextureManager textureManager, float[] colors) {
 			if(info.equals("true")) {
 				trueModel.renderModel(info, totalBound, clipBound, tessellator, worldRenderer, textureManager, colors);
 			} else {
