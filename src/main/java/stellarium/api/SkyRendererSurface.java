@@ -152,29 +152,19 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 			GlStateManager.pushMatrix();
 
 			if (i == 1)
-			{
 				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-			}
 
 			if (i == 2)
-			{
 				GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			}
 
 			if (i == 3)
-			{
 				GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			}
 
 			if (i == 4)
-			{
 				GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-			}
 
 			if (i == 5)
-			{
 				GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
-			}
 
 			vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 			vertexbuffer.pos(-100.0D, -100.0D, -100.0D).color(0.0f, 0.0f, 0.0f, 0.5f + 0.1f * brightness).endVertex();
