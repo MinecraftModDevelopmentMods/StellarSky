@@ -1,31 +1,20 @@
 package stellarium.api;
 
 import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Comparator;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.base.Throwables;
-import com.google.common.primitives.Floats;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import stellarium.world.StellarDimensionManager;
@@ -44,11 +33,11 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 
 	private static int skyList, skyList2;
 	private static net.minecraft.client.renderer.vertex.VertexBuffer skyVBO, sky2VBO;
-	private static VertexBuffer placeholder;
+	private static BufferBuilder placeholder;
 
 	static {
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
 
         skyList = GLAllocation.generateDisplayLists(1);
         GlStateManager.glNewList(skyList, 4864);
@@ -70,7 +59,7 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
         vertexbuffer.reset();
         sky2VBO.bufferData(vertexbuffer.getByteBuffer());
 
-        placeholder = new VertexBufferPlaceholder(32768);
+        placeholder = new BufferBuilderPlaceholder(32768);
 
 		skyVBOField.setAccessible(true);
 		sky2VBOField.setAccessible(true);
@@ -106,7 +95,7 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 				int sky1id = (Integer)glSkyListField.get(renderGlobal);
 				int sky2id = (Integer)glSkyList2Field.get(renderGlobal);
 
-				VertexBuffer buffer = (VertexBuffer)vertexBufferField.get(Tessellator.getInstance());
+				BufferBuilder buffer = (BufferBuilder)vertexBufferField.get(Tessellator.getInstance());
 				
 				skyVBOField.set(renderGlobal, skyVBO);
 				sky2VBOField.set(renderGlobal, sky2VBO);
@@ -138,7 +127,7 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 
 	private void renderDarkening(float partialTicks, WorldClient world, Minecraft mc) {
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		BufferBuilder vertexbuffer = tessellator.getBuffer();
 		float brightness = (float) world.getSunBrightness(partialTicks);
 
 		GlStateManager.disableAlpha();
@@ -181,11 +170,11 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 		GlStateManager.depthMask(true);
 	}
 
-	private static class VertexBufferPlaceholder extends VertexBuffer {
+	private static class BufferBuilderPlaceholder extends BufferBuilder {
 
 		private boolean flag = false;
 
-		public VertexBufferPlaceholder(int bufferSizeIn) {
+		public BufferBuilderPlaceholder(int bufferSizeIn) {
 			super(bufferSizeIn);
 		}
 

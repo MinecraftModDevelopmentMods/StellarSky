@@ -36,7 +36,7 @@ public class SkyRendererEnd extends IAdaptiveRenderer {
 		subRenderer.render(partialTicks, theWorld, mc);
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		BufferBuilder vertexbuffer = tessellator.getBuffer();
 
 		if(otherRenderer != null)
 			otherRenderer.render(partialTicks, theWorld, mc);

@@ -6,18 +6,12 @@ import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
-import stellarium.StellarSkyResources;
 import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
