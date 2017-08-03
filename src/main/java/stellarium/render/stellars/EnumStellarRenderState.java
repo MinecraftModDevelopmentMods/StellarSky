@@ -5,7 +5,12 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import stellarium.StellarSkyResources;
 import stellarium.client.ClientSettings;
 import stellarium.lib.render.RendererRegistry;
 import stellarium.lib.render.hierarchy.IDistributionConfigurable;
@@ -100,7 +105,7 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	}, RenderOpaque() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-		    GlStateManager.depthMask(false);
+			GlStateManager.depthMask(false);
 		    GlStateManager.disableDepth();
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
@@ -127,7 +132,7 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	
 	RenderCachedAtmosphere() {
 		@Override
-		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
+		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {			
 			endRendering(resInfo);
 			return null;
 		}

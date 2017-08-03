@@ -10,6 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "0.7.5.1.1"
+
 group= "stellarium" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Stellar Sky"
 

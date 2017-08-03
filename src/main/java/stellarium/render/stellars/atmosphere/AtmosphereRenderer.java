@@ -6,12 +6,18 @@ import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarium.StellarSkyResources;
 import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
@@ -84,7 +90,7 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 	@Override
 	public void renderPass(AtmosphereModel model, EnumAtmospherePass pass, StellarRenderInformation info) {
 		switch(pass) {
-		case PrepareDominateScatter:
+		case PrepareDominateScatter:			
 			if(info.isFrameBufferEnabled) {
 				info.minecraft.getFramebuffer().unbindFramebuffer();
 
@@ -109,7 +115,7 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		case FinalizeDominateScatter:
 			if(info.isFrameBufferEnabled) {
 				dominateCache.unbindFramebuffer();
-				
+
 				GlStateManager.matrixMode(GL11.GL_PROJECTION);
 				GlStateManager.popMatrix();
 				GlStateManager.matrixMode(GL11.GL_MODELVIEW);
@@ -124,9 +130,9 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 			ShaderHelper.getInstance().releaseCurrentShader();
 
 			dominateCache.bindFramebufferTexture();
-			
+
 			GlStateManager.callList(this.renderedList);
-			
+
 			dominateCache.unbindFramebufferTexture();
 
 			break;
@@ -161,7 +167,7 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 
 			this.prevTexture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
 			GlStateManager.bindTexture(dominateCache.framebufferTexture);
-			
+
 			GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 			break;
 		case UnbindDomination:
@@ -173,6 +179,7 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 				GlStateManager.disableTexture2D();
 			
 			GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+
 			break;
 		default:
 			break;
