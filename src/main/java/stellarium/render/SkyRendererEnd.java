@@ -30,12 +30,16 @@ public class SkyRendererEnd extends IAdaptiveRenderer {
 
 	@Override
 	public void render(float partialTicks, WorldClient theWorld, Minecraft mc) {
+		GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);
+
 		subRenderer.render(partialTicks, theWorld, mc);
 
-		if(otherRenderer != null) {
+		Tessellator tessellator = Tessellator.getInstance();
+		VertexBuffer vertexbuffer = tessellator.getBuffer();
+
+		if(otherRenderer != null)
 			otherRenderer.render(partialTicks, theWorld, mc);
-			return;
-		}
 
 		GlStateManager.disableFog();
 		GlStateManager.disableAlpha();
@@ -45,9 +49,6 @@ public class SkyRendererEnd extends IAdaptiveRenderer {
 		GlStateManager.depthMask(false);
 
 		mc.renderEngine.bindTexture(StellarSkyResources.resourceEndSky.getLocation());
-
-		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
 
 		for (int i = 0; i < 6; ++i)
 		{
