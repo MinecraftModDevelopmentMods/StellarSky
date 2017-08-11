@@ -107,6 +107,8 @@ public class ServerSettings extends SimpleHierarchicalNBTConfig {
 			if(property != this.propServerEnabled)
 				property.setAsDefault();
     	propAxialTilt.setDouble(0.0);
+    	propTickOffset.setDouble(17500.0);
+    	this.tickOffset = 17500.0;
     	
     	this.setValues();
 	}

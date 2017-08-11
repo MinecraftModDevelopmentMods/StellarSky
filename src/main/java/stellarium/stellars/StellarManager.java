@@ -140,8 +140,9 @@ public final class StellarManager extends WorldSavedData {
 	}
 
 	public CelestialPeriod getYearPeriod() {
-		return new CelestialPeriod("Year", 2 * Math.PI / settings.day / settings.year,
-				(settings.dayOffset + settings.tickOffset / settings.day) / settings.year);
+		return new CelestialPeriod("Year", settings.day * settings.year,
+				(settings.yearOffset * settings.year + settings.dayOffset)
+				* settings.day + settings.tickOffset);
 	}
 	
 	
