@@ -284,7 +284,12 @@ public class StellarWorldProviderEnd extends WorldProviderEnd {
     {
         parProvider.setWeatherRenderer(renderer);
     }
-    
+
+	@Override
+    public void init() {
+		parProvider.init();
+	}
+
     /**
      * Returns a new chunk provider which generates chunks for this world
      */
