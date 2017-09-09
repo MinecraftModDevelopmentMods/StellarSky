@@ -1,5 +1,7 @@
 package stellarium.stellars;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
@@ -21,15 +23,15 @@ public final class StellarManager extends WorldSavedData {
 		super(id);
 	}
 	
-	public static StellarManager loadOrCreateClientManager(World world) {
+	public static @Nonnull StellarManager loadOrCreateClientManager(World world) {
 		return loadOrCreateManager(world);
 	}
 	
-	public static StellarManager loadOrCreateServerManager(MinecraftServer server) {
+	public static @Nonnull StellarManager loadOrCreateServerManager(MinecraftServer server) {
 		return loadOrCreateManager(server.getEntityWorld());
 	}
 	
-	private static StellarManager loadOrCreateManager(World world) {		
+	private static @Nonnull StellarManager loadOrCreateManager(World world) {		
 		WorldSavedData data = world.getMapStorage().getOrLoadData(StellarManager.class, ID);
 		
 		if(!(data instanceof StellarManager))
@@ -59,17 +61,17 @@ public final class StellarManager extends WorldSavedData {
 		return (world.getMapStorage().getOrLoadData(StellarManager.class, ID) instanceof StellarManager);
 	}
 
-	public static StellarManager getClientManager() {
+	public static @Nonnull StellarManager getClientManager() {
 		World world = StellarSky.proxy.getDefWorld();
 		return getManager(world);
 	}
 
-	public static StellarManager getServerManager(MinecraftServer server) {
+	public static @Nonnull StellarManager getServerManager(MinecraftServer server) {
 		World world = server.getEntityWorld();
 		return getManager(world);
 	}
 
-	private static StellarManager getManager(World world) {
+	private static @Nonnull StellarManager getManager(World world) {
 		WorldSavedData data = world.getMapStorage().getOrLoadData(StellarManager.class, ID);
 		
 		if(!(data instanceof StellarManager)) {

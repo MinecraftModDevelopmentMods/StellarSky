@@ -53,9 +53,11 @@ public class MessageInfoSync implements IMessage {
 					if(!message.compoundInfo.hasNoTags())
 						manager.syncFromNBT(message.compoundInfo, true);
 
-					if(!message.dimensionInfo.hasNoTags())
+					if(!message.dimensionInfo.hasNoTags()) {
+						// StellarManager still not null
 						dimManager = StellarDimensionManager.loadOrCreate(
 								world, manager, WorldUtil.getWorldName(world));
+					}
 
 					if(dimManager != null)
 						dimManager.syncFromNBT(message.dimensionInfo, manager, true);
