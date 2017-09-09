@@ -1,5 +1,7 @@
 package stellarium;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.World;
@@ -24,7 +26,7 @@ import stellarium.util.WorldUtil;
 import stellarium.world.StellarDimensionManager;
 
 public class StellarAPIEventHook {
-	
+
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onConstruct(ConstructCelestialsEvent event) {
 		StellarDimensionManager dimManager = StellarDimensionManager.get(event.getWorld());
@@ -78,10 +80,12 @@ public class StellarAPIEventHook {
 		
 		if(!manager.getSettings().serverEnabled)
 			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
-		
+
+		// StellarManager can't be null here.
+
 		String dimName = WorldUtil.getWorldName(event.getWorld());
 		if(!StellarSky.proxy.getServerSettings().serverEnabled)
-			handleDimOnServerDisabled(event.getWorld(), manager,update);
+			handleDimOnServerDisabled(event.getWorld(), manager, update);
 		
 		if(mark) {
 			handleNotHaveModOnServer(event.getWorld(), manager, update);
@@ -152,7 +156,7 @@ public class StellarAPIEventHook {
 	}
 	
 	
-	private static void handleNotHaveModOnServer(World world, StellarManager manager, IProgressUpdate update) {
+	private static void handleNotHaveModOnServer(@Nonnull World world, @Nonnull StellarManager manager, IProgressUpdate update) {
 		manager.handleServerWithoutMod();
 		
 		if(manager.getCelestialManager() == null) {
@@ -161,7 +165,7 @@ public class StellarAPIEventHook {
 		}
 	}
 	
-	private static void handleDimOnServerDisabled(World world, StellarManager manager, IProgressUpdate update) {
+	private static void handleDimOnServerDisabled(@Nonnull World world, @Nonnull StellarManager manager, IProgressUpdate update) {
 		String dimName = WorldUtil.getWorldName(world);
 		if(StellarSky.proxy.getDimensionSettings().hasSubConfig(dimName)) {
 			update.displayLoadingString(I18n.format("progress.text.injection.dimmanager", dimName));

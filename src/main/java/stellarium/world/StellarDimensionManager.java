@@ -3,6 +3,9 @@ package stellarium.world;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,9 +38,11 @@ public final class StellarDimensionManager extends WorldSavedData {
 	private String dimensionName;
 	private boolean isRemote;
 
-	public static StellarDimensionManager loadOrCreate(World world, StellarManager manager, String dimName) {
+	public static StellarDimensionManager loadOrCreate(@Nonnull World world, @Nonnull StellarManager manager, String dimName) {
 		WorldSavedData data = world.getPerWorldStorage().getOrLoadData(StellarDimensionManager.class, String.format(ID, dimName));
 		StellarDimensionManager dimManager;
+		if(manager == null)
+			throw new NullPointerException("StellarManager shouldn't be null.");
 
 		if(!(data instanceof StellarDimensionManager))
 		{
@@ -53,14 +58,16 @@ public final class StellarDimensionManager extends WorldSavedData {
 		return dimManager;
 	}
 
-	public static StellarDimensionManager get(World world) {
+	public static @Nullable StellarDimensionManager get(@Nonnull World world) {
 		WorldSavedData data = world.getPerWorldStorage().getOrLoadData(StellarDimensionManager.class,
 				String.format(ID, WorldUtil.getWorldName(world)));
-		
-		if(!(data instanceof StellarDimensionManager))
-			return null;
-		
-		return (StellarDimensionManager)data;
+
+		if(data instanceof StellarDimensionManager) {
+			StellarDimensionManager dimManager = (StellarDimensionManager) data;
+			if(dimManager.manager == null)
+				return null;
+			else return dimManager;
+		} else return null;
 	}
 
 	public StellarDimensionManager(String id) {
