@@ -230,24 +230,28 @@ public class StellarTessellator implements IStellarTessellator {
 		} else if(!this.renderingDominate) {
 			float size = 10.0f * (float)viewer.resolutionGeneral + 2.0f * this.radius;
 			GL11.glPointSize(Math.max(this.rasterizedAngleRatio * size, 10.0f));
-			if(this.radius > 0.0f)
-				shader.getField("scaledRadius").setDouble(this.radius / size);
-			
-			shader.getField("invres2").setDouble4(
-					OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionColor.getX()),
-					OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionColor.getY()),
-					OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionColor.getZ()),
-					OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionGeneral));
+			if(this.shader != null) { // Dummy check for debug
+				if(this.radius > 0.0f)
+					shader.getField("scaledRadius").setDouble(this.radius / size);
+
+				shader.getField("invres2").setDouble4(
+						OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionColor.getX()),
+						OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionColor.getY()),
+						OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionColor.getZ()),
+						OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionGeneral));
+			}
 		}
 		
 		if(!this.renderingDominate)
 			this.tessellation();
 		else {
 			for(int index = 0; index < this.rawBufferCount; index += this.currentContextSize) {
-				shader.getField("lightDir").setVector3(
-						new SpCoord(Spmath.Degrees(this.rawBuffer[index]), Spmath.Degrees(this.rawBuffer[index+1])).getVec());
-				shader.getField("lightColor").setDouble3(
-						this.rawBuffer[index+3], this.rawBuffer[index+4], this.rawBuffer[index+5]);
+				if(this.shader != null) { // Dummy check for debug
+					shader.getField("lightDir").setVector3(
+							new SpCoord(Spmath.Degrees(this.rawBuffer[index]), Spmath.Degrees(this.rawBuffer[index+1])).getVec());
+					shader.getField("lightColor").setDouble3(
+							this.rawBuffer[index+3], this.rawBuffer[index+4], this.rawBuffer[index+5]);
+				}
 				GL11.glCallList(this.renderDominateList);
 			}
 		}

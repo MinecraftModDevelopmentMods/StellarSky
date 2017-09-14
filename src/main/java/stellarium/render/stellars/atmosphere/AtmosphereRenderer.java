@@ -4,7 +4,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
@@ -16,6 +18,7 @@ import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.phased.StellarRenderInformation;
+import stellarium.util.OpenGlVersionUtil;
 import stellarium.util.math.Allocator;
 
 public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, EnumAtmospherePass, AtmosphereModel, StellarRenderInformation> {
@@ -34,6 +37,8 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 	
 	private boolean previousFlag;
 	private boolean cacheChangedFlag = false;
+
+	private int prevFramebufferBound;
 	
 	private AtmShaderManager shaderManager;
 	
@@ -86,10 +91,9 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		switch(pass) {
 		case PrepareDominateScatter:			
 			if(info.isFrameBufferEnabled) {
-				info.minecraft.getFramebuffer().unbindFramebuffer();
-
+				this.prevFramebufferBound = GL11.glGetInteger(OpenGlVersionUtil.framebufferBinding());			
 				dominateCache.bindFramebuffer(true);
-				
+
 		        GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		        GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
@@ -103,19 +107,20 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 				info.setAtmCallList(this.renderToCacheList);
 			}
 			else info.setAtmCallList(this.renderedList);
-			
+
 			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.DominateScatter));
 			break;
 		case FinalizeDominateScatter:
 			if(info.isFrameBufferEnabled) {
-				dominateCache.unbindFramebuffer();
-
 				GlStateManager.matrixMode(GL11.GL_PROJECTION);
 				GlStateManager.popMatrix();
 				GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 				GlStateManager.popMatrix();
 
-				info.minecraft.getFramebuffer().bindFramebuffer(true);
+				Framebuffer mcBuffer = info.minecraft.getFramebuffer();
+
+				GlStateManager.viewport(0, 0, mcBuffer.framebufferWidth, mcBuffer.framebufferHeight);
+	            OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.prevFramebufferBound);
 			}
 			info.setActiveShader(null);
 			break;
@@ -139,7 +144,7 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 			GlStateManager.popMatrix();
 			dominateCache.unbindFramebufferTexture();
 			break;
-		
+
 		case SetupOpaque:
 			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.Opaque));
 			break;

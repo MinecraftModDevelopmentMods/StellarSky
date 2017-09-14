@@ -84,10 +84,10 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 		GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);
 
-		if(this.otherRenderer != null) {
+		StellarDimensionManager dimManager = StellarDimensionManager.get(world);
+		if(dimManager.getSettings().renderPrevSky()) {
 			RenderGlobal renderGlobal = mc.renderGlobal;
-			StellarDimensionManager dimManager = StellarDimensionManager.get(world);
-			float lat = (float) dimManager.getSettings().latitude;
+			//float lat = (float) dimManager.getSettings().latitude;
 
 			try {
 				net.minecraft.client.renderer.vertex.VertexBuffer sky1 = (net.minecraft.client.renderer.vertex.VertexBuffer)skyVBOField.get(renderGlobal);
@@ -105,8 +105,15 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 				vertexBufferField.set(Tessellator.getInstance(), placeholder);
 
 				GlStateManager.pushMatrix();
-				GlStateManager.rotate(lat, 1.0f, 0.0f, 0.0f);
-				otherRenderer.render(partialTicks, world, mc);
+				//GlStateManager.rotate(lat, 1.0f, 0.0f, 0.0f);
+				if(this.otherRenderer != null)
+					otherRenderer.render(partialTicks, world, mc);
+				else {
+					IRenderHandler renderer = world.provider.getSkyRenderer();
+					world.provider.setSkyRenderer(null);
+					renderGlobal.renderSky(partialTicks, 0);
+					world.provider.setSkyRenderer(renderer);
+				}
 				GlStateManager.popMatrix();
 
 				skyVBOField.set(renderGlobal, sky1);

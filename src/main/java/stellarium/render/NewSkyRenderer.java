@@ -36,7 +36,7 @@ public class NewSkyRenderer extends IRenderHandler {
 		ISkyEffect sky = StellarAPIReference.getSkyEffect(world);
 		IViewScope scope = StellarAPIReference.getScope(viewer);
 		IOpticalFilter filter = StellarAPIReference.getFilter(viewer);
-		
+
 		SkyRenderInformation info = new SkyRenderInformation(mc, world, partialTicks,
 				new ViewerInfo(coordinate, sky, scope, filter, viewer));
 

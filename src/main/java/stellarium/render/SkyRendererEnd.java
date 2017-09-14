@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.IRenderHandler;
 import stellarium.StellarSkyResources;
 import stellarium.api.IAdaptiveRenderer;
+import stellarium.world.StellarDimensionManager;
 
 public class SkyRendererEnd extends IAdaptiveRenderer {
 
@@ -38,8 +39,17 @@ public class SkyRendererEnd extends IAdaptiveRenderer {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
 
-		if(otherRenderer != null)
-			otherRenderer.render(partialTicks, theWorld, mc);
+		StellarDimensionManager dimManager = StellarDimensionManager.get(theWorld);
+		if(dimManager.getSettings().renderPrevSky()) {
+			if(this.otherRenderer != null)
+				otherRenderer.render(partialTicks, theWorld, mc);
+			else {
+				IRenderHandler renderer = theWorld.provider.getSkyRenderer();
+				theWorld.provider.setSkyRenderer(null);
+				mc.renderGlobal.renderSky(partialTicks, 0);
+				theWorld.provider.setSkyRenderer(renderer);
+			}
+		}
 
 		GlStateManager.disableFog();
 		GlStateManager.disableAlpha();
@@ -48,45 +58,47 @@ public class SkyRendererEnd extends IAdaptiveRenderer {
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.depthMask(false);
 
-		mc.renderEngine.bindTexture(StellarSkyResources.resourceEndSky.getLocation());
+		if(!dimManager.getSettings().renderPrevSky()) {
+			mc.renderEngine.bindTexture(StellarSkyResources.resourceEndSky.getLocation());
 
-		for (int i = 0; i < 6; ++i)
-		{
-			GlStateManager.pushMatrix();
-
-			if (i == 1)
+			for (int i = 0; i < 6; ++i)
 			{
-				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+				GlStateManager.pushMatrix();
+
+				if (i == 1)
+				{
+					GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+				}
+
+				if (i == 2)
+				{
+					GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+				}
+
+				if (i == 3)
+				{
+					GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+				}
+
+				if (i == 4)
+				{
+					GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+				}
+
+				if (i == 5)
+				{
+					GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
+				}
+
+				vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+				vertexbuffer.pos(-100.0D, -100.0D, -100.0D).tex(0.0D, 0.0D).color(40, 40, 40, 127).endVertex();
+				vertexbuffer.pos(-100.0D, -100.0D, 100.0D).tex(0.0D, 16.0D).color(40, 40, 40, 127).endVertex();
+				vertexbuffer.pos(100.0D, -100.0D, 100.0D).tex(16.0D, 16.0D).color(40, 40, 40, 127).endVertex();
+				vertexbuffer.pos(100.0D, -100.0D, -100.0D).tex(16.0D, 0.0D).color(40, 40, 40, 127).endVertex();
+
+				tessellator.draw();
+				GlStateManager.popMatrix();
 			}
-
-			if (i == 2)
-			{
-				GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			}
-
-			if (i == 3)
-			{
-				GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			}
-
-			if (i == 4)
-			{
-				GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-			}
-
-			if (i == 5)
-			{
-				GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
-			}
-
-			vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-			vertexbuffer.pos(-100.0D, -100.0D, -100.0D).tex(0.0D, 0.0D).color(40, 40, 40, 127).endVertex();
-			vertexbuffer.pos(-100.0D, -100.0D, 100.0D).tex(0.0D, 16.0D).color(40, 40, 40, 127).endVertex();
-			vertexbuffer.pos(100.0D, -100.0D, 100.0D).tex(16.0D, 16.0D).color(40, 40, 40, 127).endVertex();
-			vertexbuffer.pos(100.0D, -100.0D, -100.0D).tex(16.0D, 0.0D).color(40, 40, 40, 127).endVertex();
-
-			tessellator.draw();
-			GlStateManager.popMatrix();
 		}
 
 		GlStateManager.enableTexture2D();
