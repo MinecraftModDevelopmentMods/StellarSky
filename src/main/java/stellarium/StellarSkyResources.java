@@ -39,13 +39,13 @@ public class StellarSkyResources {
 		PerDimensionResourceRegistry.getInstance().registerResourceId("End_Sky");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Milkyway");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Star");
-		
+
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Sun_Surface");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Sun_Halo");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Surface");
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Moon_Halo");		
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Planet_Small");
-		
+
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Landscape");
 	}
 	

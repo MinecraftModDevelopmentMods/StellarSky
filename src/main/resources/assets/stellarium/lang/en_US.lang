@@ -1,4 +1,4 @@
-癤�
+﻿
 //Keys
 key.stellarsky=Stellar Sky
 key.stellarsky.focusgui.description=Focus Stellar Sky Settings
@@ -267,28 +267,20 @@ config.property.dimension.allowrefraction.tooltip=Determine whether or not apply
 config.property.dimension.sunlightmultiplier=Sunlight Multiplier
 config.property.dimension.sunlightmultiplier.tooltip=Relative amount of sunlight on the dimension. Setting this to 0.0 will make the world very dark.
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
+
 config.property.dimension.skydispersionrate=Sky Dispersion Rate
 config.property.dimension.skydispersionrate.tooltip=Relative strength of sky dispersion on the dimension. The effect is similar with sunlight multiplier on client, but usually don't affect the server(light level), e.g. do not spawn mobs on day even if set to 0.0 which makes sky seems night.
 
 config.property.dimension.lightpollutionrate=Light Pollution Rate
 config.property.dimension.lightpollutionrate.tooltip=Relative strength of light pollution on the dimension. Only affects the sky color and visibility of stars/milky way.
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 1.8.9
+
 
 ////Dimension Resources
 config.category.dimension.perdimresource=Per Dimension Resources
 config.category.dimension.perdimresource.tooltip=Configuration on resources which are unique to this dimension.
 
 config.property.dimension.perdimresource.tooltip=If this is not set to 'default', the resource will be replaced by the resource on the described location. Note that resource location is form of '(modid):(actual location)'.
->>>>>>> refs/remotes/origin/master
 
->>>>>>> 1.8.9
 
 ///Wake
 config.category.server.wake=Wake Settings
@@ -305,15 +297,13 @@ config.property.server.wakeangle.tooltip=Solar azimuth(height) angle to wake up.
 
 config.property.server.waketime=Wake Time from midnight
 config.property.server.waketime.tooltip=Wake-up time from midnight. (in tick)
-=======
+
 
 config.property.dimension.minimumskybrightness=Minimum Sky Brightness
 config.property.dimension.minimumskybrightness.tooltip=Minimum brightness of skylight which (only) affects the rendering.
 
 config.property.dimension.enablelandscape=Enable Landscape
 config.property.dimension.enablelandscape.tooltip=Enable the landscape on this world.
-
->>>>>>> refs/remotes/origin/master
 
 
 //Commands
