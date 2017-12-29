@@ -30,7 +30,7 @@ public class NewSkyRenderer extends IRenderHandler {
 	public void render(float partialTicks, WorldClient world, Minecraft mc) {
 		IGenericRenderer renderer = RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class);
 
-		Entity viewer = mc.getRenderViewEntity();
+		Entity viewer = mc.getRenderViewEntity(); // FIXME SLOWER ON DEDICATED GRAPHICS CARD!!!
 
 		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(world);
 		ISkyEffect sky = StellarAPIReference.getSkyEffect(world);

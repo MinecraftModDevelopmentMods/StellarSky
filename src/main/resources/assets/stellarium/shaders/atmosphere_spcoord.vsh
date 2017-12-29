@@ -15,28 +15,29 @@ varying vec3 v3Direction;
 #define PI 3.1415926535897932384626433832795
 #define ERFC_FACTOR 0.147
 
-float calcScale(float x) {
-	return (1 - sqrt(1 - exp(-x*(4 / PI + ERFC_FACTOR*x) / (1 + ERFC_FACTOR*x)))) * exp(x);
+float calcScale(float x, float sgn) {
+    return (1 - sgn * sqrt(1 - exp(-x*(4 / PI + ERFC_FACTOR*x) / (1 + ERFC_FACTOR*x)))) * exp(x);
 }
 
 //Airmass on the horizon
 float airmassFactor(float viewRadiusScaled) {
-	return sqrt(PI * viewRadiusScaled / 2);
+    return sqrt(PI * viewRadiusScaled / 2);
 }
 
+// Path length of light relative to the sea level
 float airmass(float cosAngleToZenith, float viewRadiusScaled) {
-	viewRadiusScaled *= 7.0 / 6.0;
-	float scale = cosAngleToZenith * cosAngleToZenith * viewRadiusScaled / 2;
-	float result;
+    // Refraction correction
+    viewRadiusScaled *= 7.0 / 6.0;
+    float scale = cosAngleToZenith * cosAngleToZenith * viewRadiusScaled / 2;
+    float result;
+    float sgn = float(cosAngleToZenith > 0) * 2 - 1;
 
-	if (scale > 12.0)
-		result = 1.0 / abs(cosAngleToZenith);
-	else result = airmassFactor(viewRadiusScaled) * calcScale(scale);
-
-	if (cosAngleToZenith >= 0.0)
-		return result;
-	else return 2 * airmassFactor(viewRadiusScaled) * exp(viewRadiusScaled * (1.0 - sqrt(1.0 - cosAngleToZenith*cosAngleToZenith))) - result;
+    if (scale > 12.0 && cosAngleToZenith > 0)
+        result = 1.0 / cosAngleToZenith;
+    else result = airmassFactor(viewRadiusScaled) * calcScale(scale, sgn);
+    return result;
 }
+
 
 void main() {
     float x = gl_Vertex.x;
@@ -117,15 +118,9 @@ void main() {
 		v3SamplePoint += v3SampleRay;
 	}
 	
-	float depthEnd;
-	if (invertFlag == 1.0) {
-		float airmassEnd = airmass(cosViewAngle, length(v3SamplePoint));
-		depthEnd = airmassEnd * exp(innerRadius - length(v3SamplePoint));
-	}
-	else {
-		float airmassEnd = airmass(cosViewAngle, length(v3Start));
-		depthEnd = airmassEnd * exp(innerRadius - length(v3Start));
-	}
+    float lenPoint = length(float(invertFlag == 1.0) * v3SamplePoint + float(invertFlag != 1.0) * v3Start);
+    float airmassEnd = airmass(cosViewAngle, lenPoint);
+    float depthEnd = airmassEnd * exp(innerRadius - lenPoint);
 
 
 	// Finally, scale the Mie and Rayleigh colors

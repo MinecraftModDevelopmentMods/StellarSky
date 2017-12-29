@@ -29,10 +29,13 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 	private static Field glSkyListField = ReflectionHelper.findField(RenderGlobal.class, "glSkyList", "field_72771_w");
 	private static Field glSkyList2Field = ReflectionHelper.findField(RenderGlobal.class, "glSkyList2", "field_72781_x");
 
+	private static Field starVBOField = ReflectionHelper.findField(RenderGlobal.class, "starVBO", "field_175013_s");
+	private static Field glStarListField = ReflectionHelper.findField(RenderGlobal.class, "starGLCallList", "field_72772_v");
+
 	private static Field vertexBufferField = ReflectionHelper.findField(Tessellator.class, "worldRenderer", "field_178183_a");
 
-	private static int skyList, skyList2;
-	private static net.minecraft.client.renderer.vertex.VertexBuffer skyVBO, sky2VBO;
+	private static int skyList, skyList2, starList;
+	private static net.minecraft.client.renderer.vertex.VertexBuffer skyVBO, sky2VBO, starVBO;
 	private static BufferBuilder placeholder;
 
 	static {
@@ -47,6 +50,10 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
         GlStateManager.glNewList(skyList2, 4864);
         GlStateManager.glEndList();
 
+        starList = GLAllocation.generateDisplayLists(1);
+        GlStateManager.glNewList(starList, 4864);
+        GlStateManager.glEndList();
+
         skyVBO = new net.minecraft.client.renderer.vertex.VertexBuffer(DefaultVertexFormats.POSITION);
         vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
         vertexbuffer.finishDrawing();
@@ -59,12 +66,21 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
         vertexbuffer.reset();
         sky2VBO.bufferData(vertexbuffer.getByteBuffer());
 
+        starVBO =  new net.minecraft.client.renderer.vertex.VertexBuffer(DefaultVertexFormats.POSITION);
+        vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        vertexbuffer.finishDrawing();
+        vertexbuffer.reset();
+        starVBO.bufferData(vertexbuffer.getByteBuffer());
+
         placeholder = new BufferBuilderPlaceholder(32768);
 
 		skyVBOField.setAccessible(true);
 		sky2VBOField.setAccessible(true);
+		starVBOField.setAccessible(true);
+
 		glSkyListField.setAccessible(true);
 		glSkyList2Field.setAccessible(true);
+		glStarListField.setAccessible(true);
 
 		vertexBufferField.setAccessible(true);
 	}
@@ -92,15 +108,19 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 			try {
 				net.minecraft.client.renderer.vertex.VertexBuffer sky1 = (net.minecraft.client.renderer.vertex.VertexBuffer)skyVBOField.get(renderGlobal);
 				net.minecraft.client.renderer.vertex.VertexBuffer sky2 = (net.minecraft.client.renderer.vertex.VertexBuffer)sky2VBOField.get(renderGlobal);
+				net.minecraft.client.renderer.vertex.VertexBuffer star = (net.minecraft.client.renderer.vertex.VertexBuffer)starVBOField.get(renderGlobal);
 				int sky1id = (Integer)glSkyListField.get(renderGlobal);
 				int sky2id = (Integer)glSkyList2Field.get(renderGlobal);
+				int starid = (Integer)glStarListField.get(renderGlobal);
 
 				BufferBuilder buffer = (BufferBuilder)vertexBufferField.get(Tessellator.getInstance());
 				
 				skyVBOField.set(renderGlobal, skyVBO);
 				sky2VBOField.set(renderGlobal, sky2VBO);
+				starVBOField.set(renderGlobal, starVBO);
 				glSkyListField.set(renderGlobal, skyList);
 				glSkyList2Field.set(renderGlobal, skyList2);
+				glStarListField.set(renderGlobal, starList);
 	
 				vertexBufferField.set(Tessellator.getInstance(), placeholder);
 
@@ -118,8 +138,10 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 
 				skyVBOField.set(renderGlobal, sky1);
 				sky2VBOField.set(renderGlobal, sky2);
+				starVBOField.set(renderGlobal, star);
 				glSkyListField.set(renderGlobal, sky1id);
 				glSkyList2Field.set(renderGlobal, sky2id);
+				glStarListField.set(renderGlobal, starid);
 
 				vertexBufferField.set(Tessellator.getInstance(), buffer);
 			} catch (Exception exc) {
