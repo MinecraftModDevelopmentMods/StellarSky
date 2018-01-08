@@ -2,7 +2,7 @@ package stellarium.view;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ICelestialCoordinates;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
@@ -18,7 +18,7 @@ public class ViewerInfo {
 	
 	public final Vector3 currentPosition;
 	
-	public final ICelestialCoordinate coordinate;
+	public final ICelestialCoordinates coordinate;
 	public final ISkyEffect sky;
 	
 	
@@ -30,7 +30,7 @@ public class ViewerInfo {
 	public final Vector3 resolutionColor = new Vector3();
 	public final double resolutionGeneral;
 	
-	public ViewerInfo(ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter, Entity viewer) {
+	public ViewerInfo(ICelestialCoordinates coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter, Entity viewer) {
 		this.coordinate = coordinate;
 		this.sky = sky;
 		

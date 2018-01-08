@@ -11,6 +11,7 @@ import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import stellarapi.api.world.worldset.WorldSet;
 
 public class StellarSkyAPI {
 
@@ -78,15 +79,15 @@ public class StellarSkyAPI {
 	
 	/**
 	 * Sets up and get the sky type for certain dimension.
-	 * @param dimensionName the name of the world; only provided information on the world
+	 * @param worldSet the given worldSet
 	 * */
-	public static ISkyType getSkyType(String dimensionName) {
-		ISkyType type = INSTANCE.skyTypes.get(dimensionName);
+	public static ISkyType getSkyType(WorldSet worldSet) {
+		ISkyType type = INSTANCE.skyTypes.get(worldSet);
 		type = (type != null? type : new DefaultSkyType());
 		
 		if(type.needUpdate()) {
 			for(ISkyRenderType renderType : INSTANCE.rendererTypes)
-				if(renderType.acceptFor(dimensionName))
+				if(renderType.acceptFor(worldSet))
 					type.addRenderType(renderType);
 		}
 		

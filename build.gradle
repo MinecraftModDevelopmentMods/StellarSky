@@ -1,7 +1,10 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -9,17 +12,22 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "0.7.5.1.7"
+ext.config = parseConfig(file('build.properties'))
 
-group= "stellarium" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Stellar Sky"
+ext.modversion = "${config.version.stellarsky.major}.${config.version.stellarsky.minor}.${config.version.stellarsky.revis}.${config.version.stellarsky.patch}"
+
+version = "${config.version.minecraft}-${modversion}"
+
+group= "${config.group}"
+archivesBaseName = "${config.archive}"
 
 minecraft {
-    version = "1.12.1-14.22.1.2484"
+    version = "${config.version.minecraft}-${config.version.forge}"
     runDir = "run"
+    mappings = "${config.version.mcpmappings}"
 
-    mappings = "snapshot_20170730"
-}    replace "@VERSION@", project.version
+    replace "@VERSION@", project.version
+}   
 
 
 dependencies {
@@ -34,6 +42,14 @@ task deobfJar(type: Jar) {
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
+}
+
+def parseConfig(File config) {
+    config.withReader {
+        def prop = new Properties()
+        prop.load(it)
+        return (new ConfigSlurper().parse(prop))
+    }
 }
 
 processResources

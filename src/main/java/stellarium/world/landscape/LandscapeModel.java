@@ -5,7 +5,7 @@ import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.Hierarchy;
 import stellarium.util.math.Allocator;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 
 @Hierarchy
 public class LandscapeModel {
@@ -29,7 +29,7 @@ public class LandscapeModel {
 		this.displayvec = Allocator.createAndInitialize(longn, latn+1);
 	}
 	
-	public void dimensionLoad(StellarDimensionManager dimManager) {
+	public void dimensionLoad(StellarScene dimManager) {
 		this.rendered = dimManager.getSettings().isLandscapeEnabled();
 	}
 

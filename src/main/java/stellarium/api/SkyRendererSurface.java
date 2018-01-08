@@ -17,7 +17,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import stellarium.world.StellarDimensionManager;
+import stellarapi.api.SAPIReferences;
+import stellarium.world.StellarScene;
 
 public class SkyRendererSurface extends IAdaptiveRenderer {
 
@@ -32,7 +33,7 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 	private static Field starVBOField = ReflectionHelper.findField(RenderGlobal.class, "starVBO", "field_175013_s");
 	private static Field glStarListField = ReflectionHelper.findField(RenderGlobal.class, "starGLCallList", "field_72772_v");
 
-	private static Field vertexBufferField = ReflectionHelper.findField(Tessellator.class, "worldRenderer", "field_178183_a");
+	private static Field vertexBufferField = ReflectionHelper.findField(Tessellator.class, "buffer", "field_178183_a");
 
 	private static int skyList, skyList2, starList;
 	private static net.minecraft.client.renderer.vertex.VertexBuffer skyVBO, sky2VBO, starVBO;
@@ -100,7 +101,7 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 		GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);
 
-		StellarDimensionManager dimManager = StellarDimensionManager.get(world);
+		StellarScene dimManager = StellarScene.getScene(world);
 		if(dimManager.getSettings().renderPrevSky()) {
 			RenderGlobal renderGlobal = mc.renderGlobal;
 			//float lat = (float) dimManager.getSettings().latitude;

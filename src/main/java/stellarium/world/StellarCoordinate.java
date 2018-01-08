@@ -1,14 +1,14 @@
 package stellarium.world;
 
 import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ICelestialCoordinates;
 import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.common.ServerSettings;
 
-public class StellarCoordinate implements ICelestialCoordinate {
+public class StellarCoordinate implements ICelestialCoordinates {
 	
 	//Rotation
 	private double rot;

@@ -14,7 +14,7 @@ import stellarium.client.ClientSettings;
 import stellarium.common.ServerSettings;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 
 public interface IProxy {
 	
@@ -35,7 +35,7 @@ public interface IProxy {
     
 	public CelestialManager getClientCelestialManager();
 	
-	public void setupSkyRenderer(World world, WorldProvider provider, String skyRenderType);
+	public void setupSkyRenderer(World world, String skyRenderType);
 
 	public void updateTick();
 
@@ -43,6 +43,6 @@ public interface IProxy {
 	public float getScreenWidth();
 
 	public void setupStellarLoad(StellarManager manager);
-	public void setupDimensionLoad(StellarDimensionManager dimManager);
+	public void setupDimensionLoad(StellarScene dimManager);
 
 }

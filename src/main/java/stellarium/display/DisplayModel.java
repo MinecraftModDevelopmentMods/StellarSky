@@ -10,7 +10,7 @@ import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.Hierarchy;
 import stellarium.stellars.StellarManager;
 import stellarium.view.ViewerInfo;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 
 @Hierarchy
 public class DisplayModel implements IDisplayInjectable {
@@ -41,7 +41,7 @@ public class DisplayModel implements IDisplayInjectable {
 
 	public void stellarLoad(StellarManager manager) { }
 
-	public void dimensionLoad(StellarDimensionManager dimManager) { }
+	public void dimensionLoad(StellarScene dimManager) { }
 
 	public void onTick(World world, ViewerInfo update) {
 		DisplayCacheInfo info = new DisplayCacheInfo(update.coordinate, update.sky);

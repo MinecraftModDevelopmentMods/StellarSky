@@ -6,36 +6,26 @@ import com.google.common.collect.Sets;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import stellarapi.api.SAPIReferences;
 import stellarapi.api.lib.config.HierarchicalConfig;
+import stellarapi.api.world.worldset.WorldSet;
 import stellarium.world.PerDimensionSettings;
 
 public class DimensionSettings extends HierarchicalConfig {
-	
-	private Property dimensionApplied;
-	
 	@Override
 	public void setupConfig(Configuration config, String category) {
 		config.setCategoryComment(category, "Configurations for Dimension Settings.");
 		config.setCategoryLanguageKey(category, "config.category.dimension");
 		config.setCategoryRequiresWorldRestart(category, true);
-		
-		this.dimensionApplied = config.get(category, "Applied_Dimensions",
-				new String[] {"Overworld", "The End"});
-		dimensionApplied.setComment("Dimensions which will get applied the stellar sky settings.");
-		dimensionApplied.setRequiresWorldRestart(true);
-		dimensionApplied.setLanguageKey("config.property.dimension.applied");
-		
-		Set<String> dimApplied = Sets.newHashSet(dimensionApplied.getStringList());
-		
-		for(String dimName : dimensionApplied.getStringList())
-			if(!this.hasSubConfig(dimName))
-				this.putSubConfig(dimName, new PerDimensionSettings(dimName));
-		
-		
-		for(String dimName : this.getKeySet())
-			if(!dimApplied.contains(dimName))
-				this.removeSubConfig(dimName);
-		
+				
+		for(WorldSet worldSet : SAPIReferences.getAllWorldSets()) {
+			if(worldSet.hasSky().isFalse)
+				continue;
+
+			if(!this.hasSubConfig(worldSet.name))
+				this.putSubConfig(worldSet.name, new PerDimensionSettings(worldSet));
+		}
+
 		super.setupConfig(config, category);
 	}
 

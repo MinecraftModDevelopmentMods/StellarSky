@@ -10,15 +10,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ICelestialCoordinates;
+import stellarapi.api.ICelestialWorld;
 import stellarapi.api.ISkyEffect;
-import stellarapi.api.StellarAPIReference;
+import stellarapi.api.SAPICapabilities;
+import stellarapi.api.SAPIReferences;
 import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarapi.api.optics.IOpticalFilter;
@@ -38,7 +39,7 @@ import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
 import stellarium.view.ViewerInfo;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
@@ -120,7 +121,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 
 	@Override
-	public void setupDimensionLoad(StellarDimensionManager dimManager) {
+	public void setupDimensionLoad(StellarScene dimManager) {
 		skyModel.dimensionLoad(dimManager);
 	}
 	
@@ -130,7 +131,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 	
 	@Override
-	public void setupSkyRenderer(World world, WorldProvider provider, String skyRenderType) {
+	public void setupSkyRenderer(World world, String skyRenderType) {
 		skyModel.updateSettings(this.clientSettings);
 		RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class).initialize(this.clientSettings);
 
@@ -171,11 +172,12 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		} catch(IllegalAccessException exception) {
 			throw new IllegalStateException("Illegal access to field " + fieldLightUpdateSet.getName() + ", Unexpected.");
 		}
-		
-		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(world);
-		ISkyEffect sky = StellarAPIReference.getSkyEffect(world);
-		IViewScope scope = StellarAPIReference.getScope(viewer);
-		IOpticalFilter filter = StellarAPIReference.getFilter(viewer);
+
+		ICelestialWorld cWorld = world.getCapability(SAPICapabilities.CELESTIAL_CAPABILITY, null);
+		ICelestialCoordinates coordinate = cWorld.getCoordinate();
+		ISkyEffect sky = cWorld.getSkyEffect();
+		IViewScope scope = SAPIReferences.getScope(viewer);
+		IOpticalFilter filter = SAPIReferences.getFilter(viewer);
 
 		skyModel.onTick(this.getDefWorld(), new ViewerInfo(coordinate, sky, scope, filter, viewer));
 	}

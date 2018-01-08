@@ -16,7 +16,7 @@ import stellarium.common.DimensionSettings;
 import stellarium.common.ServerSettings;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 
 public class CommonProxy implements IProxy {
 
@@ -61,7 +61,7 @@ public class CommonProxy implements IProxy {
 	}
 
 	@Override
-	public void setupSkyRenderer(World world, WorldProvider provider, String skyRenderType) { }
+	public void setupSkyRenderer(World world, String skyRenderType) { }
 
 	@Override
 	public HierarchicalConfig getDimensionSettings() {
@@ -90,6 +90,6 @@ public class CommonProxy implements IProxy {
 	public void setupStellarLoad(StellarManager manager) { }
 
 	@Override
-	public void setupDimensionLoad(StellarDimensionManager dimManager) { }
+	public void setupDimensionLoad(StellarScene dimManager) { }
 
 }

@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import stellarapi.api.StellarAPIReference;
+import stellarapi.api.SAPIReferences;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.DefaultSkyType;
 import stellarium.api.IRendererHolder;
@@ -28,12 +28,13 @@ import stellarium.command.CommandLock;
 import stellarium.render.SkyRenderTypeEnd;
 import stellarium.render.SkyTypeEnd;
 import stellarium.sync.StellarNetworkManager;
+import stellarium.world.StellarPack;
 import stellarium.world.provider.DefaultWorldProviderReplacer;
 import stellarium.world.provider.EndReplacer;
 
 @Mod(modid=StellarSkyReferences.modid, version=StellarSkyReferences.version,
 acceptedMinecraftVersions="[1.12.0, 1.13.0)",
-dependencies="required-after:stellarapi@[0.7.4.1.0, 0.7.5.0.0)", guiFactory="stellarium.client.config.StellarConfigGuiFactory")
+dependencies="required-after:stellarapi@[1.12.2-0.4.2.3, 1.12.2-0.4.3.0)", guiFactory="stellarium.client.config.StellarConfigGuiFactory")
 public class StellarSky {
 
 	// The instance of Stellar Sky
@@ -77,8 +78,6 @@ public class StellarSky {
 		MinecraftForge.EVENT_BUS.register(this.tickHandler);
 		MinecraftForge.EVENT_BUS.register(this.fmlEventHook);
 
-		StellarAPIReference.getEventBus().register(new StellarAPIEventHook());
-
 		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
 		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());
 
@@ -97,6 +96,8 @@ public class StellarSky {
 					@Override
 					public void readNBT(Capability capability, Object instance, EnumFacing side, NBTBase nbt) { }					
 				}, RendererHolder.class);
+
+		SAPIReferences.registerPack(StellarPack.INSTANCE);
 	}
 
 	@EventHandler

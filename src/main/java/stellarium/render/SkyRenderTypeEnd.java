@@ -3,6 +3,7 @@ package stellarium.render;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarapi.api.world.worldset.WorldSet;
 import stellarium.api.IAdaptiveRenderer;
 import stellarium.api.ISkyRenderType;
 
@@ -14,7 +15,7 @@ public class SkyRenderTypeEnd implements ISkyRenderType {
 	}
 
 	@Override
-	public boolean acceptFor(String worldName) {
+	public boolean acceptFor(WorldSet worldSet) {
 		return true;
 	}
 	

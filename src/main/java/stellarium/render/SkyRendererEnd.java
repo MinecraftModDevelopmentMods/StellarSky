@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.IRenderHandler;
 import stellarium.StellarSkyResources;
 import stellarium.api.IAdaptiveRenderer;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 
 public class SkyRendererEnd extends IAdaptiveRenderer {
 
@@ -39,7 +39,7 @@ public class SkyRendererEnd extends IAdaptiveRenderer {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
 
-		StellarDimensionManager dimManager = StellarDimensionManager.get(theWorld);
+		StellarScene dimManager = StellarScene.getScene(theWorld);
 		if(dimManager.getSettings().renderPrevSky()) {
 			if(this.otherRenderer != null)
 				otherRenderer.render(partialTicks, theWorld, mc);

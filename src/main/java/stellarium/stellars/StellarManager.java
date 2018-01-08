@@ -19,19 +19,11 @@ public final class StellarManager extends WorldSavedData {
 	private CelestialManager celestialManager;
 	private boolean locked = false, setup = false;
 	
-	public StellarManager(String id) {
+	public StellarManager(String id) { // TODO Initialize on AttachCaps<World> highest priority
 		super(id);
 	}
-	
-	public static @Nonnull StellarManager loadOrCreateClientManager(World world) {
-		return loadOrCreateManager(world);
-	}
-	
-	public static @Nonnull StellarManager loadOrCreateServerManager(MinecraftServer server) {
-		return loadOrCreateManager(server.getEntityWorld());
-	}
-	
-	private static @Nonnull StellarManager loadOrCreateManager(World world) {		
+
+	public static @Nonnull StellarManager loadOrCreateManager(World world) {		
 		WorldSavedData data = world.getMapStorage().getOrLoadData(StellarManager.class, ID);
 		
 		if(!(data instanceof StellarManager))
@@ -43,37 +35,13 @@ public final class StellarManager extends WorldSavedData {
 			
 			data = manager;
 		}
-				
+
 		return (StellarManager) data;
 	}
-	
-	public static boolean hasClientManager() {
-		World world = StellarSky.proxy.getDefWorld();
-		if(world == null)
-			return false;
-		return (world.getMapStorage().getOrLoadData(StellarManager.class, ID) instanceof StellarManager);
-	}
 
-	public static boolean hasServerManager(MinecraftServer server) {
-		World world = server.getEntityWorld();
-		if(world == null)
-			return false;
-		return (world.getMapStorage().getOrLoadData(StellarManager.class, ID) instanceof StellarManager);
-	}
-
-	public static @Nonnull StellarManager getClientManager() {
-		World world = StellarSky.proxy.getDefWorld();
-		return getManager(world);
-	}
-
-	public static @Nonnull StellarManager getServerManager(MinecraftServer server) {
-		World world = server.getEntityWorld();
-		return getManager(world);
-	}
-
-	private static @Nonnull StellarManager getManager(World world) {
+	public static @Nonnull StellarManager getManager(World world) {
 		WorldSavedData data = world.getMapStorage().getOrLoadData(StellarManager.class, ID);
-		
+
 		if(!(data instanceof StellarManager)) {
 			throw new IllegalStateException(
 					String.format("There is illegal data %s in storage!", data));
@@ -167,8 +135,6 @@ public final class StellarManager extends WorldSavedData {
 	}
 
 	public static boolean hasSetup(World world) {
-		if(world.isRemote)
-			return StellarManager.getClientManager().hasSetup();
-		else return StellarManager.getServerManager(world.getMinecraftServer()).hasSetup();
+		return StellarManager.getManager(world).hasSetup();
 	}
 }

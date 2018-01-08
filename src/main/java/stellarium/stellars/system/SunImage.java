@@ -1,7 +1,7 @@
 package stellarium.stellars.system;
 
 import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ICelestialCoordinates;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
@@ -18,7 +18,7 @@ public class SunImage implements IPerWorldImage<Sun> {
 	private CelestialPeriod horPeriod;
 	
 	@Override
-	public void initialize(Sun object, ICelestialCoordinate coordinate, ISkyEffect sky,
+	public void initialize(Sun object, ICelestialCoordinates coordinate, ISkyEffect sky,
 			CelestialPeriod yearPeriod) {
 		this.mag = object.getMagnitude();
 		this.yearPeriod = new CelestialPeriod("Year", yearPeriod.getPeriodLength(), object.absoluteOffset());
@@ -30,7 +30,7 @@ public class SunImage implements IPerWorldImage<Sun> {
 	}
 
 	@Override
-	public void updateCache(Sun object, ICelestialCoordinate coordinate, ISkyEffect sky) {
+	public void updateCache(Sun object, ICelestialCoordinates coordinate, ISkyEffect sky) {
 		this.pos = new Vector3(object.earthPos);
 		Vector3 ref = new Vector3(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);

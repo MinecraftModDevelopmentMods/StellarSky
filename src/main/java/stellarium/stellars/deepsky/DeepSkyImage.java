@@ -1,7 +1,7 @@
 package stellarium.stellars.deepsky;
 
 import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ICelestialCoordinates;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
@@ -18,7 +18,7 @@ public class DeepSkyImage implements IPerWorldImage<DeepSkyObject> {
 	protected double radius;
 	
 	@Override
-	public void initialize(DeepSkyObject object, ICelestialCoordinate coordinate, ISkyEffect sky,
+	public void initialize(DeepSkyObject object, ICelestialCoordinates coordinate, ISkyEffect sky,
 			CelestialPeriod yearPeriod) {
 		this.object = object;
 		this.horizontalPeriod = new CelestialPeriod(String.format("Day; for %s", object.name),
@@ -28,7 +28,7 @@ public class DeepSkyImage implements IPerWorldImage<DeepSkyObject> {
 	}
 
 	@Override
-	public void updateCache(DeepSkyObject object, ICelestialCoordinate coordinate, ISkyEffect sky) {
+	public void updateCache(DeepSkyObject object, ICelestialCoordinates coordinate, ISkyEffect sky) {
 		Vector3 ref = new Vector3(object.centerPos);
 		DeepSkyObjectCache.EqtoEc.transform(ref);
 		coordinate.getProjectionToGround().transform(ref);

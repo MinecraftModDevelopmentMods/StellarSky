@@ -11,7 +11,7 @@ import stellarium.render.stellars.StellarModel;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
 import stellarium.view.ViewerInfo;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 import stellarium.world.landscape.LandscapeModel;
 
 @Hierarchy(idEvaluator = "skyrenderable")
@@ -68,7 +68,7 @@ public class SkyModel {
 	 * Called directly after all the collections are collected,
 	 * to initialize the state of render models.
 	 * */
-	public void dimensionLoad(StellarDimensionManager dimManager) {
+	public void dimensionLoad(StellarScene dimManager) {
 		model.dimensionLoad(dimManager);
 		displayModel.dimensionLoad(dimManager);
 		landscapeModel.dimensionLoad(dimManager);

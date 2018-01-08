@@ -11,7 +11,7 @@ import stellarium.render.stellars.phased.StellarRenderModel;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
 import stellarium.view.ViewerInfo;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 
 @Hierarchy(idEvaluator = "stellarrenderable")
 public class StellarModel {
@@ -50,7 +50,7 @@ public class StellarModel {
 		layersModel.onStellarLoad(manager);
 	}
 
-	public void dimensionLoad(StellarDimensionManager dimManager) {
+	public void dimensionLoad(StellarScene dimManager) {
 		layersModel.onDimensionLoad(dimManager);
 		atmModel.dimensionLoad(dimManager);
 	}

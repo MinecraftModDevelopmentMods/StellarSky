@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import stellarium.stellars.StellarManager;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 
 public class StellarTickHandler {
 	
@@ -32,10 +32,10 @@ public class StellarTickHandler {
 			World world = StellarSky.proxy.getDefWorld();
 			
 			if(world != null) {				
-				StellarManager manager = StellarManager.getClientManager();
+				StellarManager manager = StellarManager.getManager(world);
 				if(manager.getCelestialManager() != null) {
 					manager.update(world.getWorldTime());
-					StellarDimensionManager dimManager = StellarDimensionManager.get(world);
+					StellarScene dimManager = StellarScene.getScene(world);
 					if(dimManager != null) {
 						dimManager.update(world, world.getWorldTime(), world.getTotalWorldTime());
 						StellarSky.proxy.updateTick();
@@ -52,21 +52,21 @@ public class StellarTickHandler {
 			World world = server.getEntityWorld();
 
 			if(world != null) {
-				StellarManager manager = StellarManager.getServerManager(server);
+				StellarManager manager = StellarManager.getManager(world);
 				
 				if(manager.getCelestialManager() != null && manager.getSettings().serverEnabled)
 					manager.update(world.getWorldTime());
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void tickStart(TickEvent.WorldTickEvent e) {
 		if(e.phase == TickEvent.Phase.START && e.side == Side.SERVER){
 			MinecraftServer server = e.world.getMinecraftServer();
 			World defWorld = server.getEntityWorld();
 			
-			StellarDimensionManager dimManager = StellarDimensionManager.get(e.world);
+			StellarScene dimManager = StellarScene.getScene(e.world);
 			if(dimManager != null)
 				dimManager.update(e.world, e.world.getWorldTime(), defWorld.getTotalWorldTime());
 		}

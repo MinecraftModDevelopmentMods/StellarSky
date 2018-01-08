@@ -5,23 +5,26 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
+import stellarapi.api.SAPIReferences;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.config.SimpleHierarchicalNBTConfig;
 import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarapi.api.lib.config.property.ConfigPropertyDoubleList;
 import stellarapi.api.lib.config.property.ConfigPropertyString;
+import stellarapi.api.world.worldset.WorldSet;
+import stellarapi.impl.celestial.DefaultCelestialPack;
 import stellarium.api.EnumSkyProperty;
 import stellarium.api.ISkyRenderType;
 import stellarium.api.ISkyType;
 import stellarium.api.StellarSkyAPI;
 
-public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
-
-	private String dimensionName;
-	
+public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {	
+	private final WorldSet worldSet;
 	public double latitude, longitude;
-	
+
+	private ConfigPropertyBoolean propStellarSkyEnabled;
+
 	private ConfigPropertyBoolean propPatchProvider;
 
 	private ConfigPropertyDouble propLatitude, propLongitude;
@@ -49,12 +52,14 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	private ISkyType skyType;
 	
-	public PerDimensionSettings(String dimensionName) {
-		this.dimensionName = dimensionName;
-		
+	public PerDimensionSettings(WorldSet worldSet) {	
+		this.worldSet = worldSet;
+
+		this.propStellarSkyEnabled = new ConfigPropertyBoolean("StellarSky_Enabled", "stellarSkyEnabled", worldSet == SAPIReferences.exactOverworld());
+
 		this.propPatchProvider = new ConfigPropertyBoolean("Patch_Provider", "patchProvider", true);
-		
-		this.skyType = StellarSkyAPI.getSkyType(this.dimensionName);
+
+		this.skyType = StellarSkyAPI.getSkyType(worldSet);
 
 		this.propRenderType = new ConfigPropertyString("Sky_Renderer_Type", "skyRendererType", skyType.possibleTypes().get(0).getName());
 		
@@ -81,7 +86,8 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	this.propMinimumSkyRenderBrightness = new ConfigPropertyDouble("Minimum_Sky_Render_Brightness", "minimumSkyRenderBrightness", skyType.getDefaultDouble(EnumSkyProperty.SkyRenderBrightness));
        	
        	this.propLandscapeEnabled = new ConfigPropertyBoolean("Landscape_Enabled", "landscapeEnabled", false);
-       	
+
+       	this.addConfigProperty(this.propStellarSkyEnabled);
        	this.addConfigProperty(this.propPatchProvider);
        	this.addConfigProperty(this.propRenderType);
        	this.addConfigProperty(this.propLatitude);
@@ -108,7 +114,11 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		config.setCategoryRequiresWorldRestart(category, true);
 		
 		super.setupConfig(config, category);
-		
+
+		propStellarSkyEnabled.setComment("Determine whether or not to enable Stellar Sky on this WorldSet.");
+		propStellarSkyEnabled.setRequiresWorldRestart(true);
+		propStellarSkyEnabled.setLanguageKey("config.property.dimension.stellarskyenabled");
+
 		propPatchProvider.setComment("Determine whether or not patch provider. Cannot adjust longitude and latitude when this is false.");
 		propPatchProvider.setRequiresWorldRestart(true);
 		propPatchProvider.setLanguageKey("config.property.dimension.patchprovider");
@@ -218,8 +228,8 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
 		super.loadFromConfig(config, category);
-		
-		if(!this.doesPatchProvider()) {
+
+		if(propStellarSkyEnabled.getBoolean() && !this.doesPatchProvider()) {
 			propLatitude.setAsDefault();
 			propLongitude.setAsDefault();
 			propAtmExtinctionFactor.setAsDefault();
@@ -232,6 +242,12 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
        	
        	this.latitude = propLatitude.getDouble();
    		this.longitude = propLongitude.getDouble();
+
+   		if(propStellarSkyEnabled.getBoolean()) {
+   			SAPIReferences.setCelestialPack(this.worldSet, StellarPack.INSTANCE);
+   		} else if(this.worldSet == SAPIReferences.exactOverworld()) {
+   			SAPIReferences.setCelestialPack(this.worldSet, DefaultCelestialPack.INSTANCE);
+   		}
 	}
 	
 	@Override
@@ -305,7 +321,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 
 	@Override
 	public INBTConfig copy() {
-		PerDimensionSettings settings = new PerDimensionSettings(this.dimensionName);
+		PerDimensionSettings settings = new PerDimensionSettings(this.worldSet);
 		this.applyCopy(settings);
 		settings.latitude = this.latitude;
 		settings.longitude = this.longitude;

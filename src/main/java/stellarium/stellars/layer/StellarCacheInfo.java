@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ICelestialCoordinates;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
@@ -26,7 +26,7 @@ public final class StellarCacheInfo {
 	
 	private final ISkyEffect sky;
 	
-	public StellarCacheInfo(ICelestialCoordinate coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
+	public StellarCacheInfo(ICelestialCoordinates coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter) {
 		this.projectionToGround = coordinate.getProjectionToGround();
 		this.sky = sky;
 		this.filter = filter;

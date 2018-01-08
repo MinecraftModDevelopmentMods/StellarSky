@@ -1,7 +1,7 @@
 package stellarium.stellars.system;
 
 import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ICelestialCoordinates;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
@@ -19,7 +19,7 @@ public class MoonImage implements IPerWorldImage<Moon> {
 	private CelestialPeriod horPeriod;
 
 	@Override
-	public void initialize(Moon object, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
+	public void initialize(Moon object, ICelestialCoordinates coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
 		this.mag = -12.74 - 2.5 * Math.log(object.brightnessFactor);
 		
 		this.pos = new Vector3(object.earthPos);
@@ -36,7 +36,7 @@ public class MoonImage implements IPerWorldImage<Moon> {
 	}
 
 	@Override
-	public void updateCache(Moon object, ICelestialCoordinate coordinate, ISkyEffect sky) {
+	public void updateCache(Moon object, ICelestialCoordinates coordinate, ISkyEffect sky) {
 		this.pos = new Vector3(object.earthPos);
 		Vector3 ref = new Vector3(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);

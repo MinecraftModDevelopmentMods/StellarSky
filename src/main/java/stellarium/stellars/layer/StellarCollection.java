@@ -17,7 +17,7 @@ import com.google.common.collect.Maps;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ICelestialCoordinates;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.celestials.EnumCelestialCollectionType;
 import stellarapi.api.celestials.ICelestialCollection;
@@ -37,7 +37,7 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	private IStellarLayerType<Obj, IConfigHandler, INBTConfig> type;
 	private StellarObjectContainer container;
 	
-	private ICelestialCoordinate coordinate;
+	private ICelestialCoordinates coordinate;
 	private ISkyEffect sky;
 	
 	private Map<Obj, IPerWorldImage> imageMap = Maps.newHashMap();
@@ -49,7 +49,7 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 
 	private ILayerTempManager<Obj> temp;
 	
-	public StellarCollection(StellarObjectContainer container, ICelestialCoordinate coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
+	public StellarCollection(StellarObjectContainer container, ICelestialCoordinates coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
 		this.type = container.getType();
 		this.container = container;
 		this.coordinate = coordinate;

@@ -15,7 +15,7 @@ import stellarium.stellars.layer.CelestialManager;
 import stellarium.stellars.layer.StellarLayerRegistry;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.view.ViewerInfo;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 
 @Hierarchy
 public class StellarRenderModel {
@@ -56,7 +56,7 @@ public class StellarRenderModel {
 		}
 	}
 	
-	public void onDimensionLoad(StellarDimensionManager dimManager) {
+	public void onDimensionLoad(StellarScene dimManager) {
 		for(int i = 0; i < layerModels.size(); i++)
 			layerModels.get(i).onLoadCollection(dimManager.getCollections().get(i));
 	}

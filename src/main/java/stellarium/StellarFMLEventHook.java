@@ -15,16 +15,11 @@ public class StellarFMLEventHook {
 	}
 	
 	@SubscribeEvent
-	public void handleLogin(PlayerEvent.PlayerLoggedInEvent event) {
-		StellarSky.instance.getNetworkManager().sendSyncInformation((EntityPlayerMP) event.player);
-	}
-	
-	@SubscribeEvent
 	public void handleNotModded(FMLNetworkEvent.ClientConnectedToServerEvent event) {
 		if(!event.getConnectionType().equals("MODDED"))
 			this.handleNotHave();
 	}
-	
+
 	@SubscribeEvent
 	public void handleNotHave(FMLNetworkEvent.CustomPacketRegistrationEvent event) {
 		if(event.getOperation().equals("REGISTER") && !event.getRegistrations().contains(
@@ -35,10 +30,10 @@ public class StellarFMLEventHook {
 	
 	@SubscribeEvent
 	public void handleDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-		StellarAPIEventHook.clearState();
+		StellarForgeEventHook.clearState();
 	}
-	
+
 	private void handleNotHave() {
-		StellarAPIEventHook.markNotHave();
+		StellarForgeEventHook.markNotHave();
 	}
 }

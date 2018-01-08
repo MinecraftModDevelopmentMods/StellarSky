@@ -10,7 +10,7 @@ import stellarium.client.ClientSettings;
 import stellarium.lib.hierarchy.Hierarchy;
 import stellarium.render.stellars.access.ICheckedAtmModel;
 import stellarium.view.ViewerInfo;
-import stellarium.world.StellarDimensionManager;
+import stellarium.world.StellarScene;
 
 @Hierarchy
 public class AtmosphereModel implements ICheckedAtmModel {
@@ -31,7 +31,7 @@ public class AtmosphereModel implements ICheckedAtmModel {
 		settings.putSubConfig(AtmosphereSettings.KEY, new AtmosphereSettings());
 	}
 
-	public void dimensionLoad(StellarDimensionManager dimManager) {
+	public void dimensionLoad(StellarScene dimManager) {
 		this.azimuthCheckEnabled = dimManager.getSettings().hideObjectsUnderHorizon();
 		this.leastAzimuthRendered = -90.0f;
 		

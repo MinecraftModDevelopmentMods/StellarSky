@@ -1,14 +1,14 @@
 package stellarium.render;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.client.IRenderHandler;
-import stellarapi.api.ICelestialCoordinate;
+import stellarapi.api.ICelestialCoordinates;
+import stellarapi.api.ICelestialWorld;
 import stellarapi.api.ISkyEffect;
-import stellarapi.api.StellarAPIReference;
+import stellarapi.api.SAPICapabilities;
+import stellarapi.api.SAPIReferences;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
@@ -32,10 +32,12 @@ public class NewSkyRenderer extends IRenderHandler {
 
 		Entity viewer = mc.getRenderViewEntity(); // FIXME SLOWER ON DEDICATED GRAPHICS CARD!!!
 
-		ICelestialCoordinate coordinate = StellarAPIReference.getCoordinate(world);
-		ISkyEffect sky = StellarAPIReference.getSkyEffect(world);
-		IViewScope scope = StellarAPIReference.getScope(viewer);
-		IOpticalFilter filter = StellarAPIReference.getFilter(viewer);
+		ICelestialWorld cWorld = world.getCapability(
+				SAPICapabilities.CELESTIAL_CAPABILITY, null);
+		ICelestialCoordinates coordinate = cWorld.getCoordinate();
+		ISkyEffect sky = cWorld.getSkyEffect();	
+		IViewScope scope = SAPIReferences.getScope(viewer);
+		IOpticalFilter filter = SAPIReferences.getFilter(viewer);
 
 		SkyRenderInformation info = new SkyRenderInformation(mc, world, partialTicks,
 				new ViewerInfo(coordinate, sky, scope, filter, viewer));

@@ -3,6 +3,8 @@ package stellarium.api;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarapi.api.SAPIReferences;
+import stellarapi.api.world.worldset.WorldSet;
 
 public class SkyRenderTypeSurface implements ISkyRenderType {
 
@@ -12,8 +14,8 @@ public class SkyRenderTypeSurface implements ISkyRenderType {
 	}
 
 	@Override
-	public boolean acceptFor(String worldName) {
-		return !worldName.equals("The End");
+	public boolean acceptFor(WorldSet worldSet) {
+		return worldSet != SAPIReferences.endType();
 	}
 
 	@Override

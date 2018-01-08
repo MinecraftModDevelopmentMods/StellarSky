@@ -3,6 +3,7 @@ package stellarium.api;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarapi.api.world.worldset.WorldSet;
 
 /**
  * Sky renderer type, there is overworld and end type by default. <p>
@@ -17,10 +18,10 @@ public interface ISkyRenderType {
 	
 	/**
 	 * Whether or not this type accepts certain world
-	 * @param worldName the name of the world(dimension)
+	 * @param worldSet the worldSet the worlds are in.
 	 * @return <code>false</code> if this type is incompatible with the world, <code>true</code> otherwise
 	 * */
-	public boolean acceptFor(String worldName);
+	public boolean acceptFor(WorldSet worldSet);
 	
 	/**
 	 * Creates new SkyRenderer.
