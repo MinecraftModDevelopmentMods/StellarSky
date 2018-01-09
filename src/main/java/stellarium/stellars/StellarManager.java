@@ -19,7 +19,7 @@ public final class StellarManager extends WorldSavedData {
 	private CelestialManager celestialManager;
 	private boolean locked = false, setup = false;
 	
-	public StellarManager(String id) { // TODO Initialize on AttachCaps<World> highest priority
+	public StellarManager(String id) {
 		super(id);
 	}
 

@@ -1,6 +1,7 @@
 package stellarium;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +18,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.network.NetworkCheckHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import stellarapi.api.SAPIReferences;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarium.api.DefaultSkyType;
@@ -118,5 +121,10 @@ public class StellarSky {
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new CommandLock());
+	}
+
+	@NetworkCheckHandler
+	public boolean checkNetwork(Map<String, String> modsNversions, Side from) {
+		return true;
 	}
 }

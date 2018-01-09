@@ -97,7 +97,7 @@ public class CategoryElementDouble implements IHierarchyElement {
 
 	@Override
 	public boolean needUpdate() {
-		// TODO update handling
+		// MAYBE update handling
 		return false;
 	}
 

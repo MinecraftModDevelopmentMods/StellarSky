@@ -119,7 +119,7 @@ public final class StellarScene implements ICelestialScene {
 		foundMoons.clear();
 
 		if(this.settings == null) {
-			// TODO Deal with these in general sense
+			// TODO AA Deal with these in general sense
 			this.loadSettingsFromConfig();
 			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 		}
@@ -182,7 +182,7 @@ public final class StellarScene implements ICelestialScene {
 
 	@Override
 	public WorldProvider replaceWorldProvider(WorldProvider provider) {
-		if(manager.getSettings().serverEnabled && this.getSettings().doesPatchProvider()) {
+		if(this.getSettings().doesPatchProvider()) {
 			ICelestialHelper helper = new CelestialHelperInside((float)this.getSettings().getSunlightMultiplier(), 1.0f,
 					this.getSuns().get(0), this.getMoons().get(0), this.coordinate, this.skyset);
 			WorldProvider newProvider = StellarSkyAPI.getReplacedWorldProvider(this.world, provider, helper);

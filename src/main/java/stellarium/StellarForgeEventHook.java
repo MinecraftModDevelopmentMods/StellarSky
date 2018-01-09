@@ -35,15 +35,8 @@ public class StellarForgeEventHook {
 	}
 
 	private void onClientLoad(World world, StellarManager manager) {
-		if(!manager.getSettings().serverEnabled)
-			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
-
-		if(!StellarSky.PROXY.getServerSettings().serverEnabled)
-			handleDimOnServerDisabled(world, manager);
-
-		if(mark) {
+		if(mark)
 			handleNotHaveModOnServer(world, manager);
-		}
 	}
 
 	private void onServerLoad(World world, StellarManager manager) {

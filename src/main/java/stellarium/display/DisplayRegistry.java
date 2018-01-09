@@ -17,7 +17,7 @@ public class DisplayRegistry {
 	}
 
 	static {
-		// TODO Interaction with existing objects
+		// MAYBE Interaction with existing objects
 		instance.register(new HorGridType());
 		instance.register(new EqGridType());
 		instance.register(new EcGridType());

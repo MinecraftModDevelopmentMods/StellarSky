@@ -11,13 +11,10 @@ import stellarapi.api.lib.config.property.ConfigPropertyInteger;
 import stellarium.stellars.layer.StellarLayerRegistry;
 
 public class ServerSettings extends SimpleHierarchicalNBTConfig {
-	
-	public boolean serverEnabled;
 	public double day, year;
 	public int yearOffset, dayOffset;
 	public double tickOffset;
 
-	private ConfigPropertyBoolean propServerEnabled;
 	private ConfigPropertyDouble propDay, propYear;
 	private ConfigPropertyInteger propYearOffset, propDayOffset;
 	private ConfigPropertyDouble propTickOffset;
@@ -26,8 +23,10 @@ public class ServerSettings extends SimpleHierarchicalNBTConfig {
 
 	public ServerSettings() {
 		StellarLayerRegistry.getInstance().composeSettings(this);
-		
-		this.propServerEnabled = new ConfigPropertyBoolean("Server_Enabled", "serverEnabled", true);
+
+		// Removed Server_Enabled.
+		// On the server it's useless considering that all features are disabled.
+		// On the client, it should obey what server want.
         this.propDay = new ConfigPropertyDouble("Day_Length", "day", 24000.0);
         this.propYear = new ConfigPropertyDouble("Year_Length", "year", 365.25);
         this.propYearOffset = new ConfigPropertyInteger("Year_Offset", "yearOffset", 0);
@@ -40,7 +39,6 @@ public class ServerSettings extends SimpleHierarchicalNBTConfig {
         this.propAxialTilt = new ConfigPropertyDouble("Axial_Tilt", "axialTilt", 23.5);
         this.propPrecession = new ConfigPropertyDouble("Precession", "precession", 0.0);
 
-        this.addConfigProperty(this.propServerEnabled);
        	this.addConfigProperty(this.propDay);
        	this.addConfigProperty(this.propYear);
        	this.addConfigProperty(this.propYearOffset);
@@ -57,10 +55,6 @@ public class ServerSettings extends SimpleHierarchicalNBTConfig {
 		config.setCategoryRequiresWorldRestart(category, true);
 		
 		super.setupConfig(config, category);
-
-        propServerEnabled.setComment("Enables Server-Side Sky change.");
-        propServerEnabled.setRequiresWorldRestart(true);
-        propServerEnabled.setLanguageKey("config.property.server.serverenabled");
         
         propDay.setComment("Length of a day, in a tick.");
         propDay.setRequiresWorldRestart(true);
@@ -94,18 +88,13 @@ public class ServerSettings extends SimpleHierarchicalNBTConfig {
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
        	super.loadFromConfig(config, category);
-       	this.serverEnabled = propServerEnabled.getBoolean();
-       	if(!this.serverEnabled)
-       		this.setDefault();
-       	
        	this.setValues();
 	}
 	
 	/**Default for servers without Stellar Sky*/
 	public void setDefault() {
 		for(ConfigProperty property : this.listProperties)
-			if(property != this.propServerEnabled)
-				property.setAsDefault();
+			property.setAsDefault();
     	propAxialTilt.setDouble(0.0);
     	propTickOffset.setDouble(17500.0);
     	this.tickOffset = 17500.0;
@@ -125,8 +114,6 @@ public class ServerSettings extends SimpleHierarchicalNBTConfig {
 	public void readFromNBT(NBTTagCompound compound) {
        	super.readFromNBT(compound);
        	
-       	this.serverEnabled = propServerEnabled.getBoolean();
-       	
        	this.day = propDay.getDouble();
        	this.year = propYear.getDouble();
        	this.yearOffset = propYearOffset.getInt();
@@ -137,7 +124,6 @@ public class ServerSettings extends SimpleHierarchicalNBTConfig {
 	@Override
 	public INBTConfig copy() {
 		ServerSettings settings = new ServerSettings();
-		settings.serverEnabled = this.serverEnabled;
 		settings.day = this.day;
 		settings.year = this.year;
 		settings.yearOffset = this.yearOffset;
