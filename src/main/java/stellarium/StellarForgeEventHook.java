@@ -29,13 +29,12 @@ public class StellarForgeEventHook {
 
 		// Now setup StellarManager here
 		StellarManager manager = StellarManager.loadOrCreateManager(world);
-		if(world.isRemote)
-			this.onClientLoad(world, manager);
+		if(world.isRemote) this.onClientLoad(world, manager);
 		else this.onServerLoad(world, manager);
 	}
 
 	private void onClientLoad(World world, StellarManager manager) {
-		if(mark)
+		if(StellarSky.INSTANCE.existOnServer())
 			handleNotHaveModOnServer(world, manager);
 	}
 
@@ -45,9 +44,8 @@ public class StellarForgeEventHook {
 
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load event) {
-		if(event.getWorld().isRemote) {
+		if(event.getWorld().isRemote)
 			this.populateRenderer(event.getWorld(), StellarManager.getManager(event.getWorld()));
-		}
 	}
 
 	private static void populateRenderer(World world, StellarManager manager) {
@@ -58,35 +56,20 @@ public class StellarForgeEventHook {
 	}
 
 
-	private static boolean mark = false;
-	
-	public static void markNotHave() {
-		mark = true;
-	}
-	
-	public static void clearState() {
-		mark = false;
-	}
-
-
 	private void handleNotHaveModOnServer(@Nonnull World world, @Nonnull StellarManager manager) {
 		manager.handleServerWithoutMod();
 		
 		if(manager.getCelestialManager() == null) {
 			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
-			handleDimOnServerDisabled(world, manager);
+			this.populateRenderer(world, manager);
 		}
-	}
-
-	private void handleDimOnServerDisabled(@Nonnull World world, @Nonnull StellarManager manager) {
-		this.populateRenderer(world, manager);
 	}
 
 	@SubscribeEvent
 	public void onAttachCapabilities(AttachCapabilitiesEvent<World> event) {
 		if(event.getObject().isRemote)
 			event.addCapability(new ResourceLocation(
-					StellarSkyReferences.modid, "SkyRenderer"), new RendererHolder());
+					StellarSkyReferences.MODID, "SkyRenderer"), new RendererHolder());
 	}
 
 	@SideOnly(Side.CLIENT)

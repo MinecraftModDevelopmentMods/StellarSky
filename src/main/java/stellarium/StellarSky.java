@@ -35,13 +35,13 @@ import stellarium.world.StellarPack;
 import stellarium.world.provider.DefaultWorldProviderReplacer;
 import stellarium.world.provider.EndReplacer;
 
-@Mod(modid=StellarSkyReferences.modid, version=StellarSkyReferences.version,
+@Mod(modid=StellarSkyReferences.MODID, version=StellarSkyReferences.VERSION,
 acceptedMinecraftVersions="[1.12.0, 1.13.0)",
 dependencies="required-after:stellarapi@[1.12.2-0.4.2.3, 1.12.2-0.4.3.0)", guiFactory="stellarium.client.config.StellarConfigGuiFactory")
 public class StellarSky {
 
 	// The instance of Stellar Sky
-	@Instance(StellarSkyReferences.modid)
+	@Mod.Instance(StellarSkyReferences.MODID)
 	public static StellarSky INSTANCE;
 
 	@SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
@@ -67,13 +67,13 @@ public class StellarSky {
 		return this.celestialConfigManager;
 	}
 
-	@EventHandler
+	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) { 
 		this.logger = event.getModLog();
 
 		this.celestialConfigManager = new ConfigManager(
 				StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
-						StellarSkyReferences.celestialSettings));
+						StellarSkyReferences.CELESTIAL_SETTINGS));
 
 
 		PROXY.setupCelestialConfigManager(this.celestialConfigManager);
@@ -107,24 +107,34 @@ public class StellarSky {
 		SAPIReferences.registerPack(StellarPack.INSTANCE);
 	}
 
-	@EventHandler
+	@Mod.EventHandler
 	public void load(FMLInitializationEvent event) throws IOException {
 		PROXY.load(event);
 	}
 
-	@EventHandler
+	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		celestialConfigManager.syncFromFile();
 		PROXY.postInit(event);
 	}
 
-	@EventHandler
+	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new CommandLock());
 	}
 
+
+	public boolean existOnServer() {
+		return this.existOnServer;
+	}
+
+	private boolean existOnServer = true;
+
 	@NetworkCheckHandler
 	public boolean checkNetwork(Map<String, String> modsNversions, Side from) {
+		if(from.isServer())
+			this.existOnServer = modsNversions.containsKey(StellarSkyReferences.MODID);
 		return true;
+		// Does not work well, it's just too late
 	}
 }

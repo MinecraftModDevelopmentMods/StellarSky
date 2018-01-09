@@ -71,7 +71,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		super.preInit(event);
 		this.guiConfig = new ConfigManager(
 				StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
-						StellarSkyReferences.guiSettings));
+						StellarSkyReferences.GUI_SETTINGS));
 		
 		MinecraftForge.EVENT_BUS.register(new StellarClientFMLHook());
 		

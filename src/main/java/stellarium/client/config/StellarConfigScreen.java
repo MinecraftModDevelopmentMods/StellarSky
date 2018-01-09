@@ -15,7 +15,7 @@ import stellarium.StellarSkyReferences;
 public class StellarConfigScreen extends GuiConfig {
 
 	public StellarConfigScreen(GuiScreen parentScreen) {
-		super(parentScreen, getConfigElement(), StellarSkyReferences.modid, false, false, "Stellar Sky");
+		super(parentScreen, getConfigElement(), StellarSkyReferences.MODID, false, false, "Stellar Sky");
 	}
 	
 	private static List<IConfigElement> getConfigElement() {
