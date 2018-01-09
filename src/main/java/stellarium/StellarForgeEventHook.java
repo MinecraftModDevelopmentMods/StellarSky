@@ -34,7 +34,7 @@ public class StellarForgeEventHook {
 	}
 
 	private void onClientLoad(World world, StellarManager manager) {
-		if(StellarSky.INSTANCE.existOnServer())
+		if(!StellarSky.INSTANCE.existOnServer())
 			handleNotHaveModOnServer(world, manager);
 	}
 
