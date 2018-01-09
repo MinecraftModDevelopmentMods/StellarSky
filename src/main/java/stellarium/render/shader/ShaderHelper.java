@@ -170,8 +170,8 @@ public class ShaderHelper {
 			//Gets the location
 			int location = OpenGlHelper.glGetUniformLocation(this.programId, fieldName);
 			if(location == -1)
-				StellarSky.logger.error(String.format("Invalid field %s has claimed while loading shaders!", fieldName));
-			
+				StellarSky.INSTANCE.getLogger().error(String.format("Invalid field %s has claimed while loading shaders!", fieldName));
+
 			ShaderUniform uniform = new ShaderUniform(location);
 			uniformMap.put(fieldName, uniform);
 			return uniform;

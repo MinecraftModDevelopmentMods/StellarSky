@@ -53,7 +53,7 @@ public final class StellarScene implements ICelestialScene {
 	}
 
 	private void loadSettingsFromConfig() {
-		this.settings = (PerDimensionSettings) ((INBTConfig) StellarSky.proxy.getDimensionSettings().getSubConfig(worldSet.name)).copy();
+		this.settings = (PerDimensionSettings) ((INBTConfig) StellarSky.PROXY.getDimensionSettings().getSubConfig(worldSet.name)).copy();
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public final class StellarScene implements ICelestialScene {
 		}
 
 		if(world.isRemote)
-			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
+			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 	}
 
 	public List<StellarCollection> getCollections() {
@@ -121,25 +121,25 @@ public final class StellarScene implements ICelestialScene {
 		if(this.settings == null) {
 			// TODO Deal with these in general sense
 			this.loadSettingsFromConfig();
-			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
+			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 		}
 
 		String dimName = world.provider.getDimensionType().getName();
-		StellarSky.logger.info(String.format("Initializing Dimension Settings on Dimension %s...", dimName));
+		StellarSky.INSTANCE.getLogger().info(String.format("Initializing Dimension Settings on Dimension %s...", dimName));
 		if(settings.allowRefraction())
 			this.skyset = new RefractiveSkySet(this.settings);
 		else this.skyset = new NonRefractiveSkySet(this.settings);
 		this.coordinate = new StellarCoordinate(manager.getSettings(), this.settings);
 		coordinate.update(manager.getSkyTime(0.0) / manager.getSettings().day / manager.getSettings().year);
 
-		StellarSky.logger.info(String.format("Initialized Dimension Settings on Dimension %s.", dimName));
+		StellarSky.INSTANCE.getLogger().info(String.format("Initialized Dimension Settings on Dimension %s.", dimName));
 
 
-		StellarSky.logger.info("Evaluating Stellar Collections from Celestial State...");
+		StellarSky.INSTANCE.getLogger().info("Evaluating Stellar Collections from Celestial State...");
 
-		StellarSky.logger.info("Starting Test Update.");
+		StellarSky.INSTANCE.getLogger().info("Starting Test Update.");
 		manager.update(0.0);
-		StellarSky.logger.info("Test Update Ended.");
+		StellarSky.INSTANCE.getLogger().info("Test Update Ended.");
 		
 		for(StellarObjectContainer container : manager.getCelestialManager().getLayers()) {
 			StellarCollection collection = new StellarCollection(container, this.coordinate, this.skyset,
@@ -152,9 +152,9 @@ public final class StellarScene implements ICelestialScene {
 		}
 
 		if(world.isRemote)
-			StellarSky.proxy.setupDimensionLoad(this);
+			StellarSky.PROXY.setupDimensionLoad(this);
 		
-		StellarSky.logger.info("Evaluated Stellar Collections.");
+		StellarSky.INSTANCE.getLogger().info("Evaluated Stellar Collections.");
 	}
 
 	@Override

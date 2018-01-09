@@ -32,9 +32,9 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	@Override
 	public void initializeCommon(SolarSystemSettings settings, StellarObjectContainer<SolarObject, SolarSystemClientSettings> container) throws IOException {		
 		////Solar System
-		StellarSky.logger.info("Initializing Solar System...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Solar System...");
 		///Sun
-		StellarSky.logger.info("Initializing Sun...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Sun...");
 		Sun sun = new Sun("Sun");
 		sun.radius=0.00465469 * 4;
 		sun.mass=1.0;
@@ -46,7 +46,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		
 		///Earth System
 		//Declaration		
-		StellarSky.logger.info("Initializing Earth...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Earth...");
 		Earth earth = new Earth("Earth", sun);
 		Moon moon = new Moon("Moon", earth);
 		
@@ -70,7 +70,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		earth.Omegad=-0.24123856;
 		
 		//-Moon
-		StellarSky.logger.info("Initializing Moon...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Moon...");
 		moon.albedo=0.12;
 		moon.brightnessFactor = settings.propMoonBrightness.getDouble();
 		moon.a0=0.00257184;
@@ -96,7 +96,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		
 		///Planets
 		//Mercury
-		StellarSky.logger.info("Initializing Mercury...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Mercury...");
 		Planet mercury = new Planet("Mercury", sun);
 		mercury.albedo=0.119;
 		mercury.radius=1.630815508e-5;
@@ -120,7 +120,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		container.addImageType(mercury, PlanetImage.class);
 		
 		//Venus
-		StellarSky.logger.info("Initizlizing Venus...");
+		StellarSky.INSTANCE.getLogger().info("Initizlizing Venus...");
 		Planet venus = new Planet("Venus", sun);
 		venus.albedo=0.90;
 		venus.radius=4.0453208556e-5;
@@ -144,7 +144,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		container.addImageType(venus, PlanetImage.class);
 		
 		//Mars
-		StellarSky.logger.info("Initializing Mars...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Mars...");
 		Planet mars = new Planet("Mars", sun);
 		mars.albedo=0.25;
 		mars.radius=2.26604278e-5;
@@ -168,7 +168,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		container.addImageType(mars, PlanetImage.class);
 		
 		//Jupiter
-		StellarSky.logger.info("Initializing Jupiter...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Jupiter...");
 		Planet jupiter = new Planet("Jupiter", sun);
 		jupiter.albedo=0.343;
 		jupiter.radius=4.673195187e-4;
@@ -196,7 +196,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		container.addImageType(jupiter, PlanetImage.class);
 		
 		//Saturn
-		StellarSky.logger.info("Initializing Saturn...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Saturn...");
 		Planet saturn = new Planet("Saturn", sun);
 		saturn.albedo=0.342;
 		saturn.radius=3.83128342e-4;
@@ -224,7 +224,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		container.addImageType(saturn, PlanetImage.class);
 
 		//Uranus
-		StellarSky.logger.info("Initializing Uranus...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Uranus...");
 		Planet uranus = new Planet("uranus", sun);
 		uranus.albedo=0.300;
 		uranus.radius=1.68890374e-4;
@@ -252,7 +252,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		container.addImageType(uranus, PlanetImage.class);
 
 		//Neptune
-		StellarSky.logger.info("Initializing Neptune...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Neptune...");
 		Planet neptune = new Planet("Neptune", sun);
 		neptune.albedo=0.290;
 		neptune.radius=1.641209893e-4;
@@ -279,7 +279,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		container.addRenderCache(neptune, new PlanetRenderCache());
 		container.addImageType(neptune, PlanetImage.class);
 
-		StellarSky.logger.info("Solar System Initialized!");
+		StellarSky.INSTANCE.getLogger().info("Solar System Initialized!");
 	}
 
 	@Override

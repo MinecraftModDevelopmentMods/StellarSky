@@ -36,9 +36,9 @@ public class StellarForgeEventHook {
 
 	private void onClientLoad(World world, StellarManager manager) {
 		if(!manager.getSettings().serverEnabled)
-			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
+			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 
-		if(!StellarSky.proxy.getServerSettings().serverEnabled)
+		if(!StellarSky.PROXY.getServerSettings().serverEnabled)
 			handleDimOnServerDisabled(world, manager);
 
 		if(mark) {
@@ -61,7 +61,7 @@ public class StellarForgeEventHook {
 		// This is separate as world capability should've been established.
 		StellarScene scene = StellarScene.getScene(world);
 		if(scene != null)
-			StellarSky.proxy.setupSkyRenderer(world, scene.getSettings().getSkyRendererType());
+			StellarSky.PROXY.setupSkyRenderer(world, scene.getSettings().getSkyRendererType());
 	}
 
 
@@ -80,7 +80,7 @@ public class StellarForgeEventHook {
 		manager.handleServerWithoutMod();
 		
 		if(manager.getCelestialManager() == null) {
-			manager.setup(StellarSky.proxy.getClientCelestialManager().copyFromClient());
+			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 			handleDimOnServerDisabled(world, manager);
 		}
 	}
@@ -99,7 +99,7 @@ public class StellarForgeEventHook {
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onSkyRender(RenderWorldLastEvent event) {
-		World world = StellarSky.proxy.getDefWorld();
+		World world = StellarSky.PROXY.getDefWorld();
 		if(world.hasCapability(StellarSkyAPI.SKY_RENDER_HOLDER, null)) {
 			IAdaptiveRenderer renderer = world.getCapability(StellarSkyAPI.SKY_RENDER_HOLDER, null).getRenderer();
 			if(renderer != null && !(world.provider.getSkyRenderer() instanceof IAdaptiveRenderer)) {

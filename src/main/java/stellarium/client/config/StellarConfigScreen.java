@@ -19,7 +19,7 @@ public class StellarConfigScreen extends GuiConfig {
 	}
 	
 	private static List<IConfigElement> getConfigElement() {
-		Configuration config = StellarSky.instance.getCelestialConfigManager().getConfig();
+		Configuration config = StellarSky.INSTANCE.getCelestialConfigManager().getConfig();
 		
 		List<IConfigElement> retList = Lists.newArrayList();
 		for(String category : config.getCategoryNames())

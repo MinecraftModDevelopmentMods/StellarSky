@@ -29,7 +29,7 @@ public class StellarTickHandler {
 	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
 		if(e.phase == TickEvent.Phase.START){
-			World world = StellarSky.proxy.getDefWorld();
+			World world = StellarSky.PROXY.getDefWorld();
 			
 			if(world != null) {				
 				StellarManager manager = StellarManager.getManager(world);
@@ -38,7 +38,7 @@ public class StellarTickHandler {
 					StellarScene dimManager = StellarScene.getScene(world);
 					if(dimManager != null) {
 						dimManager.update(world, world.getWorldTime(), world.getTotalWorldTime());
-						StellarSky.proxy.updateTick();
+						StellarSky.PROXY.updateTick();
 					}
 				}
 			}

@@ -30,7 +30,7 @@ public class CelestialManager {
 	}
 	
 	public void initializeClient(ClientSettings settings) {		
-		StellarSky.logger.info("Initializing Celestial Layers with Client Settings...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Celestial Layers with Client Settings...");
 		String layerName = null;
 		try {
 			for(StellarObjectContainer layer : this.layers) {
@@ -38,15 +38,15 @@ public class CelestialManager {
 				layer.getType().initializeClient(layerName != null? settings.getSubConfig(layerName) : null, layer);
 			}
 		} catch(Exception exception) {
-	    	StellarSky.logger.fatal("Failed to initialize Celestial Layer %s by Exception %s",
+	    	StellarSky.INSTANCE.getLogger().fatal("Failed to initialize Celestial Layer %s by Exception %s",
 	    			layerName, exception.toString());
 			Throwables.propagate(exception);
 		}
-    	StellarSky.logger.info("Successfully initialized Celestial Layers with Client Settings!");
+    	StellarSky.INSTANCE.getLogger().info("Successfully initialized Celestial Layers with Client Settings!");
 	}
 	
 	public void initializeCommon(ServerSettings settings) {
-		StellarSky.logger.info("Initializing Celestial Layers with Common Settings...");
+		StellarSky.INSTANCE.getLogger().info("Initializing Celestial Layers with Common Settings...");
 		String layerName = null;
 		try {
 			for(StellarObjectContainer layer : this.layers) {
@@ -54,24 +54,13 @@ public class CelestialManager {
 				layer.getType().initializeCommon(layerName != null? settings.getSubConfig(layerName) : null, layer);
 			}
 		} catch(Exception exception) {
-	    	StellarSky.logger.fatal("Failed to initialize Celestial Layer %s by Exception %s",
+	    	StellarSky.INSTANCE.getLogger().fatal("Failed to initialize Celestial Layer %s by Exception %s",
 	    			layerName, exception.toString());
 			Throwables.propagate(exception);
 		}
-    	StellarSky.logger.info("Successfully initialized Celestial Layers with Common Settings!");
+    	StellarSky.INSTANCE.getLogger().info("Successfully initialized Celestial Layers with Common Settings!");
     	this.commonInitialized = true;
 	}
-	
-	/*public void reloadClientSettings(ClientSettings settings) {
-		StellarSky.logger.info("Reloading Client Settings...");
-		
-		for(StellarObjectContainer layer : this.layers) {
-			String layerName = layer.getConfigName();
-			layer.reloadClientSettings(settings, layerName != null? settings.getSubConfig(layerName) : null);
-		}
-
-		StellarSky.logger.info("Client Settings reloaded.");
-	}*/
 	
 	public void update(double year) {
 		for(StellarObjectContainer layer : this.layers)

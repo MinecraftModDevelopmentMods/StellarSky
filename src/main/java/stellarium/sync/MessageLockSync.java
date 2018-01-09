@@ -31,10 +31,10 @@ public class MessageLockSync implements IMessage {
 
 		@Override
 		public IMessage onMessage(final MessageLockSync message, MessageContext ctx) {
-			StellarSky.proxy.addScheduledTask(new Runnable() {
+			StellarSky.PROXY.addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
-					StellarManager.getManager(StellarSky.proxy.getDefWorld()).setLocked(message.locked);
+					StellarManager.getManager(StellarSky.PROXY.getDefWorld()).setLocked(message.locked);
 				}
 			});
 			return null;

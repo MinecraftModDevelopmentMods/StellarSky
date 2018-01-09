@@ -91,7 +91,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 		this.brightnessPower = 1.0f / ((float)this.brightnessContrast);
 		this.invSpriteScale = 1.0f / (float)propSpriteScale.getDouble();
 		this.invSpriteScale2 = 1.0 / Spmath.sqr(propSpriteScale.getDouble());
-		
+
 		cache.initialize(this.brightnessPower);
 	}
 	

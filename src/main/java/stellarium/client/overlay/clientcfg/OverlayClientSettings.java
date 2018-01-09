@@ -63,7 +63,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 	public void initialize(Minecraft mc, SettingsOverlaySettings settings) {
 		this.mc = mc;
 		this.settings = settings;
-		this.notified = StellarSky.instance.getCelestialConfigManager();
+		this.notified = StellarSky.INSTANCE.getCelestialConfigManager();
 		
 		this.handler = new DefCfgHierarchyHandler(SettingSpecific.generateModel(), this);
 		
@@ -350,7 +350,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 
 		@Override
 		public void onClicked(int eventButton) {
-			World world = StellarSky.proxy.getDefWorld();
+			World world = StellarSky.PROXY.getDefWorld();
 			final boolean locked = StellarManager.getManager(world).isLocked();
 			String message = locked? "stellarsky.gui.unlock" : "stellarsky.gui.lock";
 			
@@ -382,7 +382,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 
 		@Override
 		public String setupMain(boolean mouseOver, IRenderer renderer) {
-			World world = StellarSky.proxy.getDefWorld();
+			World world = StellarSky.PROXY.getDefWorld();
 			boolean locked = StellarManager.getManager(world).isLocked();
 			return locked? "locked" : "unlocked";
 		}
@@ -399,7 +399,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 
 		@Override
 		public StringFormat getTooltipInfo(float ratioX, float ratioY) {
-			World world = StellarSky.proxy.getDefWorld();
+			World world = StellarSky.PROXY.getDefWorld();
 			boolean locked = StellarManager.getManager(world).isLocked();
 			return new StringFormat(DefaultTooltipController.formatWarning + (locked? "stellarsky.gui.unlock" : "stellarsky.gui.lock")
 					+ CfgConstants.SUFFIX_TOOLTIP);

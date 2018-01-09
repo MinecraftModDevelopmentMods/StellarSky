@@ -54,7 +54,7 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	
 	@SideOnly(Side.CLIENT)
 	private void loadMessierData() throws IOException {
-		StellarSky.logger.info("Loading Messier Objects...");
+		StellarSky.INSTANCE.getLogger().info("Loading Messier Objects...");
 		
 		InputStream inp = LayerDeepSky.class.getResourceAsStream(messierParent + "messier.json");
 		String[] read = gson.fromJson(new BufferedReader(new InputStreamReader(inp)), String[].class);
@@ -68,7 +68,7 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 		
 		inp.close();
 		
-		StellarSky.logger.info("Loaded Messier Objects.");
+		StellarSky.INSTANCE.getLogger().info("Loaded Messier Objects.");
 	}
 
 	@Override

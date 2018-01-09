@@ -52,7 +52,7 @@ public final class StellarManager extends WorldSavedData {
 
 	
 	private void loadSettingsFromConfig() {
-		this.settings = (ServerSettings) StellarSky.proxy.getServerSettings().copy();
+		this.settings = (ServerSettings) StellarSky.PROXY.getServerSettings().copy();
 		this.markDirty();
 	}
 	
@@ -86,11 +86,11 @@ public final class StellarManager extends WorldSavedData {
 	
 	public void setup(CelestialManager manager) {
 		if(!this.setup) {
-			StellarSky.logger.info("Starting Common Initialization...");
+			StellarSky.INSTANCE.getLogger().info("Starting Common Initialization...");
 			this.celestialManager = manager;
-			StellarSky.proxy.setupStellarLoad(this);
+			StellarSky.PROXY.setupStellarLoad(this);
 			manager.initializeCommon(this.settings);
-			StellarSky.logger.info("Common Initialization Ended.");
+			StellarSky.INSTANCE.getLogger().info("Common Initialization Ended.");
 		}
 		
 		this.setup = true;

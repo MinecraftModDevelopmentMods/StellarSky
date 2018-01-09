@@ -49,7 +49,7 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	@Override
 	public void initializeClient(IConfigHandler config,
 			StellarObjectContainer<BgStar, IConfigHandler> container) throws IOException {
-		this.loadStarData(StellarSky.proxy.getClientSettings().mag_Limit);
+		this.loadStarData(StellarSky.PROXY.getClientSettings().mag_Limit);
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 		//Counter Variable
 		int i, j, k;
 		
-		StellarSky.logger.info("Loading Bright Stars Data...");
+		StellarSky.INSTANCE.getLogger().info("Loading Bright Stars Data...");
 		
 		stars.clear();
 		
@@ -151,7 +151,7 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	    
 	    str=null;
 	    
-	    StellarSky.logger.info("Bright Stars are Loaded!");
+	    StellarSky.INSTANCE.getLogger().info("Bright Stars are Loaded!");
 	    
 	    IsInitialized=true;
 	}

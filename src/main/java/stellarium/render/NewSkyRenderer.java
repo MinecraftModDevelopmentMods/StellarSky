@@ -42,8 +42,8 @@ public class NewSkyRenderer extends IRenderHandler {
 		SkyRenderInformation info = new SkyRenderInformation(mc, world, partialTicks,
 				new ViewerInfo(coordinate, sky, scope, filter, viewer));
 
-		renderer.preRender(StellarSky.proxy.getClientSettings(), info);
+		renderer.preRender(StellarSky.PROXY.getClientSettings(), info);
 		renderer.renderPass(this.model, null, info);
-		renderer.postRender(StellarSky.proxy.getClientSettings(), info);
+		renderer.postRender(StellarSky.PROXY.getClientSettings(), info);
 	}
 }

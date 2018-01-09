@@ -39,18 +39,22 @@ public class StellarSky {
 
 	// The instance of Stellar Sky
 	@Instance(StellarSkyReferences.modid)
-	public static StellarSky instance;
+	public static StellarSky INSTANCE;
 
 	@SidedProxy(clientSide="stellarium.ClientProxy", serverSide="stellarium.CommonProxy")
-	public static IProxy proxy;
+	public static IProxy PROXY;
 
-	public static Logger logger;
 
+	private Logger logger;
 	private ConfigManager celestialConfigManager;
 	private StellarForgeEventHook eventHook = new StellarForgeEventHook();
 	private StellarTickHandler tickHandler = new StellarTickHandler();
 	private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
 	private StellarNetworkManager networkManager;
+
+	public Logger getLogger() {
+		return this.logger;
+	}
 
 	public StellarNetworkManager getNetworkManager() {
 		return this.networkManager;
@@ -62,15 +66,15 @@ public class StellarSky {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) { 
-		logger = event.getModLog();
+		this.logger = event.getModLog();
 
 		this.celestialConfigManager = new ConfigManager(
 				StellarSkyReferences.getConfiguration(event.getModConfigurationDirectory(),
 						StellarSkyReferences.celestialSettings));
 
 
-		proxy.setupCelestialConfigManager(this.celestialConfigManager);
-		proxy.preInit(event);
+		PROXY.setupCelestialConfigManager(this.celestialConfigManager);
+		PROXY.preInit(event);
 
 		this.networkManager = new StellarNetworkManager();
 
@@ -102,13 +106,13 @@ public class StellarSky {
 
 	@EventHandler
 	public void load(FMLInitializationEvent event) throws IOException {
-		proxy.load(event);
+		PROXY.load(event);
 	}
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		celestialConfigManager.syncFromFile();
-		proxy.postInit(event);
+		PROXY.postInit(event);
 	}
 
 	@EventHandler

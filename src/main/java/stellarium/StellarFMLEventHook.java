@@ -11,7 +11,7 @@ public class StellarFMLEventHook {
 	public void onSyncConfig(ConfigChangedEvent.OnConfigChangedEvent event)
 	{
 		if(StellarSkyReferences.modid.equals(event.getModID()))
-			StellarSky.instance.getCelestialConfigManager().syncFromGUI();
+			StellarSky.INSTANCE.getCelestialConfigManager().syncFromGUI();
 	}
 	
 	@SubscribeEvent
@@ -23,7 +23,7 @@ public class StellarFMLEventHook {
 	@SubscribeEvent
 	public void handleNotHave(FMLNetworkEvent.CustomPacketRegistrationEvent event) {
 		if(event.getOperation().equals("REGISTER") && !event.getRegistrations().contains(
-				StellarSky.instance.getNetworkManager().getID())
+				StellarSky.INSTANCE.getNetworkManager().getID())
 				&& event.getSide().isClient())
 			this.handleNotHave();
 	}

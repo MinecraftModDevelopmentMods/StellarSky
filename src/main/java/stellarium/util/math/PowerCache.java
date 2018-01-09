@@ -21,11 +21,11 @@ public class PowerCache {
 		cnt = 0;
 		for(int i = MANTISSA_CACHE_NUM; i < 2 * MANTISSA_CACHE_NUM; i++)
 			this.mantissaCache[cnt++] = (float) Math.pow(Math.scalb(i, -BITS_TO_INSPECT), power);
-		
-		StellarSky.logger.info("Initialized Power Cache.");
-		StellarSky.logger.info(String.format("Test #1: cached %e compared with expected %e", this.getPower(1.0f), Math.pow(1.0, power)));
-		StellarSky.logger.info(String.format("Test #2: cached %e compared with expected %e", this.getPower(2.512f), Math.pow(2.512, power)));
-		StellarSky.logger.info(String.format("Test #3: cached %e compared with expected %e", this.getPower(2512.0f), Math.pow(2512.0, power)));
+
+		StellarSky.INSTANCE.getLogger().info("Initialized Power Cache.");
+		StellarSky.INSTANCE.getLogger().info(String.format("Test #1: cached %e compared with expected %e", this.getPower(1.0f), Math.pow(1.0, power)));
+		StellarSky.INSTANCE.getLogger().info(String.format("Test #2: cached %e compared with expected %e", this.getPower(2.512f), Math.pow(2.512, power)));
+		StellarSky.INSTANCE.getLogger().info(String.format("Test #3: cached %e compared with expected %e", this.getPower(2512.0f), Math.pow(2512.0, power)));
 	}
 
 	public float getPower(float base) {

@@ -42,7 +42,7 @@ public class CommandLock extends CommandBase {
 		
 		StellarManager manager = StellarManager.getManager(server.getEntityWorld());
 		manager.setLocked(lock);
-		StellarSky.instance.getNetworkManager().sendLockInformation(lock);
+		StellarSky.INSTANCE.getNetworkManager().sendLockInformation(lock);
 	}
 
 }
