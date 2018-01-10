@@ -52,7 +52,6 @@ public class StellarSky {
 	private ConfigManager celestialConfigManager;
 	private StellarForgeEventHook eventHook = new StellarForgeEventHook();
 	private StellarTickHandler tickHandler = new StellarTickHandler();
-	private StellarFMLEventHook fmlEventHook = new StellarFMLEventHook();
 	private StellarNetworkManager networkManager;
 
 	public Logger getLogger() {
@@ -83,7 +82,6 @@ public class StellarSky {
 
 		MinecraftForge.EVENT_BUS.register(this.eventHook);
 		MinecraftForge.EVENT_BUS.register(this.tickHandler);
-		MinecraftForge.EVENT_BUS.register(this.fmlEventHook);
 
 		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
 		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());
