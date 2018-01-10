@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,39 +30,13 @@ public class StellarForgeEventHook {
 
 		// Now setup StellarManager here
 		StellarManager manager = StellarManager.loadOrCreateManager(world);
-		if(world.isRemote) this.onClientLoad(world, manager);
-		else this.onServerLoad(world, manager);
-	}
-
-	private void onClientLoad(World world, StellarManager manager) {
-		if(!StellarSky.INSTANCE.existOnServer())
-			handleNotHaveModOnServer(world, manager);
-	}
-
-	private void onServerLoad(World world, StellarManager manager) {
-		manager.setup(new CelestialManager(false));
-	}
-
-	@SubscribeEvent
-	public void onWorldLoad(WorldEvent.Load event) {
-		if(event.getWorld().isRemote)
-			this.populateRenderer(event.getWorld(), StellarManager.getManager(event.getWorld()));
-	}
-
-	private static void populateRenderer(World world, StellarManager manager) {
-		// This is separate as world capability should've been established.
-		StellarScene scene = StellarScene.getScene(world);
-		if(scene != null)
-			StellarSky.PROXY.setupSkyRenderer(world, scene.getSettings().getSkyRendererType());
-	}
-
-
-	private void handleNotHaveModOnServer(@Nonnull World world, @Nonnull StellarManager manager) {
-		manager.handleServerWithoutMod();
-		
-		if(manager.getCelestialManager() == null) {
-			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
-			this.populateRenderer(world, manager);
+		if(!world.isRemote)
+			manager.setup(new CelestialManager(false));
+		// On client and when the server does not exist
+		else if(!StellarSky.INSTANCE.existOnServer()) {
+			manager.handleServerWithoutMod();
+			if(manager.getCelestialManager() == null)
+				manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 		}
 	}
 
@@ -70,6 +45,17 @@ public class StellarForgeEventHook {
 		if(event.getObject().isRemote)
 			event.addCapability(new ResourceLocation(
 					StellarSkyReferences.MODID, "SkyRenderer"), new RendererHolder());
+	}
+
+	@SubscribeEvent
+	public void onWorldLoad(WorldEvent.Load event) {
+		if(event.getWorld().isRemote) {
+			World world = event.getWorld();
+			// World capability should've been established here.
+			StellarScene scene = StellarScene.getScene(world);
+			if(scene != null)
+				StellarSky.PROXY.setupSkyRenderer(world, scene.getSettings().getSkyRendererType());
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -88,4 +74,9 @@ public class StellarForgeEventHook {
 		}
 	}
 
+	@SubscribeEvent
+	public void onSyncConfig(ConfigChangedEvent.OnConfigChangedEvent event) {
+		if(StellarSkyReferences.MODID.equals(event.getModID()))
+			StellarSky.INSTANCE.getCelestialConfigManager().syncFromGUI();
+	}
 }

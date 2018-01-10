@@ -4,6 +4,7 @@ import net.minecraft.world.World;
 import stellarapi.api.ICelestialPack;
 import stellarapi.api.ICelestialScene;
 import stellarapi.api.world.worldset.WorldSet;
+import stellarapi.impl.celestial.DefaultCelestialPack;
 
 public enum StellarPack implements ICelestialPack {
 	INSTANCE;
@@ -15,8 +16,8 @@ public enum StellarPack implements ICelestialPack {
 
 	@Override
 	public ICelestialScene getScene(WorldSet worldSet, World world, boolean vanillaServer) {
-		// TODO Adapts to the Stellar API - vanilla check can also be done with it
-		// Or does it mean just lack of Stellar API?
+		// TODO AA Stellar API side - fix the vanillaServer parameter for server default - clinent non-default case
+		// Or use detecting the server pack.
 		return new StellarScene(world, worldSet);
 	}
 

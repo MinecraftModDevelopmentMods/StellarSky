@@ -60,7 +60,7 @@ public final class StellarScene implements ICelestialScene {
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound nbt = new NBTTagCompound();
 
-		// When it's the first one
+		// When it's the first world, setup the Stellar Manager
 		if(world.provider.getDimension() == 0 || world.isRemote) {
 			nbt.setTag("main", StellarManager.getManager(this.world).serializeNBT());
 		}

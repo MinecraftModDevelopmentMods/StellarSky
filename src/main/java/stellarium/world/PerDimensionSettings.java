@@ -116,7 +116,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		super.setupConfig(config, category);
 
 		propStellarSkyEnabled.setComment("Determine whether or not to enable Stellar Sky on this WorldSet.");
-		propStellarSkyEnabled.setRequiresWorldRestart(true);
+		propStellarSkyEnabled.setRequiresWorldRestart(true); // TODO Localize
 		propStellarSkyEnabled.setLanguageKey("config.property.dimension.stellarskyenabled");
 
 		propPatchProvider.setComment("Determine whether or not patch provider. Cannot adjust longitude and latitude when this is false.");
@@ -229,7 +229,8 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	public void loadFromConfig(Configuration config, String category) {
 		super.loadFromConfig(config, category);
 
-		if(propStellarSkyEnabled.getBoolean() && !this.doesPatchProvider()) {
+		// TODO Config per-dim config is not going to be default when the server lacks Stellar Sky. Something has to be done.
+		if(!this.doesPatchProvider()) {
 			propLatitude.setAsDefault();
 			propLongitude.setAsDefault();
 			propAtmExtinctionFactor.setAsDefault();
@@ -239,12 +240,12 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 			propLightPollutionRate.setAsDefault();
 			propMinimumSkyRenderBrightness.setAsDefault();
 		}
-       	
-       	this.latitude = propLatitude.getDouble();
-   		this.longitude = propLongitude.getDouble();
 
-   		if(propStellarSkyEnabled.getBoolean()) {
-   			SAPIReferences.setCelestialPack(this.worldSet, StellarPack.INSTANCE);
+		this.latitude = propLatitude.getDouble();
+		this.longitude = propLongitude.getDouble();
+
+		if(propStellarSkyEnabled.getBoolean()) {
+			SAPIReferences.setCelestialPack(this.worldSet, StellarPack.INSTANCE);
    		} else if(this.worldSet == SAPIReferences.exactOverworld()) {
    			SAPIReferences.setCelestialPack(this.worldSet, DefaultCelestialPack.INSTANCE);
    		}
