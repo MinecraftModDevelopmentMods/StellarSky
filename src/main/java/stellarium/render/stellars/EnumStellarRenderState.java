@@ -28,12 +28,7 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	Initial() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			if(resInfo.isFrameBufferEnabled) {
-				return PrepareDominateScatter;
-			} else {
-				GlStateManager.shadeModel(GL11.GL_SMOOTH);
-				return SetupSurfaceScatter;
-			}
+			return PrepareDominateScatter;
 		}
 	},
 
@@ -53,12 +48,22 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 	FinalizeDominateScatter() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			if(resInfo.isFrameBufferEnabled)
-				return BindDominateScatter;
-			else {
-				endRendering(resInfo);
-				return null;
-			}
+			return BindDominateScatter;
+		}
+	},
+
+	//Dominate Scatter Binding
+	BindDominateScatter() {
+		@Override
+		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
+			resInfo.setAtmCallList(-1);
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
+			return SetupSurfaceScatter;
+		}
+	}, UnbindDominateScatter() {
+		@Override
+		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
+			return RenderCachedAtmosphere;
 		}
 	},
 
@@ -119,12 +124,10 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
 			OpenGlVersionUtil.disablePointSprite();
 			GlStateManager.shadeModel(GL11.GL_SMOOTH);
-			if(resInfo.isFrameBufferEnabled)
-				return UnbindDominateScatter;
-			else return PrepareDominateScatter;
+			return UnbindDominateScatter;
 		}
 	},
-	
+
 	RenderCachedAtmosphere() {
 		@Override
 		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {			
@@ -132,21 +135,6 @@ public enum EnumStellarRenderState implements IRenderState<Void, StellarRenderIn
 			return null;
 		}
 	},
-
-	//Dominate Scatter Binding
-	BindDominateScatter() {
-		@Override
-		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			resInfo.setAtmCallList(-1);
-			GlStateManager.shadeModel(GL11.GL_SMOOTH);
-			return SetupSurfaceScatter;
-		}
-	}, UnbindDominateScatter() {
-		@Override
-		public IRenderState<Void, StellarRenderInformation> transitionTo(Void pass, StellarRenderInformation resInfo) {
-			return RenderCachedAtmosphere;
-		}
-	}
 	;
 
 	private static void endRendering(StellarRenderInformation resInfo) {

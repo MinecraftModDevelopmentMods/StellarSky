@@ -23,7 +23,7 @@ public class StellarSkyAPI {
 	private IWorldProviderReplacer defaultReplacer;
 	private Map<String, ISkyType> skyTypes = Maps.newHashMap();
 	private List<ISkyRenderType> rendererTypes = Lists.newArrayList();
-	
+
 	private static StellarSkyAPI INSTANCE = new StellarSkyAPI();
 	
 	/**

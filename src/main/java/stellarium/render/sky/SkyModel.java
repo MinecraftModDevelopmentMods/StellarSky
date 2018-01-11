@@ -1,5 +1,6 @@
 package stellarium.render.sky;
 
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.world.World;
 import stellarium.client.ClientSettings;
 import stellarium.display.DisplayModel;
@@ -38,6 +39,9 @@ public class SkyModel {
 	}
 	
 	public SkyModel(CelestialManager clientCelestialManager) {
+		if(!OpenGlHelper.isFramebufferEnabled())
+			throw new IllegalStateException("FBO must be enabled for Stellar Sky to run.");
+
 		this.model = new StellarModel(clientCelestialManager);
 		this.displayModel = new DisplayModel();
 		this.landscapeModel = new LandscapeModel();

@@ -10,7 +10,6 @@ public class StellarRenderInformation {
 	public final Minecraft minecraft;
 	public final WorldClient world;
 	public final float partialTicks;
-	public final boolean isFrameBufferEnabled;
 	public final float deepDepth;
 
 	public final ViewerInfo info;
@@ -20,9 +19,8 @@ public class StellarRenderInformation {
 		this.minecraft = info.minecraft;
 		this.world = info.world;
 		this.partialTicks = info.partialTicks;
-		this.isFrameBufferEnabled = info.isFrameBufferEnabled;
 		this.deepDepth = info.deepDepth;
-		
+
 		this.info = info.info;
 		this.screenSize = info.screenSize;
 	}

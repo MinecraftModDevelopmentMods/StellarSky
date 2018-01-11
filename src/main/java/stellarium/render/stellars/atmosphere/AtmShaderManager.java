@@ -25,29 +25,23 @@ public class AtmShaderManager {
 
 	private float rainStrengthFactor, weatherFactor;
 	private double skyBrightness, dominationScale;
-	private boolean isFrameBufferEnabled;
 	
-	private EnumMap<EnumStellarPass, SwitchableShaders> shaderMap = Maps.newEnumMap(EnumStellarPass.class);
+	private EnumMap<EnumStellarPass, IShaderObject> shaderMap = Maps.newEnumMap(EnumStellarPass.class);
 
 	public void reloadShaders() {
 		shaderMap.clear();
 		
-		SwitchableShaders atmosphere = this.injectAtmosphereHook(
-				new SwitchableShaders(
-						ShaderHelper.getInstance().buildShader("atmospherespcoord", StellarSkyResources.vertexAtmosphereSpCoord, StellarSkyResources.fragmentAtmosphereSpCoord),
-						ShaderHelper.getInstance().buildShader("atmospheresimple", StellarSkyResources.vertexAtmosphereSimple, StellarSkyResources.fragmentAtmosphereSimple)));
-		
-		SwitchableShaders scatterFuzzy = new SwitchableShaders(
-				ShaderHelper.getInstance().buildShader("fuzzymapped", StellarSkyResources.vertexScatterFuzzyMapped, StellarSkyResources.fragmentScatterFuzzyMapped),
-				ShaderHelper.getInstance().buildShader("fuzzyskylight", StellarSkyResources.vertexScatterFuzzySkylight, StellarSkyResources.fragmentScatterFuzzySkylight));
+		IShaderObject atmosphere = this.injectAtmosphereHook(
+				ShaderHelper.getInstance().buildShader("atmospherespcoord", StellarSkyResources.vertexAtmosphereSpCoord, StellarSkyResources.fragmentAtmosphereSpCoord));
 
-		SwitchableShaders scatterPoint = new SwitchableShaders(
-				ShaderHelper.getInstance().buildShader("pointmapped", StellarSkyResources.vertexScatterPointMapped, StellarSkyResources.fragmentScatterPointMapped),
-				ShaderHelper.getInstance().buildShader("pointskylight", StellarSkyResources.vertexScatterPointSkylight, StellarSkyResources.fragmentScatterPointSkylight));
+		IShaderObject scatterFuzzy = ShaderHelper.getInstance().buildShader(
+				"fuzzymapped", StellarSkyResources.vertexScatterFuzzyMapped, StellarSkyResources.fragmentScatterFuzzyMapped);
 
-		SwitchableShaders srcTexture = new SwitchableShaders(
-				ShaderHelper.getInstance().buildShader("srctexturemapped", StellarSkyResources.vertexTextureMapped, StellarSkyResources.fragmentTextureMapped),
-				ShaderHelper.getInstance().buildShader("srctextureskylight", StellarSkyResources.vertexTextureSkylight, StellarSkyResources.fragmentTextureSkylight));
+		IShaderObject scatterPoint = ShaderHelper.getInstance().buildShader(
+				"pointmapped", StellarSkyResources.vertexScatterPointMapped, StellarSkyResources.fragmentScatterPointMapped);
+
+		IShaderObject srcTexture = ShaderHelper.getInstance().buildShader(
+				"srctexturemapped", StellarSkyResources.vertexTextureMapped, StellarSkyResources.fragmentTextureMapped);
 
 
 		shaderMap.put(EnumStellarPass.DominateScatter, atmosphere);
@@ -57,7 +51,7 @@ public class AtmShaderManager {
 		shaderMap.put(EnumStellarPass.OpaqueScatter, scatterFuzzy);
 	}
 
-	private SwitchableShaders injectAtmosphereHook(SwitchableShaders shader) {
+	private IShaderObject injectAtmosphereHook(IShaderObject shader) {
 		this.cameraHeight = shader.getField("cameraHeight");
 		this.outerRadius = shader.getField("outerRadius");
 		this.innerRadius = shader.getField("innerRadius");
@@ -74,9 +68,7 @@ public class AtmShaderManager {
 		return shader;
 	}
 
-	public void updateWorldInfo(StellarRenderInformation info) {
-		this.isFrameBufferEnabled = info.isFrameBufferEnabled;
-		
+	public void updateWorldInfo(StellarRenderInformation info) {		
 		float rainStrength = info.world.getRainStrength(info.partialTicks);
 		this.rainStrengthFactor = rainStrength > 0.0f? 0.05f + rainStrength * 0.15f : 0.0f;
 		this.weatherFactor = (float) (1.0f - Math.sqrt(rainStrength) * 0.8f);
@@ -89,41 +81,27 @@ public class AtmShaderManager {
 	}
 	
 	public IShaderObject bindShader(AtmosphereModel model, EnumStellarPass pass) {
-		SwitchableShaders toBind = shaderMap.get(pass);
+		IShaderObject toBind = shaderMap.get(pass);
 		this.setupShader(toBind, pass, model);
 		return toBind;
 	}
 	
 	private static final String dominationMapField = "skyDominationMap";
-	private static final String skyBrightnessField = "skyBrightness";
 	private static final String defaultTexture = "texture";
 	private static final String dominationScaleField = "dominationscale";
 
-	private void setupShader(SwitchableShaders shader, EnumStellarPass pass, AtmosphereModel model) {
+	private void setupShader(IShaderObject shader, EnumStellarPass pass, AtmosphereModel model) {
 		if(pass != EnumStellarPass.DominateScatter) {
-			if(this.isFrameBufferEnabled) {
-				shader.switchShader(0);
-				shader.bindShader();
-				shader.getCurrent().getField(dominationMapField).setInteger(1);
-			} else {
-				shader.switchShader(1);
-				shader.bindShader();
-				shader.getCurrent().getField(skyBrightnessField).setDouble(this.skyBrightness);
-			}
+			shader.bindShader();
+			shader.getField(dominationMapField).setInteger(1);
 
 			if(pass.hasTexture)
 				shader.getField(defaultTexture).setInteger(0);
 
 			shader.getField(dominationScaleField).setDouble(this.dominationScale);
 		} else {
-			if(this.isFrameBufferEnabled) {
-				shader.switchShader(0);
-			} else {
-				shader.switchShader(1);
-			}
-			
 			shader.bindShader();
-			
+
 			cameraHeight.setDouble(model.getHeight());
 			outerRadius.setDouble(model.getOuterRadius());
 			innerRadius.setDouble(model.getInnerRadius());

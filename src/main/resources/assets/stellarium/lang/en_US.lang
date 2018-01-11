@@ -225,8 +225,8 @@ config.property.atmosphere.interpolation.tooltip=Enabling this will interpolate 
 config.category.dimension=Dimension Settings
 config.category.dimension.tooltip=Configurations for Dimension Settings.
 
-config.property.dimension.applied=Applied Dimensions
-config.property.dimension.applied.tooltip=List of dimensions which will get applied the stellar sky settings & rendering. To adjust per dimension settings on Gui, refresh the page by getting out to modlist and opening config gui again.
+config.property.dimension.stellarskyenabled=Enabled (Stellar Sky Settings)
+config.property.dimension.stellarskyenabled.tooltip=Determine whether or not to enable Stellar Sky on this WorldSet
 
 config.property.dimension.patchprovider=Patch Provider
 config.property.dimension.patchprovider.tooltip=Determine whether or not patch provider. Cannot adjust longitude and latitude when this is false.

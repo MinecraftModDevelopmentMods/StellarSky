@@ -27,7 +27,7 @@ public enum EnumSkyRenderState implements IRenderState<Void, SkyRenderInformatio
 
 			GlStateManager.pushMatrix();
 			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F); // e,n,z
+			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F); // E, N, Z coordinates
 
 			GlStateManager.disableDepth();
 			GlStateManager.depthMask(false);

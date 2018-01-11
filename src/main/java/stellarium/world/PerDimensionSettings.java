@@ -78,7 +78,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		
 		this.propAllowRefraction = new ConfigPropertyBoolean("Allow_Atmospheric_Refraction", "allowRefraction", skyType.getDefaultBoolean(EnumSkyProperty.AllowRefraction));
 
-		// TODO Fix Sunlight Multiplier Property
+		// TODO Fix Sunlight Multiplier Property - Isn't it fixed?
 		this.propSunlightMultiplier = new ConfigPropertyDouble("SunLight_Multiplier", "sunlightMultiplier", 1.0);
        	
 		this.propSkyDispersionRate = new ConfigPropertyDouble("Sky_Dispersion_Rate", "skyDispersionRate", skyType.getDefaultDouble(EnumSkyProperty.SkyDispersionRate));
