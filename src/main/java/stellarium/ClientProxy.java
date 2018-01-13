@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -31,10 +30,9 @@ import stellarium.client.StellarClientFMLHook;
 import stellarium.client.overlay.StellarSkyOverlays;
 import stellarium.client.overlay.clientcfg.OverlayClientSettingsType;
 import stellarium.client.overlay.clock.OverlayClockType;
-import stellarium.lib.render.RendererRegistry;
-import stellarium.render.NewSkyRenderer;
-import stellarium.render.sky.EnumSkyRenderState;
+import stellarium.render.GenericSkyRenderer;
 import stellarium.render.sky.SkyModel;
+import stellarium.render.sky.SkyRenderer;
 import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
@@ -81,8 +79,6 @@ public class ClientProxy extends CommonProxy implements IProxy {
 
 		this.skyModel = new SkyModel(this.celestialManager);
 		skyModel.initializeSettings(this.clientSettings);
-
-		EnumSkyRenderState.constructRender();
 	}
 
 	@Override
@@ -124,18 +120,19 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public void setupDimensionLoad(StellarScene dimManager) {
 		skyModel.dimensionLoad(dimManager);
 	}
-	
+
 	public void onSettingsChanged(ClientSettings settings) {
-		skyModel.updateSettings(this.clientSettings);
-		RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class).initialize(settings);
+		skyModel.updateSettings(settings);
+		SkyRenderer.INSTANCE.initialize(settings);
 	}
 	
 	@Override
 	public void setupSkyRenderer(World world, String skyRenderType) {
 		skyModel.updateSettings(this.clientSettings);
-		RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class).initialize(this.clientSettings);
+		// TODO ANOW Move initialization
+		SkyRenderer.INSTANCE.initialize(this.clientSettings);
 
-		IAdaptiveRenderer renderer = StellarSkyAPI.getRendererFor(skyRenderType, new NewSkyRenderer(this.skyModel));
+		IAdaptiveRenderer renderer = StellarSkyAPI.getRendererFor(skyRenderType, new GenericSkyRenderer(this.skyModel));
 		world.getCapability(StellarSkyAPI.SKY_RENDER_HOLDER, null).setRenderer(renderer);
 	}
 

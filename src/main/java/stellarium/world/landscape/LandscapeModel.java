@@ -3,11 +3,9 @@ package stellarium.world.landscape;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
-import stellarium.lib.hierarchy.Hierarchy;
 import stellarium.util.math.Allocator;
 import stellarium.world.StellarScene;
 
-@Hierarchy
 public class LandscapeModel {
 	protected Vector3[][] displayvec = null;
 	protected int latn, longn;

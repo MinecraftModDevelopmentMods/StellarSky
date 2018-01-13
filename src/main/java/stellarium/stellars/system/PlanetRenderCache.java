@@ -40,7 +40,7 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 		checker.radius(this.size);
 		this.shouldRender = checker.checkRendered();
 		this.shouldRenderSurface = this.shouldRender && checker.checkEnoughRadius();
-		// TODO planet rendering, which needs over 100x multiplier
+		// MAYBE planet rendering, which needs over 100x multiplier
 		this.brightness *= 0.5f;
 	}
 

@@ -7,12 +7,10 @@ import com.google.common.collect.Lists;
 import net.minecraft.world.World;
 import stellarapi.api.lib.config.SimpleHierarchicalConfig;
 import stellarium.client.ClientSettings;
-import stellarium.lib.hierarchy.Hierarchy;
 import stellarium.stellars.StellarManager;
 import stellarium.view.ViewerInfo;
 import stellarium.world.StellarScene;
 
-@Hierarchy
 public class DisplayModel implements IDisplayInjectable {
 
 	List<Delegate> displayList = Lists.newArrayList();

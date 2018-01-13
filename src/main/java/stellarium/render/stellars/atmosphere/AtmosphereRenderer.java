@@ -4,9 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,15 +12,13 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
-import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.phased.StellarRenderInformation;
 import stellarium.util.OpenGlVersionUtil;
 import stellarium.util.math.Allocator;
 
-public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, EnumAtmospherePass, AtmosphereModel, StellarRenderInformation> {
-
+public enum AtmosphereRenderer {
 	INSTANCE;
 
 	private static final int STRIDE_IN_FLOAT = 8;
@@ -45,7 +41,6 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		this.shaderManager = new AtmShaderManager();
 	}
 
-	@Override
 	public void initialize(AtmosphereSettings settings) {
 		shaderManager.reloadShaders();
 
@@ -74,7 +69,6 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		this.cacheChangedFlag = true;
 	}
 
-	@Override
 	public void preRender(AtmosphereSettings settings, StellarRenderInformation info) {
 		if(this.cacheChangedFlag) {
 			this.reallocList(settings, info.deepDepth);
@@ -84,11 +78,10 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 		shaderManager.updateWorldInfo(info);
 	}
 
-	@Override
-	public void renderPass(AtmosphereModel model, EnumAtmospherePass pass, StellarRenderInformation info) {
+	public void render(AtmosphereModel model, EnumAtmospherePass pass, StellarRenderInformation info) {
 		switch(pass) {
 		case PrepareDominateScatter:			
-			this.prevFramebufferBound = GL11.glGetInteger(OpenGlVersionUtil.framebufferBinding());			
+			this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlVersionUtil.framebufferBinding());			
 			dominateCache.bindFramebuffer(true);
 
 			GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -181,12 +174,6 @@ public enum AtmosphereRenderer implements IGenericRenderer<AtmosphereSettings, E
 
 	private int prevEnabled = GL11.GL_FALSE;
 	private int prevTexture = 0;
-
-	@Override
-	public void postRender(AtmosphereSettings settings, StellarRenderInformation info) {
-
-	}
-
 
 	public void reallocList(AtmosphereSettings settings, double deepDepth) {
 		Vector3[][] displayvec = Allocator.createAndInitialize(settings.fragLong + 1, settings.fragLat+1);

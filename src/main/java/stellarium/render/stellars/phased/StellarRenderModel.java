@@ -6,8 +6,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.world.World;
 import stellarium.client.ClientSettings;
-import stellarium.lib.hierarchy.Hierarchy;
-import stellarium.lib.hierarchy.HierarchyElement;
+import stellarium.render.stellars.StellarChecker;
 import stellarium.render.stellars.access.ICheckedAtmModel;
 import stellarium.render.stellars.layer.StellarLayerModel;
 import stellarium.stellars.StellarManager;
@@ -17,15 +16,13 @@ import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.view.ViewerInfo;
 import stellarium.world.StellarScene;
 
-@Hierarchy
 public class StellarRenderModel {
 
 	//Models for client-only layered objects.
 	private List<StellarLayerModel> baseModels = Lists.newArrayList();
 
 	//Models for in-game objects.
-	@HierarchyElement(type = StellarLayerModel.class)
-	private List<StellarLayerModel> layerModels = Lists.newArrayList();
+	List<StellarLayerModel> layerModels = Lists.newArrayList();
 
 	private StellarChecker checker = new StellarChecker();
 

@@ -7,12 +7,10 @@ import net.minecraftforge.client.ForgeHooksClient;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
-import stellarium.lib.hierarchy.Hierarchy;
 import stellarium.render.stellars.access.ICheckedAtmModel;
 import stellarium.view.ViewerInfo;
 import stellarium.world.StellarScene;
 
-@Hierarchy
 public class AtmosphereModel implements ICheckedAtmModel {
 
 	private float outerRadius = 820.0f;

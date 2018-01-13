@@ -10,7 +10,6 @@ import com.google.common.collect.Maps;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarium.client.ClientSettings;
-import stellarium.lib.hierarchy.Hierarchy;
 import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarCollection;
@@ -24,7 +23,6 @@ import stellarium.stellars.layer.update.IUpdateTracked;
 import stellarium.stellars.layer.update.MetadataUpdateTracker;
 import stellarium.view.ViewerInfo;
 
-@Hierarchy
 public class StellarLayerModel<Obj extends StellarObject> {
 	private StellarObjectContainer container;
 	private StellarCollection<Obj> collection;

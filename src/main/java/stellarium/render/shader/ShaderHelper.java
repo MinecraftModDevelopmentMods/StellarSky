@@ -45,7 +45,7 @@ public class ShaderHelper {
 			//Delete object
 			OpenGlHelper.glDeleteProgram(objectMap.get(id).programId);
 		}
-	 
+
 		vertShader = createShader(vertloc, OpenGlHelper.GL_VERTEX_SHADER);
 		fragShader = createShader(fragloc, OpenGlHelper.GL_FRAGMENT_SHADER);
 

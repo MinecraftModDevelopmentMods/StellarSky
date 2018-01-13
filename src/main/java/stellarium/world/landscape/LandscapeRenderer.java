@@ -5,22 +5,15 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import stellarium.StellarSkyResources;
-import stellarium.client.ClientSettings;
-import stellarium.lib.render.IGenericRenderer;
 import stellarium.render.sky.SkyRenderInformation;
 
-public class LandscapeRenderer implements IGenericRenderer<ClientSettings, Void, LandscapeModel, SkyRenderInformation> {
-	@Override
-	public void initialize(ClientSettings settings) { }
+public enum LandscapeRenderer {
+	INSTANCE;
 
-	@Override
-	public void preRender(ClientSettings settings, SkyRenderInformation info) { }
-
-	@Override
-	public void renderPass(LandscapeModel model, Void pass, SkyRenderInformation info) {
+	public void render(LandscapeModel model, SkyRenderInformation info) {
 		if(!model.rendered)
 			return;
-		
+
 		info.minecraft.renderEngine.bindTexture(StellarSkyResources.resourceLandscape.getLocation());
 		info.worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
@@ -46,8 +39,4 @@ public class LandscapeRenderer implements IGenericRenderer<ClientSettings, Void,
 		
 		GlStateManager.popMatrix();
 	}
-
-	@Override
-	public void postRender(ClientSettings settings, SkyRenderInformation info) { }
-
 }

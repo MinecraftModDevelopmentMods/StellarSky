@@ -1,4 +1,4 @@
-package stellarium.render.stellars.phased;
+package stellarium.render.stellars;
 
 import java.nio.FloatBuffer;
 
@@ -13,6 +13,7 @@ import stellarapi.api.lib.math.Vector3;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
+import stellarium.render.stellars.phased.StellarRenderInformation;
 import stellarium.stellars.OpticsHelper;
 import stellarium.view.ViewerInfo;
 

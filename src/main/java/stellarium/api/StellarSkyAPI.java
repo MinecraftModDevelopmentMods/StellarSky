@@ -29,7 +29,7 @@ public class StellarSkyAPI {
 	/**
 	 * Registers world provider replacer.
 	 * Will be removed on the next version.
-	 * TODO Move to Stellar API
+	 * TODO AA Move to Stellar API
 	 * @param replacer the world provider replacer to register
 	 * */
 	@Deprecated

@@ -3,7 +3,6 @@ package stellarium.display;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import stellarium.render.EnumRenderPass;
 
 
 public class DisplayRenderInfo {

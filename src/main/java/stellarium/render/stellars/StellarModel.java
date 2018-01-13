@@ -2,10 +2,6 @@ package stellarium.render.stellars;
 
 import net.minecraft.world.World;
 import stellarium.client.ClientSettings;
-import stellarium.lib.hierarchy.EnumIDEvaluator;
-import stellarium.lib.hierarchy.Hierarchy;
-import stellarium.lib.hierarchy.HierarchyDistributor;
-import stellarium.lib.hierarchy.HierarchyElement;
 import stellarium.render.stellars.atmosphere.AtmosphereModel;
 import stellarium.render.stellars.phased.StellarRenderModel;
 import stellarium.stellars.StellarManager;
@@ -13,25 +9,11 @@ import stellarium.stellars.layer.CelestialManager;
 import stellarium.view.ViewerInfo;
 import stellarium.world.StellarScene;
 
-@Hierarchy(idEvaluator = "stellarrenderable")
 public class StellarModel {
 
-	@HierarchyElement(type = StellarRenderModel.class)
-	private StellarRenderModel layersModel;
+	final StellarRenderModel layersModel;
+	final AtmosphereModel atmModel;
 
-	@HierarchyElement(type = AtmosphereModel.class)
-	private AtmosphereModel atmModel;
-
-	public static enum EnumStellarRenderable {
-		Stellar,
-		Atmosphere,
-	}
-
-	static {
-		HierarchyDistributor.INSTANCE.registerEvaluator("stellarrenderable",
-				new EnumIDEvaluator(EnumStellarRenderable.class));
-	}
-	
 	public StellarModel(CelestialManager clientCelestialManager) {
 		this.atmModel = new AtmosphereModel();
 		this.layersModel = new StellarRenderModel(clientCelestialManager, this.atmModel);

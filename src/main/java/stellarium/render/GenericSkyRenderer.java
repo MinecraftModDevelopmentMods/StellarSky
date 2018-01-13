@@ -12,24 +12,22 @@ import stellarapi.api.SAPIReferences;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
-import stellarium.lib.render.IGenericRenderer;
-import stellarium.lib.render.RendererRegistry;
+import stellarium.client.ClientSettings;
 import stellarium.render.sky.SkyModel;
 import stellarium.render.sky.SkyRenderInformation;
+import stellarium.render.sky.SkyRenderer;
 import stellarium.view.ViewerInfo;
 
-public class NewSkyRenderer extends IRenderHandler {
+public class GenericSkyRenderer extends IRenderHandler {
 
-	private SkyModel model;
-	
-	public NewSkyRenderer(SkyModel model) {
+	private final SkyModel model;
+
+	public GenericSkyRenderer(SkyModel model) {
 		this.model = model;
 	}
 
 	@Override
 	public void render(float partialTicks, WorldClient world, Minecraft mc) {
-		IGenericRenderer renderer = RendererRegistry.INSTANCE.evaluateRenderer(SkyModel.class);
-
 		Entity viewer = mc.getRenderViewEntity(); // FIXME SLOWER ON DEDICATED GRAPHICS CARD!!!
 
 		ICelestialWorld cWorld = world.getCapability(
@@ -42,8 +40,10 @@ public class NewSkyRenderer extends IRenderHandler {
 		SkyRenderInformation info = new SkyRenderInformation(mc, world, partialTicks,
 				new ViewerInfo(coordinate, sky, scope, filter, viewer));
 
-		renderer.preRender(StellarSky.PROXY.getClientSettings(), info);
-		renderer.renderPass(this.model, null, info);
-		renderer.postRender(StellarSky.PROXY.getClientSettings(), info);
+		ClientSettings settings = StellarSky.PROXY.getClientSettings();
+		SkyRenderer.INSTANCE.preRender(settings, info);
+		SkyRenderer.INSTANCE.render(this.model, info);
 	}
+
+	
 }

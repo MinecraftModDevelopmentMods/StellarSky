@@ -1,4 +1,4 @@
-package stellarium.render.stellars.phased;
+package stellarium.render.stellars;
 
 import net.minecraft.world.World;
 import stellarapi.api.ISkyEffect;

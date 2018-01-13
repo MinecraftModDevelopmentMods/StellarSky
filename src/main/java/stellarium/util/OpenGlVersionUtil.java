@@ -19,7 +19,7 @@ public class OpenGlVersionUtil {
 	private static int rgb16f;
 	private static int floatFormat;
 	private static int framebufferBinding;
-	
+
 	static {
 		ContextCapabilities contextcapabilities = GLContext.getCapabilities();
 		spriteFlag = contextcapabilities.OpenGL20? GL20.GL_POINT_SPRITE : ARBPointSprite.GL_POINT_SPRITE_ARB;

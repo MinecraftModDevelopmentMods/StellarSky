@@ -205,7 +205,6 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 		private boolean flag = false;
 
 		public BufferBuilderPlaceholder(int bufferSizeIn) {
-			// TODO More specific glow rendering detection
 			super(bufferSizeIn);
 		}
 

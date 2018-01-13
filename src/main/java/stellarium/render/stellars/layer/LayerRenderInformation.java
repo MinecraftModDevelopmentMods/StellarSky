@@ -2,10 +2,10 @@ package stellarium.render.stellars.layer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import stellarium.render.stellars.StellarTessellator;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
 import stellarium.render.stellars.phased.StellarRenderInformation;
-import stellarium.render.stellars.phased.StellarTessellator;
 
 public class LayerRenderInformation {
 	public final Minecraft minecraft;
