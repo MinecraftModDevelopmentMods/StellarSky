@@ -30,31 +30,29 @@ public enum StellarRenderer {
 	private static final StellarTessellator tessellator = new StellarTessellator();
 
 	public void render(StellarModel model, StellarRenderInformation info) {
-		// TODO ANOW Minimize the unnecessary code
-		// FIXME Strange GL error
+		LayerRenderInformation layerInfo = new LayerRenderInformation(info, tessellator);
 
 		// Prepare dominate scatter
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.PrepareDominateScatter, info);
 		// Render dominate scatter
-		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.DominateScatter, new LayerRenderInformation(info, tessellator));
+		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.DominateScatter, layerInfo);
 		// Finalize dominate scatter
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.FinalizeDominateScatter, info);
 		// Bind dominate scatter
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.BindDomination, info);
 
 		// Setup surface scatter
-		info.setAtmCallList(-1);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.SetupSurfaceScatter, info);
 		// Render surface scatter
-		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.SurfaceScatter, new LayerRenderInformation(info, tessellator));
+		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.SurfaceScatter, layerInfo);
 
 		// Setup point scatter
 		OpenGlVersionUtil.enablePointSprite();
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.SetupPointScatter, info);
 		// Render point scatter
-		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.PointScatter, new LayerRenderInformation(info, tessellator));
+		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.PointScatter, layerInfo);
 
 		// Setup opaque
 		OpenGlVersionUtil.disablePointSprite();
@@ -64,7 +62,7 @@ public enum StellarRenderer {
 	    GlStateManager.shadeModel(GL11.GL_SMOOTH);
 	    AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.SetupOpaque, info);
 	    // Render opaque
-	    StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.Opaque, new LayerRenderInformation(info, tessellator));
+	    StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.Opaque, layerInfo);
 
 		// Setup opaque scatter
 	    GlStateManager.depthMask(false);
@@ -74,7 +72,7 @@ public enum StellarRenderer {
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.SetupOpaqueScatter, info);
 		// Render opaque scatter
-		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.OpaqueScatter, new LayerRenderInformation(info, tessellator));
+		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.OpaqueScatter, layerInfo);
 
 		// Unbind dominate scatter
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.UnbindDomination, info);

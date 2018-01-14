@@ -59,14 +59,14 @@ public class StellarTessellator implements IStellarTessellator {
 		// MAYBE Vertex Buffer
 	}
 
+	private StellarRenderInformation info;
+
 	public void initialize(StellarRenderInformation info) {
 		this.weatherFactor = 1.0f - (1.0f - 5.0e-5f) * info.world.getRainStrength(info.partialTicks);
-		
-		this.shader = info.getActiveShader();
-		this.viewer = info.info;
 
-		this.renderDominateList = info.getAtmCallList();
-		
+		this.info = info;
+		this.viewer = info.info;
+		// TODO Simplify rendering routine
 		this.rasterizedAngleRatio = (float) (viewer.multiplyingPower / Spmath.Radians(70.0f) * info.screenSize);
 		
 		this.preCalculateColorInfo();
@@ -75,7 +75,9 @@ public class StellarTessellator implements IStellarTessellator {
 	public void initializePass(EnumStellarPass pass) {
 		this.renderingDominate = pass.isDominate;
 		this.hasTexture = pass.hasTexture;
-		
+		this.shader = info.get();
+		this.renderDominateList = info.getAtmCallList();
+
 		this.onPrePassRender();
 	}
 	

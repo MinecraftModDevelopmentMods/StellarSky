@@ -1,12 +1,14 @@
 package stellarium.render.stellars.phased;
 
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.sky.SkyRenderInformation;
 import stellarium.view.ViewerInfo;
 
-public class StellarRenderInformation {
+public class StellarRenderInformation implements Supplier<IShaderObject> {
 	public final Minecraft minecraft;
 	public final WorldClient world;
 	public final float partialTicks;
@@ -31,8 +33,9 @@ public class StellarRenderInformation {
 	public void setActiveShader(IShaderObject activeShader) {
 		this.activeShader = activeShader;
 	}
-		
-	public IShaderObject getActiveShader() {
+
+	@Override
+	public IShaderObject get() {
 		return this.activeShader;
 	}
 	

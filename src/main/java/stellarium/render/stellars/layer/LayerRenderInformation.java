@@ -12,6 +12,7 @@ public class LayerRenderInformation {
 	public final WorldClient world;
 	public final float partialTicks;
 	public final float deepDepth;
+	public final StellarRenderInformation stellarInfo;
 
 	public final IStellarTessellator tessellator;
 
@@ -20,7 +21,8 @@ public class LayerRenderInformation {
 		this.world = info.world;
 		this.partialTicks = info.partialTicks;
 		this.deepDepth = info.deepDepth;
-		
+		this.stellarInfo = info;
+
 		this.tessellator = tessellator;
 		tessellator.initialize(info);
 	}

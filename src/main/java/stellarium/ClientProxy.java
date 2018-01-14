@@ -125,11 +125,10 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		skyModel.updateSettings(settings);
 		SkyRenderer.INSTANCE.initialize(settings);
 	}
-	
+
 	@Override
 	public void setupSkyRenderer(World world, String skyRenderType) {
 		skyModel.updateSettings(this.clientSettings);
-		// TODO ANOW Move initialization
 		SkyRenderer.INSTANCE.initialize(this.clientSettings);
 
 		IAdaptiveRenderer renderer = StellarSkyAPI.getRendererFor(skyRenderType, new GenericSkyRenderer(this.skyModel));
