@@ -14,9 +14,8 @@ import stellarapi.api.lib.config.property.ConfigPropertyDoubleList;
 import stellarapi.api.lib.config.property.ConfigPropertyString;
 import stellarapi.api.world.worldset.WorldSet;
 import stellarapi.impl.celestial.DefaultCelestialPack;
-import stellarium.api.EnumSkyProperty;
 import stellarium.api.ISkyRenderType;
-import stellarium.api.ISkyType;
+import stellarium.api.ISkySetType;
 import stellarium.api.StellarSkyAPI;
 
 public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {	
@@ -50,7 +49,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	private ConfigPropertyString propRenderType;
 	
-	private ISkyType skyType;
+	private ISkySetType skyType;
 	
 	public PerDimensionSettings(WorldSet worldSet) {	
 		this.worldSet = worldSet;
@@ -61,12 +60,12 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 
 		this.skyType = StellarSkyAPI.getSkyType(worldSet);
 
-		this.propRenderType = new ConfigPropertyString("Sky_Renderer_Type", "skyRendererType", skyType.possibleTypes().get(0).getName());
+		this.propRenderType = new ConfigPropertyString("Sky_Renderer_Type", "skyRendererType", StellarSkyAPI.possibleRenderTypes(worldSet).get(0).getName());
+
+		this.propLatitude = new ConfigPropertyDouble("Latitude", "lattitude", skyType.getLatitude());
+		this.propLongitude = new ConfigPropertyDouble("Longitude", "longitude", skyType.getLongitude());
 		
-		this.propLatitude = new ConfigPropertyDouble("Latitude", "lattitude", skyType.getDefaultDouble(EnumSkyProperty.Lattitude));
-		this.propLongitude = new ConfigPropertyDouble("Longitude", "longitude", skyType.getDefaultDouble(EnumSkyProperty.Longitude));
-		
-		this.propHideObjectsUnderHorizon = new ConfigPropertyBoolean("Hide_Objects_Under_Horizon", "hideObjectsUnderHorizon", skyType.getDefaultBoolean(EnumSkyProperty.HideObjectsUnderHorizon));
+		this.propHideObjectsUnderHorizon = new ConfigPropertyBoolean("Hide_Objects_Under_Horizon", "hideObjectsUnderHorizon", skyType.hideObjectsUnderHorizon());
 		this.propRenderPreviousSky = new ConfigPropertyBoolean("Render_Other_Modded_Skybox", "renderOtherModdedSkybox", false);
 		
 		this.propAtmScaleHeight = new ConfigPropertyDouble("Atmosphere_Scale_Height", "atmScaleHeight", 1 / 800.0);
@@ -74,16 +73,16 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		this.propAtmHeightOffset = new ConfigPropertyDouble("Atmosphere_Height_Offset", "atmHeightOffset", 0.2);
 		this.propAtmHeightIncScale = new ConfigPropertyDouble("Atmosphere_Height_Increase_Scale", "atmHeightIncreaseScale", 1.0);
 
-		this.propAtmExtinctionFactor = new ConfigPropertyDoubleList("Sky_Extinction_Factors", "skyExtinctionFactors", skyType.getDefaultDoubleList(EnumSkyProperty.SkyExtinctionFactors));
+		this.propAtmExtinctionFactor = new ConfigPropertyDoubleList("Sky_Extinction_Factors", "skyExtinctionFactors", skyType.getSkyExtinctionFactors());
 		
-		this.propAllowRefraction = new ConfigPropertyBoolean("Allow_Atmospheric_Refraction", "allowRefraction", skyType.getDefaultBoolean(EnumSkyProperty.AllowRefraction));
+		this.propAllowRefraction = new ConfigPropertyBoolean("Allow_Atmospheric_Refraction", "allowRefraction", skyType.doesAllowExtinction());
 
 		// TODO Fix Sunlight Multiplier Property - Isn't it fixed?
 		this.propSunlightMultiplier = new ConfigPropertyDouble("SunLight_Multiplier", "sunlightMultiplier", 1.0);
        	
-		this.propSkyDispersionRate = new ConfigPropertyDouble("Sky_Dispersion_Rate", "skyDispersionRate", skyType.getDefaultDouble(EnumSkyProperty.SkyDispersionRate));
+		this.propSkyDispersionRate = new ConfigPropertyDouble("Sky_Dispersion_Rate", "skyDispersionRate", skyType.getDispersionRate());
        	this.propLightPollutionRate = new ConfigPropertyDouble("Light_Pollution_Rate", "lightPollutionRate", 1.0);
-       	this.propMinimumSkyRenderBrightness = new ConfigPropertyDouble("Minimum_Sky_Render_Brightness", "minimumSkyRenderBrightness", skyType.getDefaultDouble(EnumSkyProperty.SkyRenderBrightness));
+       	this.propMinimumSkyRenderBrightness = new ConfigPropertyDouble("Minimum_Sky_Render_Brightness", "minimumSkyRenderBrightness", skyType.getSkyRenderBrightness());
        	
        	this.propLandscapeEnabled = new ConfigPropertyBoolean("Landscape_Enabled", "landscapeEnabled", false);
 
@@ -122,8 +121,8 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		propPatchProvider.setComment("Determine whether or not patch provider. Cannot adjust longitude and latitude when this is false.");
 		propPatchProvider.setRequiresWorldRestart(true);
 		propPatchProvider.setLanguageKey("config.property.dimension.patchprovider");
-        
-		String[] transformed = Lists.transform(skyType.possibleTypes(), new Function<ISkyRenderType, String>() {
+
+		String[] transformed = Lists.transform(StellarSkyAPI.possibleRenderTypes(this.worldSet), new Function<ISkyRenderType, String>() {
 			@Override
 			public String apply(ISkyRenderType input) {
 				return input.getName();
@@ -230,16 +229,8 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		super.loadFromConfig(config, category);
 
 		// TODO AA Config per-dim config is not going to be default when the server lacks Stellar Sky. Something has to be done.
-		if(!this.doesPatchProvider()) {
-			propLatitude.setAsDefault();
-			propLongitude.setAsDefault();
-			propAtmExtinctionFactor.setAsDefault();
-			propAllowRefraction.setAsDefault();
-			propSunlightMultiplier.setAsDefault();
-			propSkyDispersionRate.setAsDefault();
-			propLightPollutionRate.setAsDefault();
-			propMinimumSkyRenderBrightness.setAsDefault();
-		}
+		if(!this.doesPatchProvider())
+			this.setPropsAsDefault();
 
 		this.latitude = propLatitude.getDouble();
 		this.longitude = propLongitude.getDouble();
@@ -249,6 +240,17 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
    		} else if(this.worldSet == SAPIReferences.exactOverworld()) {
    			SAPIReferences.setCelestialPack(this.worldSet, DefaultCelestialPack.INSTANCE);
    		}
+	}
+
+	public void setPropsAsDefault() {
+		propLatitude.setAsDefault();
+		propLongitude.setAsDefault();
+		propAtmExtinctionFactor.setAsDefault();
+		propAllowRefraction.setAsDefault();
+		propSunlightMultiplier.setAsDefault();
+		propSkyDispersionRate.setAsDefault();
+		propLightPollutionRate.setAsDefault();
+		propMinimumSkyRenderBrightness.setAsDefault();
 	}
 	
 	@Override

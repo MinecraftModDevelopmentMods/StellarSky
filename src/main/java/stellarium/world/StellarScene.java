@@ -8,8 +8,8 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 import stellarapi.api.ICelestialCoordinates;
+import stellarapi.api.ICelestialHelper;
 import stellarapi.api.ICelestialScene;
 import stellarapi.api.ISkyEffect;
 import stellarapi.api.SAPIReferences;
@@ -17,10 +17,9 @@ import stellarapi.api.celestials.ICelestialCollection;
 import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.celestials.IEffectorType;
 import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.render.IAdaptiveRenderer;
 import stellarapi.api.world.worldset.WorldSet;
 import stellarium.StellarSky;
-import stellarium.api.ICelestialHelper;
-import stellarium.api.StellarSkyAPI;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.layer.StellarObjectContainer;
@@ -37,15 +36,17 @@ public final class StellarScene implements ICelestialScene {
 	private List<ICelestialObject> foundSuns = Lists.newArrayList();
 	private List<ICelestialObject> foundMoons = Lists.newArrayList();
 
+	@Deprecated
 	public static StellarScene getScene(World world) {
 		ICelestialScene scene = SAPIReferences.getActivePack(world);
 		return (scene instanceof StellarScene)? (StellarScene) scene : null;
 	}
 
-	public StellarScene(World world, WorldSet worldSet) {
+	public StellarScene(World world, WorldSet worldSet, PerDimensionSettings settings) {
 		this.world = world;
 		this.worldSet = worldSet;
 		this.manager = StellarManager.getManager(world);
+		this.settings = settings;
 	}
 
 	public PerDimensionSettings getSettings() {
@@ -181,12 +182,15 @@ public final class StellarScene implements ICelestialScene {
 	}
 
 	@Override
-	public WorldProvider replaceWorldProvider(WorldProvider provider) {
+	public ICelestialHelper createCelestialHelper() {
 		if(this.getSettings().doesPatchProvider()) {
-			ICelestialHelper helper = new CelestialHelperInside((float)this.getSettings().getSunlightMultiplier(), 1.0f,
+			return new CelestialHelperInside((float)this.getSettings().getSunlightMultiplier(), 1.0f,
 					this.getSuns().get(0), this.getMoons().get(0), this.coordinate, this.skyset);
-			WorldProvider newProvider = StellarSkyAPI.getReplacedWorldProvider(this.world, provider, helper);
-			return newProvider;
 		} else return null;
+	}
+
+	@Override
+	public IAdaptiveRenderer createSkyRenderer() {
+		return StellarSky.PROXY.setupSkyRenderer(this.world, this.worldSet);
 	}
 }

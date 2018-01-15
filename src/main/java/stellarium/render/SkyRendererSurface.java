@@ -1,4 +1,4 @@
-package stellarium.api;
+package stellarium.render;
 
 import java.lang.reflect.Field;
 
@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import stellarapi.api.SAPIReferences;
+import stellarapi.api.render.IAdaptiveRenderer;
 import stellarium.world.StellarScene;
 
 public class SkyRendererSurface extends IAdaptiveRenderer {
@@ -91,9 +91,8 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 	}
 
 	@Override
-	public IAdaptiveRenderer setReplacedRenderer(IRenderHandler handler) {
+	public void setReplacedRenderer(IRenderHandler handler) {
 		this.otherRenderer = handler;
-		return this;
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -23,14 +24,16 @@ import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
-import stellarium.api.IAdaptiveRenderer;
-import stellarium.api.StellarSkyAPI;
+import stellarapi.api.render.IAdaptiveRenderer;
+import stellarapi.api.world.worldset.WorldSet;
 import stellarium.client.ClientSettings;
 import stellarium.client.StellarClientFMLHook;
 import stellarium.client.overlay.StellarSkyOverlays;
 import stellarium.client.overlay.clientcfg.OverlayClientSettingsType;
 import stellarium.client.overlay.clock.OverlayClockType;
 import stellarium.render.GenericSkyRenderer;
+import stellarium.render.SkyRendererEnd;
+import stellarium.render.SkyRendererSurface;
 import stellarium.render.sky.SkyModel;
 import stellarium.render.sky.SkyRenderer;
 import stellarium.stellars.OpticsHelper;
@@ -52,8 +55,6 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	private CelestialManager celestialManager = new CelestialManager(true);
 	
 	private SkyModel skyModel;
-	
-	
 	
 	public ClientSettings getClientSettings() {
 		return this.clientSettings;
@@ -127,12 +128,13 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 
 	@Override
-	public void setupSkyRenderer(World world, String skyRenderType) {
+	public IAdaptiveRenderer setupSkyRenderer(World world, WorldSet worldSet) {
 		skyModel.updateSettings(this.clientSettings);
 		SkyRenderer.INSTANCE.initialize(this.clientSettings);
-
-		IAdaptiveRenderer renderer = StellarSkyAPI.getRendererFor(skyRenderType, new GenericSkyRenderer(this.skyModel));
-		world.getCapability(StellarSkyAPI.SKY_RENDER_HOLDER, null).setRenderer(renderer);
+		IRenderHandler genericRenderer = new GenericSkyRenderer(this.skyModel);
+		if(worldSet == SAPIReferences.endType())
+			return new SkyRendererEnd(genericRenderer);
+		return new SkyRendererSurface(genericRenderer);
 	}
 
 	@Override

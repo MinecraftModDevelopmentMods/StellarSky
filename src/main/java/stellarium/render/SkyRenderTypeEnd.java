@@ -1,10 +1,8 @@
 package stellarium.render;
 
 import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarapi.api.render.IAdaptiveRenderer;
 import stellarapi.api.world.worldset.WorldSet;
-import stellarium.api.IAdaptiveRenderer;
 import stellarium.api.ISkyRenderType;
 
 public class SkyRenderTypeEnd implements ISkyRenderType {
@@ -18,11 +16,10 @@ public class SkyRenderTypeEnd implements ISkyRenderType {
 	public boolean acceptFor(WorldSet worldSet) {
 		return true;
 	}
-	
+
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IAdaptiveRenderer createSkyRenderer(IRenderHandler subRenderer) {
-		return new SkyRendererEnd(subRenderer);
+	public IAdaptiveRenderer createSkyRenderer(IRenderHandler celestialRenderer) {
+		return new SkyRendererEnd(celestialRenderer);
 	}
 
 }

@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.IRenderHandler;
+import stellarapi.api.render.IAdaptiveRenderer;
 import stellarium.StellarSkyResources;
-import stellarium.api.IAdaptiveRenderer;
 import stellarium.world.StellarScene;
 
 public class SkyRendererEnd extends IAdaptiveRenderer {
@@ -24,9 +24,8 @@ public class SkyRendererEnd extends IAdaptiveRenderer {
 	}
 
 	@Override
-	public IAdaptiveRenderer setReplacedRenderer(IRenderHandler handler) {
+	public void setReplacedRenderer(IRenderHandler handler) {
 		this.otherRenderer = handler;
-		return this;
 	}
 
 	@Override
@@ -39,6 +38,7 @@ public class SkyRendererEnd extends IAdaptiveRenderer {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
 
+		// TODO AA Eliminate these.
 		StellarScene dimManager = StellarScene.getScene(theWorld);
 		if(dimManager.getSettings().renderPrevSky()) {
 			if(this.otherRenderer != null)

@@ -3,6 +3,7 @@ package stellarium.api;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarapi.api.render.IAdaptiveRenderer;
 import stellarapi.api.world.worldset.WorldSet;
 
 /**

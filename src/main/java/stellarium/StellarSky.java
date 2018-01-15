@@ -5,14 +5,8 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -22,18 +16,14 @@ import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import stellarapi.api.SAPIReferences;
 import stellarapi.api.lib.config.ConfigManager;
-import stellarium.api.DefaultSkyType;
-import stellarium.api.IRendererHolder;
 import stellarium.api.SkyRenderTypeSurface;
+import stellarium.api.SkySetTypeDefault;
 import stellarium.api.StellarSkyAPI;
-import stellarium.client.RendererHolder;
 import stellarium.command.CommandLock;
 import stellarium.render.SkyRenderTypeEnd;
-import stellarium.render.SkyTypeEnd;
+import stellarium.render.SkySetTypeEnd;
 import stellarium.sync.StellarNetworkManager;
 import stellarium.world.StellarPack;
-import stellarium.world.provider.DefaultWorldProviderReplacer;
-import stellarium.world.provider.EndReplacer;
 
 @Mod(modid=StellarSkyReferences.MODID, version=StellarSkyReferences.VERSION,
 acceptedMinecraftVersions="[1.12.0, 1.13.0)",
@@ -83,24 +73,7 @@ public class StellarSky {
 		MinecraftForge.EVENT_BUS.register(this.eventHook);
 		MinecraftForge.EVENT_BUS.register(this.tickHandler);
 
-		StellarSkyAPI.setDefaultReplacer(new DefaultWorldProviderReplacer());
-		StellarSkyAPI.registerWorldProviderReplacer(new EndReplacer());
-
-		StellarSkyAPI.registerSkyType("Overworld", new DefaultSkyType());
-		StellarSkyAPI.registerSkyType("The End", new SkyTypeEnd());
-
-		StellarSkyAPI.registerRendererType(new SkyRenderTypeSurface());
-		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
-
 		StellarSkyResources.init();
-
-		CapabilityManager.INSTANCE.register(
-				IRendererHolder.class, new Capability.IStorage() {
-					@Override
-					public NBTBase writeNBT(Capability capability, Object instance, EnumFacing side) { return null; }
-					@Override
-					public void readNBT(Capability capability, Object instance, EnumFacing side, NBTBase nbt) { }					
-				}, RendererHolder.class);
 
 		SAPIReferences.registerPack(StellarPack.INSTANCE);
 	}
@@ -108,6 +81,13 @@ public class StellarSky {
 	@Mod.EventHandler
 	public void load(FMLInitializationEvent event) throws IOException {
 		PROXY.load(event);
+
+		StellarSkyAPI.registerSkyType(SAPIReferences.exactOverworld(), new SkySetTypeDefault());
+		StellarSkyAPI.registerSkyType(SAPIReferences.overworldType(), new SkySetTypeDefault());
+		StellarSkyAPI.registerSkyType(SAPIReferences.endType(), new SkySetTypeEnd());
+
+		StellarSkyAPI.registerRendererType(new SkyRenderTypeSurface());
+		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
 	}
 
 	@Mod.EventHandler

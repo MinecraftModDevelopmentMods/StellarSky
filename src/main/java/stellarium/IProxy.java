@@ -4,12 +4,13 @@ import java.io.IOException;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarapi.api.lib.config.HierarchicalConfig;
+import stellarapi.api.render.IAdaptiveRenderer;
+import stellarapi.api.world.worldset.WorldSet;
 import stellarium.client.ClientSettings;
 import stellarium.common.ServerSettings;
 import stellarium.stellars.StellarManager;
@@ -34,8 +35,8 @@ public interface IProxy {
 	public HierarchicalConfig getDimensionSettings();
     
 	public CelestialManager getClientCelestialManager();
-	
-	public void setupSkyRenderer(World world, String skyRenderType);
+
+	public IAdaptiveRenderer setupSkyRenderer(World world, WorldSet worldSet);
 
 	public void updateTick();
 
@@ -44,5 +45,4 @@ public interface IProxy {
 
 	public void setupStellarLoad(StellarManager manager);
 	public void setupDimensionLoad(StellarScene dimManager);
-
 }
