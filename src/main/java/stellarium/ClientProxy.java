@@ -26,6 +26,7 @@ import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarapi.api.render.IAdaptiveRenderer;
 import stellarapi.api.world.worldset.WorldSet;
+import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
 import stellarium.client.StellarClientFMLHook;
 import stellarium.client.overlay.StellarSkyOverlays;
@@ -128,13 +129,11 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	}
 
 	@Override
-	public IAdaptiveRenderer setupSkyRenderer(World world, WorldSet worldSet) {
+	public IAdaptiveRenderer setupSkyRenderer(World world, WorldSet worldSet, String option) {
 		skyModel.updateSettings(this.clientSettings);
 		SkyRenderer.INSTANCE.initialize(this.clientSettings);
 		IRenderHandler genericRenderer = new GenericSkyRenderer(this.skyModel);
-		if(worldSet == SAPIReferences.endType())
-			return new SkyRendererEnd(genericRenderer);
-		return new SkyRendererSurface(genericRenderer);
+		return StellarSkyAPI.getRendererFor(option, genericRenderer);
 	}
 
 	@Override

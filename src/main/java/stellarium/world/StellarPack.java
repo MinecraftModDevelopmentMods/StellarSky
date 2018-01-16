@@ -5,7 +5,6 @@ import stellarapi.api.ICelestialPack;
 import stellarapi.api.ICelestialScene;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.world.worldset.WorldSet;
-import stellarapi.impl.celestial.DefaultCelestialPack;
 import stellarium.StellarSky;
 
 public enum StellarPack implements ICelestialPack {
@@ -18,15 +17,17 @@ public enum StellarPack implements ICelestialPack {
 
 	@Override
 	public ICelestialScene getScene(WorldSet worldSet, World world, boolean isDefault) {
+		// Load settings
+		PerDimensionSettings settings;
 		if(isDefault) {
-			
+			settings = new PerDimensionSettings(worldSet);
+			settings.setPropsAsDefault();
+			settings.setFlagsForDefault();
 		} else {
-			PerDimensionSettings settings = (PerDimensionSettings) ((INBTConfig) StellarSky.PROXY.getDimensionSettings().getSubConfig(worldSet.name)).copy();
+			settings = (PerDimensionSettings) ((INBTConfig) StellarSky.PROXY.getDimensionSettings().getSubConfig(worldSet.name)).copy();
 		}
 
-		// TODO AA Stellar API side - fix the vanillaServer parameter for server default - clinent non-default case
-		// Or use detecting the server pack.
-		return new StellarScene(world, worldSet);
+		return new StellarScene(world, worldSet, settings);
 	}
 
 }

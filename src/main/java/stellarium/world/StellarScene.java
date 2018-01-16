@@ -19,6 +19,7 @@ import stellarapi.api.celestials.IEffectorType;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.render.IAdaptiveRenderer;
 import stellarapi.api.world.worldset.WorldSet;
+import stellarapi.example.CelestialHelper;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.StellarCollection;
@@ -57,24 +58,25 @@ public final class StellarScene implements ICelestialScene {
 		this.settings = (PerDimensionSettings) ((INBTConfig) StellarSky.PROXY.getDimensionSettings().getSubConfig(worldSet.name)).copy();
 	}
 
+
 	@Override
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound nbt = new NBTTagCompound();
 
-		// When it's the first world, setup the Stellar Manager
-		if(world.provider.getDimension() == 0 || world.isRemote) {
-			nbt.setTag("main", StellarManager.getManager(this.world).serializeNBT());
-		}
-
+		// Writes Stellar Manager.
+		// TODO Stellar API Separate networking code and serialization code.
+		nbt.setTag("main", StellarManager.getManager(this.world).serializeNBT());
 		settings.writeToNBT(nbt);
 		return nbt;
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
+		// When it's the default world and there's the manager nbt, read it.
 		if(world.provider.getDimension() == 0 || world.isRemote) {
 			if(nbt.hasKey("main", 10)) {
-				StellarManager.getManager(this.world).deserializeNBT(nbt.getCompoundTag("main"));
+				manager.deserializeNBT(nbt.getCompoundTag("main"));
+				manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 			}
 		}
 
@@ -84,9 +86,6 @@ public final class StellarScene implements ICelestialScene {
 		} else {
 			this.loadSettingsFromConfig();
 		}
-
-		if(world.isRemote)
-			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 	}
 
 	public List<StellarCollection> getCollections() {
@@ -118,12 +117,6 @@ public final class StellarScene implements ICelestialScene {
 		collections.clear();
 		foundSuns.clear();
 		foundMoons.clear();
-
-		if(this.settings == null) {
-			// TODO AA Deal with these in general sense
-			this.loadSettingsFromConfig();
-			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
-		}
 
 		String dimName = world.provider.getDimensionType().getName();
 		StellarSky.INSTANCE.getLogger().info(String.format("Initializing Dimension Settings on Dimension %s...", dimName));
@@ -184,13 +177,13 @@ public final class StellarScene implements ICelestialScene {
 	@Override
 	public ICelestialHelper createCelestialHelper() {
 		if(this.getSettings().doesPatchProvider()) {
-			return new CelestialHelperInside((float)this.getSettings().getSunlightMultiplier(), 1.0f,
+			return new CelestialHelper((float)this.getSettings().getSunlightMultiplier(), 1.0f,
 					this.getSuns().get(0), this.getMoons().get(0), this.coordinate, this.skyset);
 		} else return null;
 	}
 
 	@Override
 	public IAdaptiveRenderer createSkyRenderer() {
-		return StellarSky.PROXY.setupSkyRenderer(this.world, this.worldSet);
+		return StellarSky.PROXY.setupSkyRenderer(this.world, this.worldSet, settings.getSkyRendererType());
 	}
 }

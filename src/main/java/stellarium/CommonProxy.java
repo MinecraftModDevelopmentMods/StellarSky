@@ -11,6 +11,8 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarapi.api.lib.config.HierarchicalConfig;
+import stellarapi.api.render.IAdaptiveRenderer;
+import stellarapi.api.world.worldset.WorldSet;
 import stellarium.client.ClientSettings;
 import stellarium.common.DimensionSettings;
 import stellarium.common.ServerSettings;
@@ -61,7 +63,7 @@ public class CommonProxy implements IProxy {
 	}
 
 	@Override
-	public void setupSkyRenderer(World world, String skyRenderType) { }
+	public IAdaptiveRenderer setupSkyRenderer(World world, WorldSet worldSet, String option) { return null; }
 
 	@Override
 	public HierarchicalConfig getDimensionSettings() {

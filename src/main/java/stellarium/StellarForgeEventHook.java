@@ -20,12 +20,10 @@ public class StellarForgeEventHook {
 		StellarManager manager = StellarManager.loadOrCreateManager(world);
 		if(!world.isRemote)
 			manager.setup(new CelestialManager(false));
-		// On client and when the server does not exist
-		else if(!StellarSky.INSTANCE.existOnServer()) {
-			manager.handleServerWithoutMod();
-			if(manager.getCelestialManager() == null)
-				manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
-		}
+		// On client - load default before the packet arrives
+		manager.handleServerWithoutMod();
+		if(manager.getCelestialManager() == null)
+			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 	}
 
 	@SubscribeEvent

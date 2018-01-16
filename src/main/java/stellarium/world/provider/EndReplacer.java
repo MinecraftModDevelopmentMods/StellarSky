@@ -3,8 +3,8 @@ package stellarium.world.provider;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldProviderEnd;
-import stellarium.api.ICelestialHelper;
-import stellarium.api.IWorldProviderReplacer;
+import stellarapi.api.ICelestialHelper;
+import stellarapi.api.world.IWorldProviderReplacer;
 
 public class EndReplacer implements IWorldProviderReplacer {
 

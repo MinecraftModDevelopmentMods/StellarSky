@@ -79,7 +79,7 @@ public class CelestialManager {
 								return input.copyFromClient();
 							}
 				}));
-		
+
 		return copied;
 	}
 	

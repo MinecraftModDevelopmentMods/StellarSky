@@ -26,6 +26,8 @@ public class DimensionSettings extends HierarchicalConfig {
 				this.putSubConfig(worldSet.name, new PerDimensionSettings(worldSet));
 		}
 
+		config.getCategory(category).remove("the end");
+		config.getCategory(category).remove("Applied_Dimensions");
 		super.setupConfig(config, category);
 	}
 

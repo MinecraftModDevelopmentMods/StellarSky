@@ -8,7 +8,8 @@ import stellarapi.api.render.IAdaptiveRenderer;
 import stellarapi.api.world.worldset.WorldSet;
 import stellarium.render.SkyRendererSurface;
 
-public class SkyRenderTypeSurface implements ISkyRenderType {
+public enum SkyRenderTypeSurface implements ISkyRenderType {
+	INSTANCE;
 
 	@Override
 	public String getName() {

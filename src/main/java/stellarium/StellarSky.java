@@ -24,6 +24,7 @@ import stellarium.render.SkyRenderTypeEnd;
 import stellarium.render.SkySetTypeEnd;
 import stellarium.sync.StellarNetworkManager;
 import stellarium.world.StellarPack;
+import stellarium.world.provider.EndReplacer;
 
 @Mod(modid=StellarSkyReferences.MODID, version=StellarSkyReferences.VERSION,
 acceptedMinecraftVersions="[1.12.0, 1.13.0)",
@@ -82,12 +83,19 @@ public class StellarSky {
 	public void load(FMLInitializationEvent event) throws IOException {
 		PROXY.load(event);
 
-		StellarSkyAPI.registerSkyType(SAPIReferences.exactOverworld(), new SkySetTypeDefault());
-		StellarSkyAPI.registerSkyType(SAPIReferences.overworldType(), new SkySetTypeDefault());
-		StellarSkyAPI.registerSkyType(SAPIReferences.endType(), new SkySetTypeEnd());
+		// TODO Remove this when it's not needed
+		SAPIReferences.registerWorldProviderReplacer(new EndReplacer());
 
-		StellarSkyAPI.registerRendererType(new SkyRenderTypeSurface());
-		StellarSkyAPI.registerRendererType(new SkyRenderTypeEnd());
+		StellarSkyAPI.registerSkyType(SAPIReferences.exactOverworld(), SkySetTypeDefault.INSTANCE);
+		StellarSkyAPI.registerSkyType(SAPIReferences.overworldType(), SkySetTypeDefault.INSTANCE);
+		StellarSkyAPI.registerSkyType(SAPIReferences.endType(), SkySetTypeEnd.INSTANCE);
+
+		StellarSkyAPI.registerDefaultRenderer(SAPIReferences.exactOverworld(), SkyRenderTypeSurface.INSTANCE);
+		StellarSkyAPI.registerDefaultRenderer(SAPIReferences.overworldType(), SkyRenderTypeSurface.INSTANCE);
+		StellarSkyAPI.registerDefaultRenderer(SAPIReferences.endType(), SkyRenderTypeEnd.INSTANCE);
+
+		StellarSkyAPI.registerRendererType(SkyRenderTypeSurface.INSTANCE);
+		StellarSkyAPI.registerRendererType(SkyRenderTypeEnd.INSTANCE);
 	}
 
 	@Mod.EventHandler

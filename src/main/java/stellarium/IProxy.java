@@ -36,7 +36,7 @@ public interface IProxy {
     
 	public CelestialManager getClientCelestialManager();
 
-	public IAdaptiveRenderer setupSkyRenderer(World world, WorldSet worldSet);
+	public IAdaptiveRenderer setupSkyRenderer(World world, WorldSet worldSet, String option);
 
 	public void updateTick();
 

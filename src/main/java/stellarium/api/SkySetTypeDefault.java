@@ -5,7 +5,9 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-public class SkySetTypeDefault implements ISkySetType {
+public enum SkySetTypeDefault implements ISkySetType {
+	INSTANCE;
+
 	@Override
 	public double getLatitude() { return 37.5; }
 	@Override

@@ -60,7 +60,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 
 		this.skyType = StellarSkyAPI.getSkyType(worldSet);
 
-		this.propRenderType = new ConfigPropertyString("Sky_Renderer_Type", "skyRendererType", StellarSkyAPI.possibleRenderTypes(worldSet).get(0).getName());
+		this.propRenderType = new ConfigPropertyString("Sky_Renderer_Type", "skyRendererType", StellarSkyAPI.getDefaultRenderer(worldSet).getName());
 
 		this.propLatitude = new ConfigPropertyDouble("Latitude", "lattitude", skyType.getLatitude());
 		this.propLongitude = new ConfigPropertyDouble("Longitude", "longitude", skyType.getLongitude());
@@ -111,6 +111,8 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	public void setupConfig(Configuration config, String category) {
 		config.setCategoryComment(category, "Configurations for this dimension.");
 		config.setCategoryRequiresWorldRestart(category, true);
+
+		config.getCategory(category).remove("the end");
 		
 		super.setupConfig(config, category);
 
@@ -228,7 +230,6 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	public void loadFromConfig(Configuration config, String category) {
 		super.loadFromConfig(config, category);
 
-		// TODO AA Config per-dim config is not going to be default when the server lacks Stellar Sky. Something has to be done.
 		if(!this.doesPatchProvider())
 			this.setPropsAsDefault();
 
@@ -240,6 +241,10 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
    		} else if(this.worldSet == SAPIReferences.exactOverworld()) {
    			SAPIReferences.setCelestialPack(this.worldSet, DefaultCelestialPack.INSTANCE);
    		}
+	}
+
+	public void setFlagsForDefault() {
+		this.propPatchProvider.setBoolean(false);
 	}
 
 	public void setPropsAsDefault() {

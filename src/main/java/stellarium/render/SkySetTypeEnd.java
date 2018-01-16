@@ -2,7 +2,9 @@ package stellarium.render;
 
 import stellarium.api.ISkySetType;
 
-public class SkySetTypeEnd implements ISkySetType {
+public enum SkySetTypeEnd implements ISkySetType {
+	INSTANCE;
+
 	@Override
 	public double getLatitude() { return -52.5; }
 	@Override

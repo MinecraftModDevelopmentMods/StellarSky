@@ -12,7 +12,7 @@ import stellarium.common.ServerSettings;
 import stellarium.stellars.layer.CelestialManager;
 
 public final class StellarManager extends WorldSavedData {
-	
+	// TODO Remove most of StellarManager with configuration. Or, what's day length?
 	private static final String ID = "stellarskymanagerdata";
 		
 	private ServerSettings settings;
@@ -83,7 +83,7 @@ public final class StellarManager extends WorldSavedData {
 		return compound;
 	}
 
-	
+
 	public void setup(CelestialManager manager) {
 		if(!this.setup) {
 			StellarSky.INSTANCE.getLogger().info("Starting Common Initialization...");

@@ -16,6 +16,7 @@ import stellarapi.api.world.worldset.WorldSet;
 public class StellarSkyAPI {
 	private Map<WorldSet, ISkySetType> skyTypes = Maps.newIdentityHashMap();
 	private Map<String, ISkyRenderType> rendererTypes = Maps.newHashMap();
+	private Map<WorldSet, ISkyRenderType> defRenderTypes = Maps.newIdentityHashMap();
 
 	private static StellarSkyAPI INSTANCE = new StellarSkyAPI();
 
@@ -26,6 +27,10 @@ public class StellarSkyAPI {
 	 * */
 	public static void registerSkyType(WorldSet worldSet, ISkySetType type) {
 		INSTANCE.skyTypes.put(worldSet, type);
+	}
+
+	public static void registerDefaultRenderer(WorldSet worldSet, ISkyRenderType renderType) {
+		INSTANCE.defRenderTypes.put(worldSet, renderType);
 	}
 
 	/**
@@ -44,7 +49,7 @@ public class StellarSkyAPI {
 	 * */
 	public static ISkySetType getSkyType(WorldSet worldSet) {
 		ISkySetType type = INSTANCE.skyTypes.get(worldSet);
-		return (type != null? type : new SkySetTypeDefault());
+		return (type != null? type : SkySetTypeDefault.INSTANCE);
 	}
 
 	public static ImmutableList<ISkyRenderType> possibleRenderTypes(WorldSet worldSet) {
@@ -54,6 +59,10 @@ public class StellarSkyAPI {
 				renderTypes.add(renderType);
 		}
 		return renderTypes.build();
+	}
+
+	public static ISkyRenderType getDefaultRenderer(WorldSet worldSet) {
+		return INSTANCE.defRenderTypes.get(worldSet);
 	}
 
 	/**

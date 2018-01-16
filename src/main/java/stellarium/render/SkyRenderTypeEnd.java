@@ -5,7 +5,8 @@ import stellarapi.api.render.IAdaptiveRenderer;
 import stellarapi.api.world.worldset.WorldSet;
 import stellarium.api.ISkyRenderType;
 
-public class SkyRenderTypeEnd implements ISkyRenderType {
+public enum SkyRenderTypeEnd implements ISkyRenderType {
+	INSTANCE;
 
 	@Override
 	public String getName() {
