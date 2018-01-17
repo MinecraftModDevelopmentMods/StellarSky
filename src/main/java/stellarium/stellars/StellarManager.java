@@ -14,7 +14,7 @@ import stellarium.stellars.layer.CelestialManager;
 public final class StellarManager extends WorldSavedData {
 	// TODO Remove most of StellarManager with configuration. Or, what's day length?
 	private static final String ID = "stellarskymanagerdata";
-		
+
 	private ServerSettings settings;
 	private CelestialManager celestialManager;
 	private boolean locked = false, setup = false;
@@ -25,7 +25,7 @@ public final class StellarManager extends WorldSavedData {
 
 	public static @Nonnull StellarManager loadOrCreateManager(World world) {		
 		WorldSavedData data = world.getMapStorage().getOrLoadData(StellarManager.class, ID);
-		
+
 		if(!(data instanceof StellarManager))
 		{
 			StellarManager manager = new StellarManager(ID);
@@ -99,14 +99,14 @@ public final class StellarManager extends WorldSavedData {
 	public ServerSettings getSettings() {
 		return this.settings;
 	}
-	
+
 	public CelestialManager getCelestialManager() {
 		return this.celestialManager;
 	}
-	
-	public double getSkyTime(double currentTick) {
-		return currentTick + (settings.yearOffset * settings.year + settings.dayOffset)
-				* settings.day + settings.tickOffset;
+
+	public double getSkyYear(double currentTick) {
+		return (currentTick + (settings.yearOffset * settings.year + settings.dayOffset)
+				* settings.day + settings.tickOffset) / (settings.day * settings.year);
 	}
 
 	public CelestialPeriod getYearPeriod() {
@@ -117,10 +117,10 @@ public final class StellarManager extends WorldSavedData {
 	
 	
 	public void update(double time){
-		time = this.getSkyTime(time);
-		celestialManager.update(time / settings.day / settings.year);
+		double year = this.getSkyYear(time);
+		celestialManager.update(year);
 	}
-	
+
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 		this.markDirty();

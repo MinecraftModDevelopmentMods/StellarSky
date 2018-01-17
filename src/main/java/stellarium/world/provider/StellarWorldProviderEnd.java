@@ -23,6 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.ICelestialHelper;
 import stellarapi.api.optics.EnumRGBA;
 
+@Deprecated
 public class StellarWorldProviderEnd extends WorldProviderEnd {
 	
 	private WorldProviderEnd parProvider;

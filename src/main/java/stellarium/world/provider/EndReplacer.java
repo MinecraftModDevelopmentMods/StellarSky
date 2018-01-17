@@ -6,6 +6,7 @@ import net.minecraft.world.WorldProviderEnd;
 import stellarapi.api.ICelestialHelper;
 import stellarapi.api.world.IWorldProviderReplacer;
 
+@Deprecated
 public class EndReplacer implements IWorldProviderReplacer {
 
 	@Override

@@ -153,19 +153,16 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		Entity viewer = mc.getRenderViewEntity();
 		
 		try {
-			if(this.counter > 5) {
-				this.counter = 0;
-				@SuppressWarnings("unchecked")
-				Set<BlockPos> lightUpdates = (Set<BlockPos>) fieldLightUpdateSet.get(mc.renderGlobal);
-				for(BlockPos pos : lightUpdates) {
-					if(pos.distanceSq(viewer.posX, viewer.posY, viewer.posZ) < 24.0) {
-						int x = pos.getX();
-						int y = pos.getY();
-						int z = pos.getZ();
-						mc.renderGlobal.markBlockRangeForRenderUpdate(x-1, y-1, z-1, x+1, y+1, z+1);
-					}
+			@SuppressWarnings("unchecked")
+			Set<BlockPos> lightUpdates = (Set<BlockPos>) fieldLightUpdateSet.get(mc.renderGlobal);
+			for(BlockPos pos : lightUpdates) {
+				if(pos.distanceSq(viewer.posX, viewer.posY, viewer.posZ) < 6.0) {
+					int x = pos.getX();
+					int y = pos.getY();
+					int z = pos.getZ();
+					mc.renderGlobal.markBlockRangeForRenderUpdate(x-1, y-1, z-1, x+1, y+1, z+1);
 				}
-			} else this.counter++;
+			}
 		} catch(IllegalAccessException exception) {
 			throw new IllegalStateException("Illegal access to field " + fieldLightUpdateSet.getName() + ", Unexpected.");
 		}

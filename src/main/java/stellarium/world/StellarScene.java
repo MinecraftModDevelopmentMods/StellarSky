@@ -101,9 +101,8 @@ public final class StellarScene implements ICelestialScene {
 	}
 
 	public void update(World world, long currentTick, long currentUniversalTick) {
-		double skyTime = manager.getSkyTime(currentTick);
-		coordinate.update(skyTime / manager.getSettings().day / manager.getSettings().year);
-		
+		coordinate.update(manager.getSkyYear(currentTick));
+
 		for(int i = 0; i < collections.size(); i++) {
 			StellarCollection collection = collections.get(i);
 			StellarObjectContainer container = manager.getCelestialManager().getLayers().get(i);
@@ -124,7 +123,7 @@ public final class StellarScene implements ICelestialScene {
 			this.skyset = new RefractiveSkySet(this.settings);
 		else this.skyset = new NonRefractiveSkySet(this.settings);
 		this.coordinate = new StellarCoordinate(manager.getSettings(), this.settings);
-		coordinate.update(manager.getSkyTime(0.0) / manager.getSettings().day / manager.getSettings().year);
+		coordinate.update(manager.getSkyYear(0.0));
 
 		StellarSky.INSTANCE.getLogger().info(String.format("Initialized Dimension Settings on Dimension %s.", dimName));
 
