@@ -15,7 +15,6 @@ import stellarium.StellarSkyResources;
 import stellarium.world.StellarScene;
 
 public class SkyRendererEnd extends IAdaptiveRenderer {
-
 	private IRenderHandler subRenderer;
 	private IRenderHandler otherRenderer;
 	
@@ -109,6 +108,4 @@ public class SkyRendererEnd extends IAdaptiveRenderer {
 		GlStateManager.depthMask(true);
 		GlStateManager.enableAlpha();
 	}
-
-
 }
