@@ -12,7 +12,7 @@ import stellarium.render.stellars.atmosphere.EnumAtmospherePass;
 import stellarium.render.stellars.layer.LayerRenderInformation;
 import stellarium.render.stellars.phased.StellarPhasedRenderer;
 import stellarium.render.stellars.phased.StellarRenderInformation;
-import stellarium.util.OpenGlVersionUtil;
+import stellarium.util.OpenGlUtil;
 
 public enum StellarRenderer {
 	INSTANCE;
@@ -48,14 +48,14 @@ public enum StellarRenderer {
 		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.SurfaceScatter, layerInfo);
 
 		// Setup point scatter
-		OpenGlVersionUtil.enablePointSprite();
+		OpenGlUtil.enablePointSprite();
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.SetupPointScatter, info);
 		// Render point scatter
 		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.PointScatter, layerInfo);
 
 		// Setup opaque
-		OpenGlVersionUtil.disablePointSprite();
+		OpenGlUtil.disablePointSprite();
 	    GlStateManager.enableDepth();
 	    GlStateManager.depthMask(true);
 	    GlStateManager.disableBlend();

@@ -103,7 +103,7 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 		StellarScene dimManager = StellarScene.getScene(world);
 		if(dimManager.getSettings().renderPrevSky()) {
 			RenderGlobal renderGlobal = mc.renderGlobal;
-			//float lat = (float) dimManager.getSettings().latitude;
+			float lat = (float) dimManager.getSettings().latitude;
 
 			try {
 				net.minecraft.client.renderer.vertex.VertexBuffer sky1 = (net.minecraft.client.renderer.vertex.VertexBuffer)skyVBOField.get(renderGlobal);
@@ -125,7 +125,7 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 				vertexBufferField.set(Tessellator.getInstance(), placeholder);
 
 				GlStateManager.pushMatrix();
-				//GlStateManager.rotate(lat, 1.0f, 0.0f, 0.0f);
+				GlStateManager.rotate(lat, 1.0f, 0.0f, 0.0f);
 				if(this.otherRenderer != null)
 					otherRenderer.render(partialTicks, world, mc);
 				else {

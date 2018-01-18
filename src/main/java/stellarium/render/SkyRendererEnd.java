@@ -17,7 +17,7 @@ import stellarium.world.StellarScene;
 public class SkyRendererEnd extends IAdaptiveRenderer {
 	private IRenderHandler subRenderer;
 	private IRenderHandler otherRenderer;
-	
+
 	public SkyRendererEnd(IRenderHandler subRenderer) {
 		this.subRenderer = subRenderer;
 	}

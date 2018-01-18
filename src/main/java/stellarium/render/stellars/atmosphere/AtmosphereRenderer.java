@@ -15,7 +15,7 @@ import stellarapi.api.lib.math.Vector3;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.phased.StellarRenderInformation;
-import stellarium.util.OpenGlVersionUtil;
+import stellarium.util.OpenGlUtil;
 import stellarium.util.math.Allocator;
 
 public enum AtmosphereRenderer {
@@ -50,10 +50,12 @@ public enum AtmosphereRenderer {
 		if(dominateCache != null)
 			dominateCache.deleteFramebuffer();
 
-		this.dominateCache = new FramebufferCustom(settings.cacheLong, settings.cacheLat, true);
-		dominateCache.setupFormat(OpenGlVersionUtil.rgb16f(), GL11.GL_RGB, OpenGlVersionUtil.floatFormat());
+		FramebufferCustom.Builder builder = FramebufferCustom.builder();
+		this.dominateCache = builder
+				.setupTexFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.build(settings.cacheLong, settings.cacheLat);
 		if(settings.isInterpolated)
-			dominateCache.setFramebufferFilter(GL11.GL_LINEAR);
+			//dominateCache.setTexMinMagFilter(GL11.GL_LINEAR);
 		dominateCache.unbindFramebuffer();
 
 		int renderBufferNewSize = (settings.fragLong + 1) * (settings.fragLat + 1) * STRIDE_IN_FLOAT;
@@ -81,7 +83,7 @@ public enum AtmosphereRenderer {
 	public void render(AtmosphereModel model, EnumAtmospherePass pass, StellarRenderInformation info) {
 		switch(pass) {
 		case PrepareDominateScatter:			
-			this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlVersionUtil.framebufferBinding());			
+			this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlUtil.FRAMEBUFFER_BINDING);
 			dominateCache.bindFramebuffer(true);
 
 			GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -107,7 +109,7 @@ public enum AtmosphereRenderer {
 			Framebuffer mcBuffer = info.minecraft.getFramebuffer();
 
 			GlStateManager.viewport(0, 0, mcBuffer.framebufferWidth, mcBuffer.framebufferHeight);
-			OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.prevFramebufferBound);
+			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
 
 			info.setActiveShader(null);
 			break;
@@ -147,12 +149,13 @@ public enum AtmosphereRenderer {
 
 		case BindDomination:
 			GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+
 			this.prevEnabled = GlStateManager.glGetInteger(GL11.GL_TEXTURE_2D);
 			if(this.prevEnabled == GL11.GL_FALSE)
 				GlStateManager.enableTexture2D();
 
 			this.prevTexture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
-			GlStateManager.bindTexture(dominateCache.framebufferTexture);
+			dominateCache.bindFramebufferTexture();
 
 			GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 			break;
