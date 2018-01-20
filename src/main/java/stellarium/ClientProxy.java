@@ -2,6 +2,7 @@ package stellarium;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Iterator;
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
@@ -151,17 +152,19 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		Minecraft mc = Minecraft.getMinecraft();
 		World world = mc.world;
 		Entity viewer = mc.getRenderViewEntity();
-		
+
+		// Placeholder fix for vanilla lighting glitch.
 		try {
 			@SuppressWarnings("unchecked")
 			Set<BlockPos> lightUpdates = (Set<BlockPos>) fieldLightUpdateSet.get(mc.renderGlobal);
-			for(BlockPos pos : lightUpdates) {
-				if(pos.distanceSq(viewer.posX, viewer.posY, viewer.posZ) < 6.0) {
-					int x = pos.getX();
-					int y = pos.getY();
-					int z = pos.getZ();
-					mc.renderGlobal.markBlockRangeForRenderUpdate(x-1, y-1, z-1, x+1, y+1, z+1);
-				}
+			Iterator<BlockPos> ite = lightUpdates.iterator();
+			while(ite.hasNext()) {
+				BlockPos pos = ite.next();
+				ite.remove();
+				int x = pos.getX();
+				int y = pos.getY();
+				int z = pos.getZ();
+				mc.renderGlobal.markBlockRangeForRenderUpdate(x-1, y-1, z-1, x+1, y+1, z+1);
 			}
 		} catch(IllegalAccessException exception) {
 			throw new IllegalStateException("Illegal access to field " + fieldLightUpdateSet.getName() + ", Unexpected.");

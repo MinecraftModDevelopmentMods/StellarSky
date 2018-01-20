@@ -32,6 +32,7 @@ public enum StellarRenderer {
 	public void render(StellarModel model, StellarRenderInformation info) {
 		LayerRenderInformation layerInfo = new LayerRenderInformation(info, tessellator);
 
+		// TODO Allow the renderer more performance.
 		// Prepare dominate scatter
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.PrepareDominateScatter, info);
 		// Render dominate scatter

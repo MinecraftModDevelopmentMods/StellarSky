@@ -105,7 +105,7 @@ public class AtmShaderManager {
 			cameraHeight.setDouble(model.getHeight());
 			outerRadius.setDouble(model.getOuterRadius());
 			innerRadius.setDouble(model.getInnerRadius());
-			nSamples.setInteger(20);
+			nSamples.setInteger(10);
 
 			exposure.setDouble(2.0);
 			depthToFogFactor.setDouble(100.0 * Math.exp(model.getHeight()) * Math.exp(-22.5 * this.rainStrengthFactor));

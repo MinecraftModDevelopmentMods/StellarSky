@@ -25,7 +25,7 @@ public class StellarTickHandler {
 	public static Field getField(Class<?> clazz, String... fieldNames) {
 		return ReflectionHelper.findField(clazz, ObfuscationReflectionHelper.remapFieldNames(clazz.getName(), fieldNames));
 	}
-	
+
 	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
 		if(e.phase == TickEvent.Phase.START){
@@ -44,7 +44,7 @@ public class StellarTickHandler {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void tickStart(TickEvent.ServerTickEvent e) {
 		if(e.phase == TickEvent.Phase.START) {
