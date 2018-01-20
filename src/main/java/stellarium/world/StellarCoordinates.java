@@ -8,7 +8,7 @@ import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.common.ServerSettings;
 
-public class StellarCoordinate implements ICelestialCoordinates {
+public class StellarCoordinates implements ICelestialCoordinates {
 	
 	//Rotation
 	private double rot;
@@ -26,7 +26,7 @@ public class StellarCoordinate implements ICelestialCoordinates {
 	private CelestialPeriod dayPeriod;
 	private CelestialPeriod yearPeriod;
 	
-	public StellarCoordinate(ServerSettings commonSettings, PerDimensionSettings settings) {
+	public StellarCoordinates(ServerSettings commonSettings, PerDimensionSettings settings) {
 		this.yearLength = commonSettings.year;
 		this.dayLength = commonSettings.day;
 		this.latitude = Spmath.Radians(settings.latitude);
@@ -86,8 +86,6 @@ public class StellarCoordinate implements ICelestialCoordinates {
 		projectionEq.setRow(0, EastEq);
 		projectionEq.setRow(1, NorthEq);
 		projectionEq.setRow(2, ZenEq);
-
-		//Zen.set(VOp.mult(manager.Earth.radius, ZenD));
 	}
 	
 	private void invtransform(Vector3 vec) {

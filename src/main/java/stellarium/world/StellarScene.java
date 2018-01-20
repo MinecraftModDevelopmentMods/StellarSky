@@ -32,7 +32,7 @@ public final class StellarScene implements ICelestialScene {
 
 	private PerDimensionSettings settings;
 	private IStellarSkySet skyset;
-	private StellarCoordinate coordinate;
+	private StellarCoordinates coordinate;
 	private List<StellarCollection> collections = Lists.newArrayList();
 	private List<ICelestialObject> foundSuns = Lists.newArrayList();
 	private List<ICelestialObject> foundMoons = Lists.newArrayList();
@@ -122,7 +122,7 @@ public final class StellarScene implements ICelestialScene {
 		if(settings.allowRefraction())
 			this.skyset = new RefractiveSkySet(this.settings);
 		else this.skyset = new NonRefractiveSkySet(this.settings);
-		this.coordinate = new StellarCoordinate(manager.getSettings(), this.settings);
+		this.coordinate = new StellarCoordinates(manager.getSettings(), this.settings);
 		coordinate.update(manager.getSkyYear(0.0));
 
 		StellarSky.INSTANCE.getLogger().info(String.format("Initialized Dimension Settings on Dimension %s.", dimName));
