@@ -38,12 +38,12 @@ public class StarImage implements IPerWorldImage<BgStar> {
 		this.bayerId = object.name.substring(3, 6);
 		if(!object.name.substring(6,7).equals(" "))
 			this.bayerSubId = Byte.valueOf(object.name.substring(6,7));
-		
+
 		//this.binary = object.name.substring(49, 51);
 		//  50- 51  A2     ---     ADScomp  ADS number components
 		//  This covers every binaries, (Alp1/2 Cen: A/B)
 	}
-	
+
 	@Override
 	public void updateCache(BgStar object, ICelestialCoordinates coordinate, ISkyEffect sky) {
 		Vector3 ref = new Vector3(object.pos);

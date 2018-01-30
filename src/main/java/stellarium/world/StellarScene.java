@@ -76,8 +76,11 @@ public final class StellarScene implements ICelestialScene {
 		if(world.provider.getDimension() == 0 || world.isRemote) {
 			if(nbt.hasKey("main", 10)) {
 				manager.deserializeNBT(nbt.getCompoundTag("main"));
-				manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 			}
+		}
+
+		if(world.isRemote) {
+			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 		}
 
 		if(manager.isLocked() || world.isRemote) {
