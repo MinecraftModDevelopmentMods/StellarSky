@@ -35,8 +35,9 @@ public class OpenGlUtil {
 
 		RGB16F = caps.OpenGL30? GL30.GL_RGB16F :
 			(caps.GL_ARB_texture_float? ARBTextureFloat.GL_RGB16F_ARB : GL11.GL_RGB16);
-		TEXTURE_FLOAT = caps.OpenGL30 || caps.GL_ARB_texture_float? GL11.GL_FLOAT
-				: GL11.GL_UNSIGNED_SHORT;
+		TEXTURE_FLOAT = RGB16F == 0? GL11.GL_UNSIGNED_SHORT :
+			(caps.OpenGL30 || caps.GL_ARB_texture_float? GL11.GL_FLOAT
+				: GL11.GL_UNSIGNED_SHORT);
 
 		if(caps.OpenGL30) {
 			FRAMEBUFFER_SUPPORTED = true;
