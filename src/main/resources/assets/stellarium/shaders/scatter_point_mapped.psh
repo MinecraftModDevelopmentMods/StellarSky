@@ -12,7 +12,6 @@ const vec2 center = vec2(0.5, 0.5);
 void main()
 {
     vec2 coord = gl_PointCoord - center;
-    vec4 dominated = texture2D(skyDominationMap, dominationCoord);
-    vec4 curColor = color * exp(- dot(coord, coord) * invres2);
-    gl_FragColor = curColor - sqrt(dominated.b) * dominationscale;
+    vec4 dominated = texture2D(skyDominationMap, dominationCoord); // This part has problem
+    gl_FragColor = color * exp(- dot(coord, coord) * invres2) - vec4(sqrt(dominated.b) * dominationscale);
 }

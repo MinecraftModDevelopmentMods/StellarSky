@@ -31,10 +31,10 @@ public class StellarRenderModel {
 			StellarLayerModel layerModel = new StellarLayerModel(layer);
 			baseModels.add(layerModel);
 		}
-		
+
 		checker.setAtmModel(atmModel);
 	}
-	
+
 	public void initializeSettings(ClientSettings settings) {
 		StellarLayerRegistry.getInstance().composeSettings(settings);
 	}
@@ -44,7 +44,7 @@ public class StellarRenderModel {
 		for(StellarLayerModel model : this.layerModels)
 			model.updateSettings(settings);
 	}
-	
+
 	public void onStellarLoad(StellarManager manager) {
 		layerModels.clear();
 		for(int i = 0; i < baseModels.size(); i++) {
@@ -52,7 +52,7 @@ public class StellarRenderModel {
 			layerModels.add(baseModels.get(i).copy(managerForWorld.getLayers().get(i)));
 		}
 	}
-	
+
 	public void onDimensionLoad(StellarScene dimManager) {
 		for(int i = 0; i < layerModels.size(); i++)
 			layerModels.get(i).onLoadCollection(dimManager.getCollections().get(i));

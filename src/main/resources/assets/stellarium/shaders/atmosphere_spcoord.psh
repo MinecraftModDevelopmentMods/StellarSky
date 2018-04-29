@@ -10,7 +10,7 @@ varying vec4 scatteringColor4;
 varying vec3 v3Direction;
 
 float getRayleighPhase(float cos2) {
-	return 3.0 / 4.0 * (1 + cos2);
+	return 3.0 / 4.0 * (1.0 + cos2);
 }
 
 float powHalfThree(float x) {
@@ -18,7 +18,7 @@ float powHalfThree(float x) {
 }
 
 float getMiePhase(float cos, float cos2, float g, float g2) {
-	return 3.0 * (1 - g2) / (2 * (2 + g2)) * (1 + cos2) / powHalfThree(1 + g2 - 2 * g * cos);
+	return 3.0 * (1.0 - g2) / (2.0 * (2.0 + g2)) * (1.0 + cos2) / powHalfThree(1.0 + g2 - 2.0 * g * cos);
 }
 
 void main()

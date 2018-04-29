@@ -2,6 +2,8 @@ package stellarium.render.stellars.layer;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.Validate;
+
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -47,6 +49,8 @@ public class StellarLayerModel<Obj extends StellarObject> {
 	}
 
 	public void addRenderCache(Obj object, IObjRenderCache<Obj, ?, ?> renderCache) {
+		Validate.notNull(object);
+		Validate.notNull(renderCache);
 		cacheMap.put(object, renderCache);
 	}
 	
@@ -71,6 +75,8 @@ public class StellarLayerModel<Obj extends StellarObject> {
 	}
 
 	public void onStellarTick(ViewerInfo update, IStellarChecker checker) {
+		Validate.notNull(StellarLayerModel.this.collection);
+
 		cacheUpdater.set(update, checker);
 
 		updateTracker.updateMap(this.cacheMap);

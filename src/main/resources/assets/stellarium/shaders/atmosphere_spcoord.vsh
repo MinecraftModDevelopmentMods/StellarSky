@@ -16,21 +16,21 @@ varying vec3 v3Direction;
 #define ERFC_FACTOR 0.147
 
 float calcScale(float x, float sgn) {
-    return (1 - sgn * sqrt(1 - exp(-x*(4 / PI + ERFC_FACTOR*x) / (1 + ERFC_FACTOR*x)))) * exp(x);
+    return (1.0 - sgn * sqrt(1.0 - exp(-x*(4.0 / PI + ERFC_FACTOR*x) / (1.0 + ERFC_FACTOR*x)))) * exp(x);
 }
 
 //Airmass on the horizon
 float airmassFactor(float viewRadiusScaled) {
-    return sqrt(PI * viewRadiusScaled / 2);
+    return sqrt(PI * viewRadiusScaled * 0.5);
 }
 
 // Path length of light relative to the sea level
 float airmass(float cosAngleToZenith, float viewRadiusScaled) {
     // Refraction correction
     viewRadiusScaled *= 7.0 / 6.0;
-    float scale = cosAngleToZenith * cosAngleToZenith * viewRadiusScaled / 2;
+    float scale = cosAngleToZenith * cosAngleToZenith * viewRadiusScaled / 2.0;
     float result;
-    float sgn = float(cosAngleToZenith > 0) * 2 - 1;
+    float sgn = float(cosAngleToZenith > 0) * 2.0 - 1.0;
 
     if (scale > 12.0 && cosAngleToZenith > 0)
         result = 1.0 / cosAngleToZenith;

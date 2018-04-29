@@ -34,7 +34,7 @@ public class ClientSettings extends SimpleHierarchicalConfig {
 				"but the better FPS you will get");
 		propMagLimit.setRequiresMcRestart(true);
 		propMagLimit.setLanguageKey("config.property.client.maglimit");
-		propMagLimit.setMinValue(2.0);
+		propMagLimit.setMinValue(3.0);
 		propMagLimit.setMaxValue(7.0);
 	}
 

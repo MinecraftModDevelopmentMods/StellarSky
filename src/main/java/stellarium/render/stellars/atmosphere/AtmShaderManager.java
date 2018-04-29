@@ -30,7 +30,7 @@ public class AtmShaderManager {
 
 	public void reloadShaders() {
 		shaderMap.clear();
-		
+
 		IShaderObject atmosphere = this.injectAtmosphereHook(
 				ShaderHelper.getInstance().buildShader("atmospherespcoord", StellarSkyResources.vertexAtmosphereSpCoord, StellarSkyResources.fragmentAtmosphereSpCoord));
 
@@ -43,6 +43,8 @@ public class AtmShaderManager {
 		IShaderObject srcTexture = ShaderHelper.getInstance().buildShader(
 				"srctexturemapped", StellarSkyResources.vertexTextureMapped, StellarSkyResources.fragmentTextureMapped);
 
+		if(atmosphere == null || scatterFuzzy == null || scatterPoint == null || srcTexture == null)
+			throw new RuntimeException("There was an error preparing shader programs.");
 
 		shaderMap.put(EnumStellarPass.DominateScatter, atmosphere);
 		shaderMap.put(EnumStellarPass.SurfaceScatter, srcTexture);

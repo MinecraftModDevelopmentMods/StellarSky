@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBShaderObjects;
@@ -37,7 +39,8 @@ public class ShaderHelper {
 
 	private ContextCapabilities contextcapabilities = GLContext.getCapabilities();
 
-	public IShaderObject buildShader(String id, ResourceLocation vertloc, ResourceLocation fragloc) {
+	/** Builds shader program. Gives <code>null</code> if it fails. */
+	public @Nullable IShaderObject buildShader(String id, ResourceLocation vertloc, ResourceLocation fragloc) {
 		int vertShader = 0, fragShader = 0;
 		int programObject;
 
@@ -45,6 +48,8 @@ public class ShaderHelper {
 			//Delete object
 			OpenGlHelper.glDeleteProgram(objectMap.get(id).programId);
 		}
+
+		StellarSky.INSTANCE.getLogger().info("Setting up a shader program with ID {}", id);
 
 		vertShader = createShader(vertloc, OpenGlHelper.GL_VERTEX_SHADER);
 		fragShader = createShader(fragloc, OpenGlHelper.GL_FRAGMENT_SHADER);
@@ -66,9 +71,15 @@ public class ShaderHelper {
 		//Links the program
 		OpenGlHelper.glLinkProgram(programObject);
 
+		if(GL11.glGetError() != GL11.GL_NO_ERROR)
+			StellarSky.INSTANCE.getLogger().error(
+					"There was an error preparing shaders. Error code: " + GL11.glGetError());
+
 		//Check if link is done correctly
 		if (OpenGlHelper.glGetProgrami(programObject, OpenGlHelper.GL_LINK_STATUS) == GL11.GL_FALSE) {
-			throw new RuntimeException(getLogInfo(programObject));
+			StellarSky.INSTANCE.getLogger().error("Failed to link the shader program");
+			StellarSky.INSTANCE.getLogger().error(getLogInfo(programObject));
+			return null;
 		}
 
 		// Just to use it in other places later.
@@ -131,8 +142,12 @@ public class ShaderHelper {
 			OpenGlHelper.glCompileShader(shader);
 
 			//Check compile
-			if (OpenGlHelper.glGetShaderi(shader, OpenGlHelper.GL_COMPILE_STATUS) == GL11.GL_FALSE)
-				throw new RuntimeException(String.format("Error creating shader %s: %s", location, OpenGlHelper.glGetShaderInfoLog(shader, 32768)));
+			if (OpenGlHelper.glGetShaderi(shader, OpenGlHelper.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+				StellarSky.INSTANCE.getLogger().error("Failed to compile a shader code on location {}", location);
+				StellarSky.INSTANCE.getLogger().error(OpenGlHelper.glGetShaderInfoLog(shader, 32768));
+				return 0;
+			}
+
 			return shader;
 		}
 		catch(IOException exc) {
