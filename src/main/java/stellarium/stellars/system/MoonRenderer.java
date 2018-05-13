@@ -40,25 +40,25 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 					float longdd=(float)(longc+1)/(float)cache.longn + 0.5f;
 					float latdd=1.0f-(float)(latc+1)/(float)cache.latn;
 
-					tessellator.pos(cache.moonPos[longc][latc], info.deepDepth / 2.0f);
+					tessellator.pos(cache.moonPos[longc][latc], info.deepDepth * 0.5f);
 					tessellator.texture(longd, latd);
 					tessellator.color(cache.moonilum[longc][latc], cache.moonilum[longc][latc], cache.moonilum[longc][latc]);
 					tessellator.normal(cache.moonnormal[longc][latc]);
 					tessellator.writeVertex();
 					
-					tessellator.pos(cache.moonPos[longcd][latc], info.deepDepth / 2.0f);
+					tessellator.pos(cache.moonPos[longcd][latc], info.deepDepth * 0.5f);
 					tessellator.texture(longdd, latd);
 					tessellator.color(cache.moonilum[longcd][latc], cache.moonilum[longcd][latc], cache.moonilum[longcd][latc]);
 					tessellator.normal(cache.moonnormal[longcd][latc]);
 					tessellator.writeVertex();
 					
-					tessellator.pos(cache.moonPos[longcd][latc+1], info.deepDepth / 2.0f);
+					tessellator.pos(cache.moonPos[longcd][latc+1], info.deepDepth * 0.5f);
 					tessellator.texture(longdd, latdd);
 					tessellator.color(cache.moonilum[longcd][latc+1], cache.moonilum[longcd][latc+1], cache.moonilum[longcd][latc+1]);
 					tessellator.normal(cache.moonnormal[longcd][latc+1]);
 					tessellator.writeVertex();
 					
-					tessellator.pos(cache.moonPos[longc][latc+1], info.deepDepth / 2.0f);
+					tessellator.pos(cache.moonPos[longc][latc+1], info.deepDepth * 0.5f);
 					tessellator.texture(longd, latdd);
 					tessellator.color(cache.moonilum[longc][latc+1], cache.moonilum[longc][latc+1], cache.moonilum[longc][latc+1]);
 					tessellator.normal(cache.moonnormal[longc][latc+1]);

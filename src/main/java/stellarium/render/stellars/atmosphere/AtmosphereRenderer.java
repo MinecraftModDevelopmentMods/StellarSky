@@ -93,7 +93,7 @@ public enum AtmosphereRenderer {
 				.build(width, height);
 	}
 
-	public void renderFullQuad(FramebufferCustom fbo1) {
+	public void renderFullQuad() {
 		Tessellator tess = Tessellator.getInstance();
 		BufferBuilder buff = tess.getBuffer();
 
@@ -107,10 +107,10 @@ public enum AtmosphereRenderer {
 		GlStateManager.disableCull();
 
 		buff.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		buff.pos(-1.0, 1.0, -0.5).tex(0.0, 1.0).endVertex();
-		buff.pos(1.0, 1.0, -0.5).tex(1.0, 1.0).endVertex();
-		buff.pos(1.0, -1.0, -0.5).tex(1.0, 0.0).endVertex();
-		buff.pos(-1.0, -1.0, -0.5).tex(0.0, 0.0).endVertex();
+		buff.pos(-1.0, 1.0, 0.0).tex(0.0, 1.0).endVertex();
+		buff.pos(1.0, 1.0, 0.0).tex(1.0, 1.0).endVertex();
+		buff.pos(1.0, -1.0, 0.0).tex(1.0, 0.0).endVertex();
+		buff.pos(-1.0, -1.0, 0.0).tex(0.0, 0.0).endVertex();
 		tess.draw();
 
 		GlStateManager.enableCull();
@@ -143,7 +143,9 @@ public enum AtmosphereRenderer {
 			this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlUtil.FRAMEBUFFER_BINDING);
 
 			sky.bindFramebuffer(false);
+			GlStateManager.depthMask(true);
 			sky.framebufferClear();
+			GlStateManager.depthMask(false);
 			// IDK why, but depth got haywire
 			break;
 		case FinalizeRender:
@@ -153,7 +155,7 @@ public enum AtmosphereRenderer {
 			/*GlStateManager.enableDepth();
 			GlStateManager.depthMask(true);
 			dominateCache.bindFramebufferTexture();
-			this.renderFullQuad(this.dominateCache);
+			this.renderFullQuad();
 			GlStateManager.depthMask(false);
 			GlStateManager.disableDepth();*/
 
@@ -162,7 +164,7 @@ public enum AtmosphereRenderer {
 			srgbFBO.framebufferClear();
 
 			sky.bindFramebufferTexture();
-			this.renderFullQuad(this.sky);
+			this.renderFullQuad();
 			GL11.glDisable(GL30.GL_FRAMEBUFFER_SRGB);
 
 			srgbFBO.bindFramebuffer(GL30.GL_READ_FRAMEBUFFER);

@@ -46,8 +46,6 @@ public enum StellarRenderer {
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.BindDomination, info);
 
 		// Setup surface scatter
-		GlStateManager.enableDepth();
-		GlStateManager.depthMask(true);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.SetupSurfaceScatter, info);
 		// Render surface scatter
