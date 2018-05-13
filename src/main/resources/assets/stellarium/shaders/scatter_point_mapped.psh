@@ -1,10 +1,7 @@
 #version 120
 
 uniform vec4 invres2; // 0.5 * (pointSize / resolution)^2
-uniform float dominationscale;
-uniform sampler2D skyDominationMap;
 
-varying vec2 dominationCoord;
 varying vec4 color;
 
 const vec2 center = vec2(0.5, 0.5);
@@ -12,6 +9,5 @@ const vec2 center = vec2(0.5, 0.5);
 void main()
 {
     vec2 coord = gl_PointCoord - center;
-    vec4 dominated = texture2D(skyDominationMap, dominationCoord); // This part has problem
-    gl_FragColor = color * exp(- dot(coord, coord) * invres2) - vec4(sqrt(dominated.b) * dominationscale);
+    gl_FragColor = color * exp(- dot(coord, coord) * invres2);
 }

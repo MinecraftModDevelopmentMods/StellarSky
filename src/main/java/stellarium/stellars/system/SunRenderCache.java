@@ -13,10 +13,12 @@ import stellarium.view.ViewerInfo;
 
 public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSystemClientSettings> {
 	protected SpCoord appCoord = new SpCoord();
+	protected Vector3 appPos = new Vector3();
 	protected float size;
 	protected int latn, longn;
-	
-	protected SpCoord sunPos[][];
+
+	protected SpCoord cache = new SpCoord();
+	protected Vector3 sunPos[][];
 	protected Vector3 sunNormal[][];
 	
 	private Vector3 buf = new Vector3();
@@ -26,7 +28,7 @@ public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSyste
 		this.latn = specificSettings.imgFrac;
 		this.longn = 2*specificSettings.imgFrac;
 		
-		this.sunPos = Allocator.createAndInitializeSp(longn, latn+1);
+		this.sunPos = Allocator.createAndInitialize(longn, latn+1);
 		this.sunNormal = Allocator.createAndInitialize(longn, latn+1);
 	}
 
@@ -34,6 +36,7 @@ public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSyste
 	public void updateCache(Sun object, SunImage image, ViewerInfo info, IStellarChecker checker) {
 		appCoord.x = image.appCoord.x;
 		appCoord.y = image.appCoord.y;
+		appPos.set(appCoord.getVec());
 		this.size = (float) (object.radius / object.earthPos.size());
 		
 		checker.startDescription();
@@ -53,8 +56,9 @@ public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSyste
 				buf.add(object.earthPos);
 				info.coordinate.getProjectionToGround().transform(buf);
 
-				sunPos[longc][latc].setWithVec(buf);
-				info.sky.applyAtmRefraction(sunPos[longc][latc]);
+				cache.setWithVec(buf);
+				info.sky.applyAtmRefraction(cache);
+				sunPos[longc][latc].set(cache.getVec());
 			}
 		}
 	}

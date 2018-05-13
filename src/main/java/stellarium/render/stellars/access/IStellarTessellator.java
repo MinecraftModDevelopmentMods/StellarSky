@@ -10,7 +10,7 @@ public interface IStellarTessellator {
 	
 	public void begin(boolean hasNormal);
 	
-	public void pos(SpCoord pos, float depth);
+	public void pos(Vector3 pos, float scale);
 
 	/**
 	 * Appends color <b>without</b> scope & filter.

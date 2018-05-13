@@ -57,10 +57,10 @@ public class StellarSkyResources {
 			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_simple.psh");
 	
 	public static final ResourceLocation vertexAtmosphereSpCoord =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_spcoord.vsh");
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_single.vsh");
 	
 	public static final ResourceLocation fragmentAtmosphereSpCoord =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_spcoord.psh");
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_single.psh");
 	
 	public static final ResourceLocation vertexScatterPointMapped =
 			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/scatter_point_mapped.vsh");

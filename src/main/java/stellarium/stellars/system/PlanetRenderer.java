@@ -15,13 +15,13 @@ public enum PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache
 			return;
 
 		IStellarTessellator tessellator = info.tessellator;
-		
+
 		tessellator.begin(false);
-		tessellator.pos(cache.appCoord, info.deepDepth);
+		info.tessellator.pos(cache.pos, info.deepDepth);
 		tessellator.color(cache.brightness, cache.brightness, cache.brightness);
 		tessellator.radius(cache.size);
 		tessellator.writeVertex();
-		
+
 		tessellator.end();
 	}
 

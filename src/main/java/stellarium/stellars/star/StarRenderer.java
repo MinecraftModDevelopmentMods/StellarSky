@@ -13,7 +13,7 @@ public enum StarRenderer implements ICelestialObjectRenderer<StarRenderCache> {
 		if(!cache.shouldRender)
 			return;
 		info.tessellator.color(cache.red, cache.green, cache.blue);
-		info.tessellator.pos(cache.appPos, info.deepDepth);
+		info.tessellator.pos(cache.pos, info.deepDepth);
 		info.tessellator.writeVertex();
 	}
 

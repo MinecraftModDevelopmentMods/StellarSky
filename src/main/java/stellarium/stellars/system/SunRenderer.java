@@ -1,5 +1,6 @@
 package stellarium.stellars.system;
 
+import net.minecraft.client.renderer.GlStateManager;
 import stellarium.StellarSkyResources;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
@@ -16,7 +17,7 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 
 		if(pass == EnumStellarPass.DominateScatter) {
 			tessellator.begin(false);
-			tessellator.pos(cache.appCoord, info.deepDepth);
+			tessellator.pos(cache.appPos, 1.0f);
 			tessellator.color(1.0f, 1.0f, 1.0f);
 			tessellator.writeVertex();
 			tessellator.end();
@@ -37,32 +38,32 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 					float longdd=(float)(longc+1)/(float)cache.longn;
 					float latdd=1.0f-(float)(latc+1)/(float)cache.latn;
 
-					tessellator.pos(cache.sunPos[longc][latc], info.deepDepth / 2.0f);
+					tessellator.pos(cache.sunPos[longc][latc], info.deepDepth * 0.5f);
 					tessellator.texture(longd, latd);
 					tessellator.color(brightness, brightness, brightness);
 					tessellator.normal(cache.sunNormal[longc][latc]);
 					tessellator.writeVertex();
 					
-					tessellator.pos(cache.sunPos[longcd][latc], info.deepDepth / 2.0f);
+					tessellator.pos(cache.sunPos[longcd][latc], info.deepDepth * 0.5f);
 					tessellator.texture(longdd, latd);
 					tessellator.color(brightness, brightness, brightness);
 					tessellator.normal(cache.sunNormal[longcd][latc]);
 					tessellator.writeVertex();
 					
-					tessellator.pos(cache.sunPos[longcd][latc+1], info.deepDepth / 2.0f);
+					tessellator.pos(cache.sunPos[longcd][latc+1], info.deepDepth * 0.5f);
 					tessellator.texture(longdd, latdd);
 					tessellator.color(brightness, brightness, brightness);
 					tessellator.normal(cache.sunNormal[longcd][latc+1]);
 					tessellator.writeVertex();
 					
-					tessellator.pos(cache.sunPos[longc][latc+1], info.deepDepth / 2.0f);
+					tessellator.pos(cache.sunPos[longc][latc+1], info.deepDepth * 0.5f);
 					tessellator.texture(longd, latdd);
 					tessellator.color(brightness, brightness, brightness);
 					tessellator.normal(cache.sunNormal[longc][latc+1]);
 					tessellator.writeVertex();
 				}
 			}
-			
+
 			tessellator.end();
 		}
 	}

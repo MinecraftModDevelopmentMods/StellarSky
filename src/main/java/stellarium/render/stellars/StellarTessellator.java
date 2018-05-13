@@ -17,6 +17,7 @@ import stellarium.render.stellars.phased.StellarRenderInformation;
 import stellarium.stellars.OpticsHelper;
 import stellarium.view.ViewerInfo;
 
+@Deprecated
 public class StellarTessellator implements IStellarTessellator {
 
 	//Limits size per draw call
@@ -24,8 +25,8 @@ public class StellarTessellator implements IStellarTessellator {
 	
 	
 	private float radius;
-	
-	private float longitude, latitude, depth;
+
+	private float posX, posY, posZ;
 	private float uCoord, vCoord;
 	private float red, green, blue;
 	private float normalX, normalY, normalZ;
@@ -97,10 +98,10 @@ public class StellarTessellator implements IStellarTessellator {
 	}
 
 	@Override
-	public void pos(SpCoord pos, float depth) {
-		this.longitude = (float) Spmath.Radians(pos.x);
-		this.latitude = (float) Spmath.Radians(pos.y);
-		this.depth = depth;
+	public void pos(Vector3 pos, float scale) {
+		this.posX = (float) pos.getX() * scale;
+		this.posY = (float) pos.getY() * scale;
+		this.posZ = (float) pos.getZ() * scale;
 	}
 
 	@Override
@@ -131,10 +132,10 @@ public class StellarTessellator implements IStellarTessellator {
 	@Override
 	public void writeVertex() {
 		this.processColor();
-		
-		this.rawBuffer[this.rawBufferCount] = this.longitude;
-		this.rawBuffer[this.rawBufferCount + 1] = this.latitude;
-		this.rawBuffer[this.rawBufferCount + 2] = this.depth;
+
+		this.rawBuffer[this.rawBufferCount] = this.posX;
+		this.rawBuffer[this.rawBufferCount + 1] = this.posY;
+		this.rawBuffer[this.rawBufferCount + 2] = this.posZ;
 		this.rawBuffer[this.rawBufferCount + 3] = this.renderedRed;
 		this.rawBuffer[this.rawBufferCount + 4] = this.renderedGreen;
 		this.rawBuffer[this.rawBufferCount + 5] = this.renderedBlue;
@@ -244,14 +245,14 @@ public class StellarTessellator implements IStellarTessellator {
 						OpticsHelper.invSpriteScale2()*this.toInvRes2(size, (float)viewer.resolutionGeneral));
 			}
 		}
-		
+
 		if(!this.renderingDominate)
 			this.tessellation();
 		else {
 			for(int index = 0; index < this.rawBufferCount; index += this.currentContextSize) {
 				if(this.shader != null) { // Dummy check for debug
-					shader.getField("lightDir").setVector3(
-							new SpCoord(Spmath.Degrees(this.rawBuffer[index]), Spmath.Degrees(this.rawBuffer[index+1])).getVec());
+					shader.getField("lightDir").setDouble3(
+							this.rawBuffer[index], this.rawBuffer[index+1], this.rawBuffer[index+2]);
 					shader.getField("lightColor").setDouble3(
 							this.rawBuffer[index+3], this.rawBuffer[index+4], this.rawBuffer[index+5]);
 				}

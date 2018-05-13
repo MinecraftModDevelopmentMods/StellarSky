@@ -14,7 +14,7 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 		IStellarTessellator tessellator = info.tessellator;
 		if(pass == EnumStellarPass.DominateScatter && cache.shouldRenderDominate) {
 			tessellator.begin(false);
-			tessellator.pos(cache.appCoord, info.deepDepth);
+			tessellator.pos(cache.appPos, 1.0f);
 			tessellator.color(cache.domination, cache.domination, cache.domination);
 			tessellator.writeVertex();
 			tessellator.end();

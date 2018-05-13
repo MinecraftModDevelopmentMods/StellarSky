@@ -10,7 +10,7 @@ import stellarium.render.stellars.layer.LayerRenderInformation;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
 public enum MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRenderCache> {
-	
+
 	INSTANCE;
 
 	@Override
@@ -19,7 +19,7 @@ public enum MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRenderC
 
 		tessellator.begin(true);
 		tessellator.bindTexture(StellarSkyResources.resourceMilkyway.getLocation());
-		tessellator.color(cache.milkywayAbsBr, cache.milkywayAbsBr, cache.milkywayAbsBr);
+		tessellator.color(cache.milkywayAbsBr * 10.0f, cache.milkywayAbsBr * 10.0f, cache.milkywayAbsBr * 10.0f);
 
 		for(int longc=0; longc<cache.longn; longc++){
 			for(int latc=0; latc<cache.latn; latc++){
@@ -28,24 +28,24 @@ public enum MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRenderC
 				float latd=1.0f-(float)latc/(float)cache.latn;
 				float longdd=1.0f-(float)(longc+1)/(float)cache.longn;
 				float latdd=1.0f-(float)(latc+1)/(float)cache.latn;
-				
-				tessellator.pos(cache.milkywaypos[longc][latc], info.deepDepth);
-				tessellator.normal(cache.milkywaypos[longc][latc].getVec());
+
+				tessellator.pos(cache.milkywaypos[longc][latc], info.deepDepth * 0.6f);
+				tessellator.normal(cache.milkywaypos[longc][latc]);
 				tessellator.texture(longd, latd);
 				tessellator.writeVertex();
-				
-				tessellator.pos(cache.milkywaypos[longc][latc+1], info.deepDepth);
-				tessellator.normal(cache.milkywaypos[longc][latc+1].getVec());
+
+				tessellator.pos(cache.milkywaypos[longc][latc+1], info.deepDepth * 0.6f);
+				tessellator.normal(cache.milkywaypos[longc][latc+1]);
 				tessellator.texture(longd, latdd);
 				tessellator.writeVertex();
-				
-				tessellator.pos(cache.milkywaypos[longcd][latc+1], info.deepDepth);
-				tessellator.normal(cache.milkywaypos[longcd][latc+1].getVec());
+
+				tessellator.pos(cache.milkywaypos[longcd][latc+1], info.deepDepth * 0.6f);
+				tessellator.normal(cache.milkywaypos[longcd][latc+1]);
 				tessellator.texture(longdd, latdd);
 				tessellator.writeVertex();
-				
-				tessellator.pos(cache.milkywaypos[longcd][latc], info.deepDepth);
-				tessellator.normal(cache.milkywaypos[longcd][latc].getVec());
+
+				tessellator.pos(cache.milkywaypos[longcd][latc], info.deepDepth * 0.6f);
+				tessellator.normal(cache.milkywaypos[longcd][latc]);
 				tessellator.texture(longdd, latd);
 				tessellator.writeVertex();
 			}
