@@ -11,7 +11,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 	private static final double magnitudeBase = Math.pow(10.0, 0.4);
 
 	private static final double sunMagnitude = -26.74;
-	private static final double upperMagLimit = -1.0;
+	private static final double upperMagLimit = -3.0;
 	
 	private static CachedGaussianRandom randomTurbulance = new CachedGaussianRandom(100, 3L);
 	

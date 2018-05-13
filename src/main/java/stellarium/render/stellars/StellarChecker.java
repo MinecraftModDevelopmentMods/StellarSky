@@ -83,12 +83,14 @@ public class StellarChecker implements IStellarChecker {
 
 	@Override
 	public boolean checkRendered() {
-		if(Math.max(this.red * colorMultiplier.getX() / Spmath.sqr(multiplyingPower * (this.radius + resolutionColor.getX())),
+		// TODO Check it right.
+		return true;
+		/*if(Math.max(this.red * colorMultiplier.getX() / Spmath.sqr(multiplyingPower * (this.radius + resolutionColor.getX())),
 				Math.max(this.green * colorMultiplier.getY() / Spmath.sqr(multiplyingPower * (this.radius + resolutionColor.getY())),
 						this.blue * colorMultiplier.getZ() / Spmath.sqr(multiplyingPower * (this.radius + resolutionColor.getZ()))))
 				> leastBrightnessRendered / Spmath.sqr(DEFAULT_SIZE)) {
 			return atmChecker.isRendered(this.pos);
-		} else return false;
+		} else return false;*/
 	}
 
 	@Override
