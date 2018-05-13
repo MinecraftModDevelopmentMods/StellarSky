@@ -22,8 +22,8 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 	static {
 		EqtoEc.setAsRotation(1.0, 0.0, 0.0, -e);
 	}
-	
-	protected SpCoord[][] milkywaypos = null;
+
+	protected Vector3[][] milkywaypos;
 	protected int latn, longn;
 	protected double[] color = new double[3];
 	protected float milkywayAbsBr;
@@ -34,8 +34,8 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 	public void updateSettings(ClientSettings settings, MilkywaySettings specificSettings,  Milkyway dummy) {
 		this.latn = specificSettings.imgFracMilkyway;
 		this.longn = 2*specificSettings.imgFracMilkyway;
-		this.milkywaypos = Allocator.createAndInitializeSp(longn, latn+1);
-		this.milkywayAbsBr = specificSettings.milkywayBrightness * OpticsHelper.getBrightnessFromMagnitude(3.0f);
+		this.milkywaypos = Allocator.createAndInitialize(longn, latn+1);
+		this.milkywayAbsBr = specificSettings.milkywayBrightness * OpticsHelper.getBrightnessFromMag(3.0f);
 	}
 
 	@Override
@@ -59,8 +59,7 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 
 				info.sky.applyAtmRefraction(coord);
 
-				milkywaypos[longc][latc].x = coord.x;
-				milkywaypos[longc][latc].y = coord.y;
+				milkywaypos[longc][latc].set(coord.getVec());
 			}
 		}
 		

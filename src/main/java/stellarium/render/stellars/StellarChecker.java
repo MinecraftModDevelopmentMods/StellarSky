@@ -44,7 +44,7 @@ public class StellarChecker implements IStellarChecker {
 	}
 
 	public void setMagLimit(float magLimit) {
-		this.leastBrightnessRendered = OpticsHelper.getBrightnessFromMagnitude(magLimit);
+		this.leastBrightnessRendered = OpticsHelper.getBrightnessFromMag(magLimit);
 	}
 
 	@Override

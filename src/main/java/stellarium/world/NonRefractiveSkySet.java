@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.optics.WaveIntensive;
 import stellarapi.api.optics.Wavelength;
+import stellarium.stellars.OpticsHelper;
 import stellarium.util.math.StellarMath;
 
 public class NonRefractiveSkySet implements IStellarSkySet {
@@ -23,9 +24,9 @@ public class NonRefractiveSkySet implements IStellarSkySet {
 		double[] rates = settings.extinctionRates();
 		this.interpolation = new WaveIntensive(
 				ImmutableMap.of(
-						Wavelength.red, StellarMath.MagToLumWithoutSize(rates[0]),
-						Wavelength.V, StellarMath.MagToLumWithoutSize(rates[1]),
-						Wavelength.B,StellarMath.MagToLumWithoutSize(rates[2]))
+						Wavelength.red, OpticsHelper.getMultFromMag(rates[0]),
+						Wavelength.V, OpticsHelper.getMultFromMag(rates[1]),
+						Wavelength.B, OpticsHelper.getMultFromMag(rates[2]))
 				);
 	}
 
@@ -58,7 +59,7 @@ public class NonRefractiveSkySet implements IStellarSkySet {
 
 	@Override
 	public float getExtinctionRate(Wavelength wavelength) {
-		return (float) StellarMath.LumToMagWithoutSize(interpolation.apply(wavelength).doubleValue());
+		return (float) OpticsHelper.getMagFromMult(interpolation.apply(wavelength).doubleValue());
 	}
 
 	@Override

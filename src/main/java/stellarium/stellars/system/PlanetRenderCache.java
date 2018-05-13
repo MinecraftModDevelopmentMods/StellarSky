@@ -4,6 +4,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
 import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
@@ -15,6 +17,7 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 	
 	protected boolean shouldRender, shouldRenderSurface;
 	protected SpCoord appCoord = new SpCoord();
+	protected Vector3 pos = new Vector3();
 	protected float brightness;
 	protected float size;
 
@@ -27,13 +30,15 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 	public void updateCache(Planet object, PlanetImage image, ViewerInfo info, IStellarChecker checker) {
 		appCoord.x = image.appCoord.x;
 		appCoord.y = image.appCoord.y;
-		
+
+		pos.set(appCoord.getVec());
+
 		double airmass = info.sky.calculateAirmass(this.appCoord);
-		double appMag = (object.currentMag + airmass * OpticsHelper.ext_coeff_V);
-		this.brightness = OpticsHelper.getBrightnessFromMagnitude(appMag);
+		double appMag = (object.currentMag + airmass * info.sky.getExtinctionRate(Wavelength.visible));
+		this.brightness = OpticsHelper.getBrightnessFromMag(appMag);
 
 		this.size = (float) (object.radius / object.earthPos.size());
-		
+
 		checker.startDescription();
 		checker.brightness(brightness, brightness, brightness);
 		checker.pos(this.appCoord);

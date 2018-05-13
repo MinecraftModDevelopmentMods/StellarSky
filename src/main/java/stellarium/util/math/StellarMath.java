@@ -113,18 +113,6 @@ public class StellarMath {
 		else B_V = 0.344*logT*logT -3.402*logT +8.037;
 		return B_V;
 	}
-	
-	public static double MagToLum(double Mag){
-		return Math.pow(10.0, (-26.74) - Mag/2.5);
-	}
-	
-	public static double MagToLumWithoutSize(double Mag){
-		return Math.pow(10.0, - Mag/2.5);
-	}
-	
-	public static double LumToMagWithoutSize(double Lum){
-		return - 2.5 * Math.log10(Lum);
-	}
 
 	public static float clip(float f) {
 		return Math.min(Math.max(f, 0.0f), 1.0f);

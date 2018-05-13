@@ -2,6 +2,8 @@ package stellarium.render.stellars.atmosphere;
 
 import java.util.EnumMap;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Maps;
 
 import stellarapi.api.lib.math.Spmath;
@@ -10,7 +12,6 @@ import stellarium.StellarSkyResources;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.shader.IUniformField;
 import stellarium.render.shader.ShaderHelper;
-import stellarium.render.shader.SwitchableShaders;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.phased.StellarRenderInformation;
 
@@ -44,7 +45,7 @@ public class AtmShaderManager {
 				"srctexturemapped", StellarSkyResources.vertexTextureMapped, StellarSkyResources.fragmentTextureMapped);
 
 		if(atmosphere == null || scatterFuzzy == null || scatterPoint == null || srcTexture == null)
-			throw new RuntimeException("There was an error preparing shader programs.");
+			throw new RuntimeException("There was an error preparing shader programs");
 
 		shaderMap.put(EnumStellarPass.DominateScatter, atmosphere);
 		shaderMap.put(EnumStellarPass.SurfaceScatter, srcTexture);
@@ -53,13 +54,16 @@ public class AtmShaderManager {
 		shaderMap.put(EnumStellarPass.OpaqueScatter, scatterFuzzy);
 	}
 
-	private IShaderObject injectAtmosphereHook(IShaderObject shader) {
+	private @Nullable IShaderObject injectAtmosphereHook(IShaderObject shader) {
+		if(shader == null)
+			return null;
+
 		this.cameraHeight = shader.getField("cameraHeight");
 		this.outerRadius = shader.getField("outerRadius");
 		this.innerRadius = shader.getField("innerRadius");
 		this.nSamples = shader.getField("nSamples");
 
-		this.exposure = shader.getField("exposure");
+		//this.exposure = shader.getField("exposure");
 		this.depthToFogFactor = shader.getField("depthToFogFactor");
 
 		this.extinctionFactor = shader.getField("extinctionFactor");
@@ -79,7 +83,7 @@ public class AtmShaderManager {
 		this.skyBrightness = info.world.getSunBrightnessFactor(info.partialTicks) * 2.0f;
 		this.skyBrightness *= (info.info.brightnessMultiplier / Spmath.sqr(info.info.multiplyingPower));
 
-		this.dominationScale = 0.7;
+		this.dominationScale = 0.0;
 	}
 	
 	public IShaderObject bindShader(AtmosphereModel model, EnumStellarPass pass) {
@@ -95,12 +99,12 @@ public class AtmShaderManager {
 	private void setupShader(IShaderObject shader, EnumStellarPass pass, AtmosphereModel model) {
 		if(pass != EnumStellarPass.DominateScatter) {
 			shader.bindShader();
-			shader.getField(dominationMapField).setInteger(1);
+			//shader.getField(dominationMapField).setInteger(1);
 
 			if(pass.hasTexture)
 				shader.getField(defaultTexture).setInteger(0);
 
-			shader.getField(dominationScaleField).setDouble(this.dominationScale);
+			//shader.getField(dominationScaleField).setDouble(this.dominationScale);
 		} else {
 			shader.bindShader();
 
@@ -109,11 +113,10 @@ public class AtmShaderManager {
 			innerRadius.setDouble(model.getInnerRadius());
 			nSamples.setInteger(10);
 
-			exposure.setDouble(2.0);
 			depthToFogFactor.setDouble(100.0 * Math.exp(model.getHeight()) * Math.exp(-22.5 * this.rainStrengthFactor));
 
-			Vector3 vec = new Vector3(model.getSkyExtRed(),
-					model.getSkyExtGreen(), model.getSkyExtBlue());
+			Vector3 vec = new Vector3(model.getSkyExtRed(), model.getSkyExtGreen(),
+					model.getSkyExtBlue());
 			extinctionFactor.setVector3(vec.scale(0.9 - 2.0 * Math.log(this.weatherFactor)));
 			gScattering.setDouble(-0.9 + this.rainStrengthFactor);
 
@@ -122,13 +125,13 @@ public class AtmShaderManager {
 			rayleighFactor.setDouble4(
 					mult * 4 * model.getSkyColorRed() * model.getSkyDispRed() / 0.56,
 					mult * 8 * model.getSkyColorGreen() * model.getSkyDispGreen() / 0.65,
-					mult * 16 * model.getSkyColorBlue() * model.getSkyDispBlue(),
+					mult * 20 * model.getSkyColorBlue() * model.getSkyDispBlue(),
 					1.0);
 
 			mieFactor.setDouble4(
-					mult * 0.1 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispRed(),
-					mult * 0.2 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispGreen(),
-					mult * 0.3 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispBlue(),
+					mult * 0.04 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispRed(),
+					mult * 0.08 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispGreen(),
+					mult * 0.12 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispBlue(),
 					1.0);
 		}
 	}

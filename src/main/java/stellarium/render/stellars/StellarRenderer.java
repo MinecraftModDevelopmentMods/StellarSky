@@ -33,6 +33,9 @@ public enum StellarRenderer {
 		LayerRenderInformation layerInfo = new LayerRenderInformation(info, tessellator);
 
 		// TODO Allow the renderer more performance.
+		// Prepare rendering
+		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.PrepareRender, info);
+
 		// Prepare dominate scatter
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.PrepareDominateScatter, info);
 		// Render dominate scatter
@@ -43,6 +46,8 @@ public enum StellarRenderer {
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.BindDomination, info);
 
 		// Setup surface scatter
+		GlStateManager.enableDepth();
+		GlStateManager.depthMask(true);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.SetupSurfaceScatter, info);
 		// Render surface scatter
@@ -57,17 +62,17 @@ public enum StellarRenderer {
 
 		// Setup opaque
 		OpenGlUtil.disablePointSprite();
-	    GlStateManager.enableDepth();
-	    GlStateManager.depthMask(true);
-	    GlStateManager.disableBlend();
-	    GlStateManager.shadeModel(GL11.GL_SMOOTH);
-	    AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.SetupOpaque, info);
-	    // Render opaque
-	    StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.Opaque, layerInfo);
+		GlStateManager.enableDepth();
+		GlStateManager.depthMask(true);
+		GlStateManager.disableBlend();
+		GlStateManager.shadeModel(GL11.GL_SMOOTH);
+		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.SetupOpaque, info);
+		// Render opaque
+		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.Opaque, layerInfo);
 
 		// Setup opaque scatter
-	    GlStateManager.depthMask(false);
-	    GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
+		GlStateManager.disableDepth();
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
 		GlStateManager.shadeModel(GL11.GL_FLAT);
@@ -79,6 +84,9 @@ public enum StellarRenderer {
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.UnbindDomination, info);
 		// Render cached atmosphere
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.RenderCachedDominate, info);
+
+		// Finalize rendering
+		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.FinalizeRender, info);
 
 		ShaderHelper.getInstance().releaseCurrentShader();
 		GlStateManager.depthMask(true);

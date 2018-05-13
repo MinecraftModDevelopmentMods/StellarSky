@@ -20,6 +20,7 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 	//private float magLimit;
 	protected boolean shouldRender;
 	protected SpCoord appPos = new SpCoord();
+	protected Vector3 pos = new Vector3();
 	protected float red, green, blue;
 	protected Vector3 ref = new Vector3();
 
@@ -43,17 +44,19 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 			this.appPos.y = appCoord.y;
 		}
 
+		pos.set(appPos.getVec());
+
 		long t2 = System.nanoTime();
 		double airmass = info.sky.calculateAirmass(this.appPos);
 
 		StarColor starColor = StarColor.getColor(object.B_V);
 
 		// TODO Optimize Performance Hotspot
-		double alpha = OpticsHelper.getBrightnessFromMagnitude(
+		double alpha = OpticsHelper.getBrightnessFromMag(
 				OpticsHelper.turbulance() + object.mag + airmass * info.sky.getExtinctionRate(Wavelength.visible));
-		this.red = (float) (alpha * starColor.r / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.sky.getExtinctionRate(Wavelength.red)));
-		this.green = (float) (alpha * starColor.g / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.sky.getExtinctionRate(Wavelength.V)));
-		this.blue = (float) (alpha * starColor.b / 255.0 * StellarMath.MagToLumWithoutSize(airmass * info.sky.getExtinctionRate(Wavelength.B)));
+		this.red = (float) (alpha * starColor.r / 255.0 * OpticsHelper.getMultFromMag(airmass * info.sky.getExtinctionRate(Wavelength.red)));
+		this.green = (float) (alpha * starColor.g / 255.0 * OpticsHelper.getMultFromMag(airmass * info.sky.getExtinctionRate(Wavelength.V)));
+		this.blue = (float) (alpha * starColor.b / 255.0 * OpticsHelper.getMultFromMag(airmass * info.sky.getExtinctionRate(Wavelength.B)));
 
 		checker.startDescription();
 		checker.pos(this.appPos);

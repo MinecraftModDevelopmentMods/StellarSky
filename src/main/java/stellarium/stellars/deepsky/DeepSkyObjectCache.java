@@ -26,7 +26,8 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 		EqtoEc.setAsRotation(1.0, 0.0, 0.0, -e);
 	}
 
-	protected SpCoord[] coords = new SpCoord[4];
+	protected Vector3[] coords = new Vector3[4];
+	private SpCoord cache = new SpCoord();
 	protected ResourceLocation location;
 	protected float alpha;
 	protected boolean shouldRender;
@@ -35,7 +36,7 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 	@Override
 	public void updateSettings(ClientSettings settings, IConfigHandler specificSettings, DeepSkyObject object) {
 		for(int i = 0; i < 4; i++) {
-			this.coords[i] = new SpCoord();
+			this.coords[i] = new Vector3();
 			this.quads[i] = new Vector3();
 		}
 
@@ -60,16 +61,17 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 		for(int i = 0; i < 4; i++) {
 			EqtoEc.transform(quads[i]);
 			info.coordinate.getProjectionToGround().transform(quads[i]);
-			coords[i].setWithVec(quads[i]);
-			info.sky.applyAtmRefraction(this.coords[i]);
+			cache.setWithVec(quads[i]);
+			info.sky.applyAtmRefraction(cache);
+			coords[i].set(cache.getVec());
 		}
 		
 		double airmass = info.sky.calculateAirmass(image.getCurrentHorizontalPos());
 		double magnitude = object.magnitude + airmass * info.sky.getExtinctionRate(Wavelength.visible);
-		this.alpha = OpticsHelper.getBrightnessFromMagnitude(magnitude) * (float)(Spmath.sqr(0.015f) / object.getSurfaceSize());
+		this.alpha = OpticsHelper.getBrightnessFromMag(magnitude) * (float)(Spmath.sqr(0.015f) / object.getSurfaceSize());
 
 		checker.startDescription();
-		checker.pos(this.coords[0]);
+		checker.pos(this.cache);
 		checker.brightness(this.alpha, this.alpha, this.alpha);
 		this.shouldRender = checker.checkRendered();
 	}

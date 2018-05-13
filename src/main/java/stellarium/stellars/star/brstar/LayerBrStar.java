@@ -15,6 +15,7 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.StellarSky;
+import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.layer.query.ILayerTempManager;
 import stellarium.stellars.star.BgStar;
@@ -106,18 +107,18 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 			
 			double mag;
 			
-			double V=StellarMath.sgnize(star_value[102], StellarMath.btoD(star_value, 103, 4));
-			
+			double value = StellarMath.sgnize(star_value[102], StellarMath.btoD(star_value, 103, 4));
+
 			if(star_value[107] == 'H')
 			{
-				mag = V;
-				V = StellarMath.LumToMagWithoutSize(
+				mag = value;
+				/*V = OpticsHelper.getMagFromMult(
 						Wavelength.V.getWidth() / Wavelength.visible.getWidth()
-						* StellarMath.MagToLumWithoutSize(mag));
+						* OpticsHelper.getMultFromMag(mag));*/
 			} else {
-				mag = StellarMath.LumToMagWithoutSize(
+				mag = OpticsHelper.getMagFromMult(
 						Wavelength.visible.getWidth() / Wavelength.V.getWidth()
-						* StellarMath.MagToLumWithoutSize(V));
+						* OpticsHelper.getMultFromMag(value));
 			}
 			
 			double B_V;

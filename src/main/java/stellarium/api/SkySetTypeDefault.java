@@ -20,7 +20,7 @@ public enum SkySetTypeDefault implements ISkySetType {
 	public double getSkyRenderBrightness() { return 0.2; }
 
 	@Override
-	public double[] getSkyExtinctionFactors() { return new double[] {0.1, 0.2, 0.3}; }
+	public double[] getSkyExtinctionFactors() { return new double[] {0.1, 0.2, 0.35}; }
 
 	@Override
 	public boolean hideObjectsUnderHorizon() { return true; }

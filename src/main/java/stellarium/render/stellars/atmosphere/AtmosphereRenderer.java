@@ -5,10 +5,15 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL21;
+import org.lwjgl.opengl.GL30;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
@@ -23,6 +28,9 @@ public enum AtmosphereRenderer {
 
 	private static final int STRIDE_IN_FLOAT = 8;
 
+	private FramebufferCustom sky = null;
+	private FramebufferCustom srgbFBO = null;
+
 	private FramebufferCustom dominateCache = null;
 	private FloatBuffer renderBuffer;
 	private ByteBuffer indicesBuffer;
@@ -33,7 +41,9 @@ public enum AtmosphereRenderer {
 
 	private boolean cacheChangedFlag = false;
 
-	private int prevFramebufferBound;
+	private int bgFramebufferBound, prevFramebufferBound;
+
+	private int prevWidth = 0, prevHeight = 0;
 
 	private AtmShaderManager shaderManager;
 
@@ -50,13 +60,13 @@ public enum AtmosphereRenderer {
 		if(dominateCache != null)
 			dominateCache.deleteFramebuffer();
 
-		FramebufferCustom.Builder builder = FramebufferCustom.builder();
-		this.dominateCache = builder
+		this.dominateCache = FramebufferCustom.builder()
 				.setupTexFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.setupDepthStencil(false, false)
 				.build(settings.cacheLong, settings.cacheLat);
+
 		if(settings.isInterpolated)
-			//dominateCache.setTexMinMagFilter(GL11.GL_LINEAR);
-		dominateCache.unbindFramebuffer();
+			dominateCache.setTexMinMagFilter(GL11.GL_LINEAR);
 
 		int renderBufferNewSize = (settings.fragLong + 1) * (settings.fragLat + 1) * STRIDE_IN_FLOAT;
 		if(this.renderBuffer == null || renderBuffer.capacity() < renderBufferNewSize)
@@ -71,10 +81,57 @@ public enum AtmosphereRenderer {
 		this.cacheChangedFlag = true;
 	}
 
+	public void setupConverter(int width, int height) {
+		this.sky = FramebufferCustom.builder()
+				.setupTexFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.setupDepthStencil(true, false)
+				.build(width, height);
+
+		this.srgbFBO = FramebufferCustom.builder()
+				.setupTexFormat(GL21.GL_SRGB8, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE)
+				.setupDepthStencil(false, false)
+				.build(width, height);
+	}
+
+	public void renderFullQuad(FramebufferCustom fbo1) {
+		Tessellator tess = Tessellator.getInstance();
+		BufferBuilder buff = tess.getBuffer();
+
+		GlStateManager.matrixMode(GL11.GL_PROJECTION);
+		GlStateManager.pushMatrix();
+		GlStateManager.loadIdentity();
+		GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+		GlStateManager.pushMatrix();
+		GlStateManager.loadIdentity();
+
+		GlStateManager.disableCull();
+
+		buff.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		buff.pos(-1.0, 1.0, -0.5).tex(0.0, 1.0).endVertex();
+		buff.pos(1.0, 1.0, -0.5).tex(1.0, 1.0).endVertex();
+		buff.pos(1.0, -1.0, -0.5).tex(1.0, 0.0).endVertex();
+		buff.pos(-1.0, -1.0, -0.5).tex(0.0, 0.0).endVertex();
+		tess.draw();
+
+		GlStateManager.enableCull();
+
+		GlStateManager.matrixMode(GL11.GL_PROJECTION);
+		GlStateManager.popMatrix();
+		GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+		GlStateManager.popMatrix();
+	}
+
 	public void preRender(AtmosphereSettings settings, StellarRenderInformation info) {
 		if(this.cacheChangedFlag) {
 			this.reallocList(settings, info.deepDepth);
 			this.cacheChangedFlag = false;
+		}
+
+		Framebuffer mcBuffer = info.minecraft.getFramebuffer();
+		if(mcBuffer.framebufferWidth != this.prevWidth || mcBuffer.framebufferHeight != this.prevHeight) {
+			this.setupConverter(mcBuffer.framebufferWidth, mcBuffer.framebufferHeight);
+			this.prevWidth = mcBuffer.framebufferWidth;
+			this.prevHeight = mcBuffer.framebufferHeight;
 		}
 
 		shaderManager.updateWorldInfo(info);
@@ -82,12 +139,47 @@ public enum AtmosphereRenderer {
 
 	public void render(AtmosphereModel model, EnumAtmospherePass pass, StellarRenderInformation info) {
 		switch(pass) {
-		case PrepareDominateScatter:			
+		case PrepareRender:
 			this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlUtil.FRAMEBUFFER_BINDING);
-			dominateCache.bindFramebuffer(true);
 
-			GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+			sky.bindFramebuffer(false);
+			sky.framebufferClear();
+			// IDK why, but depth got haywire
+			break;
+		case FinalizeRender:
+			// TODO AA change to manual rendering
+			// TODO AA Try to lessen the Brightness Gap
+			// TODO AA Just use vector to specify position
+			/*GlStateManager.enableDepth();
+			GlStateManager.depthMask(true);
+			dominateCache.bindFramebufferTexture();
+			this.renderFullQuad(this.dominateCache);
+			GlStateManager.depthMask(false);
+			GlStateManager.disableDepth();*/
+
+			GL11.glEnable(GL30.GL_FRAMEBUFFER_SRGB);
+			srgbFBO.bindFramebuffer(false);
+			srgbFBO.framebufferClear();
+
+			sky.bindFramebufferTexture();
+			this.renderFullQuad(this.sky);
+			GL11.glDisable(GL30.GL_FRAMEBUFFER_SRGB);
+
+			srgbFBO.bindFramebuffer(GL30.GL_READ_FRAMEBUFFER);
+			OpenGlUtil.bindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this.prevFramebufferBound);
+
+			Framebuffer mcBuffer = info.minecraft.getFramebuffer();
+			int width = mcBuffer.framebufferWidth;
+			int height = mcBuffer.framebufferHeight;
+			GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
+					GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+
+			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
+			break;
+
+		case PrepareDominateScatter:
+			dominateCache.bindFramebuffer(true);
+			dominateCache.framebufferClear();
 
 			GlStateManager.matrixMode(GL11.GL_PROJECTION);
 			GlStateManager.pushMatrix();
@@ -106,10 +198,13 @@ public enum AtmosphereRenderer {
 			GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 			GlStateManager.popMatrix();
 
-			Framebuffer mcBuffer = info.minecraft.getFramebuffer();
+			sky.bindFramebuffer(true);
 
-			GlStateManager.viewport(0, 0, mcBuffer.framebufferWidth, mcBuffer.framebufferHeight);
-			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
+			/*Framebuffer mcBuffer = info.minecraft.getFramebuffer();
+			int width = mcBuffer.framebufferWidth;
+			int height = mcBuffer.framebufferHeight;
+			GlStateManager.viewport(0, 0, width, height);
+			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);*/
 
 			info.setActiveShader(null);
 			break;
@@ -122,13 +217,13 @@ public enum AtmosphereRenderer {
 			GlStateManager.callList(this.renderedList);
 
 			dominateCache.unbindFramebufferTexture();
-
 			break;
 
 		case TestAtmCache:
 			dominateCache.bindFramebufferTexture();
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(100, 50, 0);
+			//Gui.drawModalRectWithCustomSizedTexture(0, 0, 0.0f, 0.0f, -100, -50, -100.0f, -50.0f);
 			//GuiUtil.drawTexturedRectSimple(0, 0, -100, -50);
 			GlStateManager.popMatrix();
 			dominateCache.unbindFramebufferTexture();

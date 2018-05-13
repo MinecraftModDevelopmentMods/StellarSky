@@ -18,13 +18,14 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 	protected boolean shouldRenderDominate, shouldRender;
 	
 	protected SpCoord appCoord;
-	private SpCoord cache;
+	protected Vector3 appPos;
+	private SpCoord cache = new SpCoord();
 	protected int latn, longn;
 
-	protected SpCoord moonPos[][];
+	protected Vector3 moonPos[][];
 	protected Vector3 moonnormal[][];
 	protected float moonilum[][];
-	
+
 	protected float domination, brightness;
 
 	protected Vector3 buf = new Vector3();
@@ -33,15 +34,14 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 	@Override
 	public void updateSettings(ClientSettings settings, SolarSystemClientSettings specificSettings, Moon object) {
 		this.appCoord = new SpCoord();
-		
+		this.appPos = new Vector3();
+
 		this.latn = specificSettings.imgFrac;
 		this.longn = 2*specificSettings.imgFrac;
-		
-		this.moonPos = Allocator.createAndInitializeSp(longn, latn+1);
+
+		this.moonPos = Allocator.createAndInitialize(longn, latn+1);
 		this.moonilum = new float[longn][latn+1];
 		this.moonnormal = Allocator.createAndInitialize(longn, latn+1);
-		
-		this.cache = new SpCoord();
 	}
 
 	@Override
@@ -49,17 +49,18 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 		SpCoord currentPos = image.getCurrentHorizontalPos();
 		appCoord.x = currentPos.x;
 		appCoord.y = currentPos.y;
+		appPos.set(appCoord.getVec());
 
 		double airmass = info.sky.calculateAirmass(this.appCoord);
 		double appMag = object.currentMag + airmass * info.sky.getExtinctionRate(Wavelength.visible);
-		this.domination = OpticsHelper.getDominationFromMagnitude(appMag);
+		this.domination = OpticsHelper.getDominationFromMag(appMag);
 
 		this.size = (float) (object.radius / object.earthPos.size());
 		checker.startDescription();
 		checker.brightness(domination, domination, domination);
 		this.shouldRenderDominate = checker.checkDominator();
 		
-		this.brightness = OpticsHelper.getBrightnessFromMagnitude(appMag);
+		this.brightness = OpticsHelper.getBrightnessFromMag(appMag);
 		
 		checker.startDescription();
 		checker.brightness(brightness, brightness, brightness);
@@ -82,8 +83,9 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 				buf.set(object.posLocalG(buf));
 				info.coordinate.getProjectionToGround().transform(buf);
 
-				moonPos[longc][latc].setWithVec(buf);
-				info.sky.applyAtmRefraction(moonPos[longc][latc]);
+				cache.setWithVec(buf);
+				info.sky.applyAtmRefraction(cache);
+				moonPos[longc][latc].set(cache.getVec());
 			}
 		}
 		

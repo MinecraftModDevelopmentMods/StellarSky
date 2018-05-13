@@ -51,7 +51,7 @@ public class AtmosphereModel implements ICheckedAtmModel {
 		this.skyDispRed = update.sky.getDispersionFactor(Wavelength.red, 0.0f);
 		this.skyDispGreen = update.sky.getDispersionFactor(Wavelength.V, 0.0f);
 		this.skyDispBlue = update.sky.getDispersionFactor(Wavelength.B, 0.0f);
-		
+
 		this.skyExtRed = update.sky.getExtinctionRate(Wavelength.red);
 		this.skyExtGreen = update.sky.getExtinctionRate(Wavelength.V);
 		this.skyExtBlue = update.sky.getExtinctionRate(Wavelength.B);

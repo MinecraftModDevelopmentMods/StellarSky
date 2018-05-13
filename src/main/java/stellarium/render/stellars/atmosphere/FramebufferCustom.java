@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import stellarium.util.OpenGlUtil;
 
@@ -71,9 +72,9 @@ public class FramebufferCustom {
 
 	private int frameTexturePointer = -1;
 	private int depthBufferPointer = -1;
-//	private int stencilBufferPointer = -1;
 
-	private float[] clearColor = new float[] {1.0f, 1.0f, 1.0f, 0.0f};
+	private float[] clearColor = new float[] {0.0f, 0.0f, 0.0f, 0.0f};
+	private float clearDepth = 1.0f;
 
 	private FramebufferCustom() { }
 
@@ -82,9 +83,9 @@ public class FramebufferCustom {
 		this.framebufferPointer = OpenGlUtil.genFramebuffers();
 		this.frameTexturePointer = TextureUtil.glGenTextures();
 
-		if (this.useDepth)
-		{
-			this.depthBufferPointer = OpenGlUtil.genRenderbuffers();
+		if (this.useDepth) {
+			//this.depthBufferPointer = OpenGlUtil.genRenderbuffers();
+			this.depthBufferPointer = TextureUtil.glGenTextures();
 		}
 
 		this.setTexMinMagFilter(GL11.GL_NEAREST);
@@ -93,16 +94,15 @@ public class FramebufferCustom {
 		OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.framebufferPointer);
 		OpenGlUtil.framebufferTexture2D(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, this.frameTexturePointer, 0);
 
-		if (this.useDepth)
-		{
-			OpenGlUtil.bindRenderbuffer(OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
-			if (!this.useStencil)
-			{
-				OpenGlUtil.renderbufferStorage(OpenGlUtil.RENDERBUFFER_GL, GL14.GL_DEPTH_COMPONENT24, this.textureWidth, this.textureHeight);
-				OpenGlUtil.framebufferRenderbuffer(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.DEPTH_ATTACHMENT, OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
-			}
-			else
-			{
+		if (this.useDepth) {
+			//OpenGlUtil.bindRenderbuffer(OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
+			GlStateManager.bindTexture(this.depthBufferPointer);
+			if (!this.useStencil) {
+				//OpenGlUtil.renderbufferStorage(OpenGlUtil.RENDERBUFFER_GL, GL14.GL_DEPTH_COMPONENT24, this.textureWidth, this.textureHeight);
+				//OpenGlUtil.framebufferRenderbuffer(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.DEPTH_ATTACHMENT, OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
+				GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, this.textureWidth, this.textureHeight, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (IntBuffer)null);
+				OpenGlUtil.framebufferTexture2D(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, this.depthBufferPointer, 0);
+			} else {
 				OpenGlUtil.renderbufferStorage(OpenGlUtil.RENDERBUFFER_GL, EXTPackedDepthStencil.GL_DEPTH24_STENCIL8_EXT, this.textureWidth, this.textureHeight);
 				OpenGlUtil.framebufferRenderbuffer(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.DEPTH_ATTACHMENT, OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
 				OpenGlUtil.framebufferRenderbuffer(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.STENCIL_ATTACHMENT, OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
@@ -117,31 +117,35 @@ public class FramebufferCustom {
 
 	public void deleteFramebuffer() {
 		this.unbindFramebufferTexture();
-        this.unbindFramebuffer();
+		this.unbindFramebuffer();
 
-        if (this.depthBufferPointer > -1)
-        {
-            OpenGlUtil.deleteRenderbuffers(this.depthBufferPointer);
-            this.depthBufferPointer = -1;
-        }
+		if (this.depthBufferPointer > -1)
+		{
+			OpenGlUtil.deleteRenderbuffers(this.depthBufferPointer);
+			this.depthBufferPointer = -1;
+		}
 
-        if (this.frameTexturePointer > -1)
-        {
-            TextureUtil.deleteTexture(this.frameTexturePointer);
-            this.frameTexturePointer = -1;
-        }
+		if (this.frameTexturePointer > -1)
+		{
+			TextureUtil.deleteTexture(this.frameTexturePointer);
+			this.frameTexturePointer = -1;
+		}
 
-        if (this.framebufferPointer > -1)
-        {
-        	OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, 0);
-            OpenGlUtil.deleteFramebuffers(this.framebufferPointer);
-            this.framebufferPointer = -1;
-        }
+		if (this.framebufferPointer > -1)
+		{
+			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, 0);
+			OpenGlUtil.deleteFramebuffers(this.framebufferPointer);
+			this.framebufferPointer = -1;
+		}
 	}
 
 
 	public void bindFramebufferTexture() {
 		GlStateManager.bindTexture(this.frameTexturePointer);
+	}
+
+	public void bindDepthTexture() {
+		GlStateManager.bindTexture(this.depthBufferPointer);
 	}
 
 	public void unbindFramebufferTexture() {
@@ -156,36 +160,42 @@ public class FramebufferCustom {
 		}
 	}
 
+	@Deprecated
+	public void bindFramebuffer(int target) {
+		OpenGlUtil.bindFramebuffer(target, this.framebufferPointer);
+	}
+
+	@Deprecated
 	public void unbindFramebuffer() {
 		OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, 0);
 	}
 
 
 	public void framebufferClear() {
-		this.bindFramebuffer(true);
 		GlStateManager.clearColor(this.clearColor[0], this.clearColor[1], this.clearColor[2], this.clearColor[3]);
 		int flag = GL11.GL_COLOR_BUFFER_BIT;
 
 		if (this.useDepth) {
-			GlStateManager.clearDepth(1.0D);
+			GlStateManager.clearDepth(this.clearDepth);
 			flag |= GL11.GL_DEPTH_BUFFER_BIT;
 		}
 
 		GlStateManager.clear(flag);
-		this.unbindFramebuffer();
 	}
 
 
-    public void setClearColor(float red, float green, float blue, float alpha)
-    {
-        this.clearColor[0] = red;
-        this.clearColor[1] = green;
-        this.clearColor[2] = blue;
-        this.clearColor[3] = alpha;
-    }
+	public void setClearColor(float red, float green, float blue, float alpha) {
+		this.clearColor[0] = red;
+		this.clearColor[1] = green;
+		this.clearColor[2] = blue;
+		this.clearColor[3] = alpha;
+	}
 
-	public void setTexMinMagFilter(int minMagFilter)
-	{
+	public void setClearDepth(float depth) {
+		this.clearDepth = depth;
+	}
+
+	public void setTexMinMagFilter(int minMagFilter) {
 		GlStateManager.bindTexture(this.frameTexturePointer);
 		GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minMagFilter);
 		GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, minMagFilter);
