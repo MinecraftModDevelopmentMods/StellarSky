@@ -2,7 +2,7 @@ package stellarium.stellars.deepsky;
 
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
-import stellarium.render.stellars.layer.LayerRenderInformation;
+import stellarium.render.stellars.layer.LayerRI;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
 public enum DSObjectRenderer implements ICelestialObjectRenderer<DeepSkyObjectCache> {
@@ -10,7 +10,7 @@ public enum DSObjectRenderer implements ICelestialObjectRenderer<DeepSkyObjectCa
 	INSTANCE;
 
 	@Override
-	public void render(DeepSkyObjectCache cache, EnumStellarPass pass, LayerRenderInformation info) {
+	public void render(DeepSkyObjectCache cache, EnumStellarPass pass, LayerRI info) {
 		if(!cache.shouldRender)
 			return;
 		

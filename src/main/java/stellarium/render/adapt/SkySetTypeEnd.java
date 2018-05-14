@@ -1,4 +1,4 @@
-package stellarium.render;
+package stellarium.render.adapt;
 
 import stellarium.api.ISkySetType;
 

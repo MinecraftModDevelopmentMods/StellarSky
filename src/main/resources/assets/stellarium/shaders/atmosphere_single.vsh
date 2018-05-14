@@ -40,25 +40,16 @@ float airmass(float cosAngleToZenith, float viewRadiusScaled) {
 
 
 void main() {
-    float x = gl_Vertex.x;
-    float y = gl_Vertex.y;
-
 	// Get the ray from the camera to the vertex and its length (which
-
 	// is the far point of the ray passing through the atmosphere)
 
-	vec3 v3Pos = vec3(cos(y)*cos(x), cos(y)*sin(x), sin(y));
-
+	vec3 v3Pos = vec3(gl_Vertex);
 	vec3 v3Ray = vec3(v3Pos);
-
-	float fFar = length(v3Ray);
-
-	v3Ray /= fFar;
+	v3Ray /= length(v3Ray);
 
 	float cameraRadius = cameraHeight + innerRadius;
 
 	// Calculate the ray's start and end positions in the atmosphere,
-	
 	// then calculate its scattering offset
 
 	vec3 v3Start = vec3(0.0, 0.0, cameraRadius);
@@ -67,6 +58,7 @@ void main() {
 	float invertFlag = 1.0;
 
 	float depth2 = (1.0 - cosViewAngle * cosViewAngle) * cameraRadius * cameraRadius;
+	float fFar;
 
 	if (cosViewAngle > 0.0 || depth2 > innerRadius * innerRadius)
 		fFar = sqrt(outerRadius * outerRadius - depth2) - cosViewAngle * cameraRadius;
@@ -124,9 +116,9 @@ void main() {
 
 
 	// Finally, scale the Mie and Rayleigh colors
-	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	scatteringColor4.rgb = integratedScatterColor * lightColor;
-	v3Direction.xyz = -v3Pos;
+	v3Direction.xyz = -v3Ray;
 
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	gl_FogFragCoord = 1.0 - exp(invertFlag * (depthEnd - depthCamera) / depthToFogFactor);
 }

@@ -1,4 +1,4 @@
-package stellarium.render;
+package stellarium.render.adapt;
 
 import net.minecraftforge.client.IRenderHandler;
 import stellarapi.api.render.IAdaptiveRenderer;

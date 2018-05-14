@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import stellarium.StellarSkyResources;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
-import stellarium.render.stellars.layer.LayerRenderInformation;
+import stellarium.render.stellars.layer.LayerRI;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
 public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
@@ -12,7 +12,7 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 	INSTANCE;
 
 	@Override
-	public void render(SunRenderCache cache, EnumStellarPass pass, LayerRenderInformation info) {
+	public void render(SunRenderCache cache, EnumStellarPass pass, LayerRI info) {
 		IStellarTessellator tessellator = info.tessellator;
 
 		if(pass == EnumStellarPass.DominateScatter) {

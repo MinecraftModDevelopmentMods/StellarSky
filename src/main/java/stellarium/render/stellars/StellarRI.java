@@ -1,14 +1,14 @@
-package stellarium.render.stellars.phased;
+package stellarium.render.stellars;
 
 import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import stellarium.render.SkyRI;
 import stellarium.render.shader.IShaderObject;
-import stellarium.render.sky.SkyRenderInformation;
 import stellarium.view.ViewerInfo;
 
-public class StellarRenderInformation implements Supplier<IShaderObject> {
+public class StellarRI implements Supplier<IShaderObject> {
 	public final Minecraft minecraft;
 	public final WorldClient world;
 	public final float partialTicks;
@@ -17,7 +17,7 @@ public class StellarRenderInformation implements Supplier<IShaderObject> {
 	public final ViewerInfo info;
 	public final double screenSize;
 
-	public StellarRenderInformation(SkyRenderInformation info) {
+	public StellarRI(SkyRI info) {
 		this.minecraft = info.minecraft;
 		this.world = info.world;
 		this.partialTicks = info.partialTicks;

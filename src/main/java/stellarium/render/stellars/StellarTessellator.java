@@ -13,7 +13,6 @@ import stellarapi.api.lib.math.Vector3;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
-import stellarium.render.stellars.phased.StellarRenderInformation;
 import stellarium.stellars.OpticsHelper;
 import stellarium.view.ViewerInfo;
 
@@ -60,9 +59,9 @@ public class StellarTessellator implements IStellarTessellator {
 		// MAYBE Vertex Buffer
 	}
 
-	private StellarRenderInformation info;
+	private StellarRI info;
 
-	public void initialize(StellarRenderInformation info) {
+	public void initialize(StellarRI info) {
 		this.weatherFactor = 1.0f - (1.0f - 5.0e-5f) * info.world.getRainStrength(info.partialTicks);
 
 		this.info = info;

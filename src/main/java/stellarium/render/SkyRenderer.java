@@ -1,4 +1,4 @@
-package stellarium.render.sky;
+package stellarium.render;
 
 import org.lwjgl.opengl.GL11;
 
@@ -6,8 +6,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import stellarium.client.ClientSettings;
 import stellarium.display.DisplayRenderer;
+import stellarium.render.stellars.StellarRI;
 import stellarium.render.stellars.StellarRenderer;
-import stellarium.render.stellars.phased.StellarRenderInformation;
 import stellarium.world.landscape.LandscapeRenderer;
 
 public enum SkyRenderer {
@@ -17,11 +17,11 @@ public enum SkyRenderer {
 		StellarRenderer.INSTANCE.initialize(settings);
 	}
 
-	public void preRender(ClientSettings settings, SkyRenderInformation info) {
-		StellarRenderer.INSTANCE.preRender(settings, new StellarRenderInformation(info));
+	public void preRender(ClientSettings settings, SkyRI info) {
+		StellarRenderer.INSTANCE.preRender(settings, new StellarRI(info));
 	}
 
-	public void render(SkyModel model, SkyRenderInformation info) {
+	public void render(SkyModel model, SkyRI info) {
 		RenderHelper.disableStandardItemLighting();
 
 		GlStateManager.pushMatrix();
@@ -43,7 +43,7 @@ public enum SkyRenderer {
 		GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
 		// Render stellars
-		StellarRenderer.INSTANCE.render(model.stellarModel, new StellarRenderInformation(info));
+		StellarRenderer.INSTANCE.render(model.stellarModel, new StellarRI(info));
 
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 

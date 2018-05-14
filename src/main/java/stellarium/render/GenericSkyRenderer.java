@@ -13,9 +13,6 @@ import stellarapi.api.optics.IOpticalFilter;
 import stellarapi.api.optics.IViewScope;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
-import stellarium.render.sky.SkyModel;
-import stellarium.render.sky.SkyRenderInformation;
-import stellarium.render.sky.SkyRenderer;
 import stellarium.view.ViewerInfo;
 
 public class GenericSkyRenderer extends IRenderHandler {
@@ -37,7 +34,7 @@ public class GenericSkyRenderer extends IRenderHandler {
 		IViewScope scope = SAPIReferences.getScope(viewer);
 		IOpticalFilter filter = SAPIReferences.getFilter(viewer);
 
-		SkyRenderInformation info = new SkyRenderInformation(mc, world, partialTicks,
+		SkyRI info = new SkyRI(mc, world, partialTicks,
 				new ViewerInfo(coordinate, sky, scope, filter, viewer));
 
 		ClientSettings settings = StellarSky.PROXY.getClientSettings();

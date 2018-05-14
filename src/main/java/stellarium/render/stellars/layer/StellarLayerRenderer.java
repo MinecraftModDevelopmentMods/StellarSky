@@ -8,7 +8,7 @@ import stellarium.stellars.render.ICelestialObjectRenderer;
 public enum StellarLayerRenderer {
 	INSTANCE;
 
-	public void render(StellarLayerModel<StellarObject> model, EnumStellarPass pass, LayerRenderInformation info) {
+	public void render(StellarLayerModel<StellarObject> model, EnumStellarPass pass, LayerRI info) {
 		ICelestialLayerRenderer layerRenderer = model.getLayerType().getLayerRenderer();
 
 		if(!layerRenderer.acceptPass(pass))

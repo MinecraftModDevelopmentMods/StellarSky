@@ -1,4 +1,4 @@
-package stellarium.render.sky;
+package stellarium.render;
 
 import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.GLContext;

@@ -2,7 +2,7 @@ package stellarium.stellars.system;
 
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
-import stellarium.render.stellars.layer.LayerRenderInformation;
+import stellarium.render.stellars.layer.LayerRI;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
 public enum PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache> {
@@ -10,7 +10,7 @@ public enum PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache
 	INSTANCE;
 	
 	@Override
-	public void render(PlanetRenderCache cache, EnumStellarPass pass, LayerRenderInformation info) {
+	public void render(PlanetRenderCache cache, EnumStellarPass pass, LayerRI info) {
 		if(pass != EnumStellarPass.OpaqueScatter || !cache.shouldRender)
 			return;
 

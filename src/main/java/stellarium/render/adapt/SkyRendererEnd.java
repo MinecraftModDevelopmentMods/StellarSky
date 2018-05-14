@@ -1,4 +1,4 @@
-package stellarium.render;
+package stellarium.render.adapt;
 
 import org.lwjgl.opengl.GL11;
 

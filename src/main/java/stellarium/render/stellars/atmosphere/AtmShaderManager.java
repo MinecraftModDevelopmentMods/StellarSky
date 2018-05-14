@@ -12,15 +12,14 @@ import stellarium.StellarSkyResources;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.shader.IUniformField;
 import stellarium.render.shader.ShaderHelper;
+import stellarium.render.stellars.StellarRI;
 import stellarium.render.stellars.access.EnumStellarPass;
-import stellarium.render.stellars.phased.StellarRenderInformation;
 
 public class AtmShaderManager {
 
 	private IUniformField cameraHeight;
 	private IUniformField outerRadius, innerRadius;
 	private IUniformField nSamples;
-	private IUniformField exposure;
 	private IUniformField depthToFogFactor;
 	private IUniformField extinctionFactor, gScattering, rayleighFactor, mieFactor;
 
@@ -63,7 +62,6 @@ public class AtmShaderManager {
 		this.innerRadius = shader.getField("innerRadius");
 		this.nSamples = shader.getField("nSamples");
 
-		//this.exposure = shader.getField("exposure");
 		this.depthToFogFactor = shader.getField("depthToFogFactor");
 
 		this.extinctionFactor = shader.getField("extinctionFactor");
@@ -74,7 +72,7 @@ public class AtmShaderManager {
 		return shader;
 	}
 
-	public void updateWorldInfo(StellarRenderInformation info) {		
+	public void updateWorldInfo(StellarRI info) {		
 		float rainStrength = info.world.getRainStrength(info.partialTicks);
 		this.rainStrengthFactor = rainStrength > 0.0f? 0.05f + rainStrength * 0.15f : 0.0f;
 		this.weatherFactor = (float) (1.0f - Math.sqrt(rainStrength) * 0.8f);
@@ -99,12 +97,8 @@ public class AtmShaderManager {
 	private void setupShader(IShaderObject shader, EnumStellarPass pass, AtmosphereModel model) {
 		if(pass != EnumStellarPass.DominateScatter) {
 			shader.bindShader();
-			//shader.getField(dominationMapField).setInteger(1);
-
 			if(pass.hasTexture)
 				shader.getField(defaultTexture).setInteger(0);
-
-			//shader.getField(dominationScaleField).setDouble(this.dominationScale);
 		} else {
 			shader.bindShader();
 

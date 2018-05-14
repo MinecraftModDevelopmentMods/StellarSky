@@ -6,7 +6,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.SAPIReferences;
 import stellarapi.api.render.IAdaptiveRenderer;
 import stellarapi.api.world.worldset.WorldSet;
-import stellarium.render.SkyRendererSurface;
+import stellarium.render.adapt.SkyRendererSurface;
 
 public enum SkyRenderTypeSurface implements ISkyRenderType {
 	INSTANCE;

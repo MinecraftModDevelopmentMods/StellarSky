@@ -5,12 +5,12 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import stellarium.StellarSkyResources;
-import stellarium.render.sky.SkyRenderInformation;
+import stellarium.render.SkyRI;
 
 public enum LandscapeRenderer {
 	INSTANCE;
 
-	public void render(LandscapeModel model, SkyRenderInformation info) {
+	public void render(LandscapeModel model, SkyRI info) {
 		if(!model.rendered)
 			return;
 

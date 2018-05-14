@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import stellarium.StellarSkyResources;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
-import stellarium.render.stellars.layer.LayerRenderInformation;
+import stellarium.render.stellars.layer.LayerRI;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
 public enum MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRenderCache> {
@@ -14,7 +14,7 @@ public enum MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRenderC
 	INSTANCE;
 
 	@Override
-	public void render(MilkywayRenderCache cache, EnumStellarPass pass, LayerRenderInformation info) {
+	public void render(MilkywayRenderCache cache, EnumStellarPass pass, LayerRI info) {
 		IStellarTessellator tessellator = info.tessellator;
 
 		tessellator.begin(true);

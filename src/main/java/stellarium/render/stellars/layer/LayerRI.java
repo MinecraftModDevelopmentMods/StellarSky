@@ -2,21 +2,21 @@ package stellarium.render.stellars.layer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import stellarium.render.stellars.StellarRI;
 import stellarium.render.stellars.StellarTessellator;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.access.IStellarTessellator;
-import stellarium.render.stellars.phased.StellarRenderInformation;
 
-public class LayerRenderInformation {
+public class LayerRI {
 	public final Minecraft minecraft;
 	public final WorldClient world;
 	public final float partialTicks;
 	public final float deepDepth;
-	public final StellarRenderInformation stellarInfo;
+	public final StellarRI stellarInfo;
 
 	public final IStellarTessellator tessellator;
 
-	public LayerRenderInformation(StellarRenderInformation info, StellarTessellator tessellator) {
+	public LayerRI(StellarRI info, StellarTessellator tessellator) {
 		this.minecraft = info.minecraft;
 		this.world = info.world;
 		this.partialTicks = info.partialTicks;
