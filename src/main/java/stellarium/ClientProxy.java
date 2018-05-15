@@ -36,8 +36,6 @@ import stellarium.client.overlay.clock.OverlayClockType;
 import stellarium.render.GenericSkyRenderer;
 import stellarium.render.SkyModel;
 import stellarium.render.SkyRenderer;
-import stellarium.render.adapt.SkyRendererEnd;
-import stellarium.render.adapt.SkyRendererSurface;
 import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;

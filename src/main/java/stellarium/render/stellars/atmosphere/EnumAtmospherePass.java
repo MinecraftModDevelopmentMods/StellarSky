@@ -2,16 +2,17 @@ package stellarium.render.stellars.atmosphere;
 
 public enum EnumAtmospherePass {
 	/*
-	 * Dominate Scattering Rendering (Atmosphere rendering)
+	 * Prepare/Finalize Atmospheric Rendering
 	 * */
-	PrepareDominateScatter,
-	FinalizeDominateScatter,
+	Prepare,
+	Finalize,
 
 	/*
-	 * Setup Typical Rendering
+	 * Setup Rendering
 	 * */
 	SetupSurfaceScatter,
 	SetupPointScatter,
 	SetupOpaque,
-	SetupOpaqueScatter;
+	SetupOpaqueScatter,
+	SetupDominateScatter;
 }

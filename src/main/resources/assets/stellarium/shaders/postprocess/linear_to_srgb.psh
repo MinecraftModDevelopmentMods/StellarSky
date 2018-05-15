@@ -1,0 +1,20 @@
+#version 120
+
+uniform sampler2D texture;
+
+float sRGB(float x) {
+    if (x <= 0.00031308)
+        return 12.92 * x;
+    else
+        return 1.055 * pow(x, (1.0 / 2.4)) - 0.055;
+}
+
+vec4 sRGB(vec4 c) {
+    return vec4(sRGB(c.x), sRGB(c.y), sRGB(c.z), c.w);
+}
+
+void main()
+{
+    vec4 linear = texture2D(texture, gl_TexCoord[0].st);
+    gl_FragColor = sRGB(linear);
+}

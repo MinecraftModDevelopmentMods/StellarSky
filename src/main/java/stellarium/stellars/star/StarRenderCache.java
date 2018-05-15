@@ -12,12 +12,11 @@ import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.stellars.util.StarColor;
-import stellarium.util.math.StellarMath;
 import stellarium.view.ViewerInfo;
 
 public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConfigHandler> {
 
-	//private float magLimit;
+	private float magLimit;
 	protected boolean shouldRender;
 	protected SpCoord appPos = new SpCoord();
 	protected Vector3 pos = new Vector3();
@@ -26,13 +25,11 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 
 	@Override
 	public void updateSettings(ClientSettings settings, IConfigHandler config, BgStar star) {
-		
+		this.magLimit = settings.mag_Limit;
 	}
 
 	@Override
 	public void updateCache(BgStar object, StarImage image, ViewerInfo info, IStellarChecker checker) {
-		// TODO more optimization
-		// Bad Performance Here
 		if(image == null) {
 			ref.set(object.pos);
 			info.coordinate.getProjectionToGround().transform(this.ref);

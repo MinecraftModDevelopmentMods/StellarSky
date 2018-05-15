@@ -1,7 +1,5 @@
 package stellarium.api;
 
-import com.google.common.collect.ImmutableList;
-
 /**
  * Type of sky default settings.
  * */

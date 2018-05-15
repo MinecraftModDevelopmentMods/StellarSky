@@ -5,7 +5,6 @@ import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.config.SimpleHierarchicalNBTConfig;
 import stellarapi.api.lib.config.property.ConfigProperty;
-import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarapi.api.lib.config.property.ConfigPropertyInteger;
 import stellarium.stellars.layer.StellarLayerRegistry;

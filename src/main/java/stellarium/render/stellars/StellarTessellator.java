@@ -7,7 +7,6 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.util.ResourceLocation;
-import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.render.shader.IShaderObject;
@@ -68,7 +67,7 @@ public class StellarTessellator implements IStellarTessellator {
 		this.viewer = info.info;
 		// TODO Simplify rendering routine
 		this.rasterizedAngleRatio = (float) (viewer.multiplyingPower / Spmath.Radians(70.0f) * info.screenSize);
-		
+
 		this.preCalculateColorInfo();
 	}
 	

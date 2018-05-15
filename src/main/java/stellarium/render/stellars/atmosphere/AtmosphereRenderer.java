@@ -5,19 +5,14 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL21;
-import org.lwjgl.opengl.GL30;
 
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.StellarRI;
 import stellarium.render.stellars.access.EnumStellarPass;
-import stellarium.util.OpenGlUtil;
-import stellarium.util.RenderUtil;
 import stellarium.util.math.Allocator;
 
 public enum AtmosphereRenderer {
@@ -25,17 +20,12 @@ public enum AtmosphereRenderer {
 
 	private static final int STRIDE_IN_FLOAT = 8;
 
-	private FramebufferCustom dominateCache = null;
 	private FloatBuffer renderBuffer;
 	private ByteBuffer indicesBuffer;
-	private ByteBuffer toTest = null;
 
-	private int renderToCacheList = -1;
 	private int renderedList = -1;
 
 	private boolean cacheChangedFlag = false;
-
-	private int bgFramebufferBound, prevFramebufferBound;
 
 	private AtmShaderManager shaderManager;
 
@@ -48,17 +38,6 @@ public enum AtmosphereRenderer {
 
 		if(!settings.checkChange())
 			return;
-
-		if(dominateCache != null)
-			dominateCache.deleteFramebuffer();
-
-		this.dominateCache = FramebufferCustom.builder()
-				.setupTexFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
-				.setupDepthStencil(false, false)
-				.build(settings.cacheLong, settings.cacheLat);
-
-		if(settings.isInterpolated)
-			dominateCache.setTexMinMagFilter(GL11.GL_LINEAR);
 
 		int renderBufferNewSize = (settings.fragLong + 1) * (settings.fragLat + 1) * STRIDE_IN_FLOAT;
 		if(this.renderBuffer == null || renderBuffer.capacity() < renderBufferNewSize)
@@ -84,15 +63,16 @@ public enum AtmosphereRenderer {
 
 	public void render(AtmosphereModel model, EnumAtmospherePass pass, StellarRI info) {
 		switch(pass) {
-		case PrepareDominateScatter:
-			info.setAtmCallList(this.renderedList);
+		case Prepare:
+			break;
+		case Finalize:
+			ShaderHelper.getInstance().releaseCurrentShader();
+			break;
 
+		case SetupDominateScatter:
+			info.setAtmCallList(this.renderedList);
 			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.DominateScatter));
 			break;
-		case FinalizeDominateScatter:
-			info.setActiveShader(null);
-			break;
-
 		case SetupOpaque:
 			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.Opaque));
 			break;
@@ -111,9 +91,6 @@ public enum AtmosphereRenderer {
 		}
 	}
 
-	private int prevEnabled = GL11.GL_FALSE;
-	private int prevTexture = 0;
-
 	public void reallocList(AtmosphereSettings settings, double deepDepth) {
 		Vector3[][] displayvec = Allocator.createAndInitialize(settings.fragLong + 1, settings.fragLat+1);
 
@@ -124,22 +101,10 @@ public enum AtmosphereRenderer {
 		if(this.renderedList != -1)
 			GLAllocation.deleteDisplayLists(this.renderedList);
 
-		this.renderedList = GLAllocation.generateDisplayLists(2);
+		this.renderedList = GLAllocation.generateDisplayLists(1);
 
 		GlStateManager.glNewList(this.renderedList, GL11.GL_COMPILE);
 		this.drawDisplay(displayvec, settings.fragLong, settings.fragLat, deepDepth, true, true);
-		GlStateManager.glEndList();
-
-		this.renderToCacheList = this.renderedList + 1;
-
-		for(int longc=0; longc<=settings.fragLong; longc++)
-			for(int latc=0; latc<=settings.fragLat; latc++)
-				displayvec[longc][latc].set(longc * 2.0 * Math.PI / settings.fragLong, latc * Math.PI / settings.fragLat - Math.PI / 2, 0.0);
-
-		GlStateManager.glNewList(this.renderToCacheList, GL11.GL_COMPILE);
-		GL11.glFrontFace(GL11.GL_CW);
-		this.drawDisplay(displayvec, settings.fragLong, settings.fragLat, 1.0, false, false);
-		GL11.glFrontFace(GL11.GL_CCW);
 		GlStateManager.glEndList();
 	}
 

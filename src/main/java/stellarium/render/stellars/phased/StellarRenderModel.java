@@ -40,8 +40,7 @@ public class StellarRenderModel {
 	}
 
 	public void updateSettings(ClientSettings settings) {
-		checker.setMagLimit(settings.mag_Limit);
-		for(StellarLayerModel model : this.layerModels)
+		for(StellarLayerModel<?> model : this.layerModels)
 			model.updateSettings(settings);
 	}
 

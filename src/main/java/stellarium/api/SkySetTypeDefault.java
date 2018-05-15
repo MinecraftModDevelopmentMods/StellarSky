@@ -1,10 +1,5 @@
 package stellarium.api;
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
 public enum SkySetTypeDefault implements ISkySetType {
 	INSTANCE;
 

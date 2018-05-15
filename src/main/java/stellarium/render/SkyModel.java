@@ -1,8 +1,5 @@
 package stellarium.render;
 
-import org.lwjgl.opengl.ContextCapabilities;
-import org.lwjgl.opengl.GLContext;
-
 import net.minecraft.world.World;
 import stellarium.client.ClientSettings;
 import stellarium.display.DisplayModel;

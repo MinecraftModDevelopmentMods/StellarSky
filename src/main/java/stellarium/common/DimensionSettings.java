@@ -1,11 +1,6 @@
 package stellarium.common;
 
-import java.util.Set;
-
-import com.google.common.collect.Sets;
-
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import stellarapi.api.SAPIReferences;
 import stellarapi.api.lib.config.HierarchicalConfig;
 import stellarapi.api.world.worldset.WorldSet;

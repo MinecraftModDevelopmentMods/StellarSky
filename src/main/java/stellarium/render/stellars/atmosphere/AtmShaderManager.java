@@ -24,15 +24,15 @@ public class AtmShaderManager {
 	private IUniformField extinctionFactor, gScattering, rayleighFactor, mieFactor;
 
 	private float rainStrengthFactor, weatherFactor;
-	private double skyBrightness, dominationScale;
 	
 	private EnumMap<EnumStellarPass, IShaderObject> shaderMap = Maps.newEnumMap(EnumStellarPass.class);
 
 	public void reloadShaders() {
 		shaderMap.clear();
 
-		IShaderObject atmosphere = this.injectAtmosphereHook(
-				ShaderHelper.getInstance().buildShader("atmospherespcoord", StellarSkyResources.vertexAtmosphereSpCoord, StellarSkyResources.fragmentAtmosphereSpCoord));
+		IShaderObject atmosphere = this.injectAtmField(
+				ShaderHelper.getInstance().buildShader("atmospheresingle",
+						StellarSkyResources.vertexAtmosphereSingle, StellarSkyResources.fragmentAtmosphereSingle));
 
 		IShaderObject scatterFuzzy = ShaderHelper.getInstance().buildShader(
 				"fuzzymapped", StellarSkyResources.vertexScatterFuzzyMapped, StellarSkyResources.fragmentScatterFuzzyMapped);
@@ -53,7 +53,7 @@ public class AtmShaderManager {
 		shaderMap.put(EnumStellarPass.OpaqueScatter, scatterFuzzy);
 	}
 
-	private @Nullable IShaderObject injectAtmosphereHook(IShaderObject shader) {
+	private @Nullable IShaderObject injectAtmField(IShaderObject shader) {
 		if(shader == null)
 			return null;
 
@@ -77,11 +77,6 @@ public class AtmShaderManager {
 		this.rainStrengthFactor = rainStrength > 0.0f? 0.05f + rainStrength * 0.15f : 0.0f;
 		this.weatherFactor = (float) (1.0f - Math.sqrt(rainStrength) * 0.8f);
 		weatherFactor *= (1.0D - (double)(info.world.getThunderStrength(info.partialTicks) * 8.0F) / 16.0D);
-
-		this.skyBrightness = info.world.getSunBrightnessFactor(info.partialTicks) * 2.0f;
-		this.skyBrightness *= (info.info.brightnessMultiplier / Spmath.sqr(info.info.multiplyingPower));
-
-		this.dominationScale = 0.0;
 	}
 	
 	public IShaderObject bindShader(AtmosphereModel model, EnumStellarPass pass) {
@@ -90,9 +85,7 @@ public class AtmShaderManager {
 		return toBind;
 	}
 	
-	private static final String dominationMapField = "skyDominationMap";
 	private static final String defaultTexture = "texture";
-	private static final String dominationScaleField = "dominationscale";
 
 	private void setupShader(IShaderObject shader, EnumStellarPass pass, AtmosphereModel model) {
 		if(pass != EnumStellarPass.DominateScatter) {
