@@ -244,4 +244,20 @@ public class OpenGlUtil {
 			}
 		}
 	}
+
+	public static void generateMipmap(int target) {
+		if (FRAMEBUFFER_SUPPORTED) {
+			switch (MODE) {
+			case CORE:
+				GL30.glGenerateMipmap(target);
+				break;
+			case ARB:
+				ARBFramebufferObject.glGenerateMipmap(target);
+				break;
+			case EXT:
+				EXTFramebufferObject.glGenerateMipmapEXT(target);
+				break;
+			}
+		}
+	}
 }

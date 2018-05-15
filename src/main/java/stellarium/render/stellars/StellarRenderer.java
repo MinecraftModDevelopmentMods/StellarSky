@@ -1,13 +1,17 @@
 package stellarium.render.stellars;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL21;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.shader.Framebuffer;
 import stellarium.StellarSkyResources;
 import stellarium.client.ClientSettings;
 import stellarium.render.shader.IShaderObject;
+import stellarium.render.shader.IUniformField;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.atmosphere.AtmosphereRenderer;
@@ -22,16 +26,21 @@ import stellarium.util.RenderUtil;
 public enum StellarRenderer {
 	INSTANCE;
 
-	private FramebufferCustom sky, temporary, inspect;
-	private FramebufferCustom srgbFBO = null;
+	private FramebufferCustom sky, temporary;
 	private int prevWidth = 0, prevHeight = 0;
 	private int prevFramebufferBound;
 
 	private IShaderObject hdrToldr, linearToSRGB;
+	private IUniformField fieldBr;
+
+	private int maxLevel;
+	private FloatBuffer brightness;
 
 	public void initialize(ClientSettings settings) {
 		AtmosphereSettings atmSettings = (AtmosphereSettings) settings.getSubConfig(AtmosphereSettings.KEY);
 		AtmosphereRenderer.INSTANCE.initialize(atmSettings);
+
+		this.brightness = ByteBuffer.allocateDirect(3 << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
 		this.setupShader();
 	}
 
@@ -41,18 +50,8 @@ public enum StellarRenderer {
 				.setupDepthStencil(true, false)
 				.build(width, height);
 
-		this.inspect = FramebufferCustom.builder()
-				.setupTexFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
-				.setupDepthStencil(false, false)
-				.build(1, 1);
-
 		this.temporary = FramebufferCustom.builder()
 				.setupTexFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
-				.setupDepthStencil(false, false)
-				.build(width, height);
-
-		this.srgbFBO = FramebufferCustom.builder()
-				.setupTexFormat(GL21.GL_SRGB8, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE)
 				.setupDepthStencil(false, false)
 				.build(width, height);
 	}
@@ -61,6 +60,7 @@ public enum StellarRenderer {
 		this.hdrToldr = ShaderHelper.getInstance().buildShader("HDRtoLDR",
 				StellarSkyResources.vertexHDRtoLDR, StellarSkyResources.fragmentHDRtoLDR);
 		hdrToldr.getField("texture").setInteger(0);
+		this.fieldBr = hdrToldr.getField("brightness");
 
 		this.linearToSRGB = ShaderHelper.getInstance().buildShader("linearToSRGB",
 				StellarSkyResources.vertexLinearToSRGB, StellarSkyResources.fragmentLinearToSRGB);
@@ -74,6 +74,7 @@ public enum StellarRenderer {
 		Framebuffer mcBuffer = info.minecraft.getFramebuffer();
 		if(mcBuffer.framebufferWidth != this.prevWidth || mcBuffer.framebufferHeight != this.prevHeight) {
 			this.setupFramebuffer(mcBuffer.framebufferWidth, mcBuffer.framebufferHeight);
+			int ct
 			this.prevWidth = mcBuffer.framebufferWidth;
 			this.prevHeight = mcBuffer.framebufferHeight;
 		}
@@ -95,20 +96,30 @@ public enum StellarRenderer {
 	}
 
 	public void postProcess(StellarRI info) {
-		inspect.bindFramebuffer(true);
+		brightness.clear();
+		float br = (brightness.get(0) + brightness.get(1) + brightness.get(2)) / 3.0f;
+		br = 1.0f;
+
+		// HDR to LDR
+		temporary.bindFramebuffer(true);
+		temporary.framebufferClear();
+
 		sky.bindFramebufferTexture();
+		OpenGlUtil.generateMipmap(GL11.GL_TEXTURE_2D);
+		GL11.glGetTexImage(target, level, format, type, pixels);
+
+		hdrToldr.bindShader();
+		fieldBr.setDouble(br);
 		RenderUtil.renderFullQuad();
-		//GL11.glReadPixels(0, 0, 1, 1, format, type, pixels);
+		hdrToldr.releaseShader();
 
-		sky.bindFramebuffer(true);
 
+		// Linear RGB to sRGB
 		OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
 
 		linearToSRGB.bindShader();
-
-		sky.bindFramebufferTexture();
+		temporary.bindFramebufferTexture();
 		RenderUtil.renderFullQuad();
-
 		linearToSRGB.releaseShader();
 	}
 
