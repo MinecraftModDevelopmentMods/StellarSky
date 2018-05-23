@@ -110,7 +110,7 @@ public class AtmShaderManager {
 			double mult = 1.2;
 			
 			rayleighFactor.setDouble4(
-					mult * 4 * model.getSkyColorRed() * model.getSkyDispRed() / 0.56,
+					mult * 5 * model.getSkyColorRed() * model.getSkyDispRed() / 0.56,
 					mult * 8 * model.getSkyColorGreen() * model.getSkyDispGreen() / 0.65,
 					mult * 20 * model.getSkyColorBlue() * model.getSkyDispBlue(),
 					1.0);

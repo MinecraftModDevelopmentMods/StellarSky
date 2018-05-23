@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.shader.Framebuffer;
@@ -34,6 +35,7 @@ public enum StellarRenderer {
 	private IUniformField fieldBr;
 
 	private int maxLevel;
+	private float scrMult;
 	private FloatBuffer brightness;
 
 	public void initialize(ClientSettings settings) {
@@ -44,15 +46,25 @@ public enum StellarRenderer {
 		this.setupShader();
 	}
 
+	private static int log2(int n) {
+		return 31 - Integer.numberOfLeadingZeros(n);
+	}
+
 	public void setupFramebuffer(int width, int height) {
+		this.maxLevel = log2(Math.max(width, height) - 1) + 1;
+		int texSize = 1 << this.maxLevel;
+		this.scrMult = (float)(width * height) / (texSize * texSize);
+
 		this.sky = FramebufferCustom.builder()
-				.setupTexFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
-				.setupDepthStencil(true, false)
-				.build(width, height);
+				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.renderRegion(0, 0, width, height)
+				.texMinMagFilter(GL11.GL_NEAREST_MIPMAP_NEAREST, GL11.GL_NEAREST)
+				.depthStencil(true, false)
+				.build(texSize, texSize);
 
 		this.temporary = FramebufferCustom.builder()
-				.setupTexFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
-				.setupDepthStencil(false, false)
+				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.depthStencil(false, false)
 				.build(width, height);
 	}
 
@@ -74,7 +86,6 @@ public enum StellarRenderer {
 		Framebuffer mcBuffer = info.minecraft.getFramebuffer();
 		if(mcBuffer.framebufferWidth != this.prevWidth || mcBuffer.framebufferHeight != this.prevHeight) {
 			this.setupFramebuffer(mcBuffer.framebufferWidth, mcBuffer.framebufferHeight);
-			int ct
 			this.prevWidth = mcBuffer.framebufferWidth;
 			this.prevHeight = mcBuffer.framebufferHeight;
 		}
@@ -96,21 +107,26 @@ public enum StellarRenderer {
 	}
 
 	public void postProcess(StellarRI info) {
-		brightness.clear();
-		float br = (brightness.get(0) + brightness.get(1) + brightness.get(2)) / 3.0f;
-		br = 1.0f;
-
 		// HDR to LDR
 		temporary.bindFramebuffer(true);
 		temporary.framebufferClear();
 
 		sky.bindFramebufferTexture();
+
+		brightness.clear();
 		OpenGlUtil.generateMipmap(GL11.GL_TEXTURE_2D);
-		GL11.glGetTexImage(target, level, format, type, pixels);
+		GL11.glGetTexImage(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_RGB, GL11.GL_FLOAT, this.brightness);
+		// TODO More accuracy needed, currently too dependent on the Sun and the perspective.
+		//int i = GlStateManager.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_TEXTURE_WIDTH);
+		//int j = GlStateManager.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_TEXTURE_HEIGHT);
+		float br = (brightness.get(0) * 0.2126f
+				+ brightness.get(1) * 0.7152f
+				+ brightness.get(2) * 0.0722f) * this.scrMult;
 
 		hdrToldr.bindShader();
 		fieldBr.setDouble(br);
-		RenderUtil.renderFullQuad();
+		sky.renderFullQuad();
+		//RenderUtil.renderFullQuad();
 		hdrToldr.releaseShader();
 
 
