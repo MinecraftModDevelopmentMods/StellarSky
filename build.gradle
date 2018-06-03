@@ -10,7 +10,19 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
+
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven-publish'
+
+repositories {
+    maven {
+        url "https://dl.bintray.com/abastro/StellarMods"
+    }
+}
 
 ext.config = parseConfig(file('build.properties'))
 
@@ -27,12 +39,47 @@ minecraft {
     mappings = "${config.version.mcpmappings}"
 
     replace "@VERSION@", project.version
-}   
+}
 
 
 dependencies {
-
+    deobfCompile 'stellarapi.api:stellarapi:1.12.2-0.4.2.9'
 }
+
+
+rootProject.tasks.getByName('build').dependsOn bintrayUpload
+
+publishing {
+    publications {
+        MavenJar(MavenPublication) {
+            from components.java
+            artifact sourceJar
+            groupId "${config.group}"
+            artifactId "${config.artifact}"
+            version "${config.version.minecraft}-${modversion}"
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    dryRun = true // Whether to run this as dry-run, without deploying
+    publish = true // If version should be auto published after an upload
+    pkg {
+        repo = 'StellarMods'
+        name = 'stellarsky'
+        licenses = ['MIT']
+        websiteUrl = 'https://github.com/Abastro/StellarSky'
+        issueTrackerUrl = 'https://github.com/Abastro/StellarSky/issues'
+        vcsUrl = 'https://github.com/Abastro/StellarSky.git'
+        version {
+            name = "${config.version.minecraft}-${modversion}"
+        }
+    }
+    publications = ['MavenJar']
+}
+
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output

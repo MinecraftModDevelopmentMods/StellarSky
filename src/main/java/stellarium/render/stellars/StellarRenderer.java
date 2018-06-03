@@ -117,6 +117,7 @@ public enum StellarRenderer {
 		OpenGlUtil.generateMipmap(GL11.GL_TEXTURE_2D);
 		GL11.glGetTexImage(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_RGB, GL11.GL_FLOAT, this.brightness);
 		// TODO More accuracy needed, currently too dependent on the Sun and the perspective.
+		// TODO 100 times brighter sky
 		//int i = GlStateManager.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_TEXTURE_WIDTH);
 		//int j = GlStateManager.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_TEXTURE_HEIGHT);
 		float br = (brightness.get(0) * 0.2126f
