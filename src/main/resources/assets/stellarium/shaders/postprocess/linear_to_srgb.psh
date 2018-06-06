@@ -2,16 +2,28 @@
 
 uniform sampler2D texture;
 
+/*
 float sRGB(float x) {
-    /*if (x <= 0.00031308)
+    // Complex calculation which is 'right'
+    if (x <= 0.00031308)
         return 12.92 * x;
     else
-        return 1.055 * pow(x, (1.0 / 2.4)) - 0.055;*/
-    return pow(x, (1.0 / 2.2));
+        return 1.055 * pow(x, (1.0 / 2.4)) - 0.055;
+    // Simpler Approximation
+    //return pow(x, (1.0 / 2.2));
+}
+*/
+
+// Equation which 'works'
+vec3 sRGB(vec3 RGB) {
+    vec3 S1 = sqrt(RGB);
+    vec3 S2 = sqrt(S1);
+    vec3 S3 = sqrt(S2);
+    return 0.585122381 * S1 + 0.783140355 * S2 - 0.368262736 * S3;
 }
 
 vec4 sRGB(vec4 c) {
-    return vec4(sRGB(c.x), sRGB(c.y), sRGB(c.z), c.w);
+    return vec4(sRGB(c.xyz), c.w);
 }
 
 void main()

@@ -50,6 +50,12 @@ public class StellarSkyResources {
 	}
 
 
+	public static final ResourceLocation vertexSkyToQueried =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/postprocess/sky_to_queried.vsh");
+
+	public static final ResourceLocation fragmentSkyToQueried =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/postprocess/sky_to_queried.psh");
+
 	public static final ResourceLocation vertexHDRtoLDR =
 			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/postprocess/hdr_to_ldr.vsh");
 

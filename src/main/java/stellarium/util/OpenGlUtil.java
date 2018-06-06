@@ -1,18 +1,21 @@
 package stellarium.util;
 
 import org.lwjgl.opengl.ARBFramebufferObject;
+import org.lwjgl.opengl.ARBPixelBufferObject;
 import org.lwjgl.opengl.ARBPointSprite;
 import org.lwjgl.opengl.ARBTextureFloat;
 import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL21;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
 public class OpenGlUtil {
 	
 	private static final int POINT_SPRITE;
+	public static final int PIXEL_PACK_BUFFER;
 	public static final int RGB16F;
 	public static final int TEXTURE_FLOAT;
 
@@ -32,6 +35,7 @@ public class OpenGlUtil {
 	static {
 		ContextCapabilities caps = GLContext.getCapabilities();
 		POINT_SPRITE = caps.OpenGL20? GL20.GL_POINT_SPRITE : ARBPointSprite.GL_POINT_SPRITE_ARB;
+		PIXEL_PACK_BUFFER = caps.OpenGL21? GL21.GL_PIXEL_PACK_BUFFER : ARBPixelBufferObject.GL_PIXEL_PACK_BUFFER_ARB;
 
 		RGB16F = caps.GL_ARB_texture_float?
 				(caps.OpenGL30? GL30.GL_RGB16F : ARBTextureFloat.GL_RGB16F_ARB)

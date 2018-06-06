@@ -1,0 +1,16 @@
+#version 120
+
+uniform sampler2D texture;
+uniform vec3 relative;
+
+void main()
+{
+    // Get the actual vector to Multiply (cosO)^3 (Square from latitude, single from longitude)
+    vec3 coord = gl_TexCoord[0].xyz - vec3(0.5, 0.5, 0.0);
+    coord.z = 1.0;
+    coord *= relative;
+    float size = length(coord);
+
+    // Cap the brightness
+    gl_FragColor = min(texture2D(texture, gl_TexCoord[0].st), 1500.0) / (size * size * size);
+}

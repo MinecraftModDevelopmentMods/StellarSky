@@ -6,9 +6,14 @@ import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL21;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.shader.Framebuffer;
+import stellarapi.api.lib.math.Spmath;
+import stellarium.StellarSky;
 import stellarium.StellarSkyResources;
 import stellarium.client.ClientSettings;
 import stellarium.render.shader.IShaderObject;
@@ -27,23 +32,34 @@ import stellarium.util.RenderUtil;
 public enum StellarRenderer {
 	INSTANCE;
 
-	private FramebufferCustom sky, temporary;
+	private FramebufferCustom sky = null, brQuery = null, ldrSky = null;
 	private int prevWidth = 0, prevHeight = 0;
 	private int prevFramebufferBound;
 
-	private IShaderObject hdrToldr, linearToSRGB;
-	private IUniformField fieldBr;
+	private IShaderObject skyToQueried, hdrToldr, linearToSRGB;
+	private IUniformField fieldBr, fieldRelative;
 
 	private int maxLevel;
-	private float scrMult;
-	private FloatBuffer brightness;
+	private float screenRatio;
+	private int[] pBuffer;
+	private ByteBuffer brBuffer = null;
+
+	private long prevTime = -1;
+	private int index = 0;
+	private float brightness = 0.0f;
 
 	public void initialize(ClientSettings settings) {
 		AtmosphereSettings atmSettings = (AtmosphereSettings) settings.getSubConfig(AtmosphereSettings.KEY);
 		AtmosphereRenderer.INSTANCE.initialize(atmSettings);
 
-		this.brightness = ByteBuffer.allocateDirect(3 << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
 		this.setupShader();
+
+		this.pBuffer = new int[] {GL15.glGenBuffers(), GL15.glGenBuffers()};
+		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[0]);
+		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, 3 << 2, GL15.GL_STREAM_READ);
+		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[1]);
+		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, 3 << 2, GL15.GL_STREAM_READ);
+		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, 0);
 	}
 
 	private static int log2(int n) {
@@ -53,22 +69,39 @@ public enum StellarRenderer {
 	public void setupFramebuffer(int width, int height) {
 		this.maxLevel = log2(Math.max(width, height) - 1) + 1;
 		int texSize = 1 << this.maxLevel;
-		this.scrMult = (float)(width * height) / (texSize * texSize);
+		this.screenRatio = (float)(width * height) / (texSize * texSize);
+
+		if(this.sky != null)
+			sky.deleteFramebuffer();
+		if(this.brQuery != null)
+			brQuery.deleteFramebuffer();
+		if(this.ldrSky != null)
+			ldrSky.deleteFramebuffer();
 
 		this.sky = FramebufferCustom.builder()
 				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.depthStencil(true, false)
+				.build(width, height);
+
+		this.brQuery = FramebufferCustom.builder()
+				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
 				.renderRegion(0, 0, width, height)
 				.texMinMagFilter(GL11.GL_NEAREST_MIPMAP_NEAREST, GL11.GL_NEAREST)
-				.depthStencil(true, false)
+				.depthStencil(false, false)
 				.build(texSize, texSize);
 
-		this.temporary = FramebufferCustom.builder()
+		this.ldrSky = FramebufferCustom.builder()
 				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
 				.depthStencil(false, false)
 				.build(width, height);
 	}
 
 	public void setupShader() {
+		this.skyToQueried = ShaderHelper.getInstance().buildShader("SkyToQueried",
+				StellarSkyResources.vertexSkyToQueried, StellarSkyResources.fragmentSkyToQueried);
+		skyToQueried.getField("texture").setInteger(0);
+		this.fieldRelative = skyToQueried.getField("relative");
+
 		this.hdrToldr = ShaderHelper.getInstance().buildShader("HDRtoLDR",
 				StellarSkyResources.vertexHDRtoLDR, StellarSkyResources.fragmentHDRtoLDR);
 		hdrToldr.getField("texture").setInteger(0);
@@ -94,10 +127,6 @@ public enum StellarRenderer {
 	private static final StellarTessellator tessellator = new StellarTessellator();
 
 	public void preProcess() {
-		// TODO AA change to manual rendering
-		// TODO AA Try to lessen the Brightness Gap
-		// TODO AA Just use vector to specify position
-
 		this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlUtil.FRAMEBUFFER_BINDING);
 
 		sky.bindFramebuffer(false);
@@ -107,36 +136,71 @@ public enum StellarRenderer {
 	}
 
 	public void postProcess(StellarRI info) {
+		// TODO Render everything on floating framebuffers
+
+		// Extract things needed
+		long currentTime = System.currentTimeMillis();
+		float relHeight = 2 * Spmath.tand(0.5f *
+				RenderUtil.getFOVModifier(info.minecraft.entityRenderer, info.partialTicks, true));
+		float relWidth = (relHeight * info.minecraft.displayWidth) / info.minecraft.displayHeight;
+
+		// Brightness Query
+		if(currentTime < this.prevTime || currentTime >= this.prevTime + 100) {
+			// Render to Brightness Query
+			brQuery.bindFramebuffer(true);
+			brQuery.framebufferClear();
+
+			sky.bindFramebufferTexture();
+
+			skyToQueried.bindShader();
+			fieldRelative.setDouble3(relWidth, relHeight, 1.0f);
+			sky.renderFullQuad();
+			skyToQueried.releaseShader();
+
+			// Actual Calculation
+			brQuery.bindFramebufferTexture();
+			OpenGlUtil.generateMipmap(GL11.GL_TEXTURE_2D);
+
+			this.index = (this.index + 1) % 2;
+			int nextIndex = (this.index + 1) % 2;
+
+			GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[this.index]);
+			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_RGB, GL11.GL_FLOAT, 0);
+
+			GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[nextIndex]);
+			this.brBuffer = GL15.glMapBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, GL15.GL_READ_ONLY, this.brBuffer);
+
+			if(this.brBuffer != null) {
+				FloatBuffer brBufferF = brBuffer.asFloatBuffer();
+				float currentBrightness = (brBufferF.get(0) * 0.2126f
+						+ brBufferF.get(1) * 0.7152f
+						+ brBufferF.get(2) * 0.0722f) / this.screenRatio;
+				this.brightness += (currentBrightness - this.brightness) * 0.03f;
+			}
+
+			GL15.glUnmapBuffer(OpenGlUtil.PIXEL_PACK_BUFFER);
+			GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, 0);
+
+			this.prevTime = currentTime;
+		}
+
 		// HDR to LDR
-		temporary.bindFramebuffer(true);
-		temporary.framebufferClear();
+		ldrSky.bindFramebuffer(true);
+		ldrSky.framebufferClear();
 
 		sky.bindFramebufferTexture();
 
-		brightness.clear();
-		OpenGlUtil.generateMipmap(GL11.GL_TEXTURE_2D);
-		GL11.glGetTexImage(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_RGB, GL11.GL_FLOAT, this.brightness);
-		// TODO More accuracy needed, currently too dependent on the Sun and the perspective.
-		// TODO 100 times brighter sky
-		//int i = GlStateManager.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_TEXTURE_WIDTH);
-		//int j = GlStateManager.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_TEXTURE_HEIGHT);
-		float br = (brightness.get(0) * 0.2126f
-				+ brightness.get(1) * 0.7152f
-				+ brightness.get(2) * 0.0722f) * this.scrMult;
-
 		hdrToldr.bindShader();
-		fieldBr.setDouble(br);
+		fieldBr.setDouble(this.brightness);
 		sky.renderFullQuad();
-		//RenderUtil.renderFullQuad();
 		hdrToldr.releaseShader();
-
 
 		// Linear RGB to sRGB
 		OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
 
 		linearToSRGB.bindShader();
-		temporary.bindFramebufferTexture();
-		RenderUtil.renderFullQuad();
+		ldrSky.bindFramebufferTexture();
+		ldrSky.renderFullQuad();
 		linearToSRGB.releaseShader();
 	}
 

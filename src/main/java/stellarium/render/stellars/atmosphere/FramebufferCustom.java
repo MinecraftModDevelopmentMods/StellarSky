@@ -113,8 +113,8 @@ public class FramebufferCustom {
 		this.frameTexturePointer = TextureUtil.glGenTextures();
 
 		if (this.useDepth) {
-			//this.depthBufferPointer = OpenGlUtil.genRenderbuffers();
-			this.depthBufferPointer = TextureUtil.glGenTextures();
+			this.depthBufferPointer = OpenGlUtil.genRenderbuffers();
+			//this.depthBufferPointer = TextureUtil.glGenTextures();
 		}
 
 		GlStateManager.bindTexture(this.frameTexturePointer);
@@ -124,13 +124,13 @@ public class FramebufferCustom {
 		OpenGlUtil.framebufferTexture2D(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, this.frameTexturePointer, 0);
 
 		if (this.useDepth) {
-			//OpenGlUtil.bindRenderbuffer(OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
-			GlStateManager.bindTexture(this.depthBufferPointer);
+			OpenGlUtil.bindRenderbuffer(OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
+			//GlStateManager.bindTexture(this.depthBufferPointer);
 			if (!this.useStencil) {
-				//OpenGlUtil.renderbufferStorage(OpenGlUtil.RENDERBUFFER_GL, GL14.GL_DEPTH_COMPONENT24, this.textureWidth, this.textureHeight);
-				//OpenGlUtil.framebufferRenderbuffer(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.DEPTH_ATTACHMENT, OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
-				GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, this.textureWidth, this.textureHeight, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (IntBuffer)null);
-				OpenGlUtil.framebufferTexture2D(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, this.depthBufferPointer, 0);
+				OpenGlUtil.renderbufferStorage(OpenGlUtil.RENDERBUFFER_GL, GL14.GL_DEPTH_COMPONENT24, this.textureWidth, this.textureHeight);
+				OpenGlUtil.framebufferRenderbuffer(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.DEPTH_ATTACHMENT, OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
+				//GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, this.textureWidth, this.textureHeight, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (IntBuffer)null);
+				//OpenGlUtil.framebufferTexture2D(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, this.depthBufferPointer, 0);
 			} else {
 				OpenGlUtil.renderbufferStorage(OpenGlUtil.RENDERBUFFER_GL, EXTPackedDepthStencil.GL_DEPTH24_STENCIL8_EXT, this.textureWidth, this.textureHeight);
 				OpenGlUtil.framebufferRenderbuffer(OpenGlUtil.FRAMEBUFFER_GL, OpenGlUtil.DEPTH_ATTACHMENT, OpenGlUtil.RENDERBUFFER_GL, this.depthBufferPointer);
@@ -145,9 +145,6 @@ public class FramebufferCustom {
 	}
 
 	public void deleteFramebuffer() {
-		this.unbindFramebufferTexture();
-		this.unbindFramebuffer();
-
 		if (this.depthBufferPointer > -1)
 		{
 			OpenGlUtil.deleteRenderbuffers(this.depthBufferPointer);
@@ -173,10 +170,6 @@ public class FramebufferCustom {
 		GlStateManager.bindTexture(this.frameTexturePointer);
 	}
 
-	public void bindDepthTexture() {
-		GlStateManager.bindTexture(this.depthBufferPointer);
-	}
-
 	public void unbindFramebufferTexture() {
 		GlStateManager.bindTexture(0);
 	}
@@ -187,16 +180,6 @@ public class FramebufferCustom {
 		if (updateViewPort) {
 			GlStateManager.viewport(this.renderX, this.renderY, this.renderWidth, this.renderHeight);
 		}
-	}
-
-	@Deprecated
-	public void bindFramebuffer(int target) {
-		OpenGlUtil.bindFramebuffer(target, this.framebufferPointer);
-	}
-
-	@Deprecated
-	public void unbindFramebuffer() {
-		OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, 0);
 	}
 
 
@@ -224,24 +207,20 @@ public class FramebufferCustom {
 		GlStateManager.pushMatrix();
 		GlStateManager.loadIdentity();
 
-		GlStateManager.disableCull();
-
 		buff.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 		buff.pos(-1.0, 1.0, 0.0).tex(
 				(double)this.renderX / this.width,
 				(double)(this.renderY + this.renderHeight) / this.height).endVertex();
-		buff.pos(1.0, 1.0, 0.0).tex(
-				(double)(this.renderX + this.renderWidth) / this.width,
-				(double)(this.renderY + this.renderHeight) / this.height).endVertex();
-		buff.pos(1.0, -1.0, 0.0).tex(
-				(double)(this.renderX + this.renderWidth) / this.width,
-				(double)this.renderY / this.height).endVertex();
 		buff.pos(-1.0, -1.0, 0.0).tex(
 				(double)this.renderX / this.width,
 				(double)this.renderY / this.height).endVertex();
+		buff.pos(1.0, -1.0, 0.0).tex(
+				(double)(this.renderX + this.renderWidth) / this.width,
+				(double)this.renderY / this.height).endVertex();
+		buff.pos(1.0, 1.0, 0.0).tex(
+				(double)(this.renderX + this.renderWidth) / this.width,
+				(double)(this.renderY + this.renderHeight) / this.height).endVertex();
 		tess.draw();
-
-		GlStateManager.enableCull();
 
 		GlStateManager.matrixMode(GL11.GL_PROJECTION);
 		GlStateManager.popMatrix();

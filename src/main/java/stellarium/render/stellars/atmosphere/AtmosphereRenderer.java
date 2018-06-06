@@ -70,6 +70,9 @@ public enum AtmosphereRenderer {
 			break;
 
 		case SetupDominateScatter:
+			// TODO AA Handle fog correctly
+			// TODO AA 100 times brighter sky
+			// TODO AA Just use vector to specify position
 			info.setAtmCallList(this.renderedList);
 			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.DominateScatter));
 			break;
