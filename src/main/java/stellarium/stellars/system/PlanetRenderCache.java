@@ -7,6 +7,7 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
+import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.stellars.OpticsHelper;
@@ -32,6 +33,7 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 		appCoord.y = image.appCoord.y;
 
 		pos.set(appCoord.getVec());
+		pos.scale(CRenderHelper.DEEP_DEPTH);
 
 		double airmass = info.sky.calculateAirmass(this.appCoord);
 		double appMag = (object.currentMag + airmass * info.sky.getExtinctionRate(Wavelength.visible));

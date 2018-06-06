@@ -28,7 +28,7 @@ public class DeepSkyObject extends StellarObject {
 		JsonArray size = object.get("size").getAsJsonArray();
 		this.width = Spmath.Radians(PositionUtil.getDegreeFromDMS(size.get(0).getAsString()));
 		this.height = Spmath.Radians(PositionUtil.getDegreeFromDMS(size.get(1).getAsString()));
-		
+
 		JsonArray pos = object.get("position").getAsJsonArray();
 		double ra = PositionUtil.getDegreeFromHMS(pos.get(0).getAsString());
 		double dec = PositionUtil.getDegreeFromDMS(pos.get(1).getAsString());

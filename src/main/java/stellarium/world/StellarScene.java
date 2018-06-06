@@ -64,7 +64,7 @@ public final class StellarScene implements ICelestialScene {
 		NBTTagCompound nbt = new NBTTagCompound();
 
 		// Writes Stellar Manager.
-		// TODO Stellar API Separate networking code and serialization code.
+		// TODO Stellar API Separate networking code and serialization code
 		nbt.setTag("main", StellarManager.getManager(this.world).serializeNBT());
 		settings.writeToNBT(nbt);
 		return nbt;

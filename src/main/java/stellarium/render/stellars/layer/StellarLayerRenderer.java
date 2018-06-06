@@ -13,15 +13,15 @@ public enum StellarLayerRenderer {
 
 		if(!layerRenderer.acceptPass(pass))
 			return;
-		
-		layerRenderer.preRender(info.tessellator, pass);
-		
+
+		layerRenderer.preRender(pass, info);
+
 		for(IObjRenderCache cache : model.getRenderCaches()) {
 			ICelestialObjectRenderer objRenderer = cache.getRenderer();
 			objRenderer.render(cache, pass, info);
 		}
 		
 		if(layerRenderer != null)
-			layerRenderer.postRender(info.tessellator, pass);
+			layerRenderer.postRender(pass, info);
 	}
 }

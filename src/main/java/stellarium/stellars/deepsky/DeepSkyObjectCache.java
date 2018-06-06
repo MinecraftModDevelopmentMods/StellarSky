@@ -10,6 +10,7 @@ import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
+import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.stellars.OpticsHelper;
@@ -64,8 +65,9 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 			cache.setWithVec(quads[i]);
 			info.sky.applyAtmRefraction(cache);
 			coords[i].set(cache.getVec());
+			coords[i].scale(CRenderHelper.DEEP_DEPTH);
 		}
-		
+
 		double airmass = info.sky.calculateAirmass(image.getCurrentHorizontalPos());
 		double magnitude = object.magnitude + airmass * info.sky.getExtinctionRate(Wavelength.visible);
 		this.alpha = OpticsHelper.getBrightnessFromMag(magnitude) * (float)(Spmath.sqr(0.015f) / object.getSurfaceSize());

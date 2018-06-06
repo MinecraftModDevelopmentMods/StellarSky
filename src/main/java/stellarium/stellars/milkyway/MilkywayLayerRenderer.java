@@ -1,7 +1,7 @@
 package stellarium.stellars.milkyway;
 
 import stellarium.render.stellars.access.EnumStellarPass;
-import stellarium.render.stellars.access.IStellarTessellator;
+import stellarium.render.stellars.layer.LayerRI;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public enum MilkywayLayerRenderer implements ICelestialLayerRenderer {
@@ -9,10 +9,10 @@ public enum MilkywayLayerRenderer implements ICelestialLayerRenderer {
 	INSTANCE;
 
 	@Override
-	public void preRender(IStellarTessellator tessellator, EnumStellarPass pass) { }
+	public void preRender(EnumStellarPass pass, LayerRI info) { }
 
 	@Override
-	public void postRender(IStellarTessellator tessellator, EnumStellarPass pass) { }
+	public void postRender(EnumStellarPass pass, LayerRI info) { }
 
 	@Override
 	public boolean acceptPass(EnumStellarPass pass) {

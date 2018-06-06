@@ -1,9 +1,12 @@
 package stellarium.stellars.system;
 
+import org.lwjgl.opengl.GL11;
+
 import stellarium.StellarSkyResources;
+import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
-import stellarium.render.stellars.access.IStellarTessellator;
 import stellarium.render.stellars.layer.LayerRI;
+import stellarium.render.util.FloatVertexFormats;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
 public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
@@ -12,18 +15,15 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 
 	@Override
 	public void render(SunRenderCache cache, EnumStellarPass pass, LayerRI info) {
-		IStellarTessellator tessellator = info.tessellator;
+		CRenderHelper helper = info.helper;
 
 		if(pass == EnumStellarPass.DominateScatter) {
-			tessellator.begin(false);
-			tessellator.pos(cache.appPos, 1.0f);
-			tessellator.color(1.0f, 1.0f, 1.0f);
-			tessellator.writeVertex();
-			tessellator.end();
+			helper.setup();
+			helper.renderDominate(cache.appPos, 1.0f, 1.0f, 1.0f);
 		} else if(pass == EnumStellarPass.Opaque) {
-			tessellator.bindTexture(StellarSkyResources.resourceSunSurface.getLocation());
-			tessellator.begin(true);
-			tessellator.radius(cache.size);
+			helper.bindTexture(StellarSkyResources.resourceSunSurface.getLocation());
+			helper.setup();
+			info.builder.begin(GL11.GL_QUADS, FloatVertexFormats.POSITION_TEX_COLOR_F_NORMAL);
 
 			float brightness = 10000.0f;
 			
@@ -37,33 +37,45 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 					float longdd=(float)(longc+1)/(float)cache.longn;
 					float latdd=1.0f-(float)(latc+1)/(float)cache.latn;
 
-					tessellator.pos(cache.sunPos[longc][latc], info.deepDepth * 0.8f);
-					tessellator.texture(longd, latd);
-					tessellator.color(brightness, brightness, brightness);
-					tessellator.normal(cache.sunNormal[longc][latc]);
-					tessellator.writeVertex();
+					info.builder.pos(cache.sunPos[longc][latc], info.deepDepth * 0.8f);
+					info.builder.tex(longd, latd);
+					info.builder.color(brightness * helper.multRed(),
+							brightness * helper.multGreen(),
+							brightness * helper.multBlue(),
+							1.0f);
+					info.builder.normal(cache.sunNormal[longc][latc]);
+					info.builder.endVertex();
 					
-					tessellator.pos(cache.sunPos[longcd][latc], info.deepDepth * 0.8f);
-					tessellator.texture(longdd, latd);
-					tessellator.color(brightness, brightness, brightness);
-					tessellator.normal(cache.sunNormal[longcd][latc]);
-					tessellator.writeVertex();
+					info.builder.pos(cache.sunPos[longcd][latc], info.deepDepth * 0.8f);
+					info.builder.tex(longdd, latd);
+					info.builder.color(brightness * helper.multRed(),
+							brightness * helper.multGreen(),
+							brightness * helper.multBlue(),
+							1.0f);
+					info.builder.normal(cache.sunNormal[longcd][latc]);
+					info.builder.endVertex();
 					
-					tessellator.pos(cache.sunPos[longcd][latc+1], info.deepDepth * 0.8f);
-					tessellator.texture(longdd, latdd);
-					tessellator.color(brightness, brightness, brightness);
-					tessellator.normal(cache.sunNormal[longcd][latc+1]);
-					tessellator.writeVertex();
+					info.builder.pos(cache.sunPos[longcd][latc+1], info.deepDepth * 0.8f);
+					info.builder.tex(longdd, latdd);
+					info.builder.color(brightness * helper.multRed(),
+							brightness * helper.multGreen(),
+							brightness * helper.multBlue(),
+							1.0f);
+					info.builder.normal(cache.sunNormal[longcd][latc+1]);
+					info.builder.endVertex();
 					
-					tessellator.pos(cache.sunPos[longc][latc+1], info.deepDepth * 0.8f);
-					tessellator.texture(longd, latdd);
-					tessellator.color(brightness, brightness, brightness);
-					tessellator.normal(cache.sunNormal[longc][latc+1]);
-					tessellator.writeVertex();
+					info.builder.pos(cache.sunPos[longc][latc+1], info.deepDepth * 0.8f);
+					info.builder.tex(longd, latdd);
+					info.builder.color(brightness * helper.multRed(),
+							brightness * helper.multGreen(),
+							brightness * helper.multBlue(),
+							1.0f);
+					info.builder.normal(cache.sunNormal[longc][latc+1]);
+					info.builder.endVertex();
 				}
 			}
 
-			tessellator.end();
+			info.tessellator.draw();
 		}
 	}
 }

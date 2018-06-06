@@ -7,6 +7,7 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
+import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.stellars.OpticsHelper;
@@ -42,6 +43,7 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 		}
 
 		pos.set(appPos.getVec());
+		pos.scale(CRenderHelper.DEEP_DEPTH);
 
 		long t2 = System.nanoTime();
 		double airmass = info.sky.calculateAirmass(this.appPos);

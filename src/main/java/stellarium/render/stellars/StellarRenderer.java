@@ -124,7 +124,7 @@ public enum StellarRenderer {
 		}
 	}
 
-	private static final StellarTessellator tessellator = new StellarTessellator();
+	private static final CRenderHelper tessellator = new CRenderHelper();
 
 	public void preProcess() {
 		this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlUtil.FRAMEBUFFER_BINDING);
@@ -209,6 +209,9 @@ public enum StellarRenderer {
 
 		// Pre-process
 		this.preProcess();
+
+		// TODO AA Just use vector to specify position, and use better value for positions
+		// TODO AA Better handling for light gathering power / resolution changes
 
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.Prepare, info);
 
