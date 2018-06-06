@@ -213,6 +213,7 @@ public enum StellarRenderer {
 		// TODO AA Just use vector to specify position, and use better value for positions
 		// TODO AA Better handling for light gathering power / resolution changes
 
+
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.Prepare, info);
 
 		// Setup surface scatter
