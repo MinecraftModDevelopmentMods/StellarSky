@@ -2,7 +2,10 @@ package stellarium.stellars.system;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.renderer.GlStateManager;
 import stellarium.StellarSkyResources;
+import stellarium.render.shader.IShaderObject;
+import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.layer.LayerRI;
@@ -10,7 +13,7 @@ import stellarium.render.util.FloatVertexFormats;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
 public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
-	
+
 	INSTANCE;
 
 	@Override
@@ -18,15 +21,16 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 		CRenderHelper helper = info.helper;
 
 		if(pass == EnumStellarPass.DominateScatter) {
-			helper.setup();
 			helper.renderDominate(cache.appPos, 1.0f, 1.0f, 1.0f);
 		} else if(pass == EnumStellarPass.Opaque) {
-			helper.bindTexture(StellarSkyResources.resourceSunSurface.getLocation());
-			helper.setup();
+			info.bindTexture(StellarSkyResources.resourceSunSurface.getLocation());
+
+			info.bindTexShader();
 			info.builder.begin(GL11.GL_QUADS, FloatVertexFormats.POSITION_TEX_COLOR_F_NORMAL);
 
-			float brightness = 10000.0f;
-			
+			// TODO Solve problem with the expression range
+			float brightness = 10000.0f; // Should be 4,830,000
+
 			int longc, latc;
 
 			for(longc=0; longc<cache.longn; longc++){
@@ -37,38 +41,38 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 					float longdd=(float)(longc+1)/(float)cache.longn;
 					float latdd=1.0f-(float)(latc+1)/(float)cache.latn;
 
-					info.builder.pos(cache.sunPos[longc][latc], info.deepDepth * 0.8f);
+					info.builder.pos(cache.sunPos[longc][latc], CRenderHelper.DEEP_DEPTH * 0.8f);
 					info.builder.tex(longd, latd);
-					info.builder.color(brightness * helper.multRed(),
-							brightness * helper.multGreen(),
-							brightness * helper.multBlue(),
+					info.builder.color(brightness,
+							brightness,
+							brightness,
 							1.0f);
 					info.builder.normal(cache.sunNormal[longc][latc]);
 					info.builder.endVertex();
-					
-					info.builder.pos(cache.sunPos[longcd][latc], info.deepDepth * 0.8f);
+
+					info.builder.pos(cache.sunPos[longcd][latc], CRenderHelper.DEEP_DEPTH * 0.8f);
 					info.builder.tex(longdd, latd);
-					info.builder.color(brightness * helper.multRed(),
-							brightness * helper.multGreen(),
-							brightness * helper.multBlue(),
+					info.builder.color(brightness,
+							brightness,
+							brightness,
 							1.0f);
 					info.builder.normal(cache.sunNormal[longcd][latc]);
 					info.builder.endVertex();
-					
-					info.builder.pos(cache.sunPos[longcd][latc+1], info.deepDepth * 0.8f);
+
+					info.builder.pos(cache.sunPos[longcd][latc+1], CRenderHelper.DEEP_DEPTH * 0.8f);
 					info.builder.tex(longdd, latdd);
-					info.builder.color(brightness * helper.multRed(),
-							brightness * helper.multGreen(),
-							brightness * helper.multBlue(),
+					info.builder.color(brightness,
+							brightness,
+							brightness,
 							1.0f);
 					info.builder.normal(cache.sunNormal[longcd][latc+1]);
 					info.builder.endVertex();
-					
-					info.builder.pos(cache.sunPos[longc][latc+1], info.deepDepth * 0.8f);
+
+					info.builder.pos(cache.sunPos[longc][latc+1], CRenderHelper.DEEP_DEPTH * 0.8f);
 					info.builder.tex(longd, latdd);
-					info.builder.color(brightness * helper.multRed(),
-							brightness * helper.multGreen(),
-							brightness * helper.multBlue(),
+					info.builder.color(brightness,
+							brightness,
+							brightness,
 							1.0f);
 					info.builder.normal(cache.sunNormal[longc][latc+1]);
 					info.builder.endVertex();
@@ -76,6 +80,7 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 			}
 
 			info.tessellator.draw();
+			info.unbindTexShader();
 		}
 	}
 }

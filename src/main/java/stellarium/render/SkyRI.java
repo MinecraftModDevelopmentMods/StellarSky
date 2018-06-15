@@ -12,9 +12,7 @@ public class SkyRI {
 	public final Tessellator tessellator;
 	public final BufferBuilder worldRenderer;
 	public final float partialTicks;
-	
-	public final float deepDepth;
-	
+
 	public final ViewerInfo info;
 	public final double screenSize;
 	
@@ -24,10 +22,8 @@ public class SkyRI {
 		this.tessellator = Tessellator.getInstance();
 		this.worldRenderer = tessellator.getBuffer();
 		this.partialTicks = partialTicks;
-		
-		this.deepDepth = 100.0f;
 
 		this.info = viewer;
-		this.screenSize = mc.displayWidth;
+		this.screenSize = mc.displayHeight;
 	}
 }

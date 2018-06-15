@@ -26,7 +26,7 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 	protected Vector3[][] milkywayNormal;
 	protected int latn, longn;
 	protected double[] color = new double[3];
-	protected float milkywayAbsBr;
+	protected float surfBr;
 	protected boolean rendered;
 	private Vector3 buffer = new Vector3();
 
@@ -35,14 +35,14 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 		this.latn = specificSettings.imgFracMilkyway;
 		this.longn = 2*specificSettings.imgFracMilkyway;
 		this.milkywayNormal = Allocator.createAndInitialize(longn, latn+1);
-		this.milkywayAbsBr = specificSettings.milkywayBrightness * OpticsHelper.getBrightnessFromMag(3.0f);
+		this.surfBr = specificSettings.brightness * OpticsHelper.getBrightnessFromMag(3.0f);
 	}
 
 	@Override
 	public void updateCache(Milkyway object, MilkywayImage image, ViewerInfo info, IStellarChecker checker) {
 		checker.startDescription();
 		checker.pos(new SpCoord(0.0, 90.0));
-		checker.brightness(this.milkywayAbsBr, this.milkywayAbsBr, this.milkywayAbsBr);
+		checker.brightness(this.surfBr, this.surfBr, this.surfBr);
 		if(!checker.checkRendered()) {
 			this.rendered = false;
 			return;

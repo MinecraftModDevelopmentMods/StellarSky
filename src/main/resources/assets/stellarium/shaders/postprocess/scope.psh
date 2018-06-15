@@ -1,0 +1,34 @@
+#version 120
+
+uniform sampler2D texture;
+uniform vec4 brightnessMult;
+uniform vec2 resDirection;
+
+// TODO less step size if acceptable - perform integration right
+vec4 blur9(sampler2D image, vec2 uv, vec2 resDir) {
+    vec4 color = vec4(0.0);
+
+    //color += texture2D(image, uv);
+
+    /*color += texture2D(image, uv) * 0.38774;
+    color += texture2D(image, uv + resDir) * 0.24477;
+    color += texture2D(image, uv - resDir) * 0.24477;
+    color += texture2D(image, uv + resDir * 2) * 0.06136;
+    color += texture2D(image, uv - resDir * 2) * 0.06136;*/
+
+    color += texture2D(image, uv) * 0.2023;
+    color += texture2D(image, uv + resDir * 0.5) * 0.1791;
+    color += texture2D(image, uv - resDir * 0.5) * 0.1791;
+    color += texture2D(image, uv + resDir * 1) * 0.124;
+    color += texture2D(image, uv - resDir * 1) * 0.124;
+    color += texture2D(image, uv + resDir * 1.5) * 0.0672;
+    color += texture2D(image, uv - resDir * 1.5) * 0.0672;
+    color += texture2D(image, uv + resDir * 2) * 0.0285;
+    color += texture2D(image, uv - resDir * 2) * 0.0285;
+    return color;
+}
+
+void main()
+{
+    gl_FragColor = blur9(texture, gl_TexCoord[0].st, resDirection) * brightnessMult;
+}

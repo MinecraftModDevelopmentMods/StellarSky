@@ -36,8 +36,9 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 		pos.scale(CRenderHelper.DEEP_DEPTH);
 
 		double airmass = info.sky.calculateAirmass(this.appCoord);
+		// TODO Calculation fix, venus shouldn't be as high as -5.7 mag
 		double appMag = (object.currentMag + airmass * info.sky.getExtinctionRate(Wavelength.visible));
-		this.brightness = OpticsHelper.getBrightnessFromMag(appMag);
+		this.brightness = OpticsHelper.getBrightnessFromMag(-2.5);
 
 		this.size = (float) (object.radius / object.earthPos.size());
 

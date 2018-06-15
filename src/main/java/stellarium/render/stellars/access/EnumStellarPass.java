@@ -1,5 +1,6 @@
 package stellarium.render.stellars.access;
 
+@Deprecated
 public enum EnumStellarPass {
 	DominateScatter,
 	SurfaceScatter(false, true),

@@ -10,7 +10,7 @@ import stellarapi.api.lib.config.IConfigHandler;
 
 public class MilkywaySettings implements IConfigHandler {
 	
-	public float milkywayBrightness;
+	public float brightness;
 	public int imgFracMilkyway;
 	
 	private Property propMilkywayFrac, propMilkywayBrightness;
@@ -45,7 +45,7 @@ public class MilkywaySettings implements IConfigHandler {
 
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
-		this.milkywayBrightness = (float) propMilkywayBrightness.getDouble();
+		this.brightness = (float) propMilkywayBrightness.getDouble();
         this.imgFracMilkyway = propMilkywayFrac.getInt();
 	}
 

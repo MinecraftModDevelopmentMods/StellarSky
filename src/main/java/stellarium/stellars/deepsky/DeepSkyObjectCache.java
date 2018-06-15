@@ -30,7 +30,7 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 	protected Vector3[] coords = new Vector3[4];
 	private SpCoord cache = new SpCoord();
 	protected ResourceLocation location;
-	protected float alpha;
+	protected float surfBr;
 	protected boolean shouldRender;
 	private Vector3[] quads = new Vector3[4];
 
@@ -53,7 +53,7 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 		}
 
 		DeepSkyTexture texture = object.getTexture().get();
-		
+
 		Vector3 center = new Vector3(object.centerPos);
 		Vector3 dirWidth = new Vector3().setCross(center, new Vector3(0.0, 0.0, 1.0)).normalize();
 		Vector3 dirHeight = new Vector3().setCross(dirWidth, center).normalize();
@@ -70,17 +70,18 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 
 		double airmass = info.sky.calculateAirmass(image.getCurrentHorizontalPos());
 		double magnitude = object.magnitude + airmass * info.sky.getExtinctionRate(Wavelength.visible);
-		this.alpha = OpticsHelper.getBrightnessFromMag(magnitude) * (float)(Spmath.sqr(0.015f) / object.getSurfaceSize());
+		this.surfBr = OpticsHelper.getBrightnessFromMag(magnitude)
+				* OpticsHelper.getMultFromArea(object.getSurfaceSize());
 
 		checker.startDescription();
 		checker.pos(this.cache);
-		checker.brightness(this.alpha, this.alpha, this.alpha);
+		checker.brightness(this.surfBr, this.surfBr, this.surfBr);
 		this.shouldRender = checker.checkRendered();
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public ICelestialObjectRenderer getRenderer() {
+	public ICelestialObjectRenderer<DeepSkyObjectCache> getRenderer() {
 		return DSObjectRenderer.INSTANCE;
 	}
 

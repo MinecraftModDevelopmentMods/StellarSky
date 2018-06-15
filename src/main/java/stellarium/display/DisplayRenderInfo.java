@@ -8,9 +8,8 @@ import net.minecraft.client.renderer.Tessellator;
 public class DisplayRenderInfo {
 	public final Minecraft mc;
 	public final Tessellator tessellator;
-	public final BufferBuilder worldRenderer;
+	public final BufferBuilder builder;
 	public final float partialTicks;
-	public final float deepDepth;
 
 	/**
 	 * Render pass which display is rendered.
@@ -18,12 +17,11 @@ public class DisplayRenderInfo {
 	 * */
 	public final boolean isPostCelesitals;
 
-	public DisplayRenderInfo(Minecraft mc, Tessellator tessellator, BufferBuilder worldRenderer, float partialTicks, boolean isPostCelesitals, float deepDepth) {
+	public DisplayRenderInfo(Minecraft mc, Tessellator tessellator, BufferBuilder worldRenderer, float partialTicks, boolean isPostCelesitals) {
 		this.mc = mc;
 		this.tessellator = tessellator;
-		this.worldRenderer = worldRenderer;
+		this.builder = worldRenderer;
 		this.partialTicks = partialTicks;
 		this.isPostCelesitals = isPostCelesitals;
-		this.deepDepth = deepDepth;
 	}
 }

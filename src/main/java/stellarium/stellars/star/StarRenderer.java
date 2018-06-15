@@ -2,6 +2,7 @@ package stellarium.stellars.star;
 
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.layer.LayerRI;
+import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
 public enum StarRenderer implements ICelestialObjectRenderer<StarRenderCache> {
@@ -13,11 +14,9 @@ public enum StarRenderer implements ICelestialObjectRenderer<StarRenderCache> {
 		if(!cache.shouldRender)
 			return;
 
-		info.builder.pos(cache.pos);
-		info.builder.color(cache.red * info.helper.multRed(),
-				cache.green * info.helper.multGreen(),
-				cache.blue * info.helper.multBlue(), 1.0f);
-		info.builder.endVertex();
+		float multiplier = OpticsHelper.getMultFromArea(info.pointArea());
+		info.renderPoint(cache.pos,
+				cache.red * multiplier, cache.green * multiplier, cache.blue * multiplier);
 	}
 
 }

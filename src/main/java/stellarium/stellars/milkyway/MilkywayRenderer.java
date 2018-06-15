@@ -18,12 +18,12 @@ public enum MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRenderC
 	public void render(MilkywayRenderCache cache, EnumStellarPass pass, LayerRI info) {
 		CRenderHelper tessellator = info.helper;
 
-		tessellator.setup();
-		tessellator.bindTexture(StellarSkyResources.resourceMilkyway.getLocation());
+		info.bindTexture(StellarSkyResources.resourceMilkyway.getLocation());
+		// TODO Proper milky way texture filtering
 		GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
 		GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 
-		GlStateManager.color(cache.milkywayAbsBr, cache.milkywayAbsBr, cache.milkywayAbsBr);
+		GlStateManager.color(cache.surfBr, cache.surfBr, cache.surfBr);
 
 		info.builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
 

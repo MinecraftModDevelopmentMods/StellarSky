@@ -16,8 +16,6 @@ import stellarium.stellars.util.StarColor;
 import stellarium.view.ViewerInfo;
 
 public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConfigHandler> {
-
-	private float magLimit;
 	protected boolean shouldRender;
 	protected SpCoord appPos = new SpCoord();
 	protected Vector3 pos = new Vector3();
@@ -25,9 +23,7 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 	protected Vector3 ref = new Vector3();
 
 	@Override
-	public void updateSettings(ClientSettings settings, IConfigHandler config, BgStar star) {
-		this.magLimit = settings.mag_Limit;
-	}
+	public void updateSettings(ClientSettings settings, IConfigHandler config, BgStar star) { }
 
 	@Override
 	public void updateCache(BgStar object, StarImage image, ViewerInfo info, IStellarChecker checker) {
@@ -45,7 +41,6 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 		pos.set(appPos.getVec());
 		pos.scale(CRenderHelper.DEEP_DEPTH);
 
-		long t2 = System.nanoTime();
 		double airmass = info.sky.calculateAirmass(this.appPos);
 
 		StarColor starColor = StarColor.getColor(object.B_V);

@@ -234,6 +234,14 @@ public class ShaderHelper {
 		}
 
 		@Override
+		public void setDouble2(double x, double y) {
+			if (!contextcapabilities.OpenGL21)
+				ARBShaderObjects.glUniform2fARB(this.location, (float)x, (float)y);
+			else
+				GL20.glUniform2f(this.location, (float)x, (float)y);
+		}
+
+		@Override
 		public void setDouble3(double x, double y, double z) {
 			//Temporal, since openglhelper does not expose something important (below)
 			if (!contextcapabilities.OpenGL21)

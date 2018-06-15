@@ -1,0 +1,10 @@
+#version 120
+
+varying vec4 color;
+
+void main()
+{
+    float u = gl_TexCoord[0].x;
+    float v = gl_TexCoord[0].y;
+    gl_FragColor = color * 4 * min(u, 1-u) * min(v, 1-v);
+}

@@ -1,22 +1,17 @@
 package stellarium.stellars.util;
 
-public class StarColor {
+public enum StarColor {
+	@Deprecated
+	INSTANCE;
+
 	public short r;
-
 	public short g;
-
 	public short b;
 	
-	public StarColor(short pr, short pg, short pb){
-		r = pr;
-		g = pg;
-		b = pb;
-	}
-	
-	public StarColor(){
-		r = 255;
-		g = 255;
-		b = 255;
+	StarColor(){
+		this.r = 255;
+		this.g = 255;
+		this.b = 255;
 	}
 	
 	static short color[]=
@@ -71,11 +66,10 @@ public class StarColor {
 	255,	82,	0};
 	
 	public static final StarColor getColor(double B_V){
-		int k=(int)((B_V+0.4)*20.0);
-		if(k<0) k=0;
-		if(k>48) k=48;
-		
-		StarColor c=new StarColor();
+		int k = (int)((B_V+0.4)*20.0);
+		k = Math.max(0, Math.min(48, k));
+
+		StarColor c = StarColor.INSTANCE;
 		c.r=(short)(color[k*3]);
 		c.g=(short)(color[k*3+1]);
 		c.b=(short)(color[k*3+2]);

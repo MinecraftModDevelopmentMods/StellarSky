@@ -5,34 +5,35 @@ import stellarapi.api.lib.config.SimpleConfigHandler;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarapi.api.lib.math.Spmath;
 import stellarium.util.math.CachedGaussianRandom;
-import stellarium.util.math.PowerCache;
 
 public class OpticsHelper extends SimpleConfigHandler {
-	private static final double magnitudeBase = Math.pow(10.0, 0.4);
+	// Magnitude Base
+	private static final double MAG_BASE = Math.pow(10.0, 0.4);
 
-	private static final double sunMagnitude = -26.74;
-	// TODO Configurable
-	private static final double upperMagLimit = -2.5;
+	// Magnitude of the Sun
+	private static final double MAG_SUN = -26.74;
 
-	private static CachedGaussianRandom randomTurbulance = new CachedGaussianRandom(100, 3L);
+	// Default resolution in rad
+	public static final float DEFAULT_RESOLUTION = Spmath.Radians(0.06f);
+
+	// Magnitude of star with maximal brightness(intensity) 1.0 with default resolution
+	private static final double MAG_UPPER_LIMIT = -1.0;
+	// TODO Configurable Upper Magnitude Limit
+
+	// Relative brightness of an object with size of 1 (rad)^2 compared to the star with default resolution (same flux)
+	private static final float SURF_MULTIPLIER = (float) (2 * Math.PI * Spmath.sqr(DEFAULT_RESOLUTION));
 
 	public static final OpticsHelper instance = new OpticsHelper();
+
+	private CachedGaussianRandom randomTurbulance = new CachedGaussianRandom(100, 3L);
 
 	@Deprecated
 	private ConfigPropertyDouble propBrightnessContrast;
 	private ConfigPropertyDouble propTurb;
+	@Deprecated
 	private ConfigPropertyDouble propSpriteScale;
 
-	@Deprecated
-	private double brightnessContrast = 2.0;
-	//private float magCompression;
-	//private float magContrast;
-	private float brightnessPower;
 	private double turbulance;
-	private float invSpriteScale;
-	private double invSpriteScale2;
-
-	private PowerCache cache = new PowerCache();
 
 	public OpticsHelper() {
 		this.propBrightnessContrast = new ConfigPropertyDouble("Brightness_Contrast", "", 2.0);
@@ -82,48 +83,37 @@ public class OpticsHelper extends SimpleConfigHandler {
 	public void loadFromConfig(Configuration config, String category) {
 		super.loadFromConfig(config, category);
 
-		this.brightnessContrast = propBrightnessContrast.getDouble();
+		//this.brightnessContrast = propBrightnessContrast.getDouble();
 		this.turbulance = propTurb.getDouble() * 4.0;
-		this.brightnessPower = 1.0f / ((float)this.brightnessContrast);
-		this.invSpriteScale = 1.0f / (float)propSpriteScale.getDouble();
-		this.invSpriteScale2 = 1.0 / Spmath.sqr(propSpriteScale.getDouble());
-
-		cache.initialize(this.brightnessPower);
+		//this.invSpriteScale = 1.0f / (float)propSpriteScale.getDouble();
+		//this.invSpriteScale2 = 1.0 / Spmath.sqr(propSpriteScale.getDouble());
 	}
 
 	@Override
 	public void saveToConfig(Configuration config, String category) { }
-
-	public static final float invSpriteScalef() {
-		return instance.invSpriteScale;
-	}
-
-	public static final double invSpriteScale2() {
-		return instance.invSpriteScale2;
-	}
 
 	public static float turbulance() {
 		return (float) (instance.turbulance * instance.randomTurbulance.nextGaussian() * 0.1);
 	}
 
 	public static float getBrightnessFromMag(double magnitude) {
-		return (float) Math.pow(magnitudeBase, upperMagLimit - magnitude);
+		return (float) Math.pow(MAG_BASE, MAG_UPPER_LIMIT - magnitude);
+	}
+
+	/** Gets multiplier for an object spread in area((rad)^2) */
+	public static float getMultFromArea(double angularArea) {
+		return SURF_MULTIPLIER / (float)angularArea;
 	}
 
 	public static float getDominationFromMag(double magnitude) {
-		return (float) Math.pow(magnitudeBase, sunMagnitude - magnitude);
+		return (float) Math.pow(MAG_BASE, MAG_SUN - magnitude);
 	}
 
 	public static double getMultFromMag(double magnitude) {
-		return Math.pow(magnitudeBase, -magnitude);
+		return Math.pow(MAG_BASE, -magnitude);
 	}
 
 	public static double getMagFromMult(double multiplier) {
 		return - 2.5 * Math.log10(multiplier);
-	}
-
-	public static float getCompressed(float brightness) {
-		return brightness;
-		//return instance.cache.getPower(brightness);
 	}
 }

@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.render.shader.ShaderHelper;
+import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.StellarRI;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.util.math.Allocator;
@@ -27,14 +28,14 @@ public enum AtmosphereRenderer {
 
 	private boolean cacheChangedFlag = false;
 
-	private AtmShaderManager shaderManager;
+	private AtmosphereShader atmShader;
 
 	AtmosphereRenderer() {
-		this.shaderManager = new AtmShaderManager();
+		this.atmShader = new AtmosphereShader();
 	}
 
 	public void initialize(AtmosphereSettings settings) {
-		shaderManager.reloadShaders();
+		atmShader.reloadShaders();
 
 		if(!settings.checkChange())
 			return;
@@ -54,11 +55,11 @@ public enum AtmosphereRenderer {
 
 	public void preRender(AtmosphereSettings settings, StellarRI info) {
 		if(this.cacheChangedFlag) {
-			this.reallocList(settings, info.deepDepth);
+			this.reallocList(settings, CRenderHelper.DEEP_DEPTH);
 			this.cacheChangedFlag = false;
 		}
 
-		shaderManager.updateWorldInfo(info);
+		atmShader.updateWorldInfo(info);
 	}
 
 	public void render(AtmosphereModel model, EnumAtmospherePass pass, StellarRI info) {
@@ -71,23 +72,10 @@ public enum AtmosphereRenderer {
 
 		case SetupDominateScatter:
 			// TODO AA Handle fog correctly
-			// TODO AA 100 times brighter sky
+			// TODO AA Weather factor comes here on atmosphere rendering, it is currently mixed and neglected
 			info.setAtmCallList(this.renderedList);
-			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.DominateScatter));
+			info.setActiveShader(atmShader.bindAtmShader(model, EnumStellarPass.DominateScatter));
 			break;
-		case SetupOpaque:
-			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.Opaque));
-			break;
-		case SetupOpaqueScatter:
-			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.OpaqueScatter));
-			break;
-		case SetupPointScatter:
-			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.PointScatter));
-			break;
-		case SetupSurfaceScatter:
-			info.setActiveShader(shaderManager.bindShader(model, EnumStellarPass.SurfaceScatter));
-			break;
-
 		default:
 			break;
 		}

@@ -10,9 +10,5 @@ public enum EnumAtmospherePass {
 	/*
 	 * Setup Rendering
 	 * */
-	SetupSurfaceScatter,
-	SetupPointScatter,
-	SetupOpaque,
-	SetupOpaqueScatter,
 	SetupDominateScatter;
 }

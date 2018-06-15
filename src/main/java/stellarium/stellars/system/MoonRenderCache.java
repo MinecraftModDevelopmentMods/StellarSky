@@ -22,9 +22,9 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 	private SpCoord cache = new SpCoord();
 	protected int latn, longn;
 
-	protected Vector3 moonPos[][];
-	protected Vector3 moonnormal[][];
-	protected float moonilum[][];
+	protected Vector3 pos[][];
+	protected Vector3 normal[][];
+	protected float surfBr[][];
 
 	protected float domination, brightness;
 
@@ -39,9 +39,9 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 		this.latn = specificSettings.imgFrac;
 		this.longn = 2*specificSettings.imgFrac;
 
-		this.moonPos = Allocator.createAndInitialize(longn, latn+1);
-		this.moonilum = new float[longn][latn+1];
-		this.moonnormal = Allocator.createAndInitialize(longn, latn+1);
+		this.pos = Allocator.createAndInitialize(longn, latn+1);
+		this.surfBr = new float[longn][latn+1];
+		this.normal = Allocator.createAndInitialize(longn, latn+1);
 	}
 
 	@Override
@@ -76,16 +76,16 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 			for(latc=0; latc<=latn; latc++){
 				buf.set(object.posLocalM((double)longc/(double)longn*360.0, (double)latc/(double)latn*180.0-90.0));
 				
-				moonilum[longc][latc] = (float) Math.max(object.illumination(buf), 0.0);
-				moonnormal[longc][latc].set(buf);
-				moonnormal[longc][latc].normalize();
+				surfBr[longc][latc] = (float) Math.max(object.illumination(buf), 0.0);
+				normal[longc][latc].set(buf);
+				normal[longc][latc].normalize();
 				
 				buf.set(object.posLocalG(buf));
 				info.coordinate.getProjectionToGround().transform(buf);
 
 				cache.setWithVec(buf);
 				info.sky.applyAtmRefraction(cache);
-				moonPos[longc][latc].set(cache.getVec());
+				pos[longc][latc].set(cache.getVec());
 			}
 		}
 		

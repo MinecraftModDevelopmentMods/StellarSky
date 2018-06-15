@@ -40,17 +40,12 @@ public enum SkyRenderer {
 		// Render display back
 		DisplayRenderer.INSTANCE.render(model.displayModel, false, info);
 
-		GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
-
 		// Render stellars
 		StellarRenderer.INSTANCE.render(model.stellarModel, new StellarRI(info));
-
-		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		// Render display front
 		DisplayRenderer.INSTANCE.render(model.displayModel, true, info);
 
-		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GlStateManager.enableFog();
 
 		// Render landscape

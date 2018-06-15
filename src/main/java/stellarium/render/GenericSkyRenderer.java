@@ -25,7 +25,7 @@ public class GenericSkyRenderer extends IRenderHandler {
 
 	@Override
 	public void render(float partialTicks, WorldClient world, Minecraft mc) {
-		Entity viewer = mc.getRenderViewEntity(); // FIXME SLOWER ON DEDICATED GRAPHICS CARD!!!
+		Entity viewer = mc.getRenderViewEntity();
 
 		ICelestialWorld cWorld = world.getCapability(
 				SAPICapabilities.CELESTIAL_CAPABILITY, null);

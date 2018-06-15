@@ -15,16 +15,12 @@ public enum LayerStarRenderer implements ICelestialLayerRenderer {
 
 	@Override
 	public void preRender(EnumStellarPass pass, LayerRI info) {
-		info.helper.bindTexture(StellarSkyResources.resourceStar.getLocation());
-		info.helper.setup();
-
-		info.builder.begin(GL11.GL_POINTS, FloatVertexFormats.POSITION_COLOR_F);
+		info.beginPoint();
 	}
 
 	@Override
 	public void postRender(EnumStellarPass pass, LayerRI info) {
-		info.helper.setupSprite();
-		info.tessellator.draw();
+		info.endPoint();
 	}
 
 	@Override

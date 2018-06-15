@@ -49,6 +49,11 @@ public class StellarSkyResources {
 		PerDimensionResourceRegistry.getInstance().registerResourceId("Landscape");
 	}
 
+	public static final ResourceLocation vertexScope =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/postprocess/scope.vsh");
+
+	public static final ResourceLocation fragmentScope =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/postprocess/scope.psh");
 
 	public static final ResourceLocation vertexSkyToQueried =
 			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/postprocess/sky_to_queried.vsh");
@@ -75,23 +80,18 @@ public class StellarSkyResources {
 	public static final ResourceLocation fragmentAtmosphereSingle =
 			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_single.psh");
 
-	public static final ResourceLocation vertexScatterPointMapped =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/scatter_point_mapped.vsh");
 
-	public static final ResourceLocation fragmentScatterPointMapped =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/scatter_point_mapped.psh");
+	public static final ResourceLocation vertexPoint =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/point.vsh");
 
-	public static final ResourceLocation vertexScatterFuzzyMapped =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/scatter_fuzzy_mapped.vsh");
+	public static final ResourceLocation fragmentPoint =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/point.psh");
 
-	public static final ResourceLocation fragmentScatterFuzzyMapped =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/scatter_fuzzy_mapped.psh");
+	public static final ResourceLocation vertexTexured =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/textured.vsh");
 
-	public static final ResourceLocation vertexTextureMapped =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/src_texture_mapped.vsh");
-
-	public static final ResourceLocation fragmentTextureMapped =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/src_texture_mapped.psh");
+	public static final ResourceLocation fragmentTextured =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/textured.psh");
 
 
 	public static final ResourceLocation unroll =

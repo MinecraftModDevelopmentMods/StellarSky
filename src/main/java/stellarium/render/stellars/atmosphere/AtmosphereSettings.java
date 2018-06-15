@@ -9,6 +9,7 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	
 	public static final String KEY = "atmosphere";
 	
+	@Deprecated
 	private ConfigPropertyInteger propCacheSizeLevel;
 	private ConfigPropertyInteger propFragSize;
 	private ConfigPropertyBoolean propInterpolation;
@@ -16,6 +17,7 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	/**
 	 * Size of atmosphere cache texture
 	 * */
+	@Deprecated
 	public int cacheLong = 1024, cacheLat = 512;
 	
 	/**

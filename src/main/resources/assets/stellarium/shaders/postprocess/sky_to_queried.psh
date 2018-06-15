@@ -12,5 +12,5 @@ void main()
     float size = length(coord);
 
     // Cap the brightness
-    gl_FragColor = min(texture2D(texture, gl_TexCoord[0].st), 1500.0) / (size * size * size);
+    gl_FragColor = min(texture2D(texture, gl_TexCoord[0].st), 50000.0) / (size * size * size);
 }
