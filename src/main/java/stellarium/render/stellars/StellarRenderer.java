@@ -21,7 +21,7 @@ import stellarium.render.stellars.atmosphere.AtmosphereRenderer;
 import stellarium.render.stellars.atmosphere.AtmosphereSettings;
 import stellarium.render.stellars.atmosphere.EnumAtmospherePass;
 import stellarium.render.stellars.atmosphere.FramebufferCustom;
-import stellarium.render.stellars.layer.LayerRI;
+import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.render.stellars.phased.StellarPhasedRenderer;
 import stellarium.util.MCUtil;
 import stellarium.util.OpenGlUtil;
@@ -38,7 +38,7 @@ public enum StellarRenderer {
 	private int prevFramebufferBound;
 
 	private IShaderObject scope, skyToQueried, hdrToldr, linearToSRGB;
-	private IUniformField fieldBrMult, fieldResDir, fieldBr, fieldRelative;
+	private IUniformField fieldBrMult, fieldResDir, fieldBrScale, fieldRelative;
 
 	private int maxLevel;
 	private float screenRatio;
@@ -124,7 +124,7 @@ public enum StellarRenderer {
 		this.hdrToldr = ShaderHelper.getInstance().buildShader("HDRtoLDR",
 				StellarSkyResources.vertexHDRtoLDR, StellarSkyResources.fragmentHDRtoLDR);
 		hdrToldr.getField("texture").setInteger(0);
-		this.fieldBr = hdrToldr.getField("brightness");
+		this.fieldBrScale = hdrToldr.getField("brScale");
 
 		this.linearToSRGB = ShaderHelper.getInstance().buildShader("linearToSRGB",
 				StellarSkyResources.vertexLinearToSRGB, StellarSkyResources.fragmentLinearToSRGB);
@@ -145,7 +145,6 @@ public enum StellarRenderer {
 		}
 	}
 
-	private static final CRenderHelper tessellator = new CRenderHelper();
 
 	public void preProcess() {
 		this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlUtil.FRAMEBUFFER_BINDING);
@@ -171,6 +170,7 @@ public enum StellarRenderer {
 		double multGreen = viewer.colorMultiplier.getY() / Spmath.sqr(viewer.multiplyingPower);
 		double multBlue = viewer.colorMultiplier.getZ() / Spmath.sqr(viewer.multiplyingPower);
 
+		// MAYBE Calculate blur for each pixel
 		// Blur on X-axis
 		scopeTemp.bindFramebuffer(false);
 		scopeTemp.framebufferClear();
@@ -225,7 +225,6 @@ public enum StellarRenderer {
 						+ brBufferF.get(1) * 0.7152f
 						+ brBufferF.get(2) * 0.0722f) / this.screenRatio;
 				this.brightness += (currentBrightness - this.brightness) * 0.1f;
-				this.brightness *= 1.0;
 			}
 
 			GL15.glUnmapBuffer(OpenGlUtil.PIXEL_PACK_BUFFER);
@@ -240,7 +239,8 @@ public enum StellarRenderer {
 
 
 		hdrToldr.bindShader();
-		fieldBr.setDouble(this.brightness);
+		fieldBrScale.setDouble(Math.max(Math.min(
+				Math.pow(4.5 * this.brightness, 0.5) * 10.0, 1000.0), 1.0));
 		sky.bindFramebufferTexture();
 		sky.renderFullQuad();
 		hdrToldr.releaseShader();
@@ -252,17 +252,10 @@ public enum StellarRenderer {
 		eyed.bindFramebufferTexture();
 		eyed.renderFullQuad();
 		linearToSRGB.releaseShader();
-
-		/*if(System.currentTimeMillis() % 20 == 0) {
-			FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(3);
-			GL11.glReadPixels(info.minecraft.displayWidth / 2, info.minecraft.displayHeight / 2, 1, 1, GL11.GL_RGB, GL11.GL_FLOAT, buffer);
-			StellarSky.INSTANCE.getLogger().info(
-				String.format("Color: %s, %s, %s", buffer.get(0), buffer.get(1), buffer.get(2)));
-		}*/
 	}
 
 	public void render(StellarModel model, StellarRI info) {
-		LayerRI layerInfo = new LayerRI(info, tessellator, this.shaders);
+		LayerRHelper layerInfo = new LayerRHelper(info, this.shaders);
 
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
@@ -270,17 +263,13 @@ public enum StellarRenderer {
 		// Pre-process
 		this.preProcess();
 
-		// TODO AA Just use vector to specify position, and use better value for positions
-		// TODO AA Better handling for light gathering power / resolution changes
+		// TODO AA Use better value for positions
 
 		// Prepare
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.Prepare, info);
 
-		// Render surface scatter
-		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.SurfaceScatter, layerInfo);
-
-		// Render point scatter
-		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.PointScatter, layerInfo);
+		// Render surface
+		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.Source, layerInfo);
 
 		// Setup opaque
 		GlStateManager.enableDepth();
@@ -289,16 +278,16 @@ public enum StellarRenderer {
 		// Render opaque
 		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.Opaque, layerInfo);
 
-		// Setup opaque scatter
-		GlStateManager.depthMask(false);
 		GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
-		// Render opaque scatter
-		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.OpaqueScatter, layerInfo);
+
+		GlStateManager.shadeModel(GL11.GL_FLAT);
 
 		// Prepare dominate scatter
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.SetupDominateScatter, info);
+		layerInfo.apply(info);
 		// Render dominate scatter
 		StellarPhasedRenderer.INSTANCE.render(model.layersModel, EnumStellarPass.DominateScatter, layerInfo);
 

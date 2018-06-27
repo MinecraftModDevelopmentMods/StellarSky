@@ -7,9 +7,9 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
+import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.stellars.util.StarColor;
@@ -39,18 +39,16 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 		}
 
 		pos.set(appPos.getVec());
-		pos.scale(CRenderHelper.DEEP_DEPTH);
-
-		double airmass = info.sky.calculateAirmass(this.appPos);
+		pos.scale(LayerRHelper.DEEP_DEPTH);
 
 		StarColor starColor = StarColor.getColor(object.B_V);
 
 		// TODO Optimize Performance Hotspot
-		double alpha = OpticsHelper.getBrightnessFromMag(
-				OpticsHelper.turbulance() + object.mag + airmass * info.sky.getExtinctionRate(Wavelength.visible));
-		this.red = (float) (alpha * starColor.r / 255.0 * OpticsHelper.getMultFromMag(airmass * info.sky.getExtinctionRate(Wavelength.red)));
-		this.green = (float) (alpha * starColor.g / 255.0 * OpticsHelper.getMultFromMag(airmass * info.sky.getExtinctionRate(Wavelength.V)));
-		this.blue = (float) (alpha * starColor.b / 255.0 * OpticsHelper.getMultFromMag(airmass * info.sky.getExtinctionRate(Wavelength.B)));
+		double alpha = OpticsHelper.getBrightnessFromMag(OpticsHelper.turbulance() + object.mag);
+		this.red = (float) (alpha * starColor.r / 255.0);
+		this.green = (float) (alpha * starColor.g / 255.0);
+		this.blue = (float) (alpha * starColor.b / 255.0);
+
 
 		checker.startDescription();
 		checker.pos(this.appPos);

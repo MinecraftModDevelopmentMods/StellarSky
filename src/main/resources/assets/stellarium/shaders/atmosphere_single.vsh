@@ -24,7 +24,7 @@ float airmassFactor(float viewRadiusScaled) {
     return sqrt(PI * viewRadiusScaled * 0.5);
 }
 
-// Path length of light relative to the sea level
+// Path length of light relative to the zenith
 float airmass(float cosAngleToZenith, float viewRadiusScaled) {
     // Refraction correction
     viewRadiusScaled *= 7.0 / 6.0;
@@ -60,9 +60,15 @@ void main() {
 	float depth2 = (1.0 - cosViewAngle * cosViewAngle) * cameraRadius * cameraRadius;
 	float fFar;
 
-	if (cosViewAngle > 0.0 || depth2 > innerRadius * innerRadius)
+	if (cosViewAngle > 0.0) {
 		fFar = sqrt(outerRadius * outerRadius - depth2) - cosViewAngle * cameraRadius;
-	else {
+    } else if(depth2 > innerRadius * innerRadius) {
+        fFar = sqrt(outerRadius * outerRadius - depth2) - cosViewAngle * cameraRadius;
+        cosViewAngle = -cosViewAngle;
+        v3Start += fFar * v3Ray;
+        v3Ray = -v3Ray;
+        invertFlag = -1.0;
+    } else {
 		fFar = abs(cosViewAngle * cameraRadius) - sqrt(innerRadius * innerRadius - depth2);
 		cosViewAngle = -cosViewAngle;
 		v3Start += fFar * v3Ray;
@@ -109,16 +115,12 @@ void main() {
 
 		v3SamplePoint += v3SampleRay;
 	}
-	
-    float lenPoint = length(float(invertFlag == 1.0) * v3SamplePoint + float(invertFlag != 1.0) * v3Start);
-    float airmassEnd = airmass(cosViewAngle, lenPoint);
-    float depthEnd = airmassEnd * exp(innerRadius - lenPoint);
 
 
 	// Finally, scale the Mie and Rayleigh colors
 	scatteringColor4.rgb = integratedScatterColor * lightColor;
-	v3Direction.xyz = -v3Ray;
+	v3Direction.xyz = -invertFlag * v3Ray;
 
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-	gl_FogFragCoord = 1.0 - exp(invertFlag * (depthEnd - depthCamera) / depthToFogFactor);
+	//gl_FogFragCoord = 1.0 - exp(invertFlag * (depthEnd - depthCamera) * depthToFogFactor);
 }

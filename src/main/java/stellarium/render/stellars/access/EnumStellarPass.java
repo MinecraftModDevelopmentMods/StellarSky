@@ -1,24 +1,22 @@
 package stellarium.render.stellars.access;
 
-@Deprecated
 public enum EnumStellarPass {
-	DominateScatter,
-	SurfaceScatter(false, true),
-	PointScatter(false, false),
-	Opaque(true, true),
-	OpaqueScatter(true, false);
-	
-	public final boolean isDominate, isOpaque, hasTexture;
-	
-	EnumStellarPass() {
-		this.isDominate = true;
-		this.isOpaque = false;
-		this.hasTexture = false;
-	}
-	
-	EnumStellarPass(boolean isOpaque, boolean hasTexture) {
+	/** Light source which contributes to the total intensity */
+	Source(false),
+	/** Opaque object */
+	Opaque(true),
+	/** Dominating scatter for brightest objects */
+	DominateScatter(true, false);
+
+	public final boolean isDominate, isOpaque;
+
+	EnumStellarPass(boolean isOpaque) {
 		this.isDominate = false;
 		this.isOpaque = isOpaque;
-		this.hasTexture = hasTexture;
+	}
+
+	EnumStellarPass(boolean isDominate, boolean isOpaque) {
+		this.isDominate = isDominate;
+		this.isOpaque = isOpaque;
 	}
 }

@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import stellarium.StellarSkyResources;
 import stellarium.render.SkyRI;
-import stellarium.render.stellars.CRenderHelper;
+import stellarium.render.stellars.layer.LayerRHelper;
 
 public enum LandscapeRenderer {
 	INSTANCE;
@@ -19,7 +19,7 @@ public enum LandscapeRenderer {
 		info.worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
 		GlStateManager.pushMatrix();
-		GlStateManager.scale(CRenderHelper.DEEP_DEPTH, CRenderHelper.DEEP_DEPTH, CRenderHelper.DEEP_DEPTH);
+		GlStateManager.scale(LayerRHelper.DEEP_DEPTH, LayerRHelper.DEEP_DEPTH, LayerRHelper.DEEP_DEPTH);
 
 		for(int longc=0; longc<model.longn; longc++){
 			for(int latc=0; latc<model.latn; latc++){

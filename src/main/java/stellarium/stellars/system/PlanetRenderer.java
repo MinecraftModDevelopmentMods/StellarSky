@@ -1,11 +1,7 @@
 package stellarium.stellars.system;
 
-import org.lwjgl.opengl.GL11;
-
-import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
-import stellarium.render.stellars.layer.LayerRI;
-import stellarium.render.util.FloatVertexFormats;
+import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
@@ -14,8 +10,8 @@ public enum PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache
 	INSTANCE;
 
 	@Override
-	public void render(PlanetRenderCache cache, EnumStellarPass pass, LayerRI info) {
-		if(pass != EnumStellarPass.OpaqueScatter || !cache.shouldRender)
+	public void render(PlanetRenderCache cache, EnumStellarPass pass, LayerRHelper info) {
+		if(pass != EnumStellarPass.Source || !cache.shouldRender)
 			return;
 
 		// TODO Render fuzzy shape, for now it just render points

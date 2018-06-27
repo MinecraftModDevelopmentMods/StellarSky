@@ -20,17 +20,27 @@ float getMiePhase(float cos, float cos2, float g, float g2) {
 	return 3.0 * (1.0 - g2) / (2.0 * (2.0 + g2)) * (1.0 + cos2) / powHalfThree(1.0 + g2 - 2.0 * g * cos);
 }
 
+vec3 linear(vec3 sRGB) {
+    return 0.012522878 * sRGB +
+        0.682171111 * sRGB * sRGB +
+        0.305306011 * sRGB * sRGB * sRGB;
+}
+
+vec4 linear(vec4 sRGB) {
+    return vec4(linear(sRGB.xyz), sRGB.w);
+}
+
 void main()
 {
     float fCos = dot(lightDir, v3Direction);
     float fCos2 = fCos * fCos;
-  
-    gl_FragColor = scatteringColor4 * (getRayleighPhase(fCos2) * rayleighFactor + getMiePhase(fCos, fCos2, g, g*g) * mieFactor);
-    gl_FragColor = 0.8 * gl_FragColor;
 
-    float fogFactor = gl_FogFragCoord;
-    fogFactor = clamp(fogFactor, 0.0, 1.0);
-    gl_FragColor = mix(gl_FragColor, gl_Fog.color, fogFactor);
+    gl_FragColor = scatteringColor4 * (getRayleighPhase(fCos2) * rayleighFactor + getMiePhase(fCos, fCos2, g, g*g) * mieFactor);
+
+    //vec4 fogColor = linear(gl_Fog.color);
+    //float fogFactor = gl_FogFragCoord;
+    //fogFactor = clamp(fogFactor, 0.0, 1.0);
+    //gl_FragColor = mix(gl_FragColor, 220.0 * fogColor, fogFactor);
 
     gl_FragColor.a = 1.0;
 }

@@ -1,0 +1,9 @@
+#version 120
+
+varying vec4 alpha4;
+
+void main()
+{
+    gl_FragColor = alpha4;
+    gl_FragColor.a = 1.0;
+}

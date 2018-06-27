@@ -2,11 +2,9 @@ package stellarium.stellars.system;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
 import stellarium.StellarSkyResources;
-import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
-import stellarium.render.stellars.layer.LayerRI;
+import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.render.util.FloatVertexFormats;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
@@ -14,8 +12,7 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 	INSTANCE;
 
 	@Override
-	public void render(MoonRenderCache cache, EnumStellarPass pass, LayerRI info) {
-		CRenderHelper helper = info.helper;
+	public void render(MoonRenderCache cache, EnumStellarPass pass, LayerRHelper info) {
 		if(pass == EnumStellarPass.DominateScatter && cache.shouldRenderDominate) {
 			// TODO Make things fast enough so that I can use dominate scattering on moon as well
 			// Please, it's quite pretty =/
@@ -35,7 +32,7 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 					float longdd=(float)(longc+1)/(float)cache.longn + 0.5f;
 					float latdd=1.0f-(float)(latc+1)/(float)cache.latn;
 
-					info.builder.pos(cache.pos[longc][latc], CRenderHelper.DEEP_DEPTH * 0.5f);
+					info.builder.pos(cache.pos[longc][latc], LayerRHelper.DEEP_DEPTH * 0.5f);
 					info.builder.tex(longd, latd);
 					info.builder.color(cache.surfBr[longc][latc],
 							cache.surfBr[longc][latc],
@@ -44,7 +41,7 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 					info.builder.normal(cache.normal[longc][latc]);
 					info.builder.endVertex();
 
-					info.builder.pos(cache.pos[longcd][latc], CRenderHelper.DEEP_DEPTH * 0.5f);
+					info.builder.pos(cache.pos[longcd][latc], LayerRHelper.DEEP_DEPTH * 0.5f);
 					info.builder.tex(longdd, latd);
 					info.builder.color(cache.surfBr[longcd][latc],
 							cache.surfBr[longcd][latc],
@@ -53,7 +50,7 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 					info.builder.normal(cache.normal[longcd][latc]);
 					info.builder.endVertex();
 					
-					info.builder.pos(cache.pos[longcd][latc+1], CRenderHelper.DEEP_DEPTH * 0.5f);
+					info.builder.pos(cache.pos[longcd][latc+1], LayerRHelper.DEEP_DEPTH * 0.5f);
 					info.builder.tex(longdd, latdd);
 					info.builder.color(cache.surfBr[longcd][latc+1],
 							cache.surfBr[longcd][latc+1],
@@ -62,7 +59,7 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 					info.builder.normal(cache.normal[longcd][latc+1]);
 					info.builder.endVertex();
 
-					info.builder.pos(cache.pos[longc][latc+1], CRenderHelper.DEEP_DEPTH * 0.5f);
+					info.builder.pos(cache.pos[longc][latc+1], LayerRHelper.DEEP_DEPTH * 0.5f);
 					info.builder.tex(longd, latdd);
 					info.builder.color(cache.surfBr[longc][latc+1],
 							cache.surfBr[longc][latc+1],

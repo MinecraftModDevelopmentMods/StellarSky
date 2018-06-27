@@ -8,20 +8,20 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.Vector3;
-import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.StellarRI;
 import stellarium.render.stellars.UtilShaders;
-import stellarium.render.stellars.access.EnumStellarPass;
+import stellarium.render.stellars.access.IDominateRenderer;
 import stellarium.render.util.BufferBuilderEx;
 import stellarium.render.util.FloatVertexFormats;
 import stellarium.render.util.TessellatorEx;
 
-public class LayerRI {
+public class LayerRHelper {
+	public static final double DEEP_DEPTH = 100.0;
+
 	public final Minecraft minecraft;
 	public final WorldClient world;
 	public final float partialTicks;
 
-	public final CRenderHelper helper;
 	public final TessellatorEx tessellator;
 	public final BufferBuilderEx builder;
 
@@ -30,12 +30,13 @@ public class LayerRI {
 	private final Vector3 xAxis, yAxis;
 	private final double pointArea;
 
-	public LayerRI(StellarRI info, CRenderHelper helper, UtilShaders shaders) {
+	private IDominateRenderer dominater;
+
+	public LayerRHelper(StellarRI info, UtilShaders shaders) {
 		this.minecraft = info.minecraft;
 		this.world = info.world;
 		this.partialTicks = info.partialTicks;
 
-		this.helper = helper;
 		this.tessellator = TessellatorEx.getInstance();
 		this.builder = tessellator.getBuffer();
 
@@ -50,12 +51,6 @@ public class LayerRI {
 
 		// Point sources look darker on smaller screen size because it's 'blurred' as it's picked up by each pixel
 		this.pointArea = info.relativeWidth * info.relativeHeight / minecraft.displayWidth / minecraft.displayHeight;
-
-		helper.initialize(info);
-	}
-
-	public void initialize(EnumStellarPass pass) {
-		helper.initializePass(pass);
 	}
 
 
@@ -109,5 +104,14 @@ public class LayerRI {
 	/** Area of a point in (rad)^2 */
 	public double pointArea() {
 		return this.pointArea;
+	}
+
+
+	public void apply(StellarRI info) {
+		this.dominater = info.getDominateRenderer();
+	}
+
+	public void renderDominate(Vector3 lightDir, float red, float green, float blue) {
+		dominater.renderDominate(lightDir, red, green, blue);
 	}
 }

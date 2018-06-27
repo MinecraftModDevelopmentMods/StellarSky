@@ -10,10 +10,10 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarium.render.shader.IShaderObject;
 import stellarium.render.shader.ShaderHelper;
-import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.StellarRI;
-import stellarium.render.stellars.access.EnumStellarPass;
+import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.util.math.Allocator;
 
 public enum AtmosphereRenderer {
@@ -55,7 +55,7 @@ public enum AtmosphereRenderer {
 
 	public void preRender(AtmosphereSettings settings, StellarRI info) {
 		if(this.cacheChangedFlag) {
-			this.reallocList(settings, CRenderHelper.DEEP_DEPTH);
+			this.reallocList(settings, LayerRHelper.DEEP_DEPTH);
 			this.cacheChangedFlag = false;
 		}
 
@@ -67,14 +67,33 @@ public enum AtmosphereRenderer {
 		case Prepare:
 			break;
 		case Finalize:
+
 			ShaderHelper.getInstance().releaseCurrentShader();
 			break;
 
 		case SetupDominateScatter:
-			// TODO AA Handle fog correctly
 			// TODO AA Weather factor comes here on atmosphere rendering, it is currently mixed and neglected
-			info.setAtmCallList(this.renderedList);
-			info.setActiveShader(atmShader.bindAtmShader(model, EnumStellarPass.DominateScatter));
+			// TODO Handle fog correctly - fog should only exist near the ground
+			// (Do fog later)
+
+			// Extinction first - strangely, this drains performance
+			GlStateManager.blendFunc(GL11.GL_ZERO, GL11.GL_SRC_COLOR);
+			atmShader.bindExtinctionShader(model);
+			GL11.glCallList(this.renderedList); // TODO faster evaluation
+			GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
+
+			// TODO Don't use call-list here
+			// Prepare for dominate rendering
+			IShaderObject shader = atmShader.bindAtmShader(model);
+			info.setDominateRenderer((lightDir, red, green, blue) -> {
+				if(shader != null) { // Dummy check for debug
+					shader.getField("lightDir").setDouble3(
+							lightDir.getX(), lightDir.getY(), lightDir.getZ());
+					shader.getField("lightColor").setDouble3(
+							red, green, blue);
+				}
+				GL11.glCallList(this.renderedList);
+			});
 			break;
 		default:
 			break;

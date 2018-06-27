@@ -1,19 +1,11 @@
 package stellarium.render.stellars.atmosphere;
 
-import java.util.EnumMap;
-
-import javax.annotation.Nullable;
-
-import com.google.common.collect.Maps;
-
-import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.StellarSkyResources;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.shader.IUniformField;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.StellarRI;
-import stellarium.render.stellars.access.EnumStellarPass;
 
 public class AtmosphereShader {
 
@@ -23,15 +15,21 @@ public class AtmosphereShader {
 	private IUniformField depthToFogFactor;
 	private IUniformField extinctionFactor, gScattering, rayleighFactor, mieFactor;
 
+	private IUniformField cameraHeight2;
+	private IUniformField outerRadius2, innerRadius2;
+	private IUniformField extinctionFactor2;
+
 	private float rainStrengthFactor, weatherFactor;
 
-	private IShaderObject atmosphere;
+	private IShaderObject atmosphere, extinction;
 
 	public void reloadShaders() {
 		this.atmosphere = ShaderHelper.getInstance().buildShader("atmospheresingle",
 						StellarSkyResources.vertexAtmosphereSingle, StellarSkyResources.fragmentAtmosphereSingle);
+		this.extinction = ShaderHelper.getInstance().buildShader("atmextinction",
+				StellarSkyResources.vertexAtmExtinction, StellarSkyResources.fragmentAtmExtinction);
 
-		if(this.atmosphere == null)
+		if(this.atmosphere == null || this.extinction == null)
 			throw new RuntimeException("There was an error preparing shader programs");
 
 		this.cameraHeight = atmosphere.getField("cameraHeight");
@@ -45,6 +43,12 @@ public class AtmosphereShader {
 		this.gScattering = atmosphere.getField("g");
 		this.rayleighFactor = atmosphere.getField("rayleighFactor");
 		this.mieFactor = atmosphere.getField("mieFactor");
+
+
+		this.cameraHeight2 = extinction.getField("cameraHeight");
+		this.outerRadius2 = extinction.getField("outerRadius");
+		this.innerRadius2 = extinction.getField("innerRadius");
+		this.extinctionFactor2 = extinction.getField("extinctionFactor");
 	}
 
 	public void updateWorldInfo(StellarRI info) {		
@@ -54,7 +58,20 @@ public class AtmosphereShader {
 		weatherFactor *= (1.0D - (double)(info.world.getThunderStrength(info.partialTicks) * 8.0F) / 16.0D);
 	}
 
-	public IShaderObject bindAtmShader(AtmosphereModel model, EnumStellarPass pass) {
+	public void bindExtinctionShader(AtmosphereModel model) {
+		extinction.bindShader();
+
+		cameraHeight2.setDouble(model.getHeight());
+		outerRadius2.setDouble(model.getOuterRadius());
+		innerRadius2.setDouble(model.getInnerRadius());
+
+		// Extinction in magnitude
+		Vector3 vec = new Vector3(model.getSkyExtRed(), model.getSkyExtGreen(), model.getSkyExtBlue());
+
+		extinctionFactor2.setVector3(vec.scale(Math.log(10) * 0.4 - 2.0 * Math.log(this.weatherFactor))); // Inverted?
+	}
+
+	public IShaderObject bindAtmShader(AtmosphereModel model) {
 		atmosphere.bindShader();
 
 		cameraHeight.setDouble(model.getHeight());
@@ -62,25 +79,26 @@ public class AtmosphereShader {
 		innerRadius.setDouble(model.getInnerRadius());
 		nSamples.setInteger(10);
 
-		depthToFogFactor.setDouble(100.0 * Math.exp(model.getHeight()) * Math.exp(22.5 * this.rainStrengthFactor));
+		depthToFogFactor.setDouble(0.1 * Math.exp(-22.5 * this.rainStrengthFactor));
 
-		Vector3 vec = new Vector3(model.getSkyExtRed(), model.getSkyExtGreen(),
-				model.getSkyExtBlue());
-		extinctionFactor.setVector3(vec.scale(0.9 - 2.0 * Math.log(this.weatherFactor)));
+		// Extinction in magnitude
+		Vector3 vec = new Vector3(model.getSkyExtRed(), model.getSkyExtGreen(), model.getSkyExtBlue());
+
+		extinctionFactor.setVector3(vec.scale(Math.log(10) * 0.4 - 2.0 * Math.log(this.weatherFactor))); // Inverted?
 		gScattering.setDouble(-0.9 + this.rainStrengthFactor);
 
-		double mult = 1.2 * 200.0;
+		double mult = 200.0;
 
 		rayleighFactor.setDouble4(
-				mult * 3 * model.getSkyColorRed() * model.getSkyDispRed() / 0.56,
-				mult * 7 * model.getSkyColorGreen() * model.getSkyDispGreen() / 0.65,
-				mult * 30 * model.getSkyColorBlue() * model.getSkyDispBlue(),
+				mult * 3 * (model.getSkyColorRed() / 0.56) * model.getSkyDispRed(),
+				mult * 7 * (model.getSkyColorGreen() / 0.65) * model.getSkyDispGreen(),
+				mult * 20 * model.getSkyColorBlue() * model.getSkyDispBlue(),
 				1.0);
 
 		mieFactor.setDouble4(
-				mult * 0.04 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispRed(),
-				mult * 0.08 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispGreen(),
-				mult * 0.12 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispBlue(),
+				mult * 0.06 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispRed(),
+				mult * 0.06 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispGreen(),
+				mult * 0.06 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispBlue(),
 				1.0);
 
 		return this.atmosphere;

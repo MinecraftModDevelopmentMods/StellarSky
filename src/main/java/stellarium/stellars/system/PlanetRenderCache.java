@@ -7,9 +7,9 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.CRenderHelper;
 import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
+import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.view.ViewerInfo;
@@ -33,12 +33,10 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 		appCoord.y = image.appCoord.y;
 
 		pos.set(appCoord.getVec());
-		pos.scale(CRenderHelper.DEEP_DEPTH);
+		pos.scale(LayerRHelper.DEEP_DEPTH);
 
-		double airmass = info.sky.calculateAirmass(this.appCoord);
 		// TODO Calculation fix, venus shouldn't be as high as -5.7 mag
-		double appMag = (object.currentMag + airmass * info.sky.getExtinctionRate(Wavelength.visible));
-		this.brightness = OpticsHelper.getBrightnessFromMag(-2.5);
+		this.brightness = OpticsHelper.getBrightnessFromMag(object.currentMag);
 
 		this.size = (float) (object.radius / object.earthPos.size());
 

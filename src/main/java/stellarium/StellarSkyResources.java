@@ -80,6 +80,12 @@ public class StellarSkyResources {
 	public static final ResourceLocation fragmentAtmosphereSingle =
 			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_single.psh");
 
+	public static final ResourceLocation vertexAtmExtinction =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_extinction.vsh");
+
+	public static final ResourceLocation fragmentAtmExtinction =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_extinction.psh");
+
 
 	public static final ResourceLocation vertexPoint =
 			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/point.vsh");

@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarium.display.DisplayRenderInfo;
 import stellarium.display.IDisplayRenderer;
-import stellarium.render.stellars.CRenderHelper;
+import stellarium.render.stellars.layer.LayerRHelper;
 
 @SideOnly(Side.CLIENT)
 public class EcGridRenderer implements IDisplayRenderer<EcGridCache> {
@@ -22,7 +22,7 @@ public class EcGridRenderer implements IDisplayRenderer<EcGridCache> {
 		
 		GlStateManager.disableTexture2D();
 		GlStateManager.pushMatrix();
-		GlStateManager.scale(CRenderHelper.DEEP_DEPTH, CRenderHelper.DEEP_DEPTH, CRenderHelper.DEEP_DEPTH);
+		GlStateManager.scale(LayerRHelper.DEEP_DEPTH, LayerRHelper.DEEP_DEPTH, LayerRHelper.DEEP_DEPTH);
 		
 		if(cache.gridEnabled) {
 			GlStateManager.glLineWidth(2.0f);
