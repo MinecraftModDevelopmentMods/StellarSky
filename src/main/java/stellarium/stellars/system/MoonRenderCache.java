@@ -46,21 +46,20 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 
 	@Override
 	public void updateCache(Moon object, MoonImage image, ViewerInfo info, IStellarChecker checker) {
+		// TODO Don't use image coord here
 		SpCoord currentPos = image.getCurrentHorizontalPos();
 		appCoord.x = currentPos.x;
 		appCoord.y = currentPos.y;
 		appPos.set(appCoord.getVec());
 
-		double airmass = info.sky.calculateAirmass(this.appCoord);
-		double appMag = object.currentMag + airmass * info.sky.getExtinctionRate(Wavelength.visible);
-		this.domination = OpticsHelper.getDominationFromMag(appMag);
+		this.domination = OpticsHelper.getDominationFromMag(object.currentMag);
 
 		this.size = (float) (object.radius / object.earthPos.size());
 		checker.startDescription();
 		checker.brightness(domination, domination, domination);
 		this.shouldRenderDominate = checker.checkDominator();
 		
-		this.brightness = OpticsHelper.getBrightnessFromMag(appMag);
+		this.brightness = OpticsHelper.getBrightnessFromMag(object.currentMag);
 		
 		checker.startDescription();
 		checker.brightness(brightness, brightness, brightness);
@@ -83,9 +82,9 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 				buf.set(object.posLocalG(buf));
 				info.coordinate.getProjectionToGround().transform(buf);
 
-				cache.setWithVec(buf);
-				info.sky.applyAtmRefraction(cache);
-				pos[longc][latc].set(cache.getVec());
+				//cache.setWithVec(buf);
+				//info.sky.applyAtmRefraction(cache);
+				pos[longc][latc].set(buf);
 			}
 		}
 		

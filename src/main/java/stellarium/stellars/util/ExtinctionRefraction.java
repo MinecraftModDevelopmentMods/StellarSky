@@ -9,6 +9,7 @@ public class ExtinctionRefraction {
 	static final double subhorizontal_airmass=30.0;
 	
 	//Calculate Airmass
+	@Deprecated
 	static double airmass(double cosZ, boolean IsApparent)
 	{
 		cosZ=Math.abs(cosZ);
@@ -28,12 +29,14 @@ public class ExtinctionRefraction {
 		}
 		return am;
 	}
-	
+
 	//Get Extinction magnitude(in V band) of EVectortor(its size must be 1)
+	@Deprecated
 	public static double airmass(SpCoord coord, boolean IsApparent){
 		return airmass(Spmath.sind(coord.y), IsApparent);
 	}
-	
+
+	@Deprecated
 	public static void refraction(SpCoord sp, boolean isApplying) {
 		double R;
 		

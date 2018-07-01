@@ -20,9 +20,9 @@ import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.atmosphere.AtmosphereRenderer;
 import stellarium.render.stellars.atmosphere.AtmosphereSettings;
 import stellarium.render.stellars.atmosphere.EnumAtmospherePass;
-import stellarium.render.stellars.atmosphere.FramebufferCustom;
 import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.render.stellars.phased.StellarPhasedRenderer;
+import stellarium.render.util.FramebufferCustom;
 import stellarium.util.MCUtil;
 import stellarium.util.OpenGlUtil;
 import stellarium.view.ViewerInfo;
@@ -162,7 +162,7 @@ public enum StellarRenderer {
 		long currentTime = System.currentTimeMillis();
 
 		// Scope effects
-		// TODO AA Every scope effects should come here
+		// TODO Every scope effects should come here
 		// MAYBE Separate resolution for each of R, G, B component when wavelengths are far apart
 		// MAYBE Apply star-shaped blur for eye
 		ViewerInfo viewer = info.info;

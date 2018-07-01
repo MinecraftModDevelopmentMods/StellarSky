@@ -46,10 +46,6 @@ public final class StellarCacheInfo {
 		}
 	}
 
-	public double calculateAirmass(SpCoord appCoord) {
-		return sky.calculateAirmass(appCoord);
-	}
-
 	public void applyAtmRefraction(SpCoord appCoord) {
 		sky.applyAtmRefraction(appCoord);
 	}

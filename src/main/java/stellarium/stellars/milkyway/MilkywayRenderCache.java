@@ -54,12 +54,11 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 				EqtoEc.transform(this.buffer);
 				info.coordinate.getProjectionToGround().transform(this.buffer);
 
-				SpCoord coord = new SpCoord();
-				coord.setWithVec(this.buffer);
+				//SpCoord coord = new SpCoord();
+				//coord.setWithVec(this.buffer);
+				//info.sky.applyAtmRefraction(coord);
 
-				info.sky.applyAtmRefraction(coord);
-
-				milkywayNormal[longc][latc].set(coord.getVec());
+				milkywayNormal[longc][latc].set(this.buffer);
 			}
 		}
 		

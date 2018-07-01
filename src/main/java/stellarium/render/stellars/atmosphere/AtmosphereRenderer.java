@@ -2,18 +2,27 @@ package stellarium.render.stellars.atmosphere;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.render.shader.IShaderObject;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.StellarRI;
 import stellarium.render.stellars.layer.LayerRHelper;
+import stellarium.render.util.EnumIndexType;
+import stellarium.render.util.FramebufferCustom;
+import stellarium.render.util.IVertexBuffer;
+import stellarium.render.util.VertexBufferEx;
+import stellarium.render.util.VertexReferences;
+import stellarium.util.OpenGlUtil;
 import stellarium.util.math.Allocator;
 
 public enum AtmosphereRenderer {
@@ -21,10 +30,19 @@ public enum AtmosphereRenderer {
 
 	private static final int STRIDE_IN_FLOAT = 8;
 
-	private FloatBuffer renderBuffer;
-	private ByteBuffer indicesBuffer;
+	private FramebufferCustom stellar = null;
+	private int prevWidth = 0, prevHeight = 0;
+	private int prevFramebufferBound = -1;
 
-	private int renderedList = -1;
+	private boolean vboEnabled;
+
+	private ByteBuffer scrPartIndicesBuffer = null;
+	private int scrPartList = -1;
+	private VertexBufferEx scrPartBuffer = null;
+
+	private ByteBuffer sphereIndicesBuffer = null;
+	private int sphereList = -1;
+	private VertexBufferEx sphereBuffer = null;
 
 	private boolean cacheChangedFlag = false;
 
@@ -40,35 +58,73 @@ public enum AtmosphereRenderer {
 		if(!settings.checkChange())
 			return;
 
-		int renderBufferNewSize = (settings.fragLong + 1) * (settings.fragLat + 1) * STRIDE_IN_FLOAT;
-		if(this.renderBuffer == null || renderBuffer.capacity() < renderBufferNewSize)
-			this.renderBuffer = ByteBuffer.allocateDirect(renderBufferNewSize << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		this.vboEnabled = OpenGlHelper.useVbo();
 
-		int indicesBufferNewSize = (settings.fragLong * settings.fragLat * 4) << 2; // 4 Indices for Quad
-		if(this.indicesBuffer == null || indicesBuffer.capacity() < indicesBufferNewSize)
-			this.indicesBuffer = ByteBuffer.allocateDirect(indicesBufferNewSize).order(ByteOrder.nativeOrder()); 
+		int bufferSize = settings.fragLong * settings.fragLat * 4; // 4 Indices for Quad
+		if(this.sphereIndicesBuffer == null || sphereIndicesBuffer.capacity() < bufferSize)
+			this.sphereIndicesBuffer = ByteBuffer.allocateDirect(bufferSize * EnumIndexType.INT.size).order(ByteOrder.nativeOrder()); 
+		this.setupSphereIndices(settings.fragLong, settings.fragLat);
 
-		this.setupIndicesBuffer(settings.fragLong, settings.fragLat);
+		bufferSize = settings.fragScreen * settings.fragScreen * 4; // 4 Indices for Quad
+		if(this.scrPartIndicesBuffer == null || scrPartIndicesBuffer.capacity() < bufferSize)
+			this.scrPartIndicesBuffer = ByteBuffer.allocateDirect(bufferSize * EnumIndexType.INT.size).order(ByteOrder.nativeOrder());
+		this.setupScrPartIndices(settings.fragScreen);
 
-		this.cacheChangedFlag = true;
+		this.reCache(settings, LayerRHelper.DEEP_DEPTH);
+	}
+
+	public void setupFramebuffer(int width, int height) {
+		if(this.stellar != null)
+			stellar.deleteFramebuffer();
+
+		this.stellar = FramebufferCustom.builder()
+				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.depthStencil(true, false)
+				.build(width, height);
 	}
 
 	public void preRender(AtmosphereSettings settings, StellarRI info) {
-		if(this.cacheChangedFlag) {
-			this.reallocList(settings, LayerRHelper.DEEP_DEPTH);
-			this.cacheChangedFlag = false;
+		atmShader.updateWorldInfo(info);
+
+		if(this.vboEnabled != OpenGlHelper.useVbo()) {
+			this.vboEnabled = OpenGlHelper.useVbo();
+			this.reCache(settings, LayerRHelper.DEEP_DEPTH);
 		}
 
-		atmShader.updateWorldInfo(info);
+		Framebuffer mcBuffer = info.minecraft.getFramebuffer();
+		if(mcBuffer.framebufferWidth != this.prevWidth || mcBuffer.framebufferHeight != this.prevHeight) {
+			this.setupFramebuffer(mcBuffer.framebufferWidth, mcBuffer.framebufferHeight);
+			this.prevWidth = mcBuffer.framebufferWidth;
+			this.prevHeight = mcBuffer.framebufferHeight;
+		}
 	}
 
 	public void render(AtmosphereModel model, EnumAtmospherePass pass, StellarRI info) {
 		switch(pass) {
 		case Prepare:
+			this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlUtil.FRAMEBUFFER_BINDING);
+
+			stellar.bindFramebuffer(false);
+			GlStateManager.depthMask(true);
+			stellar.framebufferClear();
+			GlStateManager.depthMask(false);
+
 			break;
 		case Finalize:
+			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
+
+			IShaderObject refractor = atmShader.bindRefractionShader(model);
+			refractor.getField("pitch").setDouble(
+					Math.toRadians(-info.minecraft.player.rotationPitch));
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+			stellar.bindFramebufferTexture();
+			// TODO AA Rotate first to negate the shift
+			if(this.vboEnabled)
+				this.renderScrPart(this.scrPartBuffer);
+			else GL11.glCallList(this.scrPartList);
 
 			ShaderHelper.getInstance().releaseCurrentShader();
+
 			break;
 
 		case SetupDominateScatter:
@@ -79,10 +135,12 @@ public enum AtmosphereRenderer {
 			// Extinction first - strangely, this drains performance
 			GlStateManager.blendFunc(GL11.GL_ZERO, GL11.GL_SRC_COLOR);
 			atmShader.bindExtinctionShader(model);
-			GL11.glCallList(this.renderedList); // TODO faster evaluation
+			// TODO Faster evaluation of extinction
+			if(this.vboEnabled)
+				sphereBuffer.drawElements(EnumIndexType.INT, this.sphereIndicesBuffer);
+			else GL11.glCallList(this.sphereList);
 			GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
-			// TODO Don't use call-list here
 			// Prepare for dominate rendering
 			IShaderObject shader = atmShader.bindAtmShader(model);
 			info.setDominateRenderer((lightDir, red, green, blue) -> {
@@ -92,7 +150,10 @@ public enum AtmosphereRenderer {
 					shader.getField("lightColor").setDouble3(
 							red, green, blue);
 				}
-				GL11.glCallList(this.renderedList);
+
+				if(this.vboEnabled)
+					sphereBuffer.drawElements(EnumIndexType.INT, this.sphereIndicesBuffer);
+				else GL11.glCallList(this.sphereList);
 			});
 			break;
 		default:
@@ -100,88 +161,130 @@ public enum AtmosphereRenderer {
 		}
 	}
 
-	public void reallocList(AtmosphereSettings settings, double deepDepth) {
-		Vector3[][] displayvec = Allocator.createAndInitialize(settings.fragLong + 1, settings.fragLat+1);
+	public void reCache(AtmosphereSettings settings, double deepDepth) {
+		Vector3[][] displayvec = Allocator.createAndInitialize(settings.fragLong + 1, settings.fragLat + 1);
 
 		for(int longc=0; longc<=settings.fragLong; longc++)
 			for(int latc=0; latc<=settings.fragLat; latc++)
 				displayvec[longc][latc].set(new SpCoord(longc*360.0/settings.fragLong, 180.0 * latc / settings.fragLat - 90.0).getVec());
 
-		if(this.renderedList != -1)
-			GLAllocation.deleteDisplayLists(this.renderedList);
 
-		this.renderedList = GLAllocation.generateDisplayLists(1);
+		if(this.scrPartBuffer != null)
+			scrPartBuffer.deleteGlBuffers();
+		if(this.scrPartList != -1) {
+			GLAllocation.deleteDisplayLists(this.scrPartList);
+			this.scrPartList = -1;
+		}
 
-		GlStateManager.glNewList(this.renderedList, GL11.GL_COMPILE);
-		this.drawDisplay(displayvec, settings.fragLong, settings.fragLat, deepDepth, true, true);
-		GlStateManager.glEndList();
+		if(this.sphereBuffer != null)
+			sphereBuffer.deleteGlBuffers();
+		if(this.sphereList != -1) {
+			GLAllocation.deleteDisplayLists(this.sphereList);
+			this.sphereList = -1;
+		}
+
+		if(this.vboEnabled) {
+			this.scrPartBuffer = new VertexBufferEx();
+			this.uploadScrPart(this.scrPartBuffer, settings.fragScreen);
+
+			this.sphereBuffer = new VertexBufferEx();
+			this.uploadSphere(this.sphereBuffer,
+					displayvec, settings.fragLong, settings.fragLat, deepDepth);
+		} else {
+			this.scrPartList = GLAllocation.generateDisplayLists(1);
+			GlStateManager.glNewList(this.scrPartList, GL11.GL_COMPILE);
+			this.uploadScrPart(VertexReferences.getRenderer(), settings.fragScreen);
+			this.renderScrPart(VertexReferences.getRenderer());
+			GlStateManager.glEndList();
+
+			this.sphereList = GLAllocation.generateDisplayLists(1);
+			GlStateManager.glNewList(this.sphereList, GL11.GL_COMPILE);
+			this.uploadSphere(VertexReferences.getRenderer(),
+					displayvec, settings.fragLong, settings.fragLat, deepDepth);
+			VertexReferences.getRenderer().drawElements(EnumIndexType.INT, this.sphereIndicesBuffer);
+			GlStateManager.glEndList();
+		}
 	}
 
-	Vector3 temporal = new Vector3();
 
-	private void setupIndicesBuffer(int fragLong, int fragLat) {
-		indicesBuffer.clear();
-		for(int longc=0; longc < fragLong; longc++) {
-			for(int latc=0; latc < fragLat; latc++) {
-				indicesBuffer.putInt(((fragLat + 1) * longc + latc));
-				indicesBuffer.putInt(((fragLat + 1) * longc + latc + 1));
-				indicesBuffer.putInt(((fragLat + 1) * (longc + 1) + latc + 1));
-				indicesBuffer.putInt(((fragLat + 1) * (longc + 1) + latc));
+	private void renderScrPart(IVertexBuffer buffer) {
+		GlStateManager.matrixMode(GL11.GL_PROJECTION);
+		GlStateManager.pushMatrix();
+		GlStateManager.loadIdentity();
+		GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+		GlStateManager.pushMatrix();
+		GlStateManager.loadIdentity();
+
+		buffer.drawElements(EnumIndexType.INT, this.scrPartIndicesBuffer);
+
+		GlStateManager.matrixMode(GL11.GL_PROJECTION);
+		GlStateManager.popMatrix();
+		GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+		GlStateManager.popMatrix();
+	}
+
+	private void setupScrPartIndices(int fragScreen) {
+		scrPartIndicesBuffer.clear();
+		for(int i=0; i < fragScreen; i++) {
+			for(int j=0; j < fragScreen; j++) {
+				scrPartIndicesBuffer.putInt(((fragScreen + 1) * i + j));
+				scrPartIndicesBuffer.putInt(((fragScreen + 1) * (i + 1) + j));
+				scrPartIndicesBuffer.putInt(((fragScreen + 1) * (i + 1) + j + 1));
+				scrPartIndicesBuffer.putInt(((fragScreen + 1) * i + j + 1));
 			}
 		}
 	}
 
-	private void drawDisplay(Vector3[][] displayvec, int fragLong, int fragLat, double length, boolean hasTexture, boolean hasNormal) {
-		renderBuffer.clear();
+	private void uploadScrPart(IVertexBuffer buffer, int fragScreen) {
+		BufferBuilder builder = VertexReferences.getBuilder();
+
+		builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		for(int i = 0; i <= fragScreen; i++)
+			for(int j = 0; j <= fragScreen; j++) {
+				builder.pos(-1.0 + 2.0 * i / fragScreen, -1.0 + 2.0 * j / fragScreen, 0.0);
+				builder.tex(1.0 * i / fragScreen, 1.0 * j / fragScreen);
+				builder.endVertex();
+			}
+
+		builder.finishDrawing();
+		buffer.upload(builder);
+	}
+
+	private void setupSphereIndices(int fragLong, int fragLat) {
+		sphereIndicesBuffer.clear();
+		for(int longc=0; longc < fragLong; longc++) {
+			for(int latc=0; latc < fragLat; latc++) {
+				sphereIndicesBuffer.putInt(((fragLat + 1) * longc + latc));
+				sphereIndicesBuffer.putInt(((fragLat + 1) * longc + latc + 1));
+				sphereIndicesBuffer.putInt(((fragLat + 1) * (longc + 1) + latc + 1));
+				sphereIndicesBuffer.putInt(((fragLat + 1) * (longc + 1) + latc));
+			}
+		}
+	}
+
+	Vector3 temporal = new Vector3();
+	private void uploadSphere(IVertexBuffer buffer, Vector3[][] displayvec, int fragLong, int fragLat, double length) {
+		BufferBuilder builder = VertexReferences.getBuilder();
+
+		builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
 
 		short longc = 0, latc;
 		for(Vector3[] vertRow : displayvec) {
 			latc = 0;
 			for(Vector3 pos : vertRow) {
 				temporal.set(pos).scale(length);
-				renderBuffer.put((float)temporal.getX());
-				renderBuffer.put((float)temporal.getY());
-				renderBuffer.put((float)temporal.getZ());
 
-				renderBuffer.put(((float)longc) / fragLong);
-				renderBuffer.put(((float)latc) / fragLat);
-
-				renderBuffer.put((float)pos.getX());
-				renderBuffer.put((float)pos.getY());
-				renderBuffer.put((float)pos.getZ());
+				builder.pos(temporal.getX(), temporal.getY(), temporal.getZ());
+				builder.tex(((double)longc) / fragLong, ((double)latc) / fragLat);
+				builder.normal((float)pos.getX(), (float)pos.getY(), (float)pos.getZ());
+				builder.endVertex();
 
 				latc++;
 			}
 			longc++;
 		}
 
-		renderBuffer.position(0);
-		GL11.glVertexPointer(3, STRIDE_IN_FLOAT << 2, this.renderBuffer);
-		GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-
-		if(hasTexture) {
-			renderBuffer.position(3);
-			GL11.glTexCoordPointer(2, STRIDE_IN_FLOAT << 2, this.renderBuffer);
-			GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-		}
-
-		if(hasNormal) {
-			renderBuffer.position(5);
-			GL11.glNormalPointer(STRIDE_IN_FLOAT << 2, this.renderBuffer);
-			GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
-		}
-
-		indicesBuffer.position(0);
-		GL11.glDrawElements(GL11.GL_QUADS, fragLong * fragLat * 4, GL11.GL_UNSIGNED_INT, this.indicesBuffer);
-
-		if(hasNormal) {
-			GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
-		}
-
-		if(hasTexture) {
-			GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-		}
-
-		GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+		builder.finishDrawing();
+		buffer.upload(builder);
 	}
 }

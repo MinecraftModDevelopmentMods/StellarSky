@@ -65,7 +65,8 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 				}
 			}
 
-			info.tessellator.draw();
+			info.builder.finishDrawing();
+			info.renderer.draw(info.builder);
 			info.unbindTexShader();
 		}
 	}

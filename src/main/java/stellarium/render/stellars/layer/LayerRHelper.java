@@ -13,7 +13,8 @@ import stellarium.render.stellars.UtilShaders;
 import stellarium.render.stellars.access.IDominateRenderer;
 import stellarium.render.util.BufferBuilderEx;
 import stellarium.render.util.FloatVertexFormats;
-import stellarium.render.util.TessellatorEx;
+import stellarium.render.util.VertexReferences;
+import stellarium.render.util.VertexDirect;
 
 public class LayerRHelper {
 	public static final double DEEP_DEPTH = 100.0;
@@ -22,8 +23,8 @@ public class LayerRHelper {
 	public final WorldClient world;
 	public final float partialTicks;
 
-	public final TessellatorEx tessellator;
 	public final BufferBuilderEx builder;
+	public final VertexDirect renderer;
 
 	private final UtilShaders shaders;
 
@@ -37,8 +38,8 @@ public class LayerRHelper {
 		this.world = info.world;
 		this.partialTicks = info.partialTicks;
 
-		this.tessellator = TessellatorEx.getInstance();
-		this.builder = tessellator.getBuffer();
+		this.builder = VertexReferences.getBuilder();
+		this.renderer = VertexReferences.getRenderer();
 
 		this.shaders = shaders;
 
@@ -68,12 +69,13 @@ public class LayerRHelper {
 
 
 	public void beginPoint() {
-		builder.begin(GL11.GL_QUADS, FloatVertexFormats.POSITION_TEX_COLOR_F);
 		shaders.bindPointShader();
+		builder.begin(GL11.GL_QUADS, FloatVertexFormats.POSITION_TEX_COLOR_F);
 	}
 
 	public void endPoint() {
-		tessellator.draw();
+		builder.finishDrawing();
+		renderer.draw(this.builder);
 		shaders.releaseShader();
 	}
 

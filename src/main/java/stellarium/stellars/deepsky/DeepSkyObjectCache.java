@@ -62,9 +62,9 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 		for(int i = 0; i < 4; i++) {
 			EqtoEc.transform(quads[i]);
 			info.coordinate.getProjectionToGround().transform(quads[i]);
-			cache.setWithVec(quads[i]);
-			info.sky.applyAtmRefraction(cache);
-			coords[i].set(cache.getVec());
+			//cache.setWithVec(quads[i]);
+			//info.sky.applyAtmRefraction(cache);
+			coords[i].set(quads[i]);
 			coords[i].scale(LayerRHelper.DEEP_DEPTH);
 		}
 

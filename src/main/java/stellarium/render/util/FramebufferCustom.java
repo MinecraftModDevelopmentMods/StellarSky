@@ -1,4 +1,4 @@
-package stellarium.render.stellars.atmosphere;
+package stellarium.render.util;
 
 import java.nio.IntBuffer;
 

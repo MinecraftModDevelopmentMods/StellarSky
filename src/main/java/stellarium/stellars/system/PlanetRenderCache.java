@@ -29,6 +29,7 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 
 	@Override
 	public void updateCache(Planet object, PlanetImage image, ViewerInfo info, IStellarChecker checker) {
+		// TODO Don't use image coord here
 		appCoord.x = image.appCoord.x;
 		appCoord.y = image.appCoord.y;
 

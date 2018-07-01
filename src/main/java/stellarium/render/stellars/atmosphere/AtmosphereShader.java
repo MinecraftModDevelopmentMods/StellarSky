@@ -19,17 +19,22 @@ public class AtmosphereShader {
 	private IUniformField outerRadius2, innerRadius2;
 	private IUniformField extinctionFactor2;
 
-	private float rainStrengthFactor, weatherFactor;
+	private IUniformField fieldRelative;
 
-	private IShaderObject atmosphere, extinction;
+	private float rainStrengthFactor, weatherFactor;
+	private double relativeWidth, relativeHeight;
+
+	private IShaderObject atmosphere, extinction, refraction;
 
 	public void reloadShaders() {
 		this.atmosphere = ShaderHelper.getInstance().buildShader("atmospheresingle",
 						StellarSkyResources.vertexAtmosphereSingle, StellarSkyResources.fragmentAtmosphereSingle);
 		this.extinction = ShaderHelper.getInstance().buildShader("atmextinction",
 				StellarSkyResources.vertexAtmExtinction, StellarSkyResources.fragmentAtmExtinction);
+		this.refraction = ShaderHelper.getInstance().buildShader("atmrefraction",
+				StellarSkyResources.vertexAtmRefraction, StellarSkyResources.fragmentAtmRefraction);
 
-		if(this.atmosphere == null || this.extinction == null)
+		if(this.atmosphere == null || this.extinction == null || this.refraction == null)
 			throw new RuntimeException("There was an error preparing shader programs");
 
 		this.cameraHeight = atmosphere.getField("cameraHeight");
@@ -49,6 +54,9 @@ public class AtmosphereShader {
 		this.outerRadius2 = extinction.getField("outerRadius");
 		this.innerRadius2 = extinction.getField("innerRadius");
 		this.extinctionFactor2 = extinction.getField("extinctionFactor");
+
+
+		this.fieldRelative = refraction.getField("relative");
 	}
 
 	public void updateWorldInfo(StellarRI info) {		
@@ -56,6 +64,9 @@ public class AtmosphereShader {
 		this.rainStrengthFactor = rainStrength > 0.0f? 0.05f + rainStrength * 0.15f : 0.0f;
 		this.weatherFactor = (float) (1.0f - Math.sqrt(rainStrength) * 0.8f);
 		weatherFactor *= (1.0D - (double)(info.world.getThunderStrength(info.partialTicks) * 8.0F) / 16.0D);
+
+		this.relativeWidth = info.relativeWidth;
+		this.relativeHeight = info.relativeHeight;
 	}
 
 	public void bindExtinctionShader(AtmosphereModel model) {
@@ -69,6 +80,12 @@ public class AtmosphereShader {
 		Vector3 vec = new Vector3(model.getSkyExtRed(), model.getSkyExtGreen(), model.getSkyExtBlue());
 
 		extinctionFactor2.setVector3(vec.scale(Math.log(10) * 0.4 - 2.0 * Math.log(this.weatherFactor))); // Inverted?
+	}
+
+	public IShaderObject bindRefractionShader(AtmosphereModel model) {
+		refraction.bindShader();
+		fieldRelative.setDouble3(this.relativeWidth, this.relativeHeight, 1.0);
+		return this.refraction;
 	}
 
 	public IShaderObject bindAtmShader(AtmosphereModel model) {
@@ -96,9 +113,9 @@ public class AtmosphereShader {
 				1.0);
 
 		mieFactor.setDouble4(
-				mult * 0.06 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispRed(),
-				mult * 0.06 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispGreen(),
-				mult * 0.06 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispBlue(),
+				mult * 0.05 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispRed(),
+				mult * 0.05 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispGreen(),
+				mult * 0.05 * (1.0f + 5 * this.rainStrengthFactor) * model.getSkyDispBlue(),
 				1.0);
 
 		return this.atmosphere;

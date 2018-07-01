@@ -28,7 +28,8 @@ public enum DSObjectRenderer implements ICelestialObjectRenderer<DeepSkyObjectCa
 		info.builder.pos(cache.coords[2]).tex(0, 1).endVertex();
 		info.builder.pos(cache.coords[3]).tex(1, 1).endVertex();
 
-		info.tessellator.draw();
+		info.builder.finishDrawing();
+		info.renderer.draw(info.builder);
 	}
 
 }

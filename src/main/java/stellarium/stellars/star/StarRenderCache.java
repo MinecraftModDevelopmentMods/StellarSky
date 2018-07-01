@@ -27,7 +27,10 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 
 	@Override
 	public void updateCache(BgStar object, StarImage image, ViewerInfo info, IStellarChecker checker) {
-		if(image == null) {
+		ref.set(object.pos);
+		info.coordinate.getProjectionToGround().transform(this.ref);
+
+		/*if(image == null) {
 			ref.set(object.pos);
 			info.coordinate.getProjectionToGround().transform(this.ref);
 			appPos.setWithVec(this.ref); // TODO Optimize - linear approach
@@ -36,9 +39,9 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 			SpCoord appCoord = image.getCurrentHorizontalPos();
 			this.appPos.x = appCoord.x;
 			this.appPos.y = appCoord.y;
-		}
+		}*/
 
-		pos.set(appPos.getVec());
+		pos.set(this.ref);
 		pos.scale(LayerRHelper.DEEP_DEPTH);
 
 		StarColor starColor = StarColor.getColor(object.B_V);
@@ -53,7 +56,8 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 		checker.startDescription();
 		checker.pos(this.appPos);
 		checker.brightness(red, green, blue);
-		this.shouldRender = checker.checkRendered();
+		//this.shouldRender = checker.checkRendered();
+		this.shouldRender = true;
 	}
 
 	@SideOnly(Side.CLIENT)

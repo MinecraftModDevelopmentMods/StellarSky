@@ -70,7 +70,8 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 				}
 			}
 
-			info.tessellator.draw();
+			info.builder.finishDrawing();
+			info.renderer.draw(info.builder);
 		}
 	}
 

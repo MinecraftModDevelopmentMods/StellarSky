@@ -54,7 +54,8 @@ public enum MilkywayRenderer implements ICelestialObjectRenderer<MilkywayRenderC
 			}
 		}
 
-		info.tessellator.draw();
+		info.builder.finishDrawing();
+		info.renderer.draw(info.builder);
 	}
 
 }

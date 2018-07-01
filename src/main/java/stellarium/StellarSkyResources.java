@@ -75,16 +75,22 @@ public class StellarSkyResources {
 
 
 	public static final ResourceLocation vertexAtmosphereSingle =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_single.vsh");
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere/atmosphere_single.vsh");
 
 	public static final ResourceLocation fragmentAtmosphereSingle =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_single.psh");
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere/atmosphere_single.psh");
 
 	public static final ResourceLocation vertexAtmExtinction =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_extinction.vsh");
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere/atmosphere_extinction.vsh");
 
 	public static final ResourceLocation fragmentAtmExtinction =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere_extinction.psh");
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere/atmosphere_extinction.psh");
+
+	public static final ResourceLocation vertexAtmRefraction =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere/atmosphere_refraction.vsh");
+
+	public static final ResourceLocation fragmentAtmRefraction =
+			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "shaders/atmosphere/atmosphere_refraction.psh");
 
 
 	public static final ResourceLocation vertexPoint =

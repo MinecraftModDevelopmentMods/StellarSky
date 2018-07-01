@@ -5,6 +5,7 @@ import stellarapi.api.lib.config.SimpleConfigHandler;
 import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
 import stellarapi.api.lib.config.property.ConfigPropertyInteger;
 
+// TODO All Adjust settings accordingly
 public class AtmosphereSettings extends SimpleConfigHandler {
 	
 	public static final String KEY = "atmosphere";
@@ -24,6 +25,11 @@ public class AtmosphereSettings extends SimpleConfigHandler {
 	 * Number of atmosphere fragments
 	 * */
 	public int fragLong = 256, fragLat = 128;
+
+	/**
+	 * Number of screen fragments
+	 * */
+	public int fragScreen = 16;
 	
 	public boolean isInterpolated = false;
 	
