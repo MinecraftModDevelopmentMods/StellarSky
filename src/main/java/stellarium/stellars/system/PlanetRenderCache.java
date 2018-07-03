@@ -6,7 +6,6 @@ import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.stellars.OpticsHelper;
@@ -27,7 +26,7 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 	}
 
 	@Override
-	public void updateCache(Planet object, PlanetImage image, ViewerInfo info, IStellarChecker checker) {
+	public void updateCache(Planet object, PlanetImage image, ViewerInfo info) {
 		// TODO Don't use image coord here
 		appCoord.x = image.appCoord.x;
 		appCoord.y = image.appCoord.y;
@@ -40,12 +39,8 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 
 		this.size = (float) (object.radius / object.earthPos.size());
 
-		checker.startDescription();
-		checker.brightness(brightness, brightness, brightness);
-		checker.pos(this.appCoord);
-		checker.radius(this.size);
-		this.shouldRender = checker.checkRendered();
-		this.shouldRenderSurface = this.shouldRender && checker.checkEnoughRadius();
+		this.shouldRender = true;
+		this.shouldRenderSurface = this.shouldRender && false;
 		// MAYBE planet rendering, which needs over 100x multiplier
 		this.brightness *= 0.5f;
 	}

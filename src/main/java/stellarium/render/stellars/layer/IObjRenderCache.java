@@ -4,7 +4,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.stellars.layer.IPerWorldImage;
 import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.render.ICelestialObjectRenderer;
@@ -19,7 +18,7 @@ public interface IObjRenderCache<Obj extends StellarObject, Image extends IPerWo
 	 * @param object the object
 	 * @param image the image for this object, can be null
 	 * */
-	public void updateCache(Obj object, Image image, ViewerInfo info, IStellarChecker checker);
+	public void updateCache(Obj object, Image image, ViewerInfo info);
 
 	@SideOnly(Side.CLIENT)
 	ICelestialObjectRenderer getRenderer();

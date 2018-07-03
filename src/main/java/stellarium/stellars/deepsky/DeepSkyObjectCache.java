@@ -5,10 +5,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.Matrix3;
-import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.stellars.OpticsHelper;
@@ -26,7 +24,6 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 	}
 
 	protected Vector3[] coords = new Vector3[4];
-	private SpCoord cache = new SpCoord();
 	protected ResourceLocation location;
 	protected float surfBr;
 	protected boolean shouldRender;
@@ -44,7 +41,7 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 	}
 
 	@Override
-	public void updateCache(DeepSkyObject object, DeepSkyImage image, ViewerInfo info, IStellarChecker checker) {		
+	public void updateCache(DeepSkyObject object, DeepSkyImage image, ViewerInfo info) {		
 		if(!object.getTexture().isPresent()) {
 			this.shouldRender = false;
 			return;
@@ -69,11 +66,7 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 		double magnitude = object.magnitude;
 		this.surfBr = OpticsHelper.getBrightnessFromMag(magnitude)
 				* OpticsHelper.getMultFromArea(object.getSurfaceSize());
-
-		checker.startDescription();
-		checker.pos(this.cache);
-		checker.brightness(this.surfBr, this.surfBr, this.surfBr);
-		this.shouldRender = checker.checkRendered();
+		this.shouldRender = true;
 	}
 
 	@SideOnly(Side.CLIENT)

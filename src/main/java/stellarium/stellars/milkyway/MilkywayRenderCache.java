@@ -6,7 +6,6 @@ import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.render.ICelestialObjectRenderer;
@@ -39,15 +38,7 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 	}
 
 	@Override
-	public void updateCache(Milkyway object, MilkywayImage image, ViewerInfo info, IStellarChecker checker) {
-		checker.startDescription();
-		checker.pos(new SpCoord(0.0, 90.0));
-		checker.brightness(this.surfBr, this.surfBr, this.surfBr);
-		if(!checker.checkRendered()) {
-			this.rendered = false;
-			return;
-		}
-		
+	public void updateCache(Milkyway object, MilkywayImage image, ViewerInfo info) {
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				buffer.set(new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec());

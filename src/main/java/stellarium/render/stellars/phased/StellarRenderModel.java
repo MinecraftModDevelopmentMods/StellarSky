@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.world.World;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.StellarChecker;
 import stellarium.render.stellars.access.ICheckedAtmModel;
 import stellarium.render.stellars.layer.StellarLayerModel;
 import stellarium.stellars.StellarManager;
@@ -23,15 +22,11 @@ public class StellarRenderModel {
 	//Models for in-game objects.
 	List<StellarLayerModel> layerModels = Lists.newArrayList();
 
-	private StellarChecker checker = new StellarChecker();
-
 	public StellarRenderModel(CelestialManager celManager, ICheckedAtmModel atmModel) {
 		for(StellarObjectContainer layer : celManager.getLayers()) {
 			StellarLayerModel layerModel = new StellarLayerModel(layer);
 			baseModels.add(layerModel);
 		}
-
-		checker.setAtmModel(atmModel);
 	}
 
 	public void initializeSettings(ClientSettings settings) {
@@ -57,9 +52,8 @@ public class StellarRenderModel {
 	}
 
 	public void onTick(World world, ViewerInfo update) {
-		checker.setView(world, update);
 		for(StellarLayerModel model : this.layerModels)
-			model.onStellarTick(update, this.checker);
+			model.onStellarTick(update);
 	}
 
 }

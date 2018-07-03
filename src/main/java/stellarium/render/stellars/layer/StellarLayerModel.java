@@ -8,7 +8,6 @@ import com.google.common.collect.Maps;
 
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.layer.StellarObject;
@@ -46,12 +45,12 @@ public class StellarLayerModel<Obj extends StellarObject> {
 			entry.getValue().updateSettings(settings, this.getSubSettings(settings), entry.getKey());
 	}
 
-	public void onStellarTick(ViewerInfo update, IStellarChecker checker) {
+	public void onStellarTick(ViewerInfo update) {
 		Validate.notNull(this.collection);
 
 		for(Map.Entry<Obj, IObjRenderCache> entry : cacheMap.entrySet())
 			entry.getValue().updateCache(entry.getKey(),
-					collection.loadImageFor(entry.getKey()), update, checker);
+					collection.loadImageFor(entry.getKey()), update);
 	}
 
 	public Iterable<IObjRenderCache> getRenderCaches() {
