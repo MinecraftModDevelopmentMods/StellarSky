@@ -15,8 +15,6 @@ import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.render.stellars.layer.StellarLayerModel;
 
 public class StellarObjectContainer<Obj extends StellarObject, ClientConfig extends IConfigHandler> {
-
-	private boolean isRemote;
 	private IStellarLayerType<Obj, ClientConfig, INBTConfig> type;
 	private String configName;
 	
@@ -25,7 +23,6 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	private SetMultimap<String, Obj> loadedObjects = HashMultimap.create();
 	private Map<Obj, Callable<IPerWorldImage>> imageTypeMap = Maps.newHashMap();
 	private Set<Obj> addedSet = Sets.newHashSet();
-	private Set<Obj> removedSet = Sets.newHashSet();
 	private long previousUpdateTick = -1L;
 
 	public StellarObjectContainer(IStellarLayerType<Obj, ClientConfig, INBTConfig> type, String configName) {
@@ -60,8 +57,6 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 
 
 	public void loadObject(String identifier, Obj object) {
-		/*if(loadedObjects.containsEntry(identifier, object))
-			loadedObjects.remove(identifier, object);*/
 		loadedObjects.put(identifier, object);
 	}
 
@@ -83,21 +78,7 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 			}
 		});
 	}
-	
-	
-	public void unloadObject(String identifier, Obj object) {
-		loadedObjects.remove(identifier, object);
 
-		if(this.layerModel != null)
-			layerModel.removeCache(object);
-
-		if(imageTypeMap.containsKey(object)) {
-			imageTypeMap.remove(object);
-			removedSet.add(object);
-		}
-	}
-	
-	
 	public void addCollection(StellarCollection<Obj> image) {
 		image.addImages(imageTypeMap.keySet(), this.imageTypeMap);
 	}
@@ -105,14 +86,11 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	public void updateCollection(StellarCollection<Obj> image, long currentUniversalTick) {
 		if(this.previousUpdateTick != currentUniversalTick) {
 			addedSet.clear();
-			removedSet.clear();
 			this.previousUpdateTick = currentUniversalTick;
 		}
 
 		if(!addedSet.isEmpty())
 			image.addImages(this.addedSet, this.imageTypeMap);
-		if(!removedSet.isEmpty())
-			image.removeImages(this.removedSet);
 
 		image.update();
 	}

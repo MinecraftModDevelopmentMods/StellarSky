@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
@@ -15,7 +14,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import stellarapi.api.CelestialPeriod;
 import stellarapi.api.ICelestialCoordinates;
 import stellarapi.api.ISkyEffect;
@@ -25,12 +23,7 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
-import stellarium.stellars.layer.query.ILayerTempManager;
-import stellarium.stellars.layer.query.MetadataQueryCache;
 import stellarium.stellars.layer.query.QueryStellarObject;
-import stellarium.stellars.layer.update.IMetadataUpdater;
-import stellarium.stellars.layer.update.IUpdateTracked;
-import stellarium.stellars.layer.update.MetadataUpdateTracker;
 
 public class StellarCollection<Obj extends StellarObject> implements ICelestialCollection {
 
@@ -42,12 +35,7 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	
 	private Map<Obj, IPerWorldImage> imageMap = Maps.newHashMap();
 	
-	private MetadataQueryCache<Obj, IUpdateTracked<IPerWorldImage>> cache;
-	private MetadataUpdateTracker<Obj, IPerWorldImage> updateTracker;
-	
 	private CelestialPeriod yearPeriod;
-
-	private ILayerTempManager<Obj> temp;
 	
 	public StellarCollection(StellarObjectContainer container, ICelestialCoordinates coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
 		this.type = container.getType();
@@ -55,39 +43,12 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 		this.coordinate = coordinate;
 		this.sky = sky;
 		this.yearPeriod = yearPeriod;
-		
-		this.updateTracker = new MetadataUpdateTracker(new ImageUpdater());
-		
-		this.temp = type.getTempLoadManager();
-		this.cache = this.temp != null? new MetadataQueryCache(new ImageBuilder(), temp) : null;
 	}
 	
 	@Override
 	public String getName() {
 		return type.getName();
 	}
-
-	private class ImageBuilder implements Function<Obj, IUpdateTracked<IPerWorldImage>> {
-		@Override
-		public IUpdateTracked<IPerWorldImage> apply(Obj object) {
-			IPerWorldImage image = temp.loadImage(object);
-			image.initialize(object, coordinate, sky, yearPeriod);
-			return updateTracker.createTracker(object, image);
-		}
-	}
-
-	private class ImageUpdater implements IMetadataUpdater<Obj, IPerWorldImage> {
-		@Override
-		public long getCurrentTime() {
-			return FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld().getTotalWorldTime();
-		}
-
-		@Override
-		public void update(Obj object, IPerWorldImage metadata) {
-			metadata.updateCache(object, coordinate, sky);
-		}
-	}
-	
 
 	@Override
 	public ImmutableSet<? extends IPerWorldImage> getObjects() {
@@ -104,18 +65,12 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 
 		Iterable<IPerWorldImage> saved = Iterables.filter(imageMap.values(), inRange);
 
-		if(this.cache != null) {
-			QueryStellarObject absoluteQuery = temp.transformToAbsolute(query, coordinate.getProjectionToGround(), this.sky);
-			return ImmutableSet.copyOf(
-					Iterables.concat(saved, updateTracker.addUpdateOnIteration(cache.query(absoluteQuery))));
-		} else return ImmutableSet.copyOf(saved);
+		return ImmutableSet.copyOf(saved);
 	}
 
 	public IPerWorldImage loadImageFor(Obj object) {
 		if(imageMap.containsKey(object))
 			return imageMap.get(object);
-		else if(cache != null)
-			return cache.lazyLoader().apply(object).getMetadata();
 		else return null;
 	}
 
@@ -139,14 +94,10 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 			Throwables.propagate(exc);
 		}
 	}
-	
-	public void removeImages(Set<Obj> removedSet) {
-		for(Obj object : removedSet)
-			imageMap.remove(object);
-	}
 
 	public void update() {
-		updateTracker.updateMap(this.imageMap);
+		for(Map.Entry<Obj, IPerWorldImage> entry : imageMap.entrySet())
+			entry.getValue().updateCache(entry.getKey(), coordinate, sky);
 	}
 
 	
