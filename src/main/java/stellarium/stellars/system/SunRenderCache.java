@@ -5,7 +5,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.util.math.Allocator;
@@ -33,18 +32,12 @@ public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSyste
 	}
 
 	@Override
-	public void updateCache(Sun object, SunImage image, ViewerInfo info, IStellarChecker checker) {
+	public void updateCache(Sun object, SunImage image, ViewerInfo info) {
 		// TODO Don't use image coord here
 		appCoord.x = image.appCoord.x;
 		appCoord.y = image.appCoord.y;
 		appPos.set(appCoord.getVec());
 		this.size = (float) (object.radius / object.earthPos.size());
-		
-		checker.startDescription();
-		checker.brightness(1.0f, 1.0f, 1.0f);
-		checker.pos(this.appCoord);
-		checker.radius(this.size);
-		checker.checkDominator();
 		
 		int latc, longc;
 		for(longc=0; longc<longn; longc++){

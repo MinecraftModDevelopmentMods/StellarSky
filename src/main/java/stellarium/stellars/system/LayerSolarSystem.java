@@ -14,12 +14,9 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;
-import stellarium.stellars.layer.query.ILayerTempManager;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSystemClientSettings, SolarSystemSettings> {
-	
-	private static int renderId = -1;
 	protected static int planetRenderId = -1;
 	protected static int sunRenderId = -1;
 	protected static int moonRenderId = -1;
@@ -27,10 +24,10 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	public final double AU=1.496e+8;
 	
 	@Override
-	public void initializeClient(SolarSystemClientSettings config, StellarObjectContainer container) throws IOException { }
+	public void initializeClient(SolarSystemClientSettings config, StellarObjectContainer<SolarObject> container) throws IOException { }
 
 	@Override
-	public void initializeCommon(SolarSystemSettings settings, StellarObjectContainer<SolarObject, SolarSystemClientSettings> container) throws IOException {		
+	public void initializeCommon(SolarSystemSettings settings, StellarObjectContainer<SolarObject> container) throws IOException {		
 		////Solar System
 		StellarSky.INSTANCE.getLogger().info("Initializing Solar System...");
 		///Sun
@@ -283,7 +280,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	}
 
 	@Override
-	public void updateLayer(StellarObjectContainer<SolarObject, SolarSystemClientSettings> container, double year) {
+	public void updateLayer(StellarObjectContainer<SolarObject> container, double year) {
 		for(SolarObject object : container.getLoadedObjects("System"))
 			object.updatePre(year);
 		for(SolarObject object : container.getLoadedObjects("System"))
@@ -325,12 +322,12 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	}
 
 	@Override
-	public Collection<SolarObject> getSuns(StellarObjectContainer container) {
+	public Collection<SolarObject> getSuns(StellarObjectContainer<SolarObject> container) {
 		return container.getLoadedObjects("Sun");
 	}
 
 	@Override
-	public Collection<SolarObject> getMoons(StellarObjectContainer container) {
+	public Collection<SolarObject> getMoons(StellarObjectContainer<SolarObject> container) {
 		return container.getLoadedObjects("Moon");
 	}
 
@@ -338,10 +335,5 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	@Override
 	public ICelestialLayerRenderer getLayerRenderer() {
 		return LayerSolarSystemRenderer.INSTANCE;
-	}
-
-	@Override
-	public ILayerTempManager<SolarObject> getTempLoadManager() {
-		return null;
 	}
 }

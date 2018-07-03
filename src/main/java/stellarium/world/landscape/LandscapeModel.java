@@ -11,8 +11,6 @@ public class LandscapeModel {
 	protected int latn, longn;
 	protected boolean rendered;
 	
-	private int renderId;
-	
 	public void initializeSettings(ClientSettings settings) {
 		settings.putSubConfig(LandscapeClientSettings.KEY, new LandscapeClientSettings());
 	}

@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import stellarapi.api.ICelestialCoordinates;
 import stellarapi.api.ISkyEffect;
-import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.IOpticalFilter;
@@ -12,11 +11,6 @@ import stellarapi.api.optics.IViewScope;
 import stellarapi.api.optics.Wavelength;
 
 public class ViewerInfo {
-	@Deprecated
-	public final SpCoord currentDirection;
-	@Deprecated
-	public final double currentFOVRadius;
-
 	public final Vector3 currentPosition;
 
 	public final ICelestialCoordinates coordinate;
@@ -36,13 +30,7 @@ public class ViewerInfo {
 
 		this.currentPosition = new Vector3(viewer.posX, viewer.posY, viewer.posZ);
 
-		float rotationYaw = viewer.rotationYaw;
-		float rotationPitch = -viewer.rotationPitch;
-
-		this.currentDirection = new SpCoord(180 - rotationYaw, rotationPitch);
-
 		this.multiplyingPower = scope.getMP();
-		this.currentFOVRadius = Spmath.Radians(70.0) / this.multiplyingPower;
 
 		this.brightnessMultiplier = scope.getLGP() * filter.getFilterEfficiency(Wavelength.visible);
 		colorMultiplier.set(

@@ -13,8 +13,8 @@ import stellarium.render.stellars.UtilShaders;
 import stellarium.render.stellars.access.IDominateRenderer;
 import stellarium.render.util.BufferBuilderEx;
 import stellarium.render.util.FloatVertexFormats;
-import stellarium.render.util.VertexReferences;
 import stellarium.render.util.VertexDirect;
+import stellarium.render.util.VertexReferences;
 
 public class LayerRHelper {
 	public static final double DEEP_DEPTH = 100.0;

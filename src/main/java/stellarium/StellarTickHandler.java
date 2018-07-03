@@ -1,31 +1,15 @@
 package stellarium;
 
-import java.lang.reflect.Field;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import stellarium.stellars.StellarManager;
 import stellarium.world.StellarScene;
 
 public class StellarTickHandler {
-	
-	private Field sleep;
-			
-	public StellarTickHandler() {
-		sleep = getField(WorldServer.class, "allPlayersSleeping", "field_73068_P");
-	}
-	
-	public static Field getField(Class<?> clazz, String... fieldNames) {
-		return ReflectionHelper.findField(clazz, ObfuscationReflectionHelper.remapFieldNames(clazz.getName(), fieldNames));
-	}
-
 	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
 		if(e.phase == TickEvent.Phase.START){

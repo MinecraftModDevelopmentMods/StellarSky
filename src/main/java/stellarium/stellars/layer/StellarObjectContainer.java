@@ -14,30 +14,27 @@ import stellarapi.api.lib.config.INBTConfig;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.render.stellars.layer.StellarLayerModel;
 
-public class StellarObjectContainer<Obj extends StellarObject, ClientConfig extends IConfigHandler> {
-
-	private boolean isRemote;
-	private IStellarLayerType<Obj, ClientConfig, INBTConfig> type;
+public class StellarObjectContainer<Obj extends StellarObject> {
+	private IStellarLayerType<Obj, IConfigHandler, INBTConfig> type;
 	private String configName;
 	
-	private StellarLayerModel layerModel;
+	private StellarLayerModel<Obj> layerModel;
 
 	private SetMultimap<String, Obj> loadedObjects = HashMultimap.create();
-	private Map<Obj, Callable<IPerWorldImage>> imageTypeMap = Maps.newHashMap();
+	private Map<Obj, Callable<IPerWorldImage<Obj>>> imageTypeMap = Maps.newHashMap();
 	private Set<Obj> addedSet = Sets.newHashSet();
-	private Set<Obj> removedSet = Sets.newHashSet();
 	private long previousUpdateTick = -1L;
 
-	public StellarObjectContainer(IStellarLayerType<Obj, ClientConfig, INBTConfig> type, String configName) {
+	public StellarObjectContainer(IStellarLayerType<Obj, IConfigHandler, INBTConfig> type, String configName) {
 		this.type = type;
 		this.configName = configName;
 	}
-	
-	public void bindRenderModel(StellarLayerModel layerModel) {
+
+	public void bindRenderModel(StellarLayerModel<Obj> layerModel) {
 		this.layerModel = layerModel;
 	}
 	
-	public IStellarLayerType<Obj, ClientConfig, INBTConfig> getType() {
+	public IStellarLayerType<Obj, IConfigHandler, INBTConfig> getType() {
 		return this.type;
 	}
 	
@@ -60,8 +57,6 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 
 
 	public void loadObject(String identifier, Obj object) {
-		/*if(loadedObjects.containsEntry(identifier, object))
-			loadedObjects.remove(identifier, object);*/
 		loadedObjects.put(identifier, object);
 	}
 
@@ -70,34 +65,20 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 			layerModel.addRenderCache(object, cache);
 	}
 
-	public void addImageType(Obj object, Callable<IPerWorldImage> imageType) {
+	public void addImageType(Obj object, Callable<IPerWorldImage<Obj>> imageType) {
 		imageTypeMap.put(object, imageType);
 		addedSet.add(object);
 	}
 
 	public void addImageType(Obj object, final Class<? extends IPerWorldImage> imageClass) {
-		this.addImageType(object, new Callable<IPerWorldImage>() {
+		this.addImageType(object, new Callable<IPerWorldImage<Obj>>() {
 			@Override
-			public IPerWorldImage call() throws Exception {
+			public IPerWorldImage<Obj> call() throws Exception {
 				return imageClass.newInstance();
 			}
 		});
 	}
-	
-	
-	public void unloadObject(String identifier, Obj object) {
-		loadedObjects.remove(identifier, object);
 
-		if(this.layerModel != null)
-			layerModel.removeCache(object);
-
-		if(imageTypeMap.containsKey(object)) {
-			imageTypeMap.remove(object);
-			removedSet.add(object);
-		}
-	}
-	
-	
 	public void addCollection(StellarCollection<Obj> image) {
 		image.addImages(imageTypeMap.keySet(), this.imageTypeMap);
 	}
@@ -105,21 +86,18 @@ public class StellarObjectContainer<Obj extends StellarObject, ClientConfig exte
 	public void updateCollection(StellarCollection<Obj> image, long currentUniversalTick) {
 		if(this.previousUpdateTick != currentUniversalTick) {
 			addedSet.clear();
-			removedSet.clear();
 			this.previousUpdateTick = currentUniversalTick;
 		}
 
 		if(!addedSet.isEmpty())
 			image.addImages(this.addedSet, this.imageTypeMap);
-		if(!removedSet.isEmpty())
-			image.removeImages(this.removedSet);
 
 		image.update();
 	}
 
 	
-	public StellarObjectContainer<Obj, ClientConfig> copyFromClient() {
-		StellarObjectContainer copied = new StellarObjectContainer(this.type, this.configName);
+	public StellarObjectContainer<Obj> copyFromClient() {
+		StellarObjectContainer<Obj> copied = new StellarObjectContainer<Obj>(this.type, this.configName);
 		copied.loadedObjects = HashMultimap.create(copied.loadedObjects);
 		copied.imageTypeMap = Maps.newHashMap(this.imageTypeMap);
 		

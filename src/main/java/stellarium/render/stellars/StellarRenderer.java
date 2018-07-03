@@ -6,11 +6,9 @@ import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.Spmath;
-import stellarium.StellarSky;
 import stellarium.StellarSkyResources;
 import stellarium.client.ClientSettings;
 import stellarium.render.shader.IShaderObject;
@@ -23,7 +21,6 @@ import stellarium.render.stellars.atmosphere.EnumAtmospherePass;
 import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.render.stellars.phased.StellarPhasedRenderer;
 import stellarium.render.util.FramebufferCustom;
-import stellarium.util.MCUtil;
 import stellarium.util.OpenGlUtil;
 import stellarium.view.ViewerInfo;
 

@@ -5,9 +5,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.Wavelength;
 import stellarium.client.ClientSettings;
-import stellarium.render.stellars.access.IStellarChecker;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.stellars.OpticsHelper;
@@ -26,7 +24,7 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 	public void updateSettings(ClientSettings settings, IConfigHandler config, BgStar star) { }
 
 	@Override
-	public void updateCache(BgStar object, StarImage image, ViewerInfo info, IStellarChecker checker) {
+	public void updateCache(BgStar object, StarImage image, ViewerInfo info) {
 		ref.set(object.pos);
 		info.coordinate.getProjectionToGround().transform(this.ref);
 
@@ -46,17 +44,11 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 
 		StarColor starColor = StarColor.getColor(object.B_V);
 
-		// TODO Optimize Performance Hotspot
 		double alpha = OpticsHelper.getBrightnessFromMag(OpticsHelper.turbulance() + object.mag);
 		this.red = (float) (alpha * starColor.r / 255.0);
 		this.green = (float) (alpha * starColor.g / 255.0);
 		this.blue = (float) (alpha * starColor.b / 255.0);
 
-
-		checker.startDescription();
-		checker.pos(this.appPos);
-		checker.brightness(red, green, blue);
-		//this.shouldRender = checker.checkRendered();
 		this.shouldRender = true;
 	}
 

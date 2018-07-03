@@ -17,7 +17,7 @@ public class ServerSettings extends SimpleHierarchicalNBTConfig {
 	private ConfigPropertyDouble propDay, propYear;
 	private ConfigPropertyInteger propYearOffset, propDayOffset;
 	private ConfigPropertyDouble propTickOffset;
-	private ConfigPropertyInteger propStartingYear, propClockDateOffset;
+	//private ConfigPropertyInteger propStartingYear, propClockDateOffset;
 	public ConfigPropertyDouble propAxialTilt, propPrecession;
 
 	public ServerSettings() {
@@ -32,8 +32,8 @@ public class ServerSettings extends SimpleHierarchicalNBTConfig {
         this.propDayOffset = new ConfigPropertyInteger("Day_Offset", "dayOffset", 0);
         this.propTickOffset = new ConfigPropertyDouble("Tick_Offset", "tickOffset", 16000.0);
 
-        this.propStartingYear = new ConfigPropertyInteger("Starting_Year", "startingYear", 1);
-        this.propClockDateOffset = new ConfigPropertyInteger("Clock_Date_Offset", "clockDateOffset", 0);
+        //this.propStartingYear = new ConfigPropertyInteger("Starting_Year", "startingYear", 1);
+        //this.propClockDateOffset = new ConfigPropertyInteger("Clock_Date_Offset", "clockDateOffset", 0);
 
         this.propAxialTilt = new ConfigPropertyDouble("Axial_Tilt", "axialTilt", 23.5);
         this.propPrecession = new ConfigPropertyDouble("Precession", "precession", 0.0);

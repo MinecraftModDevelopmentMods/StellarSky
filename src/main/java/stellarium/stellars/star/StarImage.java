@@ -18,7 +18,6 @@ public class StarImage implements IPerWorldImage<BgStar> {
 	private short flamsteedId = 0;
 	private String bayerId;
 	private byte bayerSubId = 0;
-	private String binary;
 	
 	private SpCoord appPos = new SpCoord();
 	
