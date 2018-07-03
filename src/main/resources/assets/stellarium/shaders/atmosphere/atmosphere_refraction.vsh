@@ -1,6 +1,7 @@
 #version 120
 
 uniform float pitch;
+uniform float preRotated;
 uniform vec3 relative;
 
 void main() {
@@ -20,7 +21,7 @@ void main() {
 
     // Get unrefracted position for this point and apply it
     float h = asin(wCoord.y / length(wCoord));
-    float ref = radians(1.0 / 60.0) / tan(radians(degrees(h) + 7.31/(degrees(h) + 4.4)));
+    float ref = radians(1.0 / 60.0) / tan(radians(degrees(h) + 7.31/(degrees(h) + 4.4))) - preRotated;
     float d = atan(wCoord.x, wCoord.z);
     vec3 wPos = vec3(cos(h-ref) * sin(d), sin(h-ref), cos(h-ref) * cos(d));
 

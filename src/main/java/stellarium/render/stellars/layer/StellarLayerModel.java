@@ -48,6 +48,7 @@ public class StellarLayerModel<Obj extends StellarObject> {
 	public void onStellarTick(ViewerInfo update) {
 		Validate.notNull(this.collection);
 
+		// TODO Optimize this iteration
 		for(Map.Entry<Obj, IObjRenderCache> entry : cacheMap.entrySet())
 			entry.getValue().updateCache(entry.getKey(),
 					collection.loadImageFor(entry.getKey()), update);

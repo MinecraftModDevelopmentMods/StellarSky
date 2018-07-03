@@ -31,7 +31,7 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 		/*if(image == null) {
 			ref.set(object.pos);
 			info.coordinate.getProjectionToGround().transform(this.ref);
-			appPos.setWithVec(this.ref); // TODO Optimize - linear approach
+			appPos.setWithVec(this.ref);
 			info.sky.applyAtmRefraction(this.appPos);
 		} else {
 			SpCoord appCoord = image.getCurrentHorizontalPos();

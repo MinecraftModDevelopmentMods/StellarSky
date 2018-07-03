@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.entity.Entity;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.render.shader.IShaderObject;
@@ -22,6 +23,7 @@ import stellarium.render.util.FramebufferCustom;
 import stellarium.render.util.IVertexBuffer;
 import stellarium.render.util.VertexBufferEx;
 import stellarium.render.util.VertexReferences;
+import stellarium.stellars.util.ExtinctionRefraction;
 import stellarium.util.OpenGlUtil;
 import stellarium.util.math.Allocator;
 
@@ -43,8 +45,6 @@ public enum AtmosphereRenderer {
 	private ByteBuffer sphereIndicesBuffer = null;
 	private int sphereList = -1;
 	private VertexBufferEx sphereBuffer = null;
-
-	private boolean cacheChangedFlag = false;
 
 	private AtmosphereShader atmShader;
 
@@ -99,6 +99,23 @@ public enum AtmosphereRenderer {
 		}
 	}
 
+	/** Gets refraction amount on boundary */
+	public double getBoundaryRefraction(StellarRI info) {
+		Entity viewer = info.minecraft.getRenderViewEntity();
+		SpCoord coord = new SpCoord(0.0, 0.0);
+		double boundHeight = Math.toDegrees(Math.atan(info.relativeHeight / 2));
+
+		double height = coord.y = -viewer.rotationPitch + boundHeight;
+		ExtinctionRefraction.refraction(coord, false);
+		double ref1 = height - coord.y;
+
+		height = coord.y = -viewer.rotationPitch - boundHeight;
+		ExtinctionRefraction.refraction(coord, false);
+		double ref2 = height - coord.y;
+
+		return (ref1 + ref2) * 0.5;
+	}
+
 	public void render(AtmosphereModel model, EnumAtmospherePass pass, StellarRI info) {
 		switch(pass) {
 		case Prepare:
@@ -109,19 +126,30 @@ public enum AtmosphereRenderer {
 			stellar.framebufferClear();
 			GlStateManager.depthMask(false);
 
+			GlStateManager.pushMatrix();
+
+			// Pitch up to adjust the frustrum in favor of refraction
+			double ref = this.getBoundaryRefraction(info);
+			Entity viewer = info.minecraft.getRenderViewEntity();
+			GlStateManager.rotate(270.0f - viewer.rotationYaw, 0.0f, 0.0f, 1.0f);
+			GlStateManager.rotate((float)ref, 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(-(270.0f - viewer.rotationYaw), 0.0f, 0.0f, 1.0f);
 			break;
+
 		case Finalize:
+			GlStateManager.popMatrix();
+
 			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
 
+			// Apply refraction
 			IShaderObject refractor = atmShader.bindRefractionShader(model);
-			refractor.getField("pitch").setDouble(
-					Math.toRadians(-info.minecraft.player.rotationPitch));
+			refractor.getField("pitch").setDouble(Math.toRadians(-info.minecraft.player.rotationPitch));
+			refractor.getField("preRotated").setDouble(Math.toRadians(this.getBoundaryRefraction(info)));
 			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 			stellar.bindFramebufferTexture();
-			// TODO AA Rotate first to negate the shift
 			if(this.vboEnabled)
 				this.renderScrPart(this.scrPartBuffer);
-			else GL11.glCallList(this.scrPartList);
+			else GlStateManager.callList(this.scrPartList);
 
 			ShaderHelper.getInstance().releaseCurrentShader();
 

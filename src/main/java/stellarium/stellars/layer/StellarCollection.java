@@ -95,6 +95,7 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	}
 
 	public void update() {
+		// TODO Optimize this iteration
 		for(Map.Entry<Obj, IPerWorldImage<Obj>> entry : imageMap.entrySet())
 			entry.getValue().updateCache(entry.getKey(), coordinate, sky);
 	}
