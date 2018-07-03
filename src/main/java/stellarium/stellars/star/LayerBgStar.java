@@ -22,7 +22,7 @@ implements IStellarLayerType<BgStar, ClientConfig, CommonConfig> {
 	public static int renderStarIndex = -1;
 	
 	@Override
-	public void updateLayer(StellarObjectContainer<BgStar, ClientConfig> container, double year) { }
+	public void updateLayer(StellarObjectContainer<BgStar> container, double year) { }
 	
 	@Override
 	public Comparator<ICelestialObject> getDistanceComparator(SpCoord pos) {

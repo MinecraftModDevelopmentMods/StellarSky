@@ -23,21 +23,20 @@ import stellarapi.api.celestials.ICelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
-import stellarium.stellars.layer.query.QueryStellarObject;
 
 public class StellarCollection<Obj extends StellarObject> implements ICelestialCollection {
 
 	private IStellarLayerType<Obj, IConfigHandler, INBTConfig> type;
-	private StellarObjectContainer container;
+	private StellarObjectContainer<Obj> container;
 	
 	private ICelestialCoordinates coordinate;
 	private ISkyEffect sky;
 	
-	private Map<Obj, IPerWorldImage> imageMap = Maps.newHashMap();
+	private Map<Obj, IPerWorldImage<Obj>> imageMap = Maps.newHashMap();
 	
 	private CelestialPeriod yearPeriod;
 	
-	public StellarCollection(StellarObjectContainer container, ICelestialCoordinates coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
+	public StellarCollection(StellarObjectContainer<Obj> container, ICelestialCoordinates coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
 		this.type = container.getType();
 		this.container = container;
 		this.coordinate = coordinate;
@@ -63,12 +62,12 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 		if(inRange == null)
 			inRange = query;
 
-		Iterable<IPerWorldImage> saved = Iterables.filter(imageMap.values(), inRange);
+		Iterable<IPerWorldImage<Obj>> saved = Iterables.filter(imageMap.values(), inRange);
 
 		return ImmutableSet.copyOf(saved);
 	}
 
-	public IPerWorldImage loadImageFor(Obj object) {
+	public IPerWorldImage<Obj> loadImageFor(Obj object) {
 		if(imageMap.containsKey(object))
 			return imageMap.get(object);
 		else return null;
@@ -83,10 +82,10 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 		else return comparator.compare(obj1, obj2) < 0? obj1 : obj2;
 	}
 	
-	public void addImages(Set<Obj> addedSet, Map<Obj, Callable<IPerWorldImage>> imageTypeMap) {
+	public void addImages(Set<Obj> addedSet, Map<Obj, Callable<IPerWorldImage<Obj>>> imageTypeMap) {
 		try {
 			for(Obj object : addedSet) {
-				IPerWorldImage image = imageTypeMap.get(object).call();
+				IPerWorldImage<Obj> image = imageTypeMap.get(object).call();
 				image.initialize(object, this.coordinate, this.sky, this.yearPeriod);
 				imageMap.put(object, image);
 			}
@@ -96,7 +95,7 @@ public class StellarCollection<Obj extends StellarObject> implements ICelestialC
 	}
 
 	public void update() {
-		for(Map.Entry<Obj, IPerWorldImage> entry : imageMap.entrySet())
+		for(Map.Entry<Obj, IPerWorldImage<Obj>> entry : imageMap.entrySet())
 			entry.getValue().updateCache(entry.getKey(), coordinate, sky);
 	}
 

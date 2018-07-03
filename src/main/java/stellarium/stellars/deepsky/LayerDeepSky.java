@@ -25,7 +25,6 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;
-import stellarium.stellars.layer.query.ILayerTempManager;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHandler, INBTConfig> {
@@ -33,13 +32,13 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	private List<DeepSkyObject> deepSkyObjects = Lists.newArrayList();
 	
 	@Override
-	public void initializeClient(IConfigHandler config, StellarObjectContainer<DeepSkyObject, IConfigHandler> container)
+	public void initializeClient(IConfigHandler config, StellarObjectContainer<DeepSkyObject> container)
 			throws IOException {
 		this.loadMessierData();
 	}
 
 	@Override
-	public void initializeCommon(INBTConfig config, StellarObjectContainer<DeepSkyObject, IConfigHandler> container)
+	public void initializeCommon(INBTConfig config, StellarObjectContainer<DeepSkyObject> container)
 			throws IOException {
 		for(DeepSkyObject object : this.deepSkyObjects) {
 			container.loadObject("Messier", object);
@@ -72,7 +71,7 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	}
 
 	@Override
-	public void updateLayer(StellarObjectContainer<DeepSkyObject, IConfigHandler> container, double year) { }
+	public void updateLayer(StellarObjectContainer<DeepSkyObject> container, double year) { }
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -142,10 +141,4 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 			}
 		};
 	}
-
-	@Override
-	public ILayerTempManager<DeepSkyObject> getTempLoadManager() {
-		return null;
-	}
-
 }

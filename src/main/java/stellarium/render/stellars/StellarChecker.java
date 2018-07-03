@@ -1,14 +1,10 @@
 package stellarium.render.stellars;
 
 import net.minecraft.world.World;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.NakedScope;
 import stellarium.render.stellars.access.ICheckedAtmModel;
 import stellarium.render.stellars.access.IStellarChecker;
-import stellarium.stellars.OpticsHelper;
 import stellarium.view.ViewerInfo;
 
 @Deprecated

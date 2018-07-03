@@ -16,12 +16,12 @@ import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.view.ViewerInfo;
 
 public class StellarLayerModel<Obj extends StellarObject> {
-	private StellarObjectContainer container;
+	private StellarObjectContainer<Obj> container;
 	private StellarCollection<Obj> collection;
 
 	private Map<Obj, IObjRenderCache> cacheMap = Maps.newHashMap();
 
-	public StellarLayerModel(StellarObjectContainer container) {
+	public StellarLayerModel(StellarObjectContainer<Obj> container) {
 		this.container = container;
 		container.bindRenderModel(this);
 	}
@@ -30,7 +30,7 @@ public class StellarLayerModel<Obj extends StellarObject> {
 		return container.getType();
 	}
 
-	public void addRenderCache(Obj object, IObjRenderCache<Obj, ?, ?> renderCache) {
+	public void addRenderCache(Obj object, IObjRenderCache<? extends Obj, ?, ?> renderCache) {
 		Validate.notNull(object);
 		Validate.notNull(renderCache);
 		cacheMap.put(object, renderCache);
@@ -62,8 +62,8 @@ public class StellarLayerModel<Obj extends StellarObject> {
 		return settings.getSubConfig(container.getConfigName());
 	}
 
-	public StellarLayerModel copy(StellarObjectContainer copied) {
-		StellarLayerModel model = new StellarLayerModel(copied);
+	public StellarLayerModel<Obj> copy(StellarObjectContainer<Obj> copied) {
+		StellarLayerModel<Obj> model = new StellarLayerModel<Obj>(copied);
 		model.cacheMap = Maps.newHashMap(this.cacheMap);
 		return model;
 	}

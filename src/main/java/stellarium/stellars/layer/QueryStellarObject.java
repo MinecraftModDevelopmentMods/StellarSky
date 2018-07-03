@@ -1,4 +1,4 @@
-package stellarium.stellars.layer.query;
+package stellarium.stellars.layer;
 
 import com.google.common.base.Predicate;
 

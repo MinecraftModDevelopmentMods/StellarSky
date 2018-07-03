@@ -17,16 +17,15 @@ import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.stellars.layer.IStellarLayerType;
 import stellarium.stellars.layer.StellarObjectContainer;
-import stellarium.stellars.layer.query.ILayerTempManager;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler, INBTConfig> {
 
 	@Override
-	public void initializeClient(IConfigHandler config, StellarObjectContainer container) throws IOException { }
+	public void initializeClient(IConfigHandler config, StellarObjectContainer<Milkyway> container) throws IOException { }
 	
 	@Override
-	public void initializeCommon(INBTConfig config, StellarObjectContainer container) throws IOException {
+	public void initializeCommon(INBTConfig config, StellarObjectContainer<Milkyway> container) throws IOException {
 		Milkyway milkyway = new Milkyway();
 		container.loadObject("Milkyway", milkyway);
 		container.addRenderCache(milkyway, new MilkywayRenderCache());
@@ -34,7 +33,7 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 	}
 	
 	@Override
-	public void updateLayer(StellarObjectContainer<Milkyway, IConfigHandler> container, double year) { }
+	public void updateLayer(StellarObjectContainer<Milkyway> container, double year) { }
 
 	@Override
 	public String getName() {
@@ -80,10 +79,5 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 	@Override
 	public ICelestialLayerRenderer getLayerRenderer() {
 		return MilkywayLayerRenderer.INSTANCE;
-	}
-
-	@Override
-	public ILayerTempManager<Milkyway> getTempLoadManager() {
-		return null;
 	}
 }

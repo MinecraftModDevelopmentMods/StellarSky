@@ -17,7 +17,6 @@ import stellarapi.api.optics.Wavelength;
 import stellarium.StellarSky;
 import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.layer.StellarObjectContainer;
-import stellarium.stellars.layer.query.ILayerTempManager;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
 import stellarium.stellars.star.StarImage;
@@ -49,13 +48,13 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	
 	@Override
 	public void initializeClient(IConfigHandler config,
-			StellarObjectContainer<BgStar, IConfigHandler> container) throws IOException {
+			StellarObjectContainer<BgStar> container) throws IOException {
 		this.loadStarData(StellarSky.PROXY.getClientSettings().mag_Limit);
 	}
 
 	@Override
 	public void initializeCommon(INBTConfig config,
-			StellarObjectContainer<BgStar, IConfigHandler> container) throws IOException {
+			StellarObjectContainer<BgStar> container) throws IOException {
 		if(!this.IsInitialized)
 			this.loadStarData(4.0);
 		
@@ -176,10 +175,4 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	public EnumCelestialCollectionType getCollectionType() {
 		return EnumCelestialCollectionType.Stars;
 	}
-
-	@Override
-	public ILayerTempManager<BgStar> getTempLoadManager() {
-		return null;
-	}
-
 }

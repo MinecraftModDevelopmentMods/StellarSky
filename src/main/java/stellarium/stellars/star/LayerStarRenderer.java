@@ -1,12 +1,7 @@
 package stellarium.stellars.star;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import stellarium.StellarSkyResources;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.layer.LayerRHelper;
-import stellarium.render.util.FloatVertexFormats;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public enum LayerStarRenderer implements ICelestialLayerRenderer {

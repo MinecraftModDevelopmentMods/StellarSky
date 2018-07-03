@@ -10,7 +10,7 @@ import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.view.ViewerInfo;
 
-public interface IObjRenderCache<Obj extends StellarObject, Image extends IPerWorldImage, Config extends IConfigHandler> {
+public interface IObjRenderCache<Obj extends StellarObject, Image extends IPerWorldImage<Obj>, Config extends IConfigHandler> {
 
 	public void updateSettings(ClientSettings settings, Config specificSettings, Obj object);
 
