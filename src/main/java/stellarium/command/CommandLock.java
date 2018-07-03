@@ -36,10 +36,10 @@ public class CommandLock extends CommandBase {
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		boolean lock = true;
-		
+
 		if(args.length >= 1)
-			lock = this.parseBoolean(args[0]);
-		
+			lock = parseBoolean(args[0]);
+
 		StellarManager manager = StellarManager.getManager(server.getEntityWorld());
 		manager.setLocked(lock);
 		StellarSky.INSTANCE.getNetworkManager().sendLockInformation(lock);

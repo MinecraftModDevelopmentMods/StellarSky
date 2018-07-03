@@ -17,7 +17,6 @@ import stellarium.view.ViewerInfo;
 import stellarium.world.StellarScene;
 
 public class StellarRenderModel {
-
 	//Models for client-only layered objects.
 	private List<StellarLayerModel> baseModels = Lists.newArrayList();
 
@@ -47,8 +46,8 @@ public class StellarRenderModel {
 	public void onStellarLoad(StellarManager manager) {
 		layerModels.clear();
 		for(int i = 0; i < baseModels.size(); i++) {
-			CelestialManager managerForWorld = manager.getCelestialManager();
-			layerModels.add(baseModels.get(i).copy(managerForWorld.getLayers().get(i)));
+			CelestialManager celestialWorld = manager.getCelestialManager();
+			layerModels.add(baseModels.get(i).copy(celestialWorld.getLayers().get(i)));
 		}
 	}
 

@@ -66,12 +66,12 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 	}
 
 	@Override
-	public Collection<Milkyway> getSuns(StellarObjectContainer container) {
+	public Collection<Milkyway> getSuns(StellarObjectContainer<Milkyway> container) {
 		return null;
 	}
 
 	@Override
-	public Collection<Milkyway> getMoons(StellarObjectContainer container) {
+	public Collection<Milkyway> getMoons(StellarObjectContainer<Milkyway> container) {
 		return null;
 	}
 

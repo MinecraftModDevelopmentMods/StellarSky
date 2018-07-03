@@ -33,8 +33,8 @@ public interface IStellarLayerType<Obj extends StellarObject, ClientConfig exten
 	public boolean isBackground();
 	public EnumCelestialCollectionType getCollectionType();
 
-	public Collection<Obj> getSuns(StellarObjectContainer container);
-	public Collection<Obj> getMoons(StellarObjectContainer container);
+	public Collection<Obj> getSuns(StellarObjectContainer<Obj> container);
+	public Collection<Obj> getMoons(StellarObjectContainer<Obj> container);
 
 	/**
 	 * Can be null to use default logic.

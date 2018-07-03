@@ -79,6 +79,7 @@ public class StellarSky {
 		SAPIReferences.registerPack(StellarPack.INSTANCE);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Mod.EventHandler
 	public void load(FMLInitializationEvent event) throws IOException {
 		PROXY.load(event);

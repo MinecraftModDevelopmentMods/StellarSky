@@ -35,12 +35,12 @@ implements IStellarLayerType<BgStar, ClientConfig, CommonConfig> {
 	}
 	
 	@Override
-	public Collection<BgStar> getSuns(StellarObjectContainer container) {
+	public Collection<BgStar> getSuns(StellarObjectContainer<BgStar> container) {
 		return null;
 	}
 
 	@Override
-	public Collection<BgStar> getMoons(StellarObjectContainer container) {
+	public Collection<BgStar> getMoons(StellarObjectContainer<BgStar> container) {
 		return null;
 	}
 	

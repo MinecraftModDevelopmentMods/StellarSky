@@ -10,13 +10,10 @@ import stellarapi.api.optics.Wavelength;
 import stellarium.stellars.layer.IPerWorldImage;
 
 public class MilkywayImage implements IPerWorldImage<Milkyway> {
-	
-	private Milkyway milkyway;
 	private CelestialPeriod period;
 	
 	@Override
 	public void initialize(Milkyway object, ICelestialCoordinates coordinate, ISkyEffect sky, CelestialPeriod year) {
-		this.milkyway = object;
 		this.period = coordinate.getPeriod();
 	}
 

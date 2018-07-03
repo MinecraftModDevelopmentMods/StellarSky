@@ -100,12 +100,12 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	}
 
 	@Override
-	public Collection<DeepSkyObject> getSuns(StellarObjectContainer container) {
+	public Collection<DeepSkyObject> getSuns(StellarObjectContainer<DeepSkyObject> container) {
 		return null;
 	}
 
 	@Override
-	public Collection<DeepSkyObject> getMoons(StellarObjectContainer container) {
+	public Collection<DeepSkyObject> getMoons(StellarObjectContainer<DeepSkyObject> container) {
 		return null;
 	}
 

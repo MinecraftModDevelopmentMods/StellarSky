@@ -18,7 +18,6 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 	
 	protected SpCoord appCoord;
 	protected Vector3 appPos;
-	private SpCoord cache = new SpCoord();
 	protected int latn, longn;
 
 	protected Vector3 pos[][];

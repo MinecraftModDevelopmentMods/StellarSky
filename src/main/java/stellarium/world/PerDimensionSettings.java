@@ -51,6 +51,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	
 	private ISkySetType skyType;
 	
+	@SuppressWarnings("deprecation")
 	public PerDimensionSettings(WorldSet worldSet) {	
 		this.worldSet = worldSet;
 
@@ -124,6 +125,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 		propPatchProvider.setRequiresWorldRestart(true);
 		propPatchProvider.setLanguageKey("config.property.dimension.patchprovider");
 
+		@SuppressWarnings("deprecation")
 		String[] transformed = Lists.transform(StellarSkyAPI.possibleRenderTypes(this.worldSet), new Function<ISkyRenderType, String>() {
 			@Override
 			public String apply(ISkyRenderType input) {

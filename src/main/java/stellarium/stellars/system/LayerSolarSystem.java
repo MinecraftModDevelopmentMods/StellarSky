@@ -17,8 +17,6 @@ import stellarium.stellars.layer.StellarObjectContainer;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSystemClientSettings, SolarSystemSettings> {
-	
-	private static int renderId = -1;
 	protected static int planetRenderId = -1;
 	protected static int sunRenderId = -1;
 	protected static int moonRenderId = -1;
@@ -324,12 +322,12 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	}
 
 	@Override
-	public Collection<SolarObject> getSuns(StellarObjectContainer container) {
+	public Collection<SolarObject> getSuns(StellarObjectContainer<SolarObject> container) {
 		return container.getLoadedObjects("Sun");
 	}
 
 	@Override
-	public Collection<SolarObject> getMoons(StellarObjectContainer container) {
+	public Collection<SolarObject> getMoons(StellarObjectContainer<SolarObject> container) {
 		return container.getLoadedObjects("Moon");
 	}
 

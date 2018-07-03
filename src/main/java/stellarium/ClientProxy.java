@@ -127,6 +127,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		SkyRenderer.INSTANCE.initialize(settings);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public IAdaptiveRenderer setupSkyRenderer(World world, WorldSet worldSet, String option) {
 		skyModel.updateSettings(this.clientSettings);
@@ -139,8 +140,6 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	public float getScreenWidth() {
 		return Minecraft.getMinecraft().displayWidth;
 	}
-	
-	private int counter = 0;
 	
 	@Override
 	public void updateTick() {
@@ -171,7 +170,9 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		ICelestialWorld cWorld = world.getCapability(SAPICapabilities.CELESTIAL_CAPABILITY, null);
 		ICelestialCoordinates coordinate = cWorld.getCoordinate();
 		ISkyEffect sky = cWorld.getSkyEffect();
+		@SuppressWarnings("deprecation")
 		IViewScope scope = SAPIReferences.getScope(viewer);
+		@SuppressWarnings("deprecation")
 		IOpticalFilter filter = SAPIReferences.getFilter(viewer);
 
 		skyModel.onTick(this.getDefWorld(), new ViewerInfo(coordinate, sky, scope, filter, viewer));
