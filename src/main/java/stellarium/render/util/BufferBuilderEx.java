@@ -12,27 +12,30 @@ import stellarapi.api.lib.math.Vector3;
 /**
  * Extended buffer builder.
  * To specify color, use only {@link #color(float, float, float, float)} and {@link #color(int, int, int, int)}.
+ * TODO Resolve performance hotspot from method handles - Change to AT
  * */
 public class BufferBuilderEx extends BufferBuilder {
 	private ByteBuffer byteBuffer;
-	private MethodHandle vFormatIndex, nextVFI;
+	private static final MethodHandle vFormatIndex, nextVFI;
+
+	static {
+		try {
+			MethodHandles.Lookup lookup = MethodHandles.lookup();
+			vFormatIndex = lookup.unreflectGetter(
+					ReflectionHelper.findField(BufferBuilder.class,
+							"vertexFormatIndex", "field_181678_g"));
+			nextVFI = lookup.unreflect(
+					ReflectionHelper.findMethod(BufferBuilder.class,
+							"nextVertexFormatIndex", "func_181667_k"));
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public BufferBuilderEx(int bufferSizeIn) {
 		super(bufferSizeIn);
 		this.byteBuffer = ReflectionHelper.getPrivateValue(BufferBuilder.class,
-				this, "byteBuffer", "field_179001_a");
-		try {
-			MethodHandles.Lookup lookup = MethodHandles.lookup();
-			this.vFormatIndex = lookup.unreflectGetter(
-					ReflectionHelper.findField(BufferBuilder.class,
-							"vertexFormatIndex", "field_181678_g")).bindTo(this);
-			this.nextVFI = lookup.unreflect(
-					ReflectionHelper.findMethod(BufferBuilder.class,
-							"nextVertexFormatIndex", "func_181667_k")).bindTo(this);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-		
+				this, "byteBuffer", "field_179001_a");		
 	}
 
 	public BufferBuilderEx pos(Vector3 pos) {
@@ -58,7 +61,7 @@ public class BufferBuilderEx extends BufferBuilder {
 		else
 		{
 			try {
-				int vertexFormatIndex = (int) vFormatIndex.invokeExact();
+				int vertexFormatIndex = (int) vFormatIndex.invokeExact((BufferBuilder)this);
 				int i = this.getVertexCount() * this.getVertexFormat().getSize() + this.getVertexFormat().getOffset(vertexFormatIndex);
 				VertexFormatElement vertexFormatElement = this.getVertexFormat().getElement(vertexFormatIndex);
 
@@ -67,7 +70,7 @@ public class BufferBuilderEx extends BufferBuilder {
 					this.byteBuffer.putFloat(i + 4, green);
 					this.byteBuffer.putFloat(i + 8, blue);
 					this.byteBuffer.putFloat(i + 12, alpha);
-					nextVFI.invokeExact();
+					nextVFI.invokeExact((BufferBuilder)this);
 					return this;
 				} else {
 					return super.color((int)(red * 255.0F), (int)(green * 255.0F), (int)(blue * 255.0F), (int)(alpha * 255.0F));

@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraftforge.fml.common.FMLLog;
 
-// TODO AA Test this on Atmosphere renderer
 /**
  * Vertex buffer
  * */
