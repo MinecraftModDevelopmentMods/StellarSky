@@ -43,7 +43,7 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 
 	@Override
 	public void updateCache(Moon object, MoonImage image, ViewerInfo info) {
-		// TODO Don't use image coord here
+		// TODO AA Don't use image coord here
 		SpCoord currentPos = image.getCurrentHorizontalPos();
 		appCoord.x = currentPos.x;
 		appCoord.y = currentPos.y;
@@ -52,7 +52,7 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 		this.domination = OpticsHelper.getDominationFromMag(object.currentMag);
 
 		this.size = (float) (object.radius / object.earthPos.size());
-		this.shouldRenderDominate = false; // TODO Change this later
+		this.shouldRenderDominate = false; // TODO Proper render domination check
 
 		this.brightness = OpticsHelper.getBrightnessFromMag(object.currentMag);
 		this.shouldRender = true;

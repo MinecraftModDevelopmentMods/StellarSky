@@ -156,17 +156,15 @@ public enum AtmosphereRenderer {
 			break;
 
 		case SetupDominateScatter:
-			// TODO AA Weather factor comes here on atmosphere rendering, it is currently mixed and neglected
-			// TODO Handle fog correctly - fog should only exist near the ground
-			// (Do fog later)
+			// TODO Handle fog and rain correctly - which exists near ground
 
 			// Extinction first - strangely, this drains performance
 			GlStateManager.blendFunc(GL11.GL_ZERO, GL11.GL_SRC_COLOR);
 			atmShader.bindExtinctionShader(model);
-			// TODO Faster evaluation of extinction
+			// MAYBE Faster evaluation of extinction
 			if(this.vboEnabled)
 				sphereBuffer.drawElements(EnumIndexType.INT, this.sphereIndicesBuffer);
-			else GL11.glCallList(this.sphereList);
+			else GlStateManager.callList(this.sphereList);
 			GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
 			// Prepare for dominate rendering
@@ -181,7 +179,7 @@ public enum AtmosphereRenderer {
 
 				if(this.vboEnabled)
 					sphereBuffer.drawElements(EnumIndexType.INT, this.sphereIndicesBuffer);
-				else GL11.glCallList(this.sphereList);
+				else GlStateManager.callList(this.sphereList);
 			});
 			break;
 		default:

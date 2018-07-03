@@ -82,11 +82,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 	@Override
 	public void loadFromConfig(Configuration config, String category) {
 		super.loadFromConfig(config, category);
-
-		//this.brightnessContrast = propBrightnessContrast.getDouble();
 		this.turbulance = propTurb.getDouble() * 4.0;
-		//this.invSpriteScale = 1.0f / (float)propSpriteScale.getDouble();
-		//this.invSpriteScale2 = 1.0 / Spmath.sqr(propSpriteScale.getDouble());
 	}
 
 	@Override

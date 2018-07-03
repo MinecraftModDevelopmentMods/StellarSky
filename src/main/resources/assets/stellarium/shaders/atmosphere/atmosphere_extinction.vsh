@@ -4,6 +4,7 @@ uniform float cameraHeight;     // Camera height scaled by scale height
 uniform float outerRadius;     // The outer (atmosphere) radius scaled by scale height
 uniform float innerRadius;     // The inner (planetary) radius scaled by scale height
 uniform vec3 extinctionFactor;
+uniform float weatherAlpha;
 
 const vec3 zenithDir = vec3(0.0, 0.0, 1.0);
 varying vec4 alpha4;
@@ -63,7 +64,7 @@ void main() {
     float airmassEnd = airmass(dot(v3End, v3Ray) / lenEnd, lenEnd);
     float depthEnd = airmassEnd * exp(innerRadius - lenEnd);
 
-	alpha4.rgb = exp(invertFlag * (depthEnd - depthCamera) * extinctionFactor);
+	alpha4.rgb = weatherAlpha * exp(invertFlag * (depthEnd - depthCamera) * extinctionFactor);
 	if(!(depthCamera < 0.0 || depthCamera > 0.0 || depthCamera == 0.0))
 	   alpha4.rgb = vec3(0.0);
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;

@@ -33,7 +33,7 @@ public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSyste
 
 	@Override
 	public void updateCache(Sun object, SunImage image, ViewerInfo info) {
-		// TODO Don't use image coord here
+		// TODO AA Don't use image coord here
 		appCoord.x = image.appCoord.x;
 		appCoord.y = image.appCoord.y;
 		appPos.set(appCoord.getVec());

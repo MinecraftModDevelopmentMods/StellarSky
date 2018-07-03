@@ -87,8 +87,8 @@ public class VertexBufferEx implements IVertexBuffer {
 		switch(attrType)
 		{
 		case POSITION:
-			GL11.glVertexPointer(count, constant, stride, offset);
-			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+			GlStateManager.glVertexPointer(count, constant, stride, offset);
+			GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 			break;
 		case NORMAL:
 			if(count != 3)
@@ -96,16 +96,16 @@ public class VertexBufferEx implements IVertexBuffer {
 				throw new IllegalArgumentException("Normal attribute should have the size 3: " + attr);
 			}
 			GL11.glNormalPointer(constant, stride, offset);
-			GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
+			GlStateManager.glEnableClientState(GL11.GL_NORMAL_ARRAY);
 			break;
 		case COLOR:
-			GL11.glColorPointer(count, constant, stride, offset);
-			GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+			GlStateManager.glColorPointer(count, constant, stride, offset);
+			GlStateManager.glEnableClientState(GL11.GL_COLOR_ARRAY);
 			break;
 		case UV:
 			OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit + attr.getIndex());
-			GL11.glTexCoordPointer(count, constant, stride, offset);
-			GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+			GlStateManager.glTexCoordPointer(count, constant, stride, offset);
+			GlStateManager.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 			OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
 			break;
 		case PADDING:
@@ -125,19 +125,19 @@ public class VertexBufferEx implements IVertexBuffer {
 		switch(attrType)
 		{
 		case POSITION:
-			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+			GlStateManager.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 			break;
 		case NORMAL:
-			GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+			GlStateManager.glDisableClientState(GL11.GL_NORMAL_ARRAY);
 			break;
 		case COLOR:
-			GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+			GlStateManager.glDisableClientState(GL11.GL_COLOR_ARRAY);
 			// is this really needed? I just copied this one.
 			GlStateManager.resetColor();
 			break;
 		case UV:
 			OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit + attr.getIndex());
-			GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+			GlStateManager.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 			OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
 			break;
 		case PADDING:

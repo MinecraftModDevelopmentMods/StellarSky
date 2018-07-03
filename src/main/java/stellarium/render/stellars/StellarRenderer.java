@@ -260,7 +260,7 @@ public enum StellarRenderer {
 		// Pre-process
 		this.preProcess();
 
-		// TODO AA Use better value for positions
+		// TODO AX Use better value for positions
 
 		// Prepare
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.Prepare, info);

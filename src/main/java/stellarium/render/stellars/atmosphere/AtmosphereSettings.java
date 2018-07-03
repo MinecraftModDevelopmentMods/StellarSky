@@ -5,9 +5,8 @@ import stellarapi.api.lib.config.SimpleConfigHandler;
 import stellarapi.api.lib.config.property.ConfigPropertyBoolean;
 import stellarapi.api.lib.config.property.ConfigPropertyInteger;
 
-// TODO All Adjust settings accordingly
+// TODO AA All Adjust settings accordingly
 public class AtmosphereSettings extends SimpleConfigHandler {
-	
 	public static final String KEY = "atmosphere";
 	
 	@Deprecated

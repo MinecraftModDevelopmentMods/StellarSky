@@ -22,7 +22,7 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 			info.bindTexShader();
 			info.builder.begin(GL11.GL_QUADS, FloatVertexFormats.POSITION_TEX_COLOR_F_NORMAL);
 
-			// TODO Solve problem with the expression range - use 100x brightness framebuffer?
+			// TODO AA Solve problem with the expression range - use 100x brightness framebuffer?
 			float brightness = 10000.0f; // Should be 4,830,000
 
 			int longc, latc;
