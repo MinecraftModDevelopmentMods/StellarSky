@@ -27,11 +27,12 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 
 	@Override
 	public void updateCache(Planet object, PlanetImage image, ViewerInfo info) {
-		// TODO AA Don't use image coord here
-		appCoord.x = image.appCoord.x;
-		appCoord.y = image.appCoord.y;
+		//appCoord.x = image.appCoord.x;
+		//appCoord.y = image.appCoord.y;
 
-		pos.set(appCoord.getVec());
+		pos.set(object.earthPos);
+		info.coordinate.getProjectionToGround().transform(this.pos);
+		pos.normalize();
 		pos.scale(LayerRHelper.DEEP_DEPTH);
 
 		// TODO Calculation fix, venus shouldn't be as high as -5.7 mag

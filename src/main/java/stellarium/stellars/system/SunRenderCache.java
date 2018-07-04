@@ -33,10 +33,13 @@ public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSyste
 
 	@Override
 	public void updateCache(Sun object, SunImage image, ViewerInfo info) {
-		// TODO AA Don't use image coord here
-		appCoord.x = image.appCoord.x;
-		appCoord.y = image.appCoord.y;
-		appPos.set(appCoord.getVec());
+		//appCoord.x = image.appCoord.x;
+		//appCoord.y = image.appCoord.y;
+		//appPos.set(appCoord.getVec());
+		appPos.set(object.earthPos);
+		info.coordinate.getProjectionToGround().transform(this.appPos);
+		appPos.normalize();
+
 		this.size = (float) (object.radius / object.earthPos.size());
 		
 		int latc, longc;
@@ -52,6 +55,7 @@ public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSyste
 
 				//cache.setWithVec(buf);
 				//info.sky.applyAtmRefraction(cache);
+				buf.normalize();
 				sunPos[longc][latc].set(buf);
 			}
 		}

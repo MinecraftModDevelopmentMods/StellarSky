@@ -43,16 +43,19 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 
 	@Override
 	public void updateCache(Moon object, MoonImage image, ViewerInfo info) {
-		// TODO AA Don't use image coord here
-		SpCoord currentPos = image.getCurrentHorizontalPos();
-		appCoord.x = currentPos.x;
-		appCoord.y = currentPos.y;
-		appPos.set(appCoord.getVec());
+		//SpCoord currentPos = image.getCurrentHorizontalPos();
+		//appCoord.x = currentPos.x;
+		//appCoord.y = currentPos.y;
+		//appPos.set(appCoord.getVec());
+
+		appPos.set(object.earthPos);
+		info.coordinate.getProjectionToGround().transform(this.appPos);
+		appPos.normalize();
 
 		this.domination = OpticsHelper.getDominationFromMag(object.currentMag);
 
 		this.size = (float) (object.radius / object.earthPos.size());
-		this.shouldRenderDominate = false; // TODO Proper render domination check
+		this.shouldRenderDominate = true; // TODO Proper render domination check
 
 		this.brightness = OpticsHelper.getBrightnessFromMag(object.currentMag);
 		this.shouldRender = true;
@@ -74,6 +77,7 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 
 				//cache.setWithVec(buf);
 				//info.sky.applyAtmRefraction(cache);
+				buf.normalize();
 				pos[longc][latc].set(buf);
 			}
 		}

@@ -4,7 +4,7 @@ uniform sampler2D texture;
 uniform vec3 relative;
 
 vec4 encode(vec4 color) {
-    float alpha = min(max(color.r, max(color.g, color.b)), 10000.0);
+    float alpha = min(max(max(color.r, 0.0001), max(color.g, color.b)), 10000.0);
     color /= alpha;
     color.a = alpha;
     return color;
