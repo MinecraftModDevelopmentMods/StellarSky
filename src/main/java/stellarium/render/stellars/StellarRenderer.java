@@ -30,7 +30,7 @@ import stellarium.view.ViewerInfo;
 public enum StellarRenderer {
 	INSTANCE;
 
-	private FramebufferCustom sky = null, scopeTemp = null, brQuery = null, eyed = null;
+	private FramebufferCustom frame1 = null, frame2 = null, brQuery = null, eyed = null;
 	private int prevWidth = 0, prevHeight = 0;
 	private int prevFramebufferBound;
 
@@ -74,36 +74,31 @@ public enum StellarRenderer {
 		int texSize = 1 << this.maxLevel;
 		this.screenRatio = (float)(width * height) / (texSize * texSize);
 
-		if(this.sky != null)
-			sky.deleteFramebuffer();
-		if(this.scopeTemp != null)
-			scopeTemp.deleteFramebuffer();
+		if(this.frame1 != null)
+			frame1.deleteFramebuffer();
+		if(this.frame2 != null)
+			frame2.deleteFramebuffer();
 		if(this.brQuery != null)
 			brQuery.deleteFramebuffer();
-		if(this.eyed != null)
-			eyed.deleteFramebuffer();
 
-		this.sky = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
-				.depthStencil(true, false)
+		// RGBM format
+		this.frame1 = FramebufferCustom.builder()
+				.texFormat(OpenGlUtil.RGBA16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.depthStencil(false, false)
 				.build(width, height);
 
-		this.scopeTemp = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+		// RGBM format
+		this.frame2 = FramebufferCustom.builder()
+				.texFormat(OpenGlUtil.RGBA16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
 				.depthStencil(false, false)
 				.build(width, height);
 
 		this.brQuery = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.texFormat(OpenGlUtil.RGB32F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
 				.renderRegion(0, 0, width, height)
 				.texMinMagFilter(GL11.GL_NEAREST_MIPMAP_NEAREST, GL11.GL_NEAREST)
 				.depthStencil(false, false)
 				.build(texSize, texSize);
-
-		this.eyed = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
-				.depthStencil(false, false)
-				.build(width, height);
 	}
 
 	public void setupShader() {
@@ -146,14 +141,13 @@ public enum StellarRenderer {
 	public void preProcess() {
 		this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlUtil.FRAMEBUFFER_BINDING);
 
-		sky.bindFramebuffer(false);
-		GlStateManager.depthMask(true);
-		sky.framebufferClear();
-		GlStateManager.depthMask(false);
+		frame1.bindFramebuffer(false);
+		frame1.framebufferClear();
 	}
 
 	public void postProcess(StellarRI info) {
 		// TODO Render everything on floating framebuffers
+		// TODO Refactor to make everything clean and sweat
 
 		// Extract things needed
 		long currentTime = System.currentTimeMillis();
@@ -169,25 +163,25 @@ public enum StellarRenderer {
 
 		// MAYBE Calculate blur for each pixel
 		// Blur on X-axis
-		scopeTemp.bindFramebuffer(false);
-		scopeTemp.framebufferClear();
+		frame2.bindFramebuffer(false);
+		frame2.framebufferClear();
 
 		scope.bindShader();
 		fieldBrMult.setDouble4(1.0, 1.0, 1.0, 1.0);
 		fieldResDir.setDouble2(viewer.resolutionGeneral / info.relativeWidth, 0.0);
-		sky.bindFramebufferTexture();
-		sky.renderFullQuad();
+		frame1.bindFramebufferTexture();
+		frame1.renderFullQuad();
 		scope.releaseShader();
 
 		// Blur on Y-axis and Light Power
-		sky.bindFramebuffer(false);
-		sky.framebufferClear();
+		frame1.bindFramebuffer(false);
+		frame1.framebufferClear();
 
 		scope.bindShader();
 		fieldBrMult.setDouble4(multRed, multGreen, multBlue, 1.0);
 		fieldResDir.setDouble2(0.0, viewer.resolutionGeneral / info.relativeHeight);
-		scopeTemp.bindFramebufferTexture();
-		scopeTemp.renderFullQuad();
+		frame2.bindFramebufferTexture();
+		frame2.renderFullQuad();
 		scope.releaseShader();
 
 		// Visual effects
@@ -199,8 +193,8 @@ public enum StellarRenderer {
 
 			skyToQueried.bindShader();
 			fieldRelative.setDouble3(info.relativeWidth, info.relativeHeight, 1.0f);
-			sky.bindFramebufferTexture();
-			sky.renderFullQuad();
+			frame1.bindFramebufferTexture();
+			frame1.renderFullQuad();
 			skyToQueried.releaseShader();
 
 			// Actual Calculation
@@ -231,34 +225,33 @@ public enum StellarRenderer {
 		}
 
 		// HDR to LDR
-		eyed.bindFramebuffer(true);
-		eyed.framebufferClear();
-
+		frame2.bindFramebuffer(true);
+		frame2.framebufferClear();
 
 		hdrToldr.bindShader();
 		fieldBrScale.setDouble(Math.max(Math.min(
 				Math.pow(4.5 * this.brightness, 0.5) * 10.0, 1000.0), 1.0));
-		sky.bindFramebufferTexture();
-		sky.renderFullQuad();
+		frame1.bindFramebufferTexture();
+		frame1.renderFullQuad();
 		hdrToldr.releaseShader();
 
 		// Linear RGB to sRGB
 		OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
 
 		linearToSRGB.bindShader();
-		eyed.bindFramebufferTexture();
-		eyed.renderFullQuad();
+		frame2.bindFramebufferTexture();
+		frame2.renderFullQuad();
 		linearToSRGB.releaseShader();
 	}
 
 	public void render(StellarModel model, StellarRI info) {
 		LayerRHelper layerInfo = new LayerRHelper(info, this.shaders);
 
-		GlStateManager.shadeModel(GL11.GL_SMOOTH);
-		GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
-
 		// Pre-process
 		this.preProcess();
+
+		GlStateManager.shadeModel(GL11.GL_SMOOTH);
+		GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
 		// TODO AX Use better value for positions
 

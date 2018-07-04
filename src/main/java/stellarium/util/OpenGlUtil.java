@@ -16,7 +16,7 @@ public class OpenGlUtil {
 	
 	private static final int POINT_SPRITE;
 	public static final int PIXEL_PACK_BUFFER;
-	public static final int RGB16F;
+	public static final int RGB16F, RGBA16F, RGB32F;
 	public static final int TEXTURE_FLOAT;
 
 	public static final boolean FRAMEBUFFER_SUPPORTED;
@@ -39,6 +39,12 @@ public class OpenGlUtil {
 
 		RGB16F = caps.GL_ARB_texture_float?
 				(caps.OpenGL30? GL30.GL_RGB16F : ARBTextureFloat.GL_RGB16F_ARB)
+				: GL11.GL_RGB16;
+		RGBA16F = caps.GL_ARB_texture_float?
+				(caps.OpenGL30? GL30.GL_RGBA16F : ARBTextureFloat.GL_RGBA16F_ARB)
+				: GL11.GL_RGBA16;
+		RGB32F = caps.GL_ARB_texture_float?
+				(caps.OpenGL30? GL30.GL_RGB32F : ARBTextureFloat.GL_RGB32F_ARB)
 				: GL11.GL_RGB16;
 		TEXTURE_FLOAT = caps.GL_ARB_texture_float? GL11.GL_FLOAT : GL11.GL_UNSIGNED_SHORT;
 

@@ -78,7 +78,7 @@ public enum AtmosphereRenderer {
 			stellar.deleteFramebuffer();
 
 		this.stellar = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.texFormat(OpenGlUtil.RGB32F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
 				.depthStencil(true, false)
 				.build(width, height);
 	}
@@ -141,7 +141,7 @@ public enum AtmosphereRenderer {
 
 			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
 
-			// Apply refraction
+			// Apply refraction & Convert to RGBM (Rendering ends here, postprocessing all the way down)
 			IShaderObject refractor = atmShader.bindRefractionShader(model);
 			refractor.getField("pitch").setDouble(Math.toRadians(-info.minecraft.player.rotationPitch));
 			refractor.getField("preRotated").setDouble(Math.toRadians(this.getBoundaryRefraction(info)));

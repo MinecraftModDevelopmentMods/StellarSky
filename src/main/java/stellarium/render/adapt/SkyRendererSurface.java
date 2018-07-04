@@ -145,7 +145,7 @@ public class SkyRendererSurface extends IAdaptiveRenderer {
 
 				vertexBufferField.set(Tessellator.getInstance(), buffer);
 			} catch (Exception exc) {
-				Throwables.propagate(exc);
+				throw new RuntimeException(exc);
 			}
 
 			this.renderDarkening(partialTicks, world, mc);

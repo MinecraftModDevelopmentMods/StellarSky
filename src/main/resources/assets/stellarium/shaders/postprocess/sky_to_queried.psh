@@ -3,6 +3,19 @@
 uniform sampler2D texture;
 uniform vec3 relative;
 
+vec4 encode(vec4 color) {
+    float alpha = min(max(color.r, max(color.g, color.b)), 10000.0);
+    color /= alpha;
+    color.a = alpha;
+    return color;
+}
+
+vec4 decode(vec4 color) {
+    color *= color.a;
+    color.a = 1.0;
+    return color;
+}
+
 void main()
 {
     // Get the actual vector to Multiply (cosO)^3 (Square from latitude, single from longitude)
@@ -11,6 +24,7 @@ void main()
     coord *= relative;
     float size = length(coord);
 
+    vec4 fragColor = decode(texture2D(texture, gl_TexCoord[0].st));
     // Cap the brightness
-    gl_FragColor = min(texture2D(texture, gl_TexCoord[0].st), 50000.0) / (size * size * size);
+    gl_FragColor = min(fragColor, 400000.0) / (size * size * size);
 }

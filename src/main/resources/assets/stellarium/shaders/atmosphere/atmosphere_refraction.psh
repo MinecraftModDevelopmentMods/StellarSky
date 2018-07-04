@@ -2,6 +2,19 @@
 
 uniform sampler2D texture;
 
+vec4 encode(vec4 color) {
+    float alpha = min(max(color.r, max(color.g, color.b)), 10000.0);
+    color /= alpha;
+    color.a = alpha;
+    return color;
+}
+
+vec4 decode(vec4 color) {
+    color *= color.a;
+    color.a = 1.0;
+    return color;
+}
+
 void main() {
-    gl_FragColor = texture2D(texture, gl_TexCoord[0].st);
+    gl_FragColor = encode(texture2D(texture, gl_TexCoord[0].st));
 }

@@ -23,7 +23,8 @@ public enum SunRenderer implements ICelestialObjectRenderer<SunRenderCache> {
 			info.builder.begin(GL11.GL_QUADS, FloatVertexFormats.POSITION_TEX_COLOR_F_NORMAL);
 
 			// TODO AA Solve problem with the expression range - use 100x brightness framebuffer?
-			float brightness = 10000.0f; // Should be 4,830,000
+			// Minimum is 6.10e-5, 6mag star has magnitude of 1.58e-3 - Impossible to be in expression range with the sun
+			float brightness = 4830000.0f; // Should be 4,830,000
 
 			int longc, latc;
 

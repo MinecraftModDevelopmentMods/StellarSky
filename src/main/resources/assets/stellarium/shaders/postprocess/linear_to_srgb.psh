@@ -2,6 +2,19 @@
 
 uniform sampler2D texture;
 
+vec4 encode(vec4 color) {
+    float alpha = min(max(color.r, max(color.g, color.b)), 10000.0);
+    color /= alpha;
+    color.a = alpha;
+    return color;
+}
+
+vec4 decode(vec4 color) {
+    color *= color.a;
+    color.a = 1.0;
+    return color;
+}
+
 /*
 float sRGB(float x) {
     // Complex calculation which is 'right'
@@ -28,6 +41,6 @@ vec4 sRGB(vec4 c) {
 
 void main()
 {
-    vec4 linear = texture2D(texture, gl_TexCoord[0].st);
+    vec4 linear = decode(texture2D(texture, gl_TexCoord[0].st));
     gl_FragColor = sRGB(linear);
 }

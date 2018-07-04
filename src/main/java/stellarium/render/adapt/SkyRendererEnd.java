@@ -37,7 +37,7 @@ public class SkyRendererEnd extends IAdaptiveRenderer {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
 
-		// TODO AA Eliminate these 'getScene'.
+		// TODO Eliminate these 'getScene'.
 		StellarScene dimManager = StellarScene.getScene(theWorld);
 		if(dimManager.getSettings().renderPrevSky()) {
 			if(this.otherRenderer != null)
