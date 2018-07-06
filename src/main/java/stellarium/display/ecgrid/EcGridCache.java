@@ -5,6 +5,7 @@ import stellarapi.api.lib.math.Vector3;
 import stellarium.client.ClientSettings;
 import stellarium.display.DisplayCacheInfo;
 import stellarium.display.IDisplayCache;
+import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.util.math.Allocator;
 
 public class EcGridCache implements IDisplayCache<EcGridSettings> {
@@ -71,6 +72,7 @@ public class EcGridCache implements IDisplayCache<EcGridSettings> {
 					info.applyAtmRefraction(coord);
 
 					displayvec[longc][latc].set(coord.getVec());
+					//displayvec[longc][latc].scale(LayerRHelper.DEEP_DEPTH);
 
 					colorvec[longc][latc].set(this.baseColor);
 

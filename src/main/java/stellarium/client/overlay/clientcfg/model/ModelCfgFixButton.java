@@ -12,10 +12,10 @@ import stellarium.StellarSkyResources;
 
 public class ModelCfgFixButton implements IRenderModel {
 	
-	private static final ModelCfgFixButton instance = new ModelCfgFixButton();
+	private static final ModelCfgFixButton INSTANCE = new ModelCfgFixButton();
 	
 	public static ModelCfgFixButton getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 	
 	private ModelSimpleRect selectModel = ModelSimpleRect.getInstance();
