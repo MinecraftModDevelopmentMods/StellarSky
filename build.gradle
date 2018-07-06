@@ -64,8 +64,8 @@ publishing {
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
-    dryRun = "${config.dryRun}" // Whether to run this as dry-run, without deploying
-    publish = "${config.publish}" // If version should be auto published after an upload
+    dryRun = "${config.dryRun}".toBoolean() // Whether to run this as dry-run, without deploying
+    publish = "${config.publish}".toBoolean() // If version should be auto published after an upload
     pkg {
         repo = 'StellarMods'
         name = 'stellarsky'
