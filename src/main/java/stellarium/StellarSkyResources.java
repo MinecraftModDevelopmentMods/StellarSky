@@ -213,12 +213,6 @@ public class StellarSkyResources {
 	public static final ResourceLocation turbulance =
 			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "textures/gui/turbulance.png");
 
-	public static final ResourceLocation brcontrast =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "textures/gui/brcontrast.png");
-
-	public static final ResourceLocation spritescale =
-			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "textures/gui/spritescale.png");
-
 
 	public static final ResourceLocation solarsystem =
 			new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "textures/gui/solarsystem.png");

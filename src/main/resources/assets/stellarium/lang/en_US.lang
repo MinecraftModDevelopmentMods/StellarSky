@@ -1,4 +1,4 @@
-﻿
+癤�
 //Keys
 key.stellarsky=Stellar Sky
 key.stellarsky.focusgui.description=Focus Stellar Sky Settings
@@ -64,12 +64,6 @@ config.property.client.milkywaybrightness.tooltip=Brightness of milky way. For r
 
 config.property.client.turbulance=Twinkling(Turbulance)
 config.property.client.turbulance.tooltip=Degree of the twinkling effect of star. It determines the turbulance of atmosphere, which actually cause the twinkling effect. The greater the value, the more the stars will twinkle.
-
-config.property.client.brcontrast=Brightness Contrast
-config.property.client.brcontrast.tooltip=Brightness Contrast determines the contrast between bright stars and faint stars. The bigger the value, the less difference between bright stars and faint stars. For real world, 1.0 is right. Though default value is 1.75 for visual effect.
-
-config.property.client.spritescale=Sprite Scale
-config.property.client.spritescale.tooltip=Sprite Scale determines the size of stars and planets. The bigger the value, the fuzzier stars/planets gets. Real world = 1.0. Default = 0.8 for visual effect.
 
 
 ///Optics
@@ -213,10 +207,10 @@ config.property.landscape.fragments.tooltip=Landscape is drawn with fragments. L
 ///Atmosphere
 config.category.atmosphere=Atmosphere
 config.category.atmosphere.tooltip=Configurations for the atmosphere accuracy.
-config.property.atmosphere.cachelevel=Atmosphere Cache Size Level
-config.property.atmosphere.cachelevel.tooltip=Level of atmosphere cache texture size. Less level will increase FPS, but the atmosphere will become EXPONENTIALLY defective.
 config.property.atmosphere.fragnumber=Atmosphere Fragment Number
 config.property.atmosphere.fragnumber.tooltip=Atmosphere is drawn with fragments. Less fragments will increase FPS, but the atmosphere will become more defective.
+config.property.atmosphere.fragscreen=Screen Fragment Number
+config.property.atmosphere.fragscreen.tooltip=Number of screen fragments which is used for atmosphere rendering.
 config.property.atmosphere.interpolation=Enable Interpolation on Atmosphere
 config.property.atmosphere.interpolation.tooltip=Enabling this will interpolate texture for better view, but there could be some trivial issues like 'black line' with this.
 

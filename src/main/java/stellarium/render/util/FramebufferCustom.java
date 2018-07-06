@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL14;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -141,7 +142,7 @@ public class FramebufferCustom {
 		this.framebufferClear();
 		OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, 0);
 		GlStateManager.bindTexture(0);
-		// TODO AA Check framebuffer complete-ness
+		this.checkFramebufferComplete();
 	}
 
 	public void deleteFramebuffer() {
@@ -162,6 +163,35 @@ public class FramebufferCustom {
 			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, 0);
 			OpenGlUtil.deleteFramebuffers(this.framebufferPointer);
 			this.framebufferPointer = -1;
+		}
+	}
+
+	public void checkFramebufferComplete()
+	{
+		int i = OpenGlHelper.glCheckFramebufferStatus(OpenGlHelper.GL_FRAMEBUFFER);
+
+		if (i != OpenGlHelper.GL_FRAMEBUFFER_COMPLETE)
+		{
+			if (i == OpenGlHelper.GL_FB_INCOMPLETE_ATTACHMENT)
+			{
+				throw new RuntimeException("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
+			}
+			else if (i == OpenGlHelper.GL_FB_INCOMPLETE_MISS_ATTACH)
+			{
+				throw new RuntimeException("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
+			}
+			else if (i == OpenGlHelper.GL_FB_INCOMPLETE_DRAW_BUFFER)
+			{
+				throw new RuntimeException("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER");
+			}
+			else if (i == OpenGlHelper.GL_FB_INCOMPLETE_READ_BUFFER)
+			{
+				throw new RuntimeException("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER");
+			}
+			else
+			{
+				throw new RuntimeException("glCheckFramebufferStatus returned unknown status:" + i);
+			}
 		}
 	}
 

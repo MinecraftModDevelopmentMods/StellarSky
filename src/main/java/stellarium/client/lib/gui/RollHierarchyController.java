@@ -64,7 +64,7 @@ public class RollHierarchyController implements IDynamicController {
 	}
 
 	@Override
-	public GuiElement generateElement() {
+	public GuiElement<?> generateElement() {
 		this.rollSize = 0.0f;
 		List<Pair<GuiElement, Float>> rowList = Lists.newArrayList();
 
@@ -76,20 +76,20 @@ public class RollHierarchyController implements IDynamicController {
 				RollHierarchyController subController = new RollHierarchyController(this, child, !this.isHorizontal, this.helper, element.rollSpacingSize());
 				childs.add(subController);
 				this.rollSize += (child.getSize() + 2 * child.rollSpacingSize());
-				GuiElement childGui = new GuiElement<IDynamicController>(new GuiDynamic(), subController);
+				GuiElement<?> childGui = new GuiElement<IDynamicController>(new GuiDynamic(), subController);
 				rowList.add(Pair.of(childGui, child.getSize() + 2 * child.rollSpacingSize()));
 			}
 
-			GuiElement simpleSpace = GuiEmptyElement.generateEmptyElement();
+			GuiElement<?> simpleSpace = GuiEmptyElement.generateEmptyElement();
 
-			GuiElement row = new GuiElement<IHasFixedListController>(
+			GuiElement<?> row = new GuiElement<IHasFixedListController>(
 					new GuiHasFixedList(simpleSpace, rowList),
 					new ListController());
 			
 			if(element.hasRoll()) {
-				GuiElement roll;
+				GuiElement<?> roll;
 				if(helper.hasRollButton()) {
-					GuiElement rolBtn = new GuiElement<IButtonController>(new GuiButtonSimple(), new RollBtnController());
+					GuiElement<?> rolBtn = new GuiElement<IButtonController>(new GuiButtonSimple(), new RollBtnController());
 					roll = new GuiElement<IRollableSimpleController>(
 							new GuiRollableSimple(row, rolBtn, helper.rollBtnSize()),
 							new RollController());
@@ -99,9 +99,9 @@ public class RollHierarchyController implements IDynamicController {
 							new RollController());
 				}
 
-				GuiElement context = element.generateGui(this.isHorizontal, this.helper);
+				GuiElement<?> context = element.generateGui(this.isHorizontal, this.helper);
 
-				GuiElement spacedContext = new GuiElement<ISpacingButtonController>(
+				GuiElement<?> spacedContext = new GuiElement<ISpacingButtonController>(
 						new GuiSpacingButton(context), new SpacingController());
 				
 				return new GuiElement<IHasFixedListController>(

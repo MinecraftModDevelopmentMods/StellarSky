@@ -93,7 +93,7 @@ public class PropertyElementBoolean implements IHierarchyElement {
 		@Override
 		public String setupMain(boolean mouseOver, IRenderer renderer) {
 			handler.setupMainRenderer(this.isHorizontal, renderer);
-			return property.getLanguageKey() + ModelMain.separator + current;
+			return property.getLanguageKey() + ModelMain.SEPARATOR + current;
 		}
 	}
 

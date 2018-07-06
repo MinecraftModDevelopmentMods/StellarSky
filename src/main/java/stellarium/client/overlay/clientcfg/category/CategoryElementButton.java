@@ -135,7 +135,7 @@ public class CategoryElementButton implements IHierarchyElement {
 		@Override
 		public String setupMain(boolean mouseOver, IRenderer renderer) {
 			handler.setupMainRenderer(this.isHorizontal, renderer);
-			return category.getLanguagekey() + ModelMain.separator + current;
+			return category.getLanguagekey() + ModelMain.SEPARATOR + current;
 		}
 	}
 

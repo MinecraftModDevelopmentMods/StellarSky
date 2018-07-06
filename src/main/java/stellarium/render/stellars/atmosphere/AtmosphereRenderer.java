@@ -61,12 +61,13 @@ public enum AtmosphereRenderer {
 		this.vboEnabled = OpenGlHelper.useVbo();
 
 		int bufferSize = settings.fragLong * settings.fragLat * 4; // 4 Indices for Quad
-		if(this.sphereIndicesBuffer == null || sphereIndicesBuffer.capacity() < bufferSize)
+		if(this.sphereIndicesBuffer == null || sphereIndicesBuffer.capacity() != bufferSize * EnumIndexType.INT.size)
 			this.sphereIndicesBuffer = ByteBuffer.allocateDirect(bufferSize * EnumIndexType.INT.size).order(ByteOrder.nativeOrder()); 
 		this.setupSphereIndices(settings.fragLong, settings.fragLat);
 
+		settings.fragScreen = 64;
 		bufferSize = settings.fragScreen * settings.fragScreen * 4; // 4 Indices for Quad
-		if(this.scrPartIndicesBuffer == null || scrPartIndicesBuffer.capacity() < bufferSize)
+		if(this.scrPartIndicesBuffer == null || scrPartIndicesBuffer.capacity() != bufferSize * EnumIndexType.INT.size)
 			this.scrPartIndicesBuffer = ByteBuffer.allocateDirect(bufferSize * EnumIndexType.INT.size).order(ByteOrder.nativeOrder());
 		this.setupScrPartIndices(settings.fragScreen);
 
@@ -141,6 +142,7 @@ public enum AtmosphereRenderer {
 
 			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
 
+			// TODO Do this with UVs computed on CPU side & Fix glitch from refraction
 			// Apply refraction & Convert to RGBM (Rendering ends here, postprocessing all the way down)
 			IShaderObject refractor = atmShader.bindRefractionShader(model);
 			refractor.getField("pitch").setDouble(Math.toRadians(-info.minecraft.player.rotationPitch));

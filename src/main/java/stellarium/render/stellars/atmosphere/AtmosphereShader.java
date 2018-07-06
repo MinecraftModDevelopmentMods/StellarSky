@@ -111,9 +111,9 @@ public class AtmosphereShader {
 		double mult = 200.0;
 
 		rayleighFactor.setDouble4(
-				mult * 3 * (model.getSkyColorRed() / 0.56) * (1.0f + 8 * this.atmWeatherScatterFactor) * model.getSkyDispRed(),
+				mult * 3 * (model.getSkyColorRed() / 0.48) * (1.0f + 8 * this.atmWeatherScatterFactor) * model.getSkyDispRed(),
 				mult * 7 * (model.getSkyColorGreen() / 0.65) * (1.0f + 3 * this.atmWeatherScatterFactor) * model.getSkyDispGreen(),
-				mult * 20 * model.getSkyColorBlue() * model.getSkyDispBlue(),
+				mult * 16 * model.getSkyColorBlue() * model.getSkyDispBlue(),
 				1.0);
 
 		mieFactor.setDouble4(

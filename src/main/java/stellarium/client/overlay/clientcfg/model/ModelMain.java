@@ -12,7 +12,7 @@ import stellarapi.lib.gui.IRenderModel;
 
 public class ModelMain implements IRenderModel {
 
-	public static final String separator = "\n";
+	public static final String SEPARATOR = "\n";
 	
 	private Map<String, IRenderModel> subModels = Maps.newHashMap();
 		
@@ -23,7 +23,7 @@ public class ModelMain implements IRenderModel {
 	@Override
 	public void renderModel(String info, IRectangleBound totalBound, IRectangleBound clipBound, Tessellator tessellator,
 			BufferBuilder worldRenderer, TextureManager textureManager, float[] colors) {
-		int index = info.lastIndexOf(separator);
+		int index = info.lastIndexOf(SEPARATOR);
 		if(index == -1) {
 			if(subModels.containsKey(info))
 				subModels.get(info).renderModel("", totalBound, clipBound, tessellator, worldRenderer, textureManager, colors);

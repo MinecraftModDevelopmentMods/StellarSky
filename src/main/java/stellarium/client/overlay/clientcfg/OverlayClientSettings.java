@@ -42,47 +42,46 @@ import stellarium.stellars.StellarManager;
 public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySettings>, IRollHelper {
 
 	private static final int ANIMATION_DURATION = 10;
-	private static final int SPACING = 2;
-	
+
 	private Minecraft mc;
 	private SettingsOverlaySettings settings;
-	
+
 	private ICfgHierarchyHandler handler;
 	private RollHierarchyController controller;
-	
+
 	private ConfigManager notified;
 	private GuiContent gui;
-	
+
 	private EnumHorizontalPos currentHorizontal;
 	private EnumVerticalPos currentVertical;
-	
+
 	private float animationTick;
 	private EnumOverlayMode currentMode = EnumOverlayMode.OVERLAY;
-	
+
 	@Override
 	public void initialize(Minecraft mc, SettingsOverlaySettings settings) {
 		this.mc = mc;
 		this.settings = settings;
 		this.notified = StellarSky.INSTANCE.getCelestialConfigManager();
-		
+
 		this.handler = new DefCfgHierarchyHandler(SettingSpecific.generateModel(), this);
-		
+
 		ConfigCategory category = notified.getConfig().getCategory(ClientProxy.clientConfigCategory);
-		
+
 		ICfgTooltipHandler tooltip = new DefaultTooltipController();
-		
+
 		GuiElement fixedButton = tooltip.wrapElement(
 				new GuiElement<IButtonController>(new GuiButtonSimple(), new FixButtonController()),
 				"config.property.gui.settings.fix" + CfgConstants.SUFFIX_TOOLTIP);
-		
+
 		LockButtonController lockBtn = new LockButtonController();
 		GuiElement lockButton = tooltip.wrapElement(
 				new GuiElement<IButtonController>(new GuiButtonSimple(), lockBtn), lockBtn);
-		
+
 		IHierarchyElement main = new CategoryElementSimple(category, this.handler, tooltip, true);
 		main = HierarchyUtil.prepend(main, HierarchyUtil.fromElement(fixedButton, CfgConstants.ELEMENT_SIZE, CfgConstants.SPACING));
 		main = HierarchyUtil.append(main, HierarchyUtil.fromElement(lockButton, CfgConstants.ELEMENT_SIZE, CfgConstants.SPACING));
-		
+
 		this.controller = new RollHierarchyController(main, false, this, CfgConstants.SPACING);
 
 		GuiElement clientSettings = new GuiElement<IDynamicController>(new GuiDynamic(), this.controller);
@@ -115,46 +114,46 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 				return CfgConstants.BACKGROUND_SPACING;
 			}
 		});
-		
+
 		tooltip.setWrappedGui(spaced);
-		
+
 		this.gui = new GuiContent(new GuiRenderer(mc),
 				tooltip.generateGui(),
 				new IGuiPosition() {
 			private RectangleBound main, tooltip;
-					@Override
-					public IRectangleBound getElementBound() {
-						return this.main;
-					}
+			@Override
+			public IRectangleBound getElementBound() {
+				return this.main;
+			}
 
-					@Override
-					public IRectangleBound getClipBound() {
-						return this.main;
-					}
+			@Override
+			public IRectangleBound getClipBound() {
+				return this.main;
+			}
 
-					@Override
-					public IRectangleBound getAdditionalBound(String boundName) {
-						if(boundName.equals("tooltip"))
-							return this.tooltip;
-						else return null;
-					}
+			@Override
+			public IRectangleBound getAdditionalBound(String boundName) {
+				if(boundName.equals("tooltip"))
+					return this.tooltip;
+				else return null;
+			}
 
-					@Override
-					public void initializeBounds() {
-						this.main = new RectangleBound(0, 0, getWidth(), getHeight());
-						this.tooltip = new RectangleBound(0, 0, Float.MAX_VALUE, getHeight());
-					}
+			@Override
+			public void initializeBounds() {
+				this.main = new RectangleBound(0, 0, getWidth(), getHeight());
+				this.tooltip = new RectangleBound(0, 0, Float.MAX_VALUE, getHeight());
+			}
 
-					@Override
-					public void updateBounds() {
-						main.set(0, 0, getWidth(), getHeight());
-						tooltip.set(0, 0, Float.MAX_VALUE, getHeight());
-					}
+			@Override
+			public void updateBounds() {
+				main.set(0, 0, getWidth(), getHeight());
+				tooltip.set(0, 0, Float.MAX_VALUE, getHeight());
+			}
 
-					@Override
-					public void updateAnimation(float partialTicks) {
-						this.updateBounds();
-					}
+			@Override
+			public void updateAnimation(float partialTicks) {
+				this.updateBounds();
+			}
 		});
 	}
 
@@ -186,10 +185,10 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 				this.animationTick = ANIMATION_DURATION;
 			else this.animationTick = 0;
 		}
-		
+
 		if(!settings.isFixed && !mode.focused() && currentMode.focused())
 			controller.forceRoll();
-		
+
 		this.currentMode = mode;
 	}
 
@@ -200,14 +199,14 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 			this.currentHorizontal = settings.getHorizontal();
 			this.currentVertical = settings.getVertical();
 		}
-		
+
 		gui.updateTick();
-		
+
 		if(settings.isFixed) {
 			this.animationTick = 0;
 			return;
 		}
-		
+
 		if(this.animationTick > 0 && currentMode.displayed())
 			this.animationTick--;
 		else if(this.animationTick < ANIMATION_DURATION && !currentMode.displayed())
@@ -218,7 +217,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 	public boolean mouseClicked(int mouseX, int mouseY, int eventButton) {
 		if(!currentMode.focused())
 			return false;
-		
+
 		gui.mouseClicked(mouseX, mouseY, eventButton);
 		if(controller.checkSettingsChanged())
 			notified.syncFromGUI();
@@ -229,7 +228,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 	public boolean mouseReleased(int mouseX, int mouseY, int eventButton) {
 		if(!currentMode.focused())
 			return false;
-		
+
 		gui.mouseReleased(mouseX, mouseY, eventButton);
 		if(controller.checkSettingsChanged())
 			notified.syncFromGUI();
@@ -240,7 +239,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 	public boolean keyTyped(char eventChar, int eventKey) {
 		if(!currentMode.focused())
 			return false;
-		
+
 		gui.keyTyped(eventChar, eventKey);
 		if(controller.checkSettingsChanged())
 			notified.syncFromGUI();
@@ -272,7 +271,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 	public float rollBtnSize() {
 		return CfgConstants.SCROLL_BTN_PROG_SIZE;
 	}
-	
+
 	@Override
 	public boolean hasRollButton() {
 		return false;
@@ -290,8 +289,8 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 	public String setupRollBtnMain(boolean isHorizontal, boolean mouseOver, IRenderer renderer) {
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public void setupSpacingBtnRenderer(boolean isHorizontal, boolean mouseOver, IRenderer renderer) { }
 
@@ -308,8 +307,8 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 	public String setupSpacingBtnMain(boolean isHorizontal, boolean mouseOver, IRenderer renderer) {
 		return null;
 	}
-	
-	
+
+
 	public class FixButtonController implements IButtonController {
 		@Override
 		public boolean canClick(int eventButton) {
@@ -341,7 +340,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 			return settings.isFixed? "fixed" : "unfixed";
 		}
 	}
-	
+
 	public class LockButtonController implements IButtonController, ITooltipElementController {
 		@Override
 		public boolean canClick(int eventButton) {
@@ -353,7 +352,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 			World world = StellarSky.PROXY.getDefWorld();
 			final boolean locked = StellarManager.getManager(world).isLocked();
 			String message = locked? "stellarsky.gui.unlock" : "stellarsky.gui.lock";
-			
+
 			mc.displayGuiScreen(new GuiYesNo(new GuiYesNoCallback() {
 				@Override
 				public void confirmClicked(boolean ok, int index) {
@@ -415,7 +414,7 @@ public class OverlayClientSettings implements IOverlayElement<SettingsOverlaySet
 	public boolean mouseClickMove(int mouseX, int mouseY, int eventButton, long timeSinceLastClick) {
 		if(!currentMode.focused())
 			return false;
-		
+
 		gui.mouseClickMove(mouseX, mouseY, eventButton, timeSinceLastClick);
 		if(controller.checkSettingsChanged())
 			notified.syncFromGUI();

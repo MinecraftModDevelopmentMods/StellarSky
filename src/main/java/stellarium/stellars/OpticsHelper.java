@@ -27,22 +27,14 @@ public class OpticsHelper extends SimpleConfigHandler {
 
 	private CachedGaussianRandom randomTurbulance = new CachedGaussianRandom(100, 3L);
 
-	@Deprecated
-	private ConfigPropertyDouble propBrightnessContrast;
 	private ConfigPropertyDouble propTurb;
-	@Deprecated
-	private ConfigPropertyDouble propSpriteScale;
 
 	private double turbulance;
 
 	public OpticsHelper() {
-		this.propBrightnessContrast = new ConfigPropertyDouble("Brightness_Contrast", "", 2.0);
 		this.propTurb = new ConfigPropertyDouble("Twinkling(Turbulance)", "", 1.0);
-		this.propSpriteScale = new ConfigPropertyDouble("Sprite_Scale", "", 0.8);
 
-		this.addConfigProperty(this.propBrightnessContrast);
 		this.addConfigProperty(this.propTurb);
-		this.addConfigProperty(this.propSpriteScale);
 	}
 
 	@Override
@@ -53,15 +45,6 @@ public class OpticsHelper extends SimpleConfigHandler {
 
 		super.setupConfig(config, category);
 
-		propBrightnessContrast.setComment("Brightness Contrast determines the contrast "
-				+ "between bright stars and faint stars. "
-				+ "The bigger the value, the less difference between bright stars and faint stars. "
-				+ "Real world (minimum) = 1.0. Default = 2.0 for visual effect.");
-		propBrightnessContrast.setRequiresMcRestart(false);
-		propBrightnessContrast.setLanguageKey("config.property.client.brcontrast");
-		propBrightnessContrast.setMaxValue(4.0);
-		propBrightnessContrast.setMinValue(0.5);
-
 		propTurb.setComment("Degree of the twinkling effect of star.\n"
 				+ "It determines the turbulance of atmosphere, which actually cause the twinkling effect. "
 				+ "The greater the value, the more the stars will twinkle. Default is 1.0. To disable set to 0.0");
@@ -69,14 +52,6 @@ public class OpticsHelper extends SimpleConfigHandler {
 		propTurb.setLanguageKey("config.property.client.turbulance");
 		propTurb.setMinValue(0.0);
 		propTurb.setMaxValue(2.0);
-
-		propSpriteScale.setComment("Sprite Scale determines the size of stars and planets. "
-				+ "The bigger the value, the fuzzier stars/planets gets. "
-				+ "Real world = 1.0. Default = 0.8 for visual effect.");
-		propSpriteScale.setRequiresMcRestart(false);
-		propSpriteScale.setLanguageKey("config.property.client.spritescale");
-		propSpriteScale.setMaxValue(1.2);
-		propSpriteScale.setMinValue(0.4);
 	}
 
 	@Override
