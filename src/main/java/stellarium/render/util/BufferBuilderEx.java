@@ -12,6 +12,7 @@ import stellarapi.api.lib.math.Vector3;
 /**
  * Extended buffer builder.
  * To specify color, use only {@link #color(float, float, float, float)} and {@link #color(int, int, int, int)}.
+ * TODO AA Don't use MCP names, Let the utility translate it
  * */
 public class BufferBuilderEx extends BufferBuilder {
 	private ByteBuffer byteBuffer;
