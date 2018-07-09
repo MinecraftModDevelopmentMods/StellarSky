@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import stellarium.StellarSky;
 import stellarium.util.OpenGlUtil;
 
 public class FramebufferCustom {
@@ -170,29 +171,19 @@ public class FramebufferCustom {
 	{
 		int i = OpenGlHelper.glCheckFramebufferStatus(OpenGlHelper.GL_FRAMEBUFFER);
 
-		if (i != OpenGlHelper.GL_FRAMEBUFFER_COMPLETE)
-		{
-			if (i == OpenGlHelper.GL_FB_INCOMPLETE_ATTACHMENT)
-			{
+		if (i != OpenGlHelper.GL_FRAMEBUFFER_COMPLETE) {
+			if (i == OpenGlHelper.GL_FB_INCOMPLETE_ATTACHMENT) {
 				throw new RuntimeException("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
-			}
-			else if (i == OpenGlHelper.GL_FB_INCOMPLETE_MISS_ATTACH)
-			{
+			} else if (i == OpenGlHelper.GL_FB_INCOMPLETE_MISS_ATTACH) {
 				throw new RuntimeException("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
-			}
-			else if (i == OpenGlHelper.GL_FB_INCOMPLETE_DRAW_BUFFER)
-			{
+			} else if (i == OpenGlHelper.GL_FB_INCOMPLETE_DRAW_BUFFER) {
 				throw new RuntimeException("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER");
-			}
-			else if (i == OpenGlHelper.GL_FB_INCOMPLETE_READ_BUFFER)
-			{
+			} else if (i == OpenGlHelper.GL_FB_INCOMPLETE_READ_BUFFER) {
 				throw new RuntimeException("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER");
-			}
-			else
-			{
+			} else {
 				throw new RuntimeException("glCheckFramebufferStatus returned unknown status:" + i);
 			}
-		}
+		} else StellarSky.INSTANCE.getLogger().info("Framebuffer with format %s is complete", this.internalFormat);
 	}
 
 
