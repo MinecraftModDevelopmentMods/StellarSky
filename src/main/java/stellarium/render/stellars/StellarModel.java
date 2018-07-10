@@ -33,7 +33,6 @@ public class StellarModel {
 	}
 
 	public void dimensionLoad(StellarScene dimManager) {
-		layersModel.onDimensionLoad(dimManager);
 		atmModel.dimensionLoad(dimManager);
 	}
 

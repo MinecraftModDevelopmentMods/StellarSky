@@ -3,7 +3,7 @@ package stellarium.world.provider;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldProviderEnd;
-import stellarapi.api.ICelestialHelper;
+import stellarapi.api.world.ICelestialHelper;
 import stellarapi.api.world.IWorldProviderReplacer;
 
 @Deprecated

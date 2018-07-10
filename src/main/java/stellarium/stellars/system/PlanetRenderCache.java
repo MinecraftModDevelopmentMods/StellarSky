@@ -12,7 +12,7 @@ import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.view.ViewerInfo;
 
-public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, IConfigHandler> {
+public class PlanetRenderCache implements IObjRenderCache<Planet, IConfigHandler> {
 	
 	protected boolean shouldRender, shouldRenderSurface;
 	protected SpCoord appCoord = new SpCoord();
@@ -26,10 +26,7 @@ public class PlanetRenderCache implements IObjRenderCache<Planet, PlanetImage, I
 	}
 
 	@Override
-	public void updateCache(Planet object, PlanetImage image, ViewerInfo info) {
-		//appCoord.x = image.appCoord.x;
-		//appCoord.y = image.appCoord.y;
-
+	public void updateCache(Planet object, ViewerInfo info) {
 		pos.set(object.earthPos);
 		info.coordinate.getProjectionToGround().transform(this.pos);
 		pos.normalize();

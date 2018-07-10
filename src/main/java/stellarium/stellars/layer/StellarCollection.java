@@ -1,138 +1,87 @@
 package stellarium.stellars.layer;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 
-import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinates;
-import stellarapi.api.ISkyEffect;
-import stellarapi.api.celestials.EnumCelestialCollectionType;
-import stellarapi.api.celestials.ICelestialCollection;
-import stellarapi.api.celestials.ICelestialObject;
+import stellarapi.api.celestials.CelestialCollection;
+import stellarapi.api.celestials.CelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
-import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.observe.SearchRegion;
+import stellarium.render.stellars.layer.IObjRenderCache;
+import stellarium.render.stellars.layer.StellarLayerModel;
 
-public class StellarCollection<Obj extends StellarObject> implements ICelestialCollection {
+// TODO Maybe the layer is the collection and this is just a container
+public class StellarCollection<S extends StellarObject> extends CelestialCollection {
+	private IStellarLayerType<S, IConfigHandler, INBTConfig> type;
+	private String configName;
 
-	private IStellarLayerType<Obj, IConfigHandler, INBTConfig> type;
-	private StellarObjectContainer<Obj> container;
-	
-	private ICelestialCoordinates coordinate;
-	private ISkyEffect sky;
-	
-	private Map<Obj, IPerWorldImage<Obj>> imageMap = Maps.newHashMap();
-	
-	private CelestialPeriod yearPeriod;
-	
-	public StellarCollection(StellarObjectContainer<Obj> container, ICelestialCoordinates coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
-		this.type = container.getType();
-		this.container = container;
-		this.coordinate = coordinate;
-		this.sky = sky;
-		this.yearPeriod = yearPeriod;
+	private StellarLayerModel<S> layerModel;
+
+	private SetMultimap<String, S> loadedObjects = HashMultimap.create();
+
+	public StellarCollection(IStellarLayerType<S, IConfigHandler, INBTConfig> type, String configName) {
+		super(type.getName(), type.getCollectionType(), type.searchOrder());
+		this.type = type;
+		this.configName = configName;
+	}
+
+	public void bindRenderModel(StellarLayerModel<S> layerModel) {
+		this.layerModel = layerModel;
 	}
 	
+	public IStellarLayerType<S, IConfigHandler, INBTConfig> getType() {
+		return this.type;
+	}
+	
+	public String getConfigName() {
+		return this.configName;
+	}
+
+	/**
+	 * Finds all visible celestial objects in certain region.
+	 * 
+	 * @param region the search region in absolute coordinates
+	 * @param multPower multiplying power of the viewer
+	 * @param efficiency quantum efficiency of the viewer
+	 * @return all objects in the search range which is visible
+	 */
 	@Override
-	public String getName() {
-		return type.getName();
+	public Set<CelestialObject> findIn(SearchRegion region, float efficiency, float multPower) {
+		// TODO AA Fill in this
+		return Collections.emptySet();
 	}
 
-	@Override
-	public ImmutableSet<? extends IPerWorldImage> getObjects() {
-		return ImmutableSet.copyOf(imageMap.values());
+	public Set<S> getLoadedObjects(String identifier) {
+		return loadedObjects.get(identifier);
 	}
 
-	@Override
-	public ImmutableSet<? extends IPerWorldImage> getObjectInRange(SpCoord pos, double radius) {
-		QueryStellarObject query = new QueryStellarObject(pos, radius);
-
-		Predicate<ICelestialObject> inRange = type.conditionInRange(pos, radius);
-		if(inRange == null)
-			inRange = query;
-
-		Iterable<IPerWorldImage<Obj>> saved = Iterables.filter(imageMap.values(), inRange);
-
-		return ImmutableSet.copyOf(saved);
+	public S getLoadedSingleton(String identifier) {
+		Set<S> set = loadedObjects.get(identifier);
+		if(set.size() != 1)
+			throw new IllegalArgumentException(
+					String.format("Loaded objects for %s is not singleton!", identifier));
+		
+		return set.iterator().next();
 	}
 
-	public IPerWorldImage<Obj> loadImageFor(Obj object) {
-		if(imageMap.containsKey(object))
-			return imageMap.get(object);
-		else return null;
+
+	public void loadObject(String identifier, S object) {
+		loadedObjects.put(identifier, object);
 	}
 
-	@Override
-	public ICelestialObject getNearerObject(SpCoord pos, ICelestialObject obj1, ICelestialObject obj2) {
-		Comparator<ICelestialObject> comparator = type.getDistanceComparator(pos);
-		if(comparator == null)
-			return (pos.distanceTo(obj1.getCurrentHorizontalPos())
-					< pos.distanceTo(obj2.getCurrentHorizontalPos()))? obj1 : obj2;
-		else return comparator.compare(obj1, obj2) < 0? obj1 : obj2;
-	}
-	
-	public void addImages(Set<Obj> addedSet, Map<Obj, Callable<IPerWorldImage<Obj>>> imageTypeMap) {
-		try {
-			for(Obj object : addedSet) {
-				IPerWorldImage<Obj> image = imageTypeMap.get(object).call();
-				image.initialize(object, this.coordinate, this.sky, this.yearPeriod);
-				imageMap.put(object, image);
-			}
-		} catch (Exception exc) {
-			Throwables.propagate(exc);
-		}
+	public void addRenderCache(S object, IObjRenderCache<? extends S,?> cache) {
+		if(this.layerModel != null)
+			layerModel.addRenderCache(object, cache);
 	}
 
-	public void update() {
-		// TODO Optimize this iteration
-		for(Map.Entry<Obj, IPerWorldImage<Obj>> entry : imageMap.entrySet())
-			entry.getValue().updateCache(entry.getKey(), coordinate, sky);
+	public StellarCollection<S> copyFromClient() {
+		StellarCollection<S> copied = new StellarCollection<>(this.type, this.configName);
+		copied.loadedObjects = HashMultimap.create(copied.loadedObjects);
+		
+		return copied;
 	}
-
-	
-	public Collection<IPerWorldImage> getSuns() {
-		List<IPerWorldImage> list = Lists.newArrayList();
-		Collection<Obj> suns = type.getSuns(this.container);
-		if(suns == null) return list;
-		for(Obj sun : suns)
-			list.add(imageMap.get(sun));
-		return list;
-	}
-	
-	public Collection<IPerWorldImage> getMoons() {
-		List<IPerWorldImage> list = Lists.newArrayList();
-		Collection<Obj> moons = type.getMoons(this.container);
-		if(moons == null) return list;
-		for(Obj moon : moons)
-			list.add(imageMap.get(moon));
-		return list;
-	}
-
-	
-	@Override
-	public int searchOrder() {
-		return type.searchOrder();
-	}
-
-	@Override
-	public boolean isBackground() {
-		return type.isBackground();
-	}
-
-	@Override
-	public EnumCelestialCollectionType getCollectionType() {
-		return type.getCollectionType();
-	}
-
 }

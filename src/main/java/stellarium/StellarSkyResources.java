@@ -1,39 +1,39 @@
 package stellarium;
 
 import net.minecraft.util.ResourceLocation;
-import stellarapi.api.perdimres.PerDimensionResource;
+import stellarapi.api.world.resource.PerWorldResource;
 import stellarapi.feature.perdimres.PerDimensionResourceRegistry;
 
 public class StellarSkyResources {
 
-	public static final PerDimensionResource resourceEndSky =
-			new PerDimensionResource("End_Sky", new ResourceLocation("textures/environment/end_sky.png"));
+	public static final PerWorldResource resourceEndSky =
+			new PerWorldResource("End_Sky", new ResourceLocation("textures/environment/end_sky.png"));
 
 
-	public static final PerDimensionResource resourceMilkyway =
-			new PerDimensionResource("Milkyway", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/milkyway.png"));
+	public static final PerWorldResource resourceMilkyway =
+			new PerWorldResource("Milkyway", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/milkyway.png"));
 
-	public static final PerDimensionResource resourceStar =
-			new PerDimensionResource("Star", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/star.png"));
+	public static final PerWorldResource resourceStar =
+			new PerWorldResource("Star", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/star.png"));
 
-	public static final PerDimensionResource resourceSunSurface =
-			new PerDimensionResource("Sun_Surface", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/sun.png"));
+	public static final PerWorldResource resourceSunSurface =
+			new PerWorldResource("Sun_Surface", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/sun.png"));
 
-	public static final PerDimensionResource resourceSunHalo =
-			new PerDimensionResource("Sun_Halo", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/halo.png"));
+	public static final PerWorldResource resourceSunHalo =
+			new PerWorldResource("Sun_Halo", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/halo.png"));
 
-	public static final PerDimensionResource resourceMoonSurface = 
-			new PerDimensionResource("Moon_Surface", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/lune.png"));
+	public static final PerWorldResource resourceMoonSurface = 
+			new PerWorldResource("Moon_Surface", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/lune.png"));
 
-	public static final PerDimensionResource resourceMoonHalo =
-			new PerDimensionResource("Moon_Halo", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/haloLune.png"));
+	public static final PerWorldResource resourceMoonHalo =
+			new PerWorldResource("Moon_Halo", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/haloLune.png"));
 
-	public static final PerDimensionResource resourcePlanetSmall =
-			new PerDimensionResource("Planet_Small", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/star.png"));
+	public static final PerWorldResource resourcePlanetSmall =
+			new PerWorldResource("Planet_Small", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "stellar/star.png"));
 
 
-	public static final PerDimensionResource resourceLandscape =
-			new PerDimensionResource("Landscape", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "textures/overlay/landscape.png"));
+	public static final PerWorldResource resourceLandscape =
+			new PerWorldResource("Landscape", new ResourceLocation(StellarSkyReferences.RESOURCE_ID, "textures/overlay/landscape.png"));
 
 	public static void init() {
 		PerDimensionResourceRegistry.getInstance().registerResourceId("End_Sky");

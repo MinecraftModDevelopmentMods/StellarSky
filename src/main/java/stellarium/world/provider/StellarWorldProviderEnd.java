@@ -20,8 +20,8 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import stellarapi.api.ICelestialHelper;
 import stellarapi.api.optics.EnumRGBA;
+import stellarapi.api.world.ICelestialHelper;
 
 @Deprecated
 public class StellarWorldProviderEnd extends WorldProviderEnd {

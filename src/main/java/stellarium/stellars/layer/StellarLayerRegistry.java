@@ -63,10 +63,10 @@ public class StellarLayerRegistry {
 				new ClassInstantiateCallable(commonConfigClass), new ClassInstantiateCallable(clientConfigClass));
 	}
 	
-	public void composeLayer(boolean isRemote, List<StellarObjectContainer> list) {
+	public void composeLayer(boolean isRemote, List<StellarCollection> list) {
 		for(RegistryDelegate delegate : this.registeredLayers)
 			try {
-				list.add(new StellarObjectContainer(delegate.layer, delegate.configName));
+				list.add(new StellarCollection(delegate.layer, delegate.configName));
 			} catch (Exception e) {
 				Throwables.propagateIfPossible(e);
 			}

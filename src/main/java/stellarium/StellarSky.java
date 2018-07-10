@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import stellarapi.api.SAPIReferences;
 import stellarapi.api.lib.config.ConfigManager;
+import stellarapi.api.world.worldset.WorldSets;
 import stellarium.api.SkyRenderTypeSurface;
 import stellarium.api.SkySetTypeDefault;
 import stellarium.api.StellarSkyAPI;
@@ -87,13 +88,13 @@ public class StellarSky {
 		// TODO Remove this when it's not needed
 		SAPIReferences.registerWorldProviderReplacer(new EndReplacer());
 
-		StellarSkyAPI.registerSkyType(SAPIReferences.exactOverworld(), SkySetTypeDefault.INSTANCE);
-		StellarSkyAPI.registerSkyType(SAPIReferences.overworldType(), SkySetTypeDefault.INSTANCE);
-		StellarSkyAPI.registerSkyType(SAPIReferences.endType(), SkySetTypeEnd.INSTANCE);
+		StellarSkyAPI.registerSkyType(WorldSets.exactOverworld(), SkySetTypeDefault.INSTANCE);
+		StellarSkyAPI.registerSkyType(WorldSets.overworldType(), SkySetTypeDefault.INSTANCE);
+		StellarSkyAPI.registerSkyType(WorldSets.endType(), SkySetTypeEnd.INSTANCE);
 
-		StellarSkyAPI.registerDefaultRenderer(SAPIReferences.exactOverworld(), SkyRenderTypeSurface.INSTANCE);
-		StellarSkyAPI.registerDefaultRenderer(SAPIReferences.overworldType(), SkyRenderTypeSurface.INSTANCE);
-		StellarSkyAPI.registerDefaultRenderer(SAPIReferences.endType(), SkyRenderTypeEnd.INSTANCE);
+		StellarSkyAPI.registerDefaultRenderer(WorldSets.exactOverworld(), SkyRenderTypeSurface.INSTANCE);
+		StellarSkyAPI.registerDefaultRenderer(WorldSets.overworldType(), SkyRenderTypeSurface.INSTANCE);
+		StellarSkyAPI.registerDefaultRenderer(WorldSets.endType(), SkyRenderTypeEnd.INSTANCE);
 
 		StellarSkyAPI.registerRendererType(SkyRenderTypeSurface.INSTANCE);
 		StellarSkyAPI.registerRendererType(SkyRenderTypeEnd.INSTANCE);

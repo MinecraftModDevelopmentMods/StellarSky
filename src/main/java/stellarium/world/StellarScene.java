@@ -8,22 +8,21 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import stellarapi.api.ICelestialCoordinates;
-import stellarapi.api.ICelestialHelper;
-import stellarapi.api.ICelestialScene;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.SAPIReferences;
-import stellarapi.api.celestials.ICelestialCollection;
-import stellarapi.api.celestials.ICelestialObject;
+import stellarapi.api.celestials.CelestialCollection;
+import stellarapi.api.celestials.CelestialObject;
 import stellarapi.api.celestials.IEffectorType;
 import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.pack.ICelestialScene;
 import stellarapi.api.render.IAdaptiveRenderer;
+import stellarapi.api.view.IAtmosphereEffect;
+import stellarapi.api.view.ICCoordinates;
+import stellarapi.api.world.ICelestialHelper;
 import stellarapi.api.world.worldset.WorldSet;
-import stellarapi.example.CelestialHelper;
+import stellarapi.example.CelestialHelperSimple;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.StellarCollection;
-import stellarium.stellars.layer.StellarObjectContainer;
 
 public final class StellarScene implements ICelestialScene {
 	private final StellarManager manager;
@@ -33,9 +32,8 @@ public final class StellarScene implements ICelestialScene {
 	private PerDimensionSettings settings;
 	private IStellarSkySet skyset;
 	private StellarCoordinates coordinate;
-	private List<StellarCollection> collections = Lists.newArrayList();
-	private List<ICelestialObject> foundSuns = Lists.newArrayList();
-	private List<ICelestialObject> foundMoons = Lists.newArrayList();
+	private List<CelestialObject> foundSuns = Lists.newArrayList();
+	private List<CelestialObject> foundMoons = Lists.newArrayList();
 
 	@Deprecated
 	public static StellarScene getScene(World world) {
@@ -91,32 +89,27 @@ public final class StellarScene implements ICelestialScene {
 		}
 	}
 
-	public List<StellarCollection> getCollections() {
-		return this.collections;
-	}
-
-	public List<ICelestialObject> getSuns() {
+	public List<CelestialObject> getSuns() {
 		return this.foundSuns;
 	}
-	
-	public List<ICelestialObject> getMoons() {
+
+	public List<CelestialObject> getMoons() {
 		return this.foundMoons;
 	}
 
 	public void update(World world, long currentTick, long currentUniversalTick) {
 		coordinate.update(manager.getSkyYear(currentTick));
 
-		for(int i = 0; i < collections.size(); i++) {
+		/*for(int i = 0; i < collections.size(); i++) {
 			StellarCollection collection = collections.get(i);
 			StellarObjectContainer container = manager.getCelestialManager().getLayers().get(i);
 			container.updateCollection(collection, currentUniversalTick);
-		}
+		}*/
 	}
 
 
 	@Override
 	public void prepare() {
-		collections.clear();
 		foundSuns.clear();
 		foundMoons.clear();
 
@@ -136,50 +129,49 @@ public final class StellarScene implements ICelestialScene {
 		StellarSky.INSTANCE.getLogger().info("Starting Test Update.");
 		manager.update(0.0);
 		StellarSky.INSTANCE.getLogger().info("Test Update Ended.");
-		
-		for(StellarObjectContainer container : manager.getCelestialManager().getLayers()) {
-			StellarCollection collection = new StellarCollection(container, this.coordinate, this.skyset,
-					this.coordinate.getYearPeriod());
-			container.addCollection(collection);
+
+		for(StellarCollection container : manager.getCelestialManager().getLayers()) {
+			// TODO Find suns&moons
+			/*container.addCollection(collection);
 			collections.add(collection);
-			
+
 			foundSuns.addAll(collection.getSuns());
-			foundMoons.addAll(collection.getMoons());
+			foundMoons.addAll(collection.getMoons());*/
 		}
 
 		if(world.isRemote)
 			StellarSky.PROXY.setupDimensionLoad(this);
-		
+
 		StellarSky.INSTANCE.getLogger().info("Evaluated Stellar Collections.");
 	}
 
 	@Override
-	public void onRegisterCollection(Consumer<ICelestialCollection> colRegistry,
-			BiConsumer<IEffectorType, ICelestialObject> effRegistry) {
-		for(ICelestialCollection col : this.collections)
+	public void onRegisterCollection(Consumer<CelestialCollection> colRegistry,
+			BiConsumer<IEffectorType, CelestialObject> effRegistry) {
+		for(CelestialCollection col : manager.getCelestialManager().getLayers())
 			colRegistry.accept(col);
 
-		for(ICelestialObject sun : this.foundSuns)
+		for(CelestialObject sun : this.foundSuns)
 			effRegistry.accept(IEffectorType.Light, sun);
 
-		for(ICelestialObject moon : this.foundMoons)
+		for(CelestialObject moon : this.foundMoons)
 			effRegistry.accept(IEffectorType.Tide, moon);
 	}
 
 	@Override
-	public ICelestialCoordinates createCoordinates() {
+	public ICCoordinates createCoordinates() {
 		return this.coordinate;
 	}
 
 	@Override
-	public ISkyEffect createSkyEffect() {
+	public IAtmosphereEffect createAtmosphereEffect() {
 		return this.skyset;
 	}
 
 	@Override
 	public ICelestialHelper createCelestialHelper() {
 		if(this.getSettings().doesPatchProvider()) {
-			return new CelestialHelper((float)this.getSettings().getSunlightMultiplier(), 1.0f,
+			return new CelestialHelperSimple((float)this.getSettings().getSunlightMultiplier(), 1.0f,
 					this.getSuns().get(0), this.getMoons().get(0), this.coordinate, this.skyset);
 		} else return null;
 	}

@@ -11,7 +11,7 @@ import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.util.math.Allocator;
 import stellarium.view.ViewerInfo;
 
-public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSystemClientSettings> {
+public class MoonRenderCache implements IObjRenderCache<Moon, SolarSystemClientSettings> {
 	
 	protected boolean shouldRenderDominate, shouldRender;
 	
@@ -42,12 +42,7 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 	}
 
 	@Override
-	public void updateCache(Moon object, MoonImage image, ViewerInfo info) {
-		//SpCoord currentPos = image.getCurrentHorizontalPos();
-		//appCoord.x = currentPos.x;
-		//appCoord.y = currentPos.y;
-		//appPos.set(appCoord.getVec());
-
+	public void updateCache(Moon object, ViewerInfo info) {
 		appPos.set(object.earthPos);
 		info.coordinate.getProjectionToGround().transform(this.appPos);
 		appPos.normalize();
@@ -75,8 +70,6 @@ public class MoonRenderCache implements IObjRenderCache<Moon, MoonImage, SolarSy
 				buf.set(object.posLocalG(buf));
 				info.coordinate.getProjectionToGround().transform(buf);
 
-				//cache.setWithVec(buf);
-				//info.sky.applyAtmRefraction(cache);
 				buf.normalize();
 				pos[longc][latc].set(buf);
 			}

@@ -18,13 +18,13 @@ import com.google.gson.JsonParser;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.celestials.EnumCelestialCollectionType;
-import stellarapi.api.celestials.ICelestialObject;
+import stellarapi.api.celestials.CelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
 import stellarium.stellars.layer.IStellarLayerType;
-import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHandler, INBTConfig> {
@@ -32,18 +32,17 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	private List<DeepSkyObject> deepSkyObjects = Lists.newArrayList();
 	
 	@Override
-	public void initializeClient(IConfigHandler config, StellarObjectContainer<DeepSkyObject> container)
+	public void initializeClient(IConfigHandler config, StellarCollection<DeepSkyObject> container)
 			throws IOException {
 		this.loadMessierData();
 	}
 
 	@Override
-	public void initializeCommon(INBTConfig config, StellarObjectContainer<DeepSkyObject> container)
+	public void initializeCommon(INBTConfig config, StellarCollection<DeepSkyObject> container)
 			throws IOException {
 		for(DeepSkyObject object : this.deepSkyObjects) {
 			container.loadObject("Messier", object);
 			container.addRenderCache(object, new DeepSkyObjectCache());
-			container.addImageType(object, DeepSkyImage.class);
 		}
 	}
 	
@@ -71,7 +70,7 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	}
 
 	@Override
-	public void updateLayer(StellarObjectContainer<DeepSkyObject> container, double year) { }
+	public void updateLayer(StellarCollection<DeepSkyObject> container, double year) { }
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -90,30 +89,25 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	}
 
 	@Override
-	public boolean isBackground() {
-		return true;
-	}
-
-	@Override
 	public EnumCelestialCollectionType getCollectionType() {
 		return EnumCelestialCollectionType.DeepSkyObjects;
 	}
 
 	@Override
-	public Collection<DeepSkyObject> getSuns(StellarObjectContainer<DeepSkyObject> container) {
+	public Collection<DeepSkyObject> getSuns(StellarCollection<DeepSkyObject> container) {
 		return null;
 	}
 
 	@Override
-	public Collection<DeepSkyObject> getMoons(StellarObjectContainer<DeepSkyObject> container) {
+	public Collection<DeepSkyObject> getMoons(StellarCollection<DeepSkyObject> container) {
 		return null;
 	}
 
 	@Override
-	public Comparator<ICelestialObject> getDistanceComparator(final SpCoord pos) {
-		return new Comparator<ICelestialObject>() {
+	public Comparator<CelestialObject> getDistanceComparator(final SpCoord pos) {
+		return new Comparator<CelestialObject>() {
 			@Override
-			public int compare(ICelestialObject obj1, ICelestialObject obj2) {
+			public int compare(CelestialObject obj1, CelestialObject obj2) {
 				if(obj1 instanceof DeepSkyImage && obj2 instanceof DeepSkyImage) {
 					DeepSkyImage image = (DeepSkyImage) obj1;
 					DeepSkyImage image2 = (DeepSkyImage) obj2;
@@ -128,10 +122,10 @@ public class LayerDeepSky implements IStellarLayerType<DeepSkyObject, IConfigHan
 	}
 
 	@Override
-	public Predicate<ICelestialObject> conditionInRange(final SpCoord pos, final double radius) {
-		return new Predicate<ICelestialObject>() {
+	public Predicate<CelestialObject> conditionInRange(final SpCoord pos, final double radius) {
+		return new Predicate<CelestialObject>() {
 			@Override
-			public boolean apply(ICelestialObject input) {
+			public boolean apply(CelestialObject input) {
 				if(input instanceof DeepSkyImage) {
 					DeepSkyImage image = (DeepSkyImage) input;
 					return pos.distanceTo(image.appPos) < radius + image.radius;

@@ -10,7 +10,7 @@ import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.util.math.Allocator;
 import stellarium.view.ViewerInfo;
 
-public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSystemClientSettings> {
+public class SunRenderCache implements IObjRenderCache<Sun, SolarSystemClientSettings> {
 	protected SpCoord appCoord = new SpCoord();
 	protected Vector3 appPos = new Vector3();
 	protected float size;
@@ -32,10 +32,7 @@ public class SunRenderCache implements IObjRenderCache<Sun, SunImage, SolarSyste
 	}
 
 	@Override
-	public void updateCache(Sun object, SunImage image, ViewerInfo info) {
-		//appCoord.x = image.appCoord.x;
-		//appCoord.y = image.appCoord.y;
-		//appPos.set(appCoord.getVec());
+	public void updateCache(Sun object, ViewerInfo info) {
 		appPos.set(object.earthPos);
 		info.coordinate.getProjectionToGround().transform(this.appPos);
 		appPos.normalize();

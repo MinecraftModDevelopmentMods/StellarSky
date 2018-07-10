@@ -16,16 +16,13 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import stellarapi.api.ICelestialCoordinates;
-import stellarapi.api.ICelestialWorld;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.SAPICapabilities;
-import stellarapi.api.SAPIReferences;
 import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
 import stellarapi.api.render.IAdaptiveRenderer;
+import stellarapi.api.view.IAtmosphereEffect;
+import stellarapi.api.view.ICCoordinates;
+import stellarapi.api.world.ICelestialWorld;
 import stellarapi.api.world.worldset.WorldSet;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
@@ -168,14 +165,10 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		}
 
 		ICelestialWorld cWorld = world.getCapability(SAPICapabilities.CELESTIAL_CAPABILITY, null);
-		ICelestialCoordinates coordinate = cWorld.getCoordinate();
-		ISkyEffect sky = cWorld.getSkyEffect();
-		@SuppressWarnings("deprecation")
-		IViewScope scope = SAPIReferences.getScope(viewer);
-		@SuppressWarnings("deprecation")
-		IOpticalFilter filter = SAPIReferences.getFilter(viewer);
+		ICCoordinates coordinate = cWorld.getCoordinate();
+		IAtmosphereEffect sky = cWorld.getSkyEffect();
 
-		skyModel.onTick(this.getDefWorld(), new ViewerInfo(coordinate, sky, scope, filter, viewer));
+		skyModel.onTick(this.getDefWorld(), new ViewerInfo(coordinate, sky, viewer));
 	}
 	
 	@Override

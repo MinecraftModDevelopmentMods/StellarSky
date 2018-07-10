@@ -2,29 +2,24 @@ package stellarium.view;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-import stellarapi.api.ICelestialCoordinates;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
 import stellarapi.api.optics.Wavelength;
+import stellarapi.api.view.IAtmosphereEffect;
+import stellarapi.api.view.ICCoordinates;
 
 public class ViewerInfo {
 	public final Vector3 currentPosition;
 
-	public final ICelestialCoordinates coordinate;
-	public final ISkyEffect sky;
+	public final ICCoordinates coordinate;
+	public final IAtmosphereEffect sky;
 
 	public final double multiplyingPower;
 
 	public final Vector3 colorMultiplier = new Vector3();
 	public final double brightnessMultiplier;
 
-	public final Vector3 resolutionColor = new Vector3();
-	public final double resolutionGeneral;
-
-	public ViewerInfo(ICelestialCoordinates coordinate, ISkyEffect sky, IViewScope scope, IOpticalFilter filter, Entity viewer) {
+	public ViewerInfo(ICCoordinates coordinate, IAtmosphereEffect sky, Entity viewer) {
 		this.coordinate = coordinate;
 		this.sky = sky;
 
@@ -38,13 +33,6 @@ public class ViewerInfo {
 				scope.getLGP() * filter.getFilterEfficiency(Wavelength.V),
 				scope.getLGP() * filter.getFilterEfficiency(Wavelength.B)
 				);
-
-		resolutionColor.set(
-				Spmath.Radians(Math.max(scope.getResolution(Wavelength.red), sky.getSeeing(Wavelength.red))),
-				Spmath.Radians(Math.max(scope.getResolution(Wavelength.V), sky.getSeeing(Wavelength.V))),
-				Spmath.Radians(Math.max(scope.getResolution(Wavelength.B), sky.getSeeing(Wavelength.B)))
-				);
-		this.resolutionGeneral = Spmath.Radians(Math.max(scope.getResolution(Wavelength.visible), sky.getSeeing(Wavelength.visible)));
 	}
 
 	public float getHeight(World world) {

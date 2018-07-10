@@ -11,7 +11,7 @@ import stellarium.render.stellars.layer.StellarLayerModel;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
 import stellarium.stellars.layer.StellarLayerRegistry;
-import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.layer.StellarCollection;
 import stellarium.view.ViewerInfo;
 import stellarium.world.StellarScene;
 
@@ -23,7 +23,7 @@ public class StellarRenderModel {
 	List<StellarLayerModel> layerModels = Lists.newArrayList();
 
 	public StellarRenderModel(CelestialManager celManager, ICheckedAtmModel atmModel) {
-		for(StellarObjectContainer layer : celManager.getLayers()) {
+		for(StellarCollection layer : celManager.getLayers()) {
 			StellarLayerModel layerModel = new StellarLayerModel(layer);
 			baseModels.add(layerModel);
 		}
@@ -44,11 +44,6 @@ public class StellarRenderModel {
 			CelestialManager celestialWorld = manager.getCelestialManager();
 			layerModels.add(baseModels.get(i).copy(celestialWorld.getLayers().get(i)));
 		}
-	}
-
-	public void onDimensionLoad(StellarScene dimManager) {
-		for(int i = 0; i < layerModels.size(); i++)
-			layerModels.get(i).onLoadCollection(dimManager.getCollections().get(i));
 	}
 
 	public void onTick(World world, ViewerInfo update) {

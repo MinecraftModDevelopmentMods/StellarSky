@@ -9,11 +9,11 @@ import com.google.common.base.Predicate;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.celestials.EnumCelestialCollectionType;
-import stellarapi.api.celestials.ICelestialObject;
+import stellarapi.api.celestials.CelestialObject;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.StellarSky;
 import stellarium.stellars.layer.IStellarLayerType;
-import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSystemClientSettings, SolarSystemSettings> {
@@ -24,10 +24,10 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	public final double AU=1.496e+8;
 	
 	@Override
-	public void initializeClient(SolarSystemClientSettings config, StellarObjectContainer<SolarObject> container) throws IOException { }
+	public void initializeClient(SolarSystemClientSettings config, StellarCollection<SolarObject> container) throws IOException { }
 
 	@Override
-	public void initializeCommon(SolarSystemSettings settings, StellarObjectContainer<SolarObject> container) throws IOException {		
+	public void initializeCommon(SolarSystemSettings settings, StellarCollection<SolarObject> container) throws IOException {		
 		////Solar System
 		StellarSky.INSTANCE.getLogger().info("Initializing Solar System...");
 		///Sun
@@ -280,7 +280,7 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	}
 
 	@Override
-	public void updateLayer(StellarObjectContainer<SolarObject> container, double year) {
+	public void updateLayer(StellarCollection<SolarObject> container, double year) {
 		for(SolarObject object : container.getLoadedObjects("System"))
 			object.updatePre(year);
 		for(SolarObject object : container.getLoadedObjects("System"))
@@ -312,22 +312,22 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 	}
 
 	@Override
-	public Comparator<ICelestialObject> getDistanceComparator(SpCoord pos) {
+	public Comparator<CelestialObject> getDistanceComparator(SpCoord pos) {
 		return null;
 	}
 
 	@Override
-	public Predicate<ICelestialObject> conditionInRange(SpCoord pos, double radius) {
+	public Predicate<CelestialObject> conditionInRange(SpCoord pos, double radius) {
 		return null;
 	}
 
 	@Override
-	public Collection<SolarObject> getSuns(StellarObjectContainer<SolarObject> container) {
+	public Collection<SolarObject> getSuns(StellarCollection<SolarObject> container) {
 		return container.getLoadedObjects("Sun");
 	}
 
 	@Override
-	public Collection<SolarObject> getMoons(StellarObjectContainer<SolarObject> container) {
+	public Collection<SolarObject> getMoons(StellarCollection<SolarObject> container) {
 		return container.getLoadedObjects("Moon");
 	}
 

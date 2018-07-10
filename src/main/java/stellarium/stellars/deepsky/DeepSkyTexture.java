@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.util.ResourceLocation;
-import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 
 public class DeepSkyTexture {
@@ -16,8 +15,8 @@ public class DeepSkyTexture {
 	public DeepSkyTexture(JsonObject textureInfo) {
 		this.textureLocation = new ResourceLocation(textureInfo.get("location").getAsString());
 		JsonArray size = textureInfo.get("size").getAsJsonArray();
-		this.width = Spmath.Radians(PositionUtil.getDegreeFromDMS(size.get(0).getAsString()));
-		this.height = Spmath.Radians(PositionUtil.getDegreeFromDMS(size.get(1).getAsString()));
+		this.width = Math.toRadians(PositionUtil.getDegreeFromDMS(size.get(0).getAsString()));
+		this.height = Math.toRadians(PositionUtil.getDegreeFromDMS(size.get(1).getAsString()));
 		this.attribution = textureInfo.get("attribution").getAsString();
 	}
 	

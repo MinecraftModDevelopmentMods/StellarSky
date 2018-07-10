@@ -11,29 +11,30 @@ import com.google.common.collect.Ordering;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stellarapi.api.celestials.EnumCelestialCollectionType;
-import stellarapi.api.celestials.ICelestialObject;
+import stellarapi.api.celestials.CelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.SpCoord;
 import stellarium.stellars.layer.IStellarLayerType;
-import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler, INBTConfig> {
 
 	@Override
-	public void initializeClient(IConfigHandler config, StellarObjectContainer<Milkyway> container) throws IOException { }
-	
-	@Override
-	public void initializeCommon(INBTConfig config, StellarObjectContainer<Milkyway> container) throws IOException {
-		Milkyway milkyway = new Milkyway();
-		container.loadObject("Milkyway", milkyway);
-		container.addRenderCache(milkyway, new MilkywayRenderCache());
-		container.addImageType(milkyway, MilkywayImage.class);
+	public void initializeClient(IConfigHandler config, StellarCollection<Milkyway> container) throws IOException {
+		// Nothing to initialize w/o creation
 	}
 	
 	@Override
-	public void updateLayer(StellarObjectContainer<Milkyway> container, double year) { }
+	public void initializeCommon(INBTConfig config, StellarCollection<Milkyway> container) throws IOException {
+		Milkyway milkyway = new Milkyway();
+		container.loadObject("Milkyway", milkyway);
+		container.addRenderCache(milkyway, new MilkywayRenderCache());
+	}
+	
+	@Override
+	public void updateLayer(StellarCollection<Milkyway> container, double year) { }
 
 	@Override
 	public String getName() {
@@ -46,32 +47,27 @@ public class LayerMilkyway implements IStellarLayerType<Milkyway, IConfigHandler
 	}
 
 	@Override
-	public boolean isBackground() {
-		return true;
-	}
-
-	@Override
 	public EnumCelestialCollectionType getCollectionType() {
 		return EnumCelestialCollectionType.DeepSkyObjects;
 	}
 
 	@Override
-	public Comparator<ICelestialObject> getDistanceComparator(SpCoord pos) {
+	public Comparator<CelestialObject> getDistanceComparator(SpCoord pos) {
 		return Ordering.allEqual().reverse();
 	}
 
 	@Override
-	public Predicate<ICelestialObject> conditionInRange(SpCoord pos, double radius) {
+	public Predicate<CelestialObject> conditionInRange(SpCoord pos, double radius) {
 		return Predicates.alwaysTrue();
 	}
 
 	@Override
-	public Collection<Milkyway> getSuns(StellarObjectContainer<Milkyway> container) {
+	public Collection<Milkyway> getSuns(StellarCollection<Milkyway> container) {
 		return null;
 	}
 
 	@Override
-	public Collection<Milkyway> getMoons(StellarObjectContainer<Milkyway> container) {
+	public Collection<Milkyway> getMoons(StellarCollection<Milkyway> container) {
 		return null;
 	}
 

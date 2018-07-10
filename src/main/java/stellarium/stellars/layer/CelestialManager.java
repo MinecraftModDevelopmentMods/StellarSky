@@ -13,8 +13,9 @@ import stellarium.common.ServerSettings;
 
 public class CelestialManager {
 
-	private boolean isRemote, commonInitialized;
-	private List<StellarObjectContainer> layers = Lists.newArrayList();
+	private boolean isRemote;
+	private boolean commonInitialized = false;
+	private List<StellarCollection> layers = Lists.newArrayList();
 	
 	private CelestialManager() { }
 	
@@ -25,7 +26,7 @@ public class CelestialManager {
 		registry.composeLayer(isRemote, this.layers);
 	}
 	
-	public List<StellarObjectContainer> getLayers() {
+	public List<StellarCollection> getLayers() {
 		return this.layers;
 	}
 	
@@ -33,7 +34,7 @@ public class CelestialManager {
 		StellarSky.INSTANCE.getLogger().info("Initializing Celestial Layers with Client Settings...");
 		String layerName = null;
 		try {
-			for(StellarObjectContainer layer : this.layers) {
+			for(StellarCollection layer : this.layers) {
 				layerName = layer.getConfigName();
 				layer.getType().initializeClient(layerName != null? settings.getSubConfig(layerName) : null, layer);
 			}
@@ -49,7 +50,7 @@ public class CelestialManager {
 		StellarSky.INSTANCE.getLogger().info("Initializing Celestial Layers with Common Settings...");
 		String layerName = null;
 		try {
-			for(StellarObjectContainer layer : this.layers) {
+			for(StellarCollection layer : this.layers) {
 				layerName = layer.getConfigName();
 				layer.getType().initializeCommon(layerName != null? settings.getSubConfig(layerName) : null, layer);
 			}
@@ -63,7 +64,7 @@ public class CelestialManager {
 	}
 	
 	public void update(double year) {
-		for(StellarObjectContainer layer : this.layers)
+		for(StellarCollection layer : this.layers)
 			layer.getType().updateLayer(layer, year);
 	}
 
@@ -73,9 +74,9 @@ public class CelestialManager {
 		copied.isRemote = this.isRemote;
 		copied.layers = Lists.newArrayList(
 				Iterables.transform(this.layers,
-						new Function<StellarObjectContainer, StellarObjectContainer>() {
+						new Function<StellarCollection, StellarCollection>() {
 							@Override
-							public StellarObjectContainer apply(StellarObjectContainer input) {
+							public StellarCollection apply(StellarCollection input) {
 								return input.copyFromClient();
 							}
 				}));

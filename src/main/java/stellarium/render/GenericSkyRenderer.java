@@ -4,13 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.client.IRenderHandler;
-import stellarapi.api.ICelestialCoordinates;
-import stellarapi.api.ICelestialWorld;
-import stellarapi.api.ISkyEffect;
 import stellarapi.api.SAPICapabilities;
-import stellarapi.api.SAPIReferences;
-import stellarapi.api.optics.IOpticalFilter;
-import stellarapi.api.optics.IViewScope;
+import stellarapi.api.view.IAtmosphereEffect;
+import stellarapi.api.view.ICCoordinates;
+import stellarapi.api.world.ICelestialWorld;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
 import stellarium.view.ViewerInfo;
@@ -29,13 +26,11 @@ public class GenericSkyRenderer extends IRenderHandler {
 
 		ICelestialWorld cWorld = world.getCapability(
 				SAPICapabilities.CELESTIAL_CAPABILITY, null);
-		ICelestialCoordinates coordinate = cWorld.getCoordinate();
-		ISkyEffect sky = cWorld.getSkyEffect();	
-		IViewScope scope = SAPIReferences.getScope(viewer);
-		IOpticalFilter filter = SAPIReferences.getFilter(viewer);
+		ICCoordinates coordinate = cWorld.getCoordinate();
+		IAtmosphereEffect sky = cWorld.getSkyEffect();
 
 		SkyRI info = new SkyRI(mc, world, partialTicks,
-				new ViewerInfo(coordinate, sky, scope, filter, viewer));
+				new ViewerInfo(coordinate, sky, viewer));
 
 		ClientSettings settings = StellarSky.PROXY.getClientSettings();
 		SkyRenderer.INSTANCE.preRender(settings, info);

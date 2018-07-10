@@ -7,7 +7,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 import stellarium.stellars.layer.StellarObject;
 
@@ -26,8 +25,8 @@ public class DeepSkyObject extends StellarObject {
 		this.magnitude = PositionUtil.getMagnitude(object.get("magnitude").getAsString());
 
 		JsonArray size = object.get("size").getAsJsonArray();
-		this.width = Spmath.Radians(PositionUtil.getDegreeFromDMS(size.get(0).getAsString()));
-		this.height = Spmath.Radians(PositionUtil.getDegreeFromDMS(size.get(1).getAsString()));
+		this.width = Math.toRadians(PositionUtil.getDegreeFromDMS(size.get(0).getAsString()));
+		this.height = Math.toRadians(PositionUtil.getDegreeFromDMS(size.get(1).getAsString()));
 
 		JsonArray pos = object.get("position").getAsJsonArray();
 		double ra = PositionUtil.getDegreeFromHMS(pos.get(0).getAsString());

@@ -1,9 +1,9 @@
 package stellarium.world;
 
 import net.minecraft.world.World;
-import stellarapi.api.ICelestialPack;
-import stellarapi.api.ICelestialScene;
 import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.pack.ICelestialPack;
+import stellarapi.api.pack.ICelestialScene;
 import stellarapi.api.world.worldset.WorldSet;
 import stellarium.StellarSky;
 

@@ -1,14 +1,13 @@
 package stellarium.world;
 
 import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinates;
 import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
-import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.view.ICCoordinates;
 import stellarium.common.ServerSettings;
 
-public class StellarCoordinates implements ICelestialCoordinates {
+public class StellarCoordinates implements ICCoordinates {
 
 	//Rotation
 	private double rot;
@@ -29,11 +28,11 @@ public class StellarCoordinates implements ICelestialCoordinates {
 	public StellarCoordinates(ServerSettings commonSettings, PerDimensionSettings settings) {
 		this.yearLength = commonSettings.year;
 		this.dayLength = commonSettings.day;
-		this.latitude = Spmath.Radians(settings.latitude);
-		this.longitude = Spmath.Radians(settings.longitude);
+		this.latitude = Math.toRadians(settings.latitude);
+		this.longitude = Math.toRadians(settings.longitude);
 		this.rot = 2 * Math.PI * (this.yearLength + 1);
-		this.axialTilt = Spmath.Radians(commonSettings.propAxialTilt.getDouble());
-		this.precession = Spmath.Radians(commonSettings.propPrecession.getDouble());
+		this.axialTilt = Math.toRadians(commonSettings.propAxialTilt.getDouble());
+		this.precession = Math.toRadians(commonSettings.propPrecession.getDouble());
 
 		this.zeroTime = (commonSettings.yearOffset * commonSettings.year + commonSettings.dayOffset) * commonSettings.day + commonSettings.tickOffset;
 
@@ -191,11 +190,11 @@ public class StellarCoordinates implements ICelestialCoordinates {
 		SpCoord coord = new SpCoord();
 		coord.setWithVec(eqrPos);
 
-		return this.hourAngleForHeight(heightAngle, Spmath.Radians(coord.y), Spmath.Radians(this.latitude)) / (2 * Math.PI);
+		return this.hourAngleForHeight(Math.toRadians(heightAngle), Math.toRadians(coord.y), Math.toRadians(this.latitude)) / (2 * Math.PI);
 	}
 
-	private double hourAngleForHeight(double heightAngle, double dec, double lat) {
-		return Math.acos((- Spmath.sind(heightAngle) + Math.sin(dec) * Math.sin(lat)) / (Math.cos(dec) * Math.cos(lat)));
+	private double hourAngleForHeight(double h, double dec, double lat) {
+		return Math.acos((- Math.sin(h) + Math.sin(dec) * Math.sin(lat)) / (Math.cos(dec) * Math.cos(lat)));
 	}
 
 }

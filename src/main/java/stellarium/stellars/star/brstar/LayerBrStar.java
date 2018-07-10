@@ -16,7 +16,7 @@ import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.StellarSky;
 import stellarium.stellars.OpticsHelper;
-import stellarium.stellars.layer.StellarObjectContainer;
+import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
 import stellarium.stellars.star.StarImage;
@@ -48,13 +48,13 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	
 	@Override
 	public void initializeClient(IConfigHandler config,
-			StellarObjectContainer<BgStar> container) throws IOException {
+			StellarCollection<BgStar> container) throws IOException {
 		this.loadStarData(StellarSky.PROXY.getClientSettings().mag_Limit);
 	}
 
 	@Override
 	public void initializeCommon(INBTConfig config,
-			StellarObjectContainer<BgStar> container) throws IOException {
+			StellarCollection<BgStar> container) throws IOException {
 		if(!this.IsInitialized)
 			this.loadStarData(4.0);
 		
@@ -62,9 +62,6 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 		{
 			container.loadObject("Star", star);
 			container.addRenderCache(star, new StarRenderCache());
-			
-			if(!star.getName().trim().isEmpty())
-				container.addImageType(star, StarImage.class);
 		}
 	}
 	

@@ -1,8 +1,8 @@
 package stellarium.stellars.star;
 
 import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinates;
-import stellarapi.api.ISkyEffect;
+import stellarapi.api.ICCoordinates;
+import stellarapi.api.IAtmosphereEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
@@ -22,7 +22,7 @@ public class StarImage implements IPerWorldImage<BgStar> {
 	private SpCoord appPos = new SpCoord();
 	
 	@Override
-	public void initialize(BgStar object, ICelestialCoordinates coordinate, ISkyEffect effect, CelestialPeriod year) {
+	public void initialize(BgStar object, ICCoordinates coordinate, IAtmosphereEffect effect, CelestialPeriod year) {
 		this.main = object;
 		
 		SpCoord coord = new SpCoord();
@@ -44,7 +44,7 @@ public class StarImage implements IPerWorldImage<BgStar> {
 	}
 
 	@Override
-	public void updateCache(BgStar object, ICelestialCoordinates coordinate, ISkyEffect sky) {
+	public void updateCache(BgStar object, ICCoordinates coordinate, IAtmosphereEffect sky) {
 		Vector3 ref = new Vector3(object.pos);
 		coordinate.getProjectionToGround().transform(ref);
 		appPos.setWithVec(ref);

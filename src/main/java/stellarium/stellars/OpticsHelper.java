@@ -14,7 +14,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 	private static final double MAG_SUN = -26.74;
 
 	// Default resolution in rad
-	public static final float DEFAULT_RESOLUTION = Spmath.Radians(0.06f);
+	public static final float DEFAULT_RESOLUTION = (float) Math.toRadians(0.06);
 
 	// Magnitude of star with maximal brightness(intensity) 1.0 with default resolution
 	private static final double MAG_UPPER_LIMIT = -1.0;
@@ -61,7 +61,9 @@ public class OpticsHelper extends SimpleConfigHandler {
 	}
 
 	@Override
-	public void saveToConfig(Configuration config, String category) { }
+	public void saveToConfig(Configuration config, String category) {
+		// Simple configuration, saves nothing
+	}
 
 	public static float turbulance() {
 		return (float) (instance.turbulance * instance.randomTurbulance.nextGaussian() * 0.1);

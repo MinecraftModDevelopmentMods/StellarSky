@@ -1,8 +1,8 @@
 package stellarium.stellars.milkyway;
 
 import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinates;
-import stellarapi.api.ISkyEffect;
+import stellarapi.api.ICCoordinates;
+import stellarapi.api.IAtmosphereEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
@@ -13,12 +13,12 @@ public class MilkywayImage implements IPerWorldImage<Milkyway> {
 	private CelestialPeriod period;
 	
 	@Override
-	public void initialize(Milkyway object, ICelestialCoordinates coordinate, ISkyEffect sky, CelestialPeriod year) {
+	public void initialize(Milkyway object, ICCoordinates coordinate, IAtmosphereEffect sky, CelestialPeriod year) {
 		this.period = coordinate.getPeriod();
 	}
 
 	@Override
-	public void updateCache(Milkyway object, ICelestialCoordinates coordinate, ISkyEffect sky) { }
+	public void updateCache(Milkyway object, ICCoordinates coordinate, IAtmosphereEffect sky) { }
 	
 	@Override
 	public CelestialPeriod getAbsolutePeriod() {

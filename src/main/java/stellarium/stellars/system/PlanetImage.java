@@ -1,8 +1,8 @@
 package stellarium.stellars.system;
 
 import stellarapi.api.CelestialPeriod;
-import stellarapi.api.ICelestialCoordinates;
-import stellarapi.api.ISkyEffect;
+import stellarapi.api.ICCoordinates;
+import stellarapi.api.IAtmosphereEffect;
 import stellarapi.api.celestials.EnumCelestialObjectType;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
@@ -20,7 +20,7 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 	private CelestialPeriod horPeriod;
 
 	@Override
-	public void initialize(Planet object, ICelestialCoordinates coordinate, ISkyEffect sky, CelestialPeriod yearPeriod) {
+	public void initialize(Planet object, ICCoordinates coordinate, IAtmosphereEffect sky, CelestialPeriod yearPeriod) {
 		double LvsSun=object.radius*object.radius*object.albedo*1.4/(object.a0*object.a0*object.a0*object.a0);
 		this.mag=-26.74-2.5*Math.log10(LvsSun);
 		this.name = object.getID();
@@ -37,7 +37,7 @@ public class PlanetImage implements IPerWorldImage<Planet> {
 	}
 
 	@Override
-	public void updateCache(Planet object, ICelestialCoordinates coordinate, ISkyEffect sky) {
+	public void updateCache(Planet object, ICCoordinates coordinate, IAtmosphereEffect sky) {
 		this.pos = new Vector3(object.earthPos);
 		Vector3 ref = new Vector3(object.earthPos);
 		coordinate.getProjectionToGround().transform(ref);

@@ -72,10 +72,11 @@ public class StellarMath {
 		if(b=='-') return -num;
 		else return num;
 	}
-	
+
+	// TODO Turn everything here to radians
 	//Calculate Eccentric Anomaly
 	public static final double CalEcanomaly(double e, double M){
-		double E=M+e*Spmath.sind(M);
+		double E=M+e*Math.sin(Math.toRadians(M));
 		double delE=GetdelE(M,E,e);
 		int i=0;
 		while((Math.abs(delE)>infmin))
@@ -84,7 +85,7 @@ public class StellarMath {
 			delE=GetdelE(M,E,e);
 			if(E>180.0 || E<-180.0 || Math.abs(delE)>90.0 || i>1000)
 			{
-				return M+e*Spmath.sind(M);
+				return M+e*Math.sin(Math.toRadians(M));
 			}
 			i++;
 		}
@@ -93,13 +94,13 @@ public class StellarMath {
 	
 	//Support for Calculating Eccentric Anomaly
 	public static final double GetdelE(double M, double E, double e){
-		double delM=M-(E-e*Spmath.sind(E));
-		return delM/(1.0-e*Spmath.cosd(E));
+		double delM=M-(E-e*Math.sin(Math.toRadians(E)));
+		return delM/(1.0-e*Math.cos(Math.toRadians(E)));
 	}
 	
 	public static Vector3 GetOrbVec(double a, double e, double M, Matrix3 rotation){
 		M=(M+180.0)%360.0-180.0;
-		double e2=Spmath.Degrees(e);
+		double e2=Math.toDegrees(e);
 		double E=CalEcanomaly(e2, M);
 		Vector3 r = new Vector3(a*(Spmath.cosd(E)-e), a*Math.sqrt(1-e*e)*Spmath.sind(E), 0.0);
 		rotation.transform(r);

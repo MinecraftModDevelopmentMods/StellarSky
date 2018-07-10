@@ -13,7 +13,7 @@ import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.stellars.util.StarColor;
 import stellarium.view.ViewerInfo;
 
-public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConfigHandler> {
+public class StarRenderCache implements IObjRenderCache<BgStar, IConfigHandler> {
 	protected boolean shouldRender;
 	protected SpCoord appPos = new SpCoord();
 	protected Vector3 pos = new Vector3();
@@ -24,21 +24,9 @@ public class StarRenderCache implements IObjRenderCache<BgStar, StarImage, IConf
 	public void updateSettings(ClientSettings settings, IConfigHandler config, BgStar star) { }
 
 	@Override
-	public void updateCache(BgStar object, StarImage image, ViewerInfo info) {
+	public void updateCache(BgStar object, ViewerInfo info) {
 		ref.set(object.pos);
 		info.coordinate.getProjectionToGround().transform(this.ref);
-
-		/*if(image == null) {
-			ref.set(object.pos);
-			info.coordinate.getProjectionToGround().transform(this.ref);
-			appPos.setWithVec(this.ref);
-			info.sky.applyAtmRefraction(this.appPos);
-		} else {
-			SpCoord appCoord = image.getCurrentHorizontalPos();
-			this.appPos.x = appCoord.x;
-			this.appPos.y = appCoord.y;
-		}*/
-
 		pos.set(this.ref);
 		pos.scale(LayerRHelper.DEEP_DEPTH);
 

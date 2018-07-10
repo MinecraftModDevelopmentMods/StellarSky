@@ -12,7 +12,7 @@ import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.util.math.Allocator;
 import stellarium.view.ViewerInfo;
 
-public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayImage, MilkywaySettings> {
+public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywaySettings> {
 	
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
@@ -38,16 +38,12 @@ public class MilkywayRenderCache implements IObjRenderCache<Milkyway, MilkywayIm
 	}
 
 	@Override
-	public void updateCache(Milkyway object, MilkywayImage image, ViewerInfo info) {
+	public void updateCache(Milkyway object, ViewerInfo info) {
 		for(int longc=0; longc<longn; longc++){
 			for(int latc=0; latc<=latn; latc++){
 				buffer.set(new SpCoord(longc*360.0/longn + 90.0, latc*180.0/latn - 90.0).getVec());
 				EqtoEc.transform(this.buffer);
 				info.coordinate.getProjectionToGround().transform(this.buffer);
-
-				//SpCoord coord = new SpCoord();
-				//coord.setWithVec(this.buffer);
-				//info.sky.applyAtmRefraction(coord);
 
 				milkywayNormal[longc][latc].set(this.buffer);
 			}

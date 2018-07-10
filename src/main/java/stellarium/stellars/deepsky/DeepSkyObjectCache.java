@@ -13,7 +13,7 @@ import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 import stellarium.view.ViewerInfo;
 
-public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSkyImage, IConfigHandler> {
+public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, IConfigHandler> {
 
 	//Zero-time axial tilt
 	public static final double e=0.4090926;
@@ -41,7 +41,7 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 	}
 
 	@Override
-	public void updateCache(DeepSkyObject object, DeepSkyImage image, ViewerInfo info) {		
+	public void updateCache(DeepSkyObject object, ViewerInfo info) {		
 		if(!object.getTexture().isPresent()) {
 			this.shouldRender = false;
 			return;
@@ -57,8 +57,6 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, DeepSk
 		for(int i = 0; i < 4; i++) {
 			EqtoEc.transform(quads[i]);
 			info.coordinate.getProjectionToGround().transform(quads[i]);
-			//cache.setWithVec(quads[i]);
-			//info.sky.applyAtmRefraction(cache);
 			coords[i].set(quads[i]);
 			coords[i].scale(LayerRHelper.DEEP_DEPTH);
 		}

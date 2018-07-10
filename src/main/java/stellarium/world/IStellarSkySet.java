@@ -1,7 +1,7 @@
 package stellarium.world;
 
-import stellarapi.api.ISkyEffect;
+import stellarapi.api.view.IAtmosphereEffect;
 
-public interface IStellarSkySet extends ISkyEffect {
+public interface IStellarSkySet extends IAtmosphereEffect {
 	public boolean hideObjectsUnderHorizon();
 }

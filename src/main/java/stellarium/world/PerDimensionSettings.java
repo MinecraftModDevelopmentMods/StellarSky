@@ -13,6 +13,7 @@ import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarapi.api.lib.config.property.ConfigPropertyDoubleList;
 import stellarapi.api.lib.config.property.ConfigPropertyString;
 import stellarapi.api.world.worldset.WorldSet;
+import stellarapi.api.world.worldset.WorldSets;
 import stellarapi.impl.celestial.DefaultCelestialPack;
 import stellarium.api.ISkyRenderType;
 import stellarium.api.ISkySetType;
@@ -55,7 +56,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 	public PerDimensionSettings(WorldSet worldSet) {	
 		this.worldSet = worldSet;
 
-		this.propStellarSkyEnabled = new ConfigPropertyBoolean("StellarSky_Enabled", "stellarSkyEnabled", worldSet == SAPIReferences.exactOverworld());
+		this.propStellarSkyEnabled = new ConfigPropertyBoolean("StellarSky_Enabled", "stellarSkyEnabled", worldSet == WorldSets.exactOverworld());
 
 		this.propPatchProvider = new ConfigPropertyBoolean("Patch_Provider", "patchProvider", true);
 
@@ -240,7 +241,7 @@ public class PerDimensionSettings extends SimpleHierarchicalNBTConfig {
 
 		if(propStellarSkyEnabled.getBoolean()) {
 			SAPIReferences.setCelestialPack(this.worldSet, StellarPack.INSTANCE);
-   		} else if(this.worldSet == SAPIReferences.exactOverworld()) {
+   		} else if(this.worldSet == WorldSets.exactOverworld()) {
    			SAPIReferences.setCelestialPack(this.worldSet, DefaultCelestialPack.INSTANCE);
    		}
 	}

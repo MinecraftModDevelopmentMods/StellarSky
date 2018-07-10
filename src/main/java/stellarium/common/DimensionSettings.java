@@ -1,9 +1,9 @@
 package stellarium.common;
 
 import net.minecraftforge.common.config.Configuration;
-import stellarapi.api.SAPIReferences;
 import stellarapi.api.lib.config.HierarchicalConfig;
 import stellarapi.api.world.worldset.WorldSet;
+import stellarapi.api.world.worldset.WorldSets;
 import stellarium.world.PerDimensionSettings;
 
 public class DimensionSettings extends HierarchicalConfig {
@@ -12,8 +12,8 @@ public class DimensionSettings extends HierarchicalConfig {
 		config.setCategoryComment(category, "Configurations for Dimension Settings.");
 		config.setCategoryLanguageKey(category, "config.category.dimension");
 		config.setCategoryRequiresWorldRestart(category, true);
-				
-		for(WorldSet worldSet : SAPIReferences.getAllWorldSets()) {
+
+		for(WorldSet worldSet : WorldSets.getAllWorldSets()) {
 			if(worldSet.hasSky().isFalse)
 				continue;
 
