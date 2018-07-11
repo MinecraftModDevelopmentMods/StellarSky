@@ -142,7 +142,7 @@ public enum AtmosphereRenderer {
 
 			OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
 
-			// TODO Do this with UVs computed on CPU side & Fix glitch from refraction
+			// TODO AA Do this with UVs computed on CPU side & Fix glitch from refraction
 			// Apply refraction & Convert to RGBM (Rendering ends here, postprocessing all the way down)
 			IShaderObject refractor = atmShader.bindRefractionShader(model);
 			refractor.getField("pitch").setDouble(Math.toRadians(-info.minecraft.player.rotationPitch));

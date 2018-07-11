@@ -7,9 +7,9 @@ import stellarium.stellars.layer.StellarObject;
 
 public class Milkyway extends StellarObject {
 	public Milkyway() {
-		super(new ResourceLocation(StellarSkyReferences.MODID, "milkyway"),
+		super("milkyway",
+				new ResourceLocation(StellarSkyReferences.MODID, "milkyway"),
 				EnumObjectType.DeepSkyObject);
-		// TODO All Auto-generated constructor stub
-		// TODO All find period
+		this.setStandardMagnitude(4.5);
 	}
 }

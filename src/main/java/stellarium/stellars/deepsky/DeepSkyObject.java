@@ -6,13 +6,16 @@ import com.google.common.base.Optional;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import net.minecraft.util.ResourceLocation;
+import stellarapi.api.CelestialPeriod;
+import stellarapi.api.celestials.EnumObjectType;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.view.ICCoordinates;
+import stellarium.StellarSkyReferences;
 import stellarium.stellars.layer.StellarObject;
 
 public class DeepSkyObject extends StellarObject {
-
-	private String id;
 	protected String name;
 	protected Vector3 centerPos;
 	protected double magnitude;
@@ -20,9 +23,11 @@ public class DeepSkyObject extends StellarObject {
 	private Optional<DeepSkyTexture> texture;
 
 	public DeepSkyObject(String objectId, JsonObject object) throws IOException {
-		this.id = objectId;
+		super(objectId, new ResourceLocation(StellarSkyReferences.MODID, object.get("name").getAsString()),
+				EnumObjectType.DeepSkyObject);
 		this.name = object.get("name").getAsString();
 		this.magnitude = PositionUtil.getMagnitude(object.get("magnitude").getAsString());
+		this.setStandardMagnitude(this.magnitude);
 
 		JsonArray size = object.get("size").getAsJsonArray();
 		this.width = Math.toRadians(PositionUtil.getDegreeFromDMS(size.get(0).getAsString()));
@@ -32,6 +37,8 @@ public class DeepSkyObject extends StellarObject {
 		double ra = PositionUtil.getDegreeFromHMS(pos.get(0).getAsString());
 		double dec = PositionUtil.getDegreeFromDMS(pos.get(1).getAsString());
 		this.centerPos = new SpCoord(ra, dec).getVec();
+
+		this.setPos(this.centerPos);
 		
 		if(object.has("textures"))
 			this.texture = Optional.of(new DeepSkyTexture(object.get("textures").getAsJsonObject()));
@@ -39,8 +46,10 @@ public class DeepSkyObject extends StellarObject {
 	}
 
 	@Override
-	public String getID() {
-		return this.id;
+	public void setupCoord(ICCoordinates coords, CelestialPeriod coordPeriod) {
+		new CelestialPeriod(String.format("Day; for %s", this.name),
+				coords.getPeriod().getPeriodLength(),
+				coords.calculateInitialOffset(this.centerPos, coords.getPeriod().getPeriodLength()));
 	}
 
 	public Optional<DeepSkyTexture> getTexture() {

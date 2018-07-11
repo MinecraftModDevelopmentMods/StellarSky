@@ -168,7 +168,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		ICCoordinates coordinate = cWorld.getCoordinate();
 		IAtmosphereEffect sky = cWorld.getSkyEffect();
 
-		skyModel.onTick(this.getDefWorld(), new ViewerInfo(coordinate, sky, viewer));
+		skyModel.onTick(this.getDefWorld(), new ViewerInfo(coordinate, sky, viewer, 0.0f));
 	}
 	
 	@Override

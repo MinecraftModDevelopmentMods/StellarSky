@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL15;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.shader.Framebuffer;
 import stellarapi.api.lib.math.Spmath;
+import stellarapi.api.optics.EyeDetector;
 import stellarium.StellarSkyResources;
 import stellarium.client.ClientSettings;
 import stellarium.render.shader.IShaderObject;
@@ -166,9 +167,11 @@ public enum StellarRenderer {
 		frame2.bindFramebuffer(false);
 		frame2.framebufferClear();
 
+		double resolution = Math.toRadians(EyeDetector.DEFAULT_RESOLUTION) / viewer.multiplyingPower;
+
 		scope.bindShader();
 		fieldBrMult.setDouble4(1.0, 1.0, 1.0, 1.0);
-		fieldResDir.setDouble2(viewer.resolutionGeneral / info.relativeWidth, 0.0);
+		fieldResDir.setDouble2(resolution / info.relativeWidth, 0.0);
 		frame1.bindFramebufferTexture();
 		frame1.renderFullQuad();
 		scope.releaseShader();
@@ -179,7 +182,7 @@ public enum StellarRenderer {
 
 		scope.bindShader();
 		fieldBrMult.setDouble4(multRed, multGreen, multBlue, 1.0);
-		fieldResDir.setDouble2(0.0, viewer.resolutionGeneral / info.relativeHeight);
+		fieldResDir.setDouble2(0.0, resolution / info.relativeHeight);
 		frame2.bindFramebufferTexture();
 		frame2.renderFullQuad();
 		scope.releaseShader();

@@ -14,17 +14,16 @@ import stellarapi.api.observe.SearchRegion;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.render.stellars.layer.StellarLayerModel;
 
-// TODO Maybe the layer is the collection and this is just a container
 public class StellarCollection<S extends StellarObject> extends CelestialCollection {
-	private IStellarLayerType<S, IConfigHandler, INBTConfig> type;
-	private String configName;
+	private final StellarLayer<S, IConfigHandler, INBTConfig> type;
+	private final String configName;
 
 	private StellarLayerModel<S> layerModel;
 
 	private SetMultimap<String, S> loadedObjects = HashMultimap.create();
 
-	public StellarCollection(IStellarLayerType<S, IConfigHandler, INBTConfig> type, String configName) {
-		super(type.getName(), type.getCollectionType(), type.searchOrder());
+	public StellarCollection(StellarLayer<S, IConfigHandler, INBTConfig> type, String configName) {
+		super(type.name, type.type, type.searchOrder);
 		this.type = type;
 		this.configName = configName;
 	}
@@ -33,7 +32,7 @@ public class StellarCollection<S extends StellarObject> extends CelestialCollect
 		this.layerModel = layerModel;
 	}
 	
-	public IStellarLayerType<S, IConfigHandler, INBTConfig> getType() {
+	public StellarLayer<S, IConfigHandler, INBTConfig> getType() {
 		return this.type;
 	}
 	

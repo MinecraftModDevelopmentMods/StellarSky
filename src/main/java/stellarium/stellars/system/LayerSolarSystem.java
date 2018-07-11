@@ -2,29 +2,28 @@ package stellarium.stellars.system;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Comparator;
 
-import com.google.common.base.Predicate;
-
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import stellarapi.api.celestials.EnumCelestialCollectionType;
-import stellarapi.api.celestials.CelestialObject;
-import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.celestials.EnumCollectionType;
 import stellarium.StellarSky;
-import stellarium.stellars.layer.IStellarLayerType;
+import stellarium.StellarSkyReferences;
 import stellarium.stellars.layer.StellarCollection;
+import stellarium.stellars.layer.StellarLayer;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
-public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSystemClientSettings, SolarSystemSettings> {
+public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClientSettings, SolarSystemSettings> {
+	public LayerSolarSystem() {
+		super(new ResourceLocation(StellarSkyReferences.MODID, "solarsystem"),
+				EnumCollectionType.System, 0);
+	}
+
 	protected static int planetRenderId = -1;
 	protected static int sunRenderId = -1;
 	protected static int moonRenderId = -1;
 	
 	public final double AU=1.496e+8;
-	
-	@Override
-	public void initializeClient(SolarSystemClientSettings config, StellarCollection<SolarObject> container) throws IOException { }
 
 	@Override
 	public void initializeCommon(SolarSystemSettings settings, StellarCollection<SolarObject> container) throws IOException {		
@@ -32,20 +31,19 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		StellarSky.INSTANCE.getLogger().info("Initializing Solar System...");
 		///Sun
 		StellarSky.INSTANCE.getLogger().info("Initializing Sun...");
-		Sun sun = new Sun("Sun");
+		Sun sun = new Sun("sun");
 		sun.radius=0.00465469 * 4;
 		sun.mass=1.0;
 		sun.initialize();
-		container.loadObject("Sun", sun);
-		container.loadObject("System", sun);
+		container.loadObject("sun", sun);
+		container.loadObject("system", sun);
 		container.addRenderCache(sun, new SunRenderCache());
-		container.addImageType(sun, SunImage.class);
 		
 		///Earth System
 		//Declaration		
 		StellarSky.INSTANCE.getLogger().info("Initializing Earth...");
-		Earth earth = new Earth("Earth", sun);
-		Moon moon = new Moon("Moon", earth);
+		Earth earth = new Earth("earth", sun);
+		Moon moon = new Moon("moon", earth);
 		
 		earth.radius=4.2634e-5;
 		earth.mass=3.002458398e-6;
@@ -81,20 +79,19 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		
 		//Earth Initialize
 		earth.initialize();
-		container.loadObject("Earth", earth);
-		container.loadObject("System", earth);
+		container.loadObject("earth", earth);
+		container.loadObject("system", earth);
 		
 		//Moon Initialize
 		moon.initialize();
-		container.loadObject("Moon", moon);
-		container.loadObject("System", moon);
+		container.loadObject("moon", moon);
+		container.loadObject("system", moon);
 		container.addRenderCache(moon, new MoonRenderCache());
-		container.addImageType(moon, MoonImage.class);
 		
 		///Planets
 		//Mercury
 		StellarSky.INSTANCE.getLogger().info("Initializing Mercury...");
-		Planet mercury = new Planet("Mercury", sun);
+		Planet mercury = new Planet("mercury", sun);
 		mercury.albedo=0.119;
 		mercury.radius=1.630815508e-5;
 		mercury.mass=1.660147806e-7;
@@ -112,13 +109,12 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		mercury.Omegad=-0.12214182;
 		
 		mercury.initialize();
-		container.loadObject("System", mercury);
+		container.loadObject("system", mercury);
 		container.addRenderCache(mercury, new PlanetRenderCache());
-		container.addImageType(mercury, PlanetImage.class);
 		
 		//Venus
 		StellarSky.INSTANCE.getLogger().info("Initizlizing Venus...");
-		Planet venus = new Planet("Venus", sun);
+		Planet venus = new Planet("venus", sun);
 		venus.albedo=0.90;
 		venus.radius=4.0453208556e-5;
 		venus.mass=2.447589362e-6;
@@ -136,13 +132,12 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		venus.Omegad=-0.27274174;
 		
 		venus.initialize();
-		container.loadObject("System", venus);
+		container.loadObject("system", venus);
 		container.addRenderCache(venus, new PlanetRenderCache());
-		container.addImageType(venus, PlanetImage.class);
 		
 		//Mars
 		StellarSky.INSTANCE.getLogger().info("Initializing Mars...");
-		Planet mars = new Planet("Mars", sun);
+		Planet mars = new Planet("mars", sun);
 		mars.albedo=0.25;
 		mars.radius=2.26604278e-5;
 		mars.mass=3.22683626e-7;
@@ -160,13 +155,12 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		mars.Omegad=-0.26852431;
 		
 		mars.initialize();
-		container.loadObject("System", mars);
+		container.loadObject("system", mars);
 		container.addRenderCache(mars, new PlanetRenderCache());
-		container.addImageType(mars, PlanetImage.class);
 		
 		//Jupiter
 		StellarSky.INSTANCE.getLogger().info("Initializing Jupiter...");
-		Planet jupiter = new Planet("Jupiter", sun);
+		Planet jupiter = new Planet("jupiter", sun);
 		jupiter.albedo=0.343;
 		jupiter.radius=4.673195187e-4;
 		jupiter.mass=9.54502036e-4;
@@ -188,13 +182,12 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		jupiter.f=38.35125;
 		
 		jupiter.initialize();
-		container.loadObject("System", jupiter);
+		container.loadObject("system", jupiter);
 		container.addRenderCache(jupiter, new PlanetRenderCache());
-		container.addImageType(jupiter, PlanetImage.class);
 		
 		//Saturn
 		StellarSky.INSTANCE.getLogger().info("Initializing Saturn...");
-		Planet saturn = new Planet("Saturn", sun);
+		Planet saturn = new Planet("saturn", sun);
 		saturn.albedo=0.342;
 		saturn.radius=3.83128342e-4;
 		saturn.mass=2.8578754e-4;
@@ -216,9 +209,8 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		saturn.f=38.35125;
 		
 		saturn.initialize();
-		container.loadObject("System", saturn);
+		container.loadObject("system", saturn);
 		container.addRenderCache(saturn, new PlanetRenderCache());
-		container.addImageType(saturn, PlanetImage.class);
 
 		//Uranus
 		StellarSky.INSTANCE.getLogger().info("Initializing Uranus...");
@@ -244,13 +236,12 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		uranus.f=7.67025;
 		
 		uranus.initialize();
-		container.loadObject("System", uranus);
+		container.loadObject("system", uranus);
 		container.addRenderCache(uranus, new PlanetRenderCache());
-		container.addImageType(uranus, PlanetImage.class);
 
 		//Neptune
 		StellarSky.INSTANCE.getLogger().info("Initializing Neptune...");
-		Planet neptune = new Planet("Neptune", sun);
+		Planet neptune = new Planet("neptune", sun);
 		neptune.albedo=0.290;
 		neptune.radius=1.641209893e-4;
 		neptune.mass=5.14956513e-5;
@@ -272,9 +263,8 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 		neptune.f=7.67025;
 		
 		neptune.initialize();
-		container.loadObject("System", neptune);
+		container.loadObject("system", neptune);
 		container.addRenderCache(neptune, new PlanetRenderCache());
-		container.addImageType(neptune, PlanetImage.class);
 
 		StellarSky.INSTANCE.getLogger().info("Solar System Initialized!");
 	}
@@ -289,36 +279,6 @@ public class LayerSolarSystem implements IStellarLayerType<SolarObject, SolarSys
 			object.updatePos(container.getLoadedSingleton("Sun"), container.getLoadedSingleton("Earth"));
 		for(SolarObject object : container.getLoadedObjects("System"))
 			object.updatePost(container.getLoadedSingleton("Earth"));
-	}
-
-	@Override
-	public String getName() {
-		return "Solar System";
-	}
-
-	@Override
-	public int searchOrder() {
-		return 0;
-	}
-
-	@Override
-	public boolean isBackground() {
-		return false;
-	}
-
-	@Override
-	public EnumCelestialCollectionType getCollectionType() {
-		return EnumCelestialCollectionType.System;
-	}
-
-	@Override
-	public Comparator<CelestialObject> getDistanceComparator(SpCoord pos) {
-		return null;
-	}
-
-	@Override
-	public Predicate<CelestialObject> conditionInRange(SpCoord pos, double radius) {
-		return null;
 	}
 
 	@Override

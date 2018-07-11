@@ -131,7 +131,7 @@ public final class StellarScene implements ICelestialScene {
 		StellarSky.INSTANCE.getLogger().info("Test Update Ended.");
 
 		for(StellarCollection container : manager.getCelestialManager().getLayers()) {
-			// TODO Find suns&moons
+			// TODO AA Find suns&moons
 			/*container.addCollection(collection);
 			collections.add(collection);
 

@@ -1,12 +1,10 @@
 package stellarium.stellars.layer;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
@@ -31,36 +29,23 @@ public class StellarLayerRegistry {
 	}
 	
 	private List<RegistryDelegate> registeredLayers = Lists.newArrayList();
-	private Map<Class, String> layerNameMap = Maps.newHashMap();
-	
+
 	public StellarLayerRegistry() {
-		this.registerLayer(new LayerBrStar(), null, (Callable)null, (Callable)null);
-		this.registerLayer(new LayerMilkyway(), "MilkyWay", (Callable)null, MilkywaySettings.class);
-		this.registerLayer(new LayerSolarSystem(), "SolarSystem", SolarSystemSettings.class, SolarSystemClientSettings.class);
-		this.registerLayer(new LayerDeepSky(), "DeepSky", (Callable)null, (Callable)null);
+		this.registerLayer(new LayerBrStar(), null);
+		this.registerLayer(new LayerMilkyway(), "MilkyWay").clientConfig(MilkywaySettings::new);
+		this.registerLayer(new LayerSolarSystem(), "SolarSystem")
+		.commonConfig(SolarSystemSettings::new).clientConfig(SolarSystemClientSettings::new);
+		this.registerLayer(new LayerDeepSky(), "DeepSky");
 	}
-	
-	public void registerLayer(IStellarLayerType layer, String configName, Callable<INBTConfig> commonConfigFactory, Callable<IConfigHandler> clientConfigFactory)
+
+	public RegistryDelegate registerLayer(StellarLayer layer, String configName)
 	{
 		RegistryDelegate delegate = new RegistryDelegate();
 		delegate.layer = layer;
-		delegate.commonConfigCallable = commonConfigFactory;
-		delegate.clientConfigCallable = clientConfigFactory;
 		delegate.configName = configName;
-		
+
 		registeredLayers.add(delegate);
-	}
-	
-	public void registerLayer(IStellarLayerType layer, String configName, Callable<INBTConfig> commonConfigFactory, Class<? extends IConfigHandler> clientConfigClass)
-	{
-		this.registerLayer(layer, configName,
-				commonConfigFactory, new ClassInstantiateCallable(clientConfigClass));
-	}
-	
-	public void registerLayer(IStellarLayerType layer, String configName, Class<? extends INBTConfig> commonConfigClass, Class<? extends IConfigHandler> clientConfigClass)
-	{
-		this.registerLayer(layer, configName,
-				new ClassInstantiateCallable(commonConfigClass), new ClassInstantiateCallable(clientConfigClass));
+		return delegate;
 	}
 	
 	public void composeLayer(boolean isRemote, List<StellarCollection> list) {
@@ -93,30 +78,21 @@ public class StellarLayerRegistry {
 				}
 			}
 	}
-	
-	private class RegistryDelegate {
-		private IStellarLayerType layer;
+
+	public static final class RegistryDelegate {
+		private StellarLayer layer;
 		private Callable<IConfigHandler> clientConfigCallable;
 		private Callable<INBTConfig> commonConfigCallable;
 		private String configName;
-		
-		public int hashCode() {
-			return layer.hashCode();
-		}
-	}
-	
-	private class ClassInstantiateCallable<T> implements Callable<T> {
-		
-		private Class<? extends T> theClass;
-		
-		public ClassInstantiateCallable(Class<? extends T> theClass) {
-			this.theClass = theClass;
-		}
-		
-		@Override
-		public T call() throws Exception {
-			return theClass.newInstance();
-		}
-	}
 
+		public RegistryDelegate commonConfig(Callable<INBTConfig> factory) {
+			this.commonConfigCallable = factory;
+			return this;
+		}
+
+		public RegistryDelegate clientConfig(Callable<IConfigHandler> factory) {
+			this.clientConfigCallable = factory;
+			return this;
+		}
+	}
 }

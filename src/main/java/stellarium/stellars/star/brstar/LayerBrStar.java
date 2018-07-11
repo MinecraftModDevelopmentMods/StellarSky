@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import stellarapi.api.celestials.EnumCelestialCollectionType;
+import net.minecraft.util.ResourceLocation;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.Matrix3;
@@ -15,16 +15,16 @@ import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.optics.Wavelength;
 import stellarium.StellarSky;
+import stellarium.StellarSkyReferences;
 import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.layer.StellarCollection;
 import stellarium.stellars.star.BgStar;
 import stellarium.stellars.star.LayerBgStar;
-import stellarium.stellars.star.StarImage;
 import stellarium.stellars.star.StarRenderCache;
 import stellarium.util.math.StellarMath;
 
 public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
-	
+
 	//constants
 	public static final int NumStar=9110;
 	public static final int Bufsize=198;
@@ -45,7 +45,11 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	
 	//stars
 	private List<BgStar> stars = Lists.newArrayList();
-	
+
+	public LayerBrStar() {
+		super(new ResourceLocation(StellarSkyReferences.MODID, "brstars"), 1);
+	}
+
 	@Override
 	public void initializeClient(IConfigHandler config,
 			StellarCollection<BgStar> container) throws IOException {
@@ -151,25 +155,5 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	    StellarSky.INSTANCE.getLogger().info("Bright Stars are Loaded!");
 	    
 	    IsInitialized=true;
-	}
-
-	@Override
-	public String getName() {
-		return "Bright Stars";
-	}
-
-	@Override
-	public int searchOrder() {
-		return 1;
-	}
-
-	@Override
-	public boolean isBackground() {
-		return true;
-	}
-
-	@Override
-	public EnumCelestialCollectionType getCollectionType() {
-		return EnumCelestialCollectionType.Stars;
 	}
 }

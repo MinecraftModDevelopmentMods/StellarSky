@@ -14,8 +14,6 @@ public enum MoonRenderer implements ICelestialObjectRenderer<MoonRenderCache> {
 	@Override
 	public void render(MoonRenderCache cache, EnumStellarPass pass, LayerRHelper info) {
 		if(pass == EnumStellarPass.DominateScatter && cache.shouldRenderDominate) {
-			// TODO Make things fast enough so that I can use dominate scattering on moon as well
-			// Please, it's quite pretty =/
 			info.renderDominate(cache.appPos, cache.domination, cache.domination, cache.domination);
 		} else if(pass == EnumStellarPass.Opaque && cache.shouldRender) {
 			info.bindTexture(StellarSkyResources.resourceMoonSurface.getLocation());

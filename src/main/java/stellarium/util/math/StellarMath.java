@@ -5,13 +5,13 @@ import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
 
 public class StellarMath {
-	
+
 	public static final double infmin=1.0e-2;
-	
+
 	public static final float sqr(float val) {
 		return val * val;
 	}
-	
+
 	//extract double from String
 	public static final double btoD(byte[] dbs, int start, int size){
 		int i;
@@ -34,75 +34,71 @@ public class StellarMath {
 		}
 		return now;
 	}
-	
+
 	//extract int from byte
 	public static final int btoi(byte[] b, int start, int size){
 		int i;
 		int cnt=0;
 		for(i=start; i<start+size; i++){
 			cnt*=10;
-			
+
 			if(b[i] == ' ')
 				continue;
-			
+
 			cnt+=(b[i]-'0');
 		}
-		
+
 		return cnt;
 	}
-	
+
 	//extract int from String
 	public static final int StrtoI(String istr){
 		return btoi(istr.getBytes(), 0, istr.getBytes().length);
 	}
-	
+
 	//extract double from String
 	public static final double StrtoD(String istr){
 		return btoD(istr.getBytes(), 0, istr.getBytes().length);
 	}
-	
+
 	//extract signal of number and set
 	public static final double sgnize(byte b, double num){
 		if(b=='-') return -num;
 		else return num;
 	}
-	
+
 	//extract signal of number and set
 	public static final float sgnize(byte b, float num){
 		if(b=='-') return -num;
 		else return num;
 	}
 
-	// TODO Turn everything here to radians
-	//Calculate Eccentric Anomaly
-	public static final double CalEcanomaly(double e, double M){
-		double E=M+e*Math.sin(Math.toRadians(M));
-		double delE=GetdelE(M,E,e);
+	//Calculate Eccentric Anomaly in Radians
+	public static final double calEcanomaly(double ecc, double radM){
+		double radE = radM + ecc * Math.sin(radM);
+		double delE = getDelE(radM,radE,ecc);
 		int i=0;
-		while((Math.abs(delE)>infmin))
-		{
-			E=E+delE;
-			delE=GetdelE(M,E,e);
-			if(E>180.0 || E<-180.0 || Math.abs(delE)>90.0 || i>1000)
-			{
-				return M+e*Math.sin(Math.toRadians(M));
+		while((Math.abs(delE)>infmin)) {
+			radE = radE + delE;
+			delE = getDelE(radM,radE,ecc);
+			if(radE > Math.PI || radE < -Math.PI || Math.abs(delE) > Math.PI/2 || i > 1000) {
+				return radM + ecc*Math.sin(radM);
 			}
 			i++;
 		}
-		return E;
+		return radE;
 	}
-	
-	//Support for Calculating Eccentric Anomaly
-	public static final double GetdelE(double M, double E, double e){
-		double delM=M-(E-e*Math.sin(Math.toRadians(E)));
-		return delM/(1.0-e*Math.cos(Math.toRadians(E)));
+
+	//Calculating Eccentric Anomaly in Radians
+	public static final double getDelE(double radM, double radE, double ecc){
+		double delM=radM-(radE-ecc*Math.sin(radE));
+		return delM/(1.0-ecc*Math.cos(radE));
 	}
-	
-	public static Vector3 GetOrbVec(double a, double e, double M, Matrix3 rotation){
+
+	public static Vector3 getOrbVec(double a, double e, double M, Matrix3 rotation){
 		M=(M+180.0)%360.0-180.0;
-		double e2=Math.toDegrees(e);
-		double E=CalEcanomaly(e2, M);
-		Vector3 r = new Vector3(a*(Spmath.cosd(E)-e), a*Math.sqrt(1-e*e)*Spmath.sind(E), 0.0);
+		double radE=calEcanomaly(e, Math.toRadians(M));
+		Vector3 r = new Vector3(a*(Math.cos(radE)-e), a*Math.sqrt(1-e*e)*Math.sin(radE), 0.0);
 		rotation.transform(r);
 		return r;
 	}

@@ -1,8 +1,11 @@
 package stellarium.stellars.system;
 
+import stellarapi.api.CelestialPeriod;
+import stellarapi.api.celestials.EnumObjectType;
 import stellarapi.api.lib.math.Matrix3;
-import stellarapi.api.lib.math.Spmath;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.optics.Wavelength;
+import stellarapi.api.view.ICCoordinates;
 import stellarium.util.math.StellarMath;
 
 public class Moon extends SolarObject {
@@ -38,15 +41,31 @@ public class Moon extends SolarObject {
 
 
 	public Moon(String name, SolarObject earth) {
-		super(name, earth);
+		super(name, earth, EnumObjectType.Satellite);
 	}
-	
+
+	@Override
+	public void setupCoord(ICCoordinates coords, CelestialPeriod yearPeriod) {
+		double period = this.getRevolutionPeriod() * yearPeriod.getPeriodLength();
+		CelestialPeriod dayPeriod = coords.getPeriod();
+		CelestialPeriod synodicPeriod = new CelestialPeriod("Lunar Month",
+				1/(1/period - 1/yearPeriod.getPeriodLength()), this.phaseOffset());
+		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / synodicPeriod.getPeriodLength());
+
+		this.setAbsolutePeriod(new CelestialPeriod("Sidereal Lunar Month", period,
+				this.absoluteOffset()));
+		this.setPhasePeriod(synodicPeriod);
+		this.setHoritontalPeriod(new CelestialPeriod("Lunar Day", length, coords.calculateInitialOffset(this.earthPos, length)));
+
+		this.setStandardMagnitude(-12.74 - 2.5 * Math.log(this.brightnessFactor));
+	}
+
 	@Override
 	public void initialize() {
 		super.initialize();
 		Pole = new Vector3(0.0, 0.0, 1.0);
-		ri.setAsRotation(1.0, 0.0, 0.0, - Spmath.Radians(I0));
-		rom.setAsRotation(0.0, 0.0, 1.0, -Spmath.Radians(Omega0));
+		ri.setAsRotation(1.0, 0.0, 0.0, - Math.toRadians(I0));
+		rom.setAsRotation(0.0, 0.0, 1.0, -Math.toRadians(Omega0));
 		
 		ri.transform(this.Pole);
 		rom.transform(this.Pole);
@@ -70,9 +89,9 @@ public class Moon extends SolarObject {
 		double M = this.M0 + this.rotation;
 		this.currentOffsetAngle = M + w;
 		
-		ri.setAsRotation(1.0, 0.0, 0.0, -Spmath.Radians(I));
-		rw.setAsRotation(0.0, 0.0, 1.0, -Spmath.Radians(w));
-		rom.setAsRotation(0.0, 0.0, 1.0, -Spmath.Radians(Omega));
+		ri.setAsRotation(1.0, 0.0, 0.0, -Math.toRadians(I));
+		rw.setAsRotation(0.0, 0.0, 1.0, -Math.toRadians(w));
+		rom.setAsRotation(0.0, 0.0, 1.0, -Math.toRadians(Omega));
 
 		Matrix3 matrix = new Matrix3();
 		matrix.setIdentity();
@@ -80,7 +99,7 @@ public class Moon extends SolarObject {
 		matrix.postMult(this.ri);
 		matrix.postMult(this.rw);
 		
-		return StellarMath.GetOrbVec(a, e, M, matrix);
+		return StellarMath.getOrbVec(a, e, M, matrix);
 	}
 	
 	//Update Orbital Elements in time
@@ -102,15 +121,15 @@ public class Moon extends SolarObject {
 	
 	//Ecliptic Position of Moon's Local Region from Moon Center (Update Needed)
 	public Vector3 posLocalM(double longitude, double latitude){
-		float longp=(float)Spmath.Radians(longitude + this.rotation);
-		float lat=(float)Spmath.Radians(latitude);
+		double longp=Math.toRadians(longitude + this.rotation);
+		double lat=Math.toRadians(latitude);
 		Vector3 result = new Vector3(this.Pole);
-		result.scale(Spmath.sinf(lat));
+		result.scale(Math.sin(lat));
 		Vector3 ref = new Vector3(this.PrMer0);
-		ref.scale(Spmath.cosf(lat)*Spmath.cosf(longp));
+		ref.scale(Math.cos(lat)*Math.cos(longp));
 		result.add(ref);
 		ref = new Vector3(this.East);
-		ref.scale(Spmath.cosf(lat)*Spmath.sinf(longp));
+		ref.scale(Math.cos(lat)*Math.sin(longp));
 		result.add(ref);
 		result.scale(this.radius);
 		return result;
@@ -127,7 +146,7 @@ public class Moon extends SolarObject {
 		double dist=this.earthPos.size();
 		double distS=this.sunPos.size();
 		double distE=earthFromSun.size();
-		double LvsSun=this.radius*this.radius*this.getPhase()*distE*distE*this.albedo*this.brightnessFactor*1.4/(dist*dist*distS*distS);
+		double LvsSun=this.radius*this.radius*this.getCurrentPhase()*distE*distE*this.albedo*this.brightnessFactor*1.4/(dist*dist*distS*distS);
 		this.currentMag=-26.74-2.5*Math.log10(LvsSun);
 		this.brightness = distE*distE*this.albedo * this.brightnessFactor/(distS*distS)*10;
 	}
@@ -137,16 +156,15 @@ public class Moon extends SolarObject {
 	public double illumination(Vector3 p){
 		return -this.sunPos.dot(p)/(this.sunPos.size()*p.size())*this.brightness;
 	}
-	
+
+	@Override
+	public double getCurrentBrightness(Wavelength wavelength) {
+		return this.getCurrentPhase();
+	}
+
 	@Override
 	public double absoluteOffset() {
 		return this.currentOffsetAngle / 360.0;
-	}
-	
-	//Phase of the Moon(Update Needed)
-	@Override
-	public double getPhase(){
-		return (Math.PI-Math.acos(earthPos.dot(this.sunPos) / (this.earthPos.size() * this.sunPos.size()))) / Math.PI;
 	}
 	
 	//Time phase for moon
@@ -154,7 +172,7 @@ public class Moon extends SolarObject {
 	public double phaseOffset(){
 		Vector3 crossed = new Vector3();
 		crossed.setCross(this.earthPos, this.sunPos);
-		double k=Math.signum(crossed.dot(Pole)) * (1.0 - getPhase());
+		double k=Math.signum(crossed.dot(Pole)) * (1.0 - getCurrentPhase());
 		if(k<0) k=k+2;
 		return k/2;
 	}

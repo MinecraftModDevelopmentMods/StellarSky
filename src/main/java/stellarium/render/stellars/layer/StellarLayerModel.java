@@ -8,7 +8,7 @@ import com.google.common.collect.Maps;
 
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarium.client.ClientSettings;
-import stellarium.stellars.layer.IStellarLayerType;
+import stellarium.stellars.layer.StellarLayer;
 import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.layer.StellarCollection;
 import stellarium.view.ViewerInfo;
@@ -23,7 +23,7 @@ public class StellarLayerModel<Obj extends StellarObject> {
 		container.bindRenderModel(this);
 	}
 
-	public IStellarLayerType getLayerType() {
+	public StellarLayer getLayerType() {
 		return container.getType();
 	}
 

@@ -30,7 +30,7 @@ public class GenericSkyRenderer extends IRenderHandler {
 		IAtmosphereEffect sky = cWorld.getSkyEffect();
 
 		SkyRI info = new SkyRI(mc, world, partialTicks,
-				new ViewerInfo(coordinate, sky, viewer));
+				new ViewerInfo(coordinate, sky, viewer, partialTicks));
 
 		ClientSettings settings = StellarSky.PROXY.getClientSettings();
 		SkyRenderer.INSTANCE.preRender(settings, info);

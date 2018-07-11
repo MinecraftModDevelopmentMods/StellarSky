@@ -10,15 +10,17 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class MCUtil {
 	private static final Method GET_FOV_MODIFIER = ReflectionHelper.findMethod(EntityRenderer.class,
 			"getFOVModifier", "func_78481_a", float.class, boolean.class);
-	private static MethodHandle GFM_HANDLE = null;
+	private static final MethodHandle GFM_HANDLE;
 
 	static {
-		//GET_FOV_MODIFIER.setAccessible(true);
+		MethodHandle handle = null;
 		try {
-			GFM_HANDLE = MethodHandles.lookup().unreflect(GET_FOV_MODIFIER);
+			handle = MethodHandles.lookup().unreflect(GET_FOV_MODIFIER);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
+
+		GFM_HANDLE = handle;
 	}
 
 	public static float getFOVModifier(EntityRenderer renderer, float partialTicks, boolean useFOVSetting) {

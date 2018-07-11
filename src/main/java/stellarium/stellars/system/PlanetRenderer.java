@@ -14,7 +14,7 @@ public enum PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache
 		if(pass != EnumStellarPass.Source || !cache.shouldRender)
 			return;
 
-		// TODO Render fuzzy shape, for now it just render points
+		// TODO Render planet properly
 		float multiplier = OpticsHelper.getMultFromArea(info.pointArea());
 
 		info.beginPoint();
