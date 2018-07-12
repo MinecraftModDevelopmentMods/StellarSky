@@ -47,7 +47,7 @@ public class StellarLayerRegistry {
 		registeredLayers.add(delegate);
 		return delegate;
 	}
-	
+
 	public void composeLayer(boolean isRemote, List<StellarCollection> list) {
 		for(RegistryDelegate delegate : this.registeredLayers)
 			try {

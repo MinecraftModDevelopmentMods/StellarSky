@@ -50,9 +50,9 @@ public class BgStar extends StellarObject {
 
 
 	@Override
-	public void setupCoord(ICCoordinates coords, CelestialPeriod yearPeriod) {
-		this.setHoritontalPeriod(new CelestialPeriod(String.format("Day; Star %s", this.name),
+	public CelestialPeriod getHorizontalPeriod(ICCoordinates coords) {
+		return new CelestialPeriod(String.format("Day; Star %s", this.name),
 				coords.getPeriod().getPeriodLength(),
-				coords.calculateInitialOffset(this.pos, coords.getPeriod().getPeriodLength())));
+				coords.calculateInitialOffset(this.pos, coords.getPeriod().getPeriodLength()));
 	}
 }

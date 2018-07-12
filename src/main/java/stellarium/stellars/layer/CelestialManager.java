@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import stellarium.StellarSky;
 import stellarium.client.ClientSettings;
 import stellarium.common.ServerSettings;
+import stellarium.stellars.StellarManager;
 
 public class CelestialManager {
 
@@ -46,11 +47,12 @@ public class CelestialManager {
     	StellarSky.INSTANCE.getLogger().info("Successfully initialized Celestial Layers with Client Settings!");
 	}
 	
-	public void initializeCommon(ServerSettings settings) {
+	public void initializeCommon(StellarManager manager, ServerSettings settings) {
 		StellarSky.INSTANCE.getLogger().info("Initializing Celestial Layers with Common Settings...");
 		String layerName = null;
 		try {
 			for(StellarCollection layer : this.layers) {
+				layer.setManager(manager);
 				layerName = layer.getConfigName();
 				layer.getType().initializeCommon(layerName != null? settings.getSubConfig(layerName) : null, layer);
 			}
@@ -63,9 +65,9 @@ public class CelestialManager {
     	this.commonInitialized = true;
 	}
 	
-	public void update(double year) {
+	public void update(double currentYear) {
 		for(StellarCollection layer : this.layers)
-			layer.getType().updateLayer(layer, year);
+			layer.getType().updateLayer(layer, currentYear);
 	}
 
 

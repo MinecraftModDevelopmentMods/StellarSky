@@ -183,7 +183,8 @@ public class FramebufferCustom {
 			} else {
 				throw new RuntimeException("glCheckFramebufferStatus returned unknown status:" + i);
 			}
-		} else StellarSky.INSTANCE.getLogger().info("Framebuffer with format %s is complete", this.internalFormat);
+		} else StellarSky.INSTANCE.getLogger().info(
+				"Framebuffer with format {} is complete", this.internalFormat);
 	}
 
 

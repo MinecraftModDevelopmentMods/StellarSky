@@ -23,6 +23,7 @@ import stellarapi.example.CelestialHelperSimple;
 import stellarium.StellarSky;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.StellarCollection;
+import stellarium.stellars.layer.StellarLayer;
 
 public final class StellarScene implements ICelestialScene {
 	private final StellarManager manager;
@@ -99,17 +100,12 @@ public final class StellarScene implements ICelestialScene {
 
 	public void update(World world, long currentTick, long currentUniversalTick) {
 		coordinate.update(manager.getSkyYear(currentTick));
-
-		/*for(int i = 0; i < collections.size(); i++) {
-			StellarCollection collection = collections.get(i);
-			StellarObjectContainer container = manager.getCelestialManager().getLayers().get(i);
-			container.updateCollection(collection, currentUniversalTick);
-		}*/
 	}
 
 
 	@Override
 	public void prepare() {
+		// TODO AAA horizontal period is dependent on coordinates - can't cache them in object
 		foundSuns.clear();
 		foundMoons.clear();
 
@@ -131,12 +127,11 @@ public final class StellarScene implements ICelestialScene {
 		StellarSky.INSTANCE.getLogger().info("Test Update Ended.");
 
 		for(StellarCollection container : manager.getCelestialManager().getLayers()) {
-			// TODO AA Find suns&moons
-			/*container.addCollection(collection);
-			collections.add(collection);
+			StellarLayer type = container.getType();
+			type.initialUpdate(container);
 
-			foundSuns.addAll(collection.getSuns());
-			foundMoons.addAll(collection.getMoons());*/
+			foundSuns.addAll(type.getSuns(container));
+			foundMoons.addAll(type.getMoons(container));
 		}
 
 		if(world.isRemote)

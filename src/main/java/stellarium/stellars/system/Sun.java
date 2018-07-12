@@ -6,24 +6,28 @@ import stellarapi.api.lib.math.Vector3;
 import stellarapi.api.view.ICCoordinates;
 
 public class Sun extends SolarObject {
-
 	protected double offset;
 	private double rotation;
 	private static final double rotationSpeed = 14.7 * 365.2422;
 
-	public Sun(String name) {
-		super(name, EnumObjectType.Star);
+	public Sun(String name, double yearUnit) {
+		super(name, EnumObjectType.Star, yearUnit);
 		//Constant for sun
 		this.currentMag=-26.74;
 		this.setStandardMagnitude(this.currentMag);
 	}
 
 	@Override
-	public void setupCoord(ICCoordinates coords, CelestialPeriod yearPeriod) {
-		this.setAbsolutePeriod(new CelestialPeriod("Year", yearPeriod.getPeriodLength(), this.absoluteOffset()));
+	public void initialUpdate() {
+		super.initialUpdate();
+		this.setAbsolutePeriod(new CelestialPeriod("Year", this.yearUnit, this.absoluteOffset()));
+	}
+
+	@Override
+	public CelestialPeriod getHorizontalPeriod(ICCoordinates coords) {
 		CelestialPeriod dayPeriod = coords.getPeriod();
-		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / yearPeriod.getPeriodLength());
-		this.setHoritontalPeriod(new CelestialPeriod("Day", length, coords.calculateInitialOffset(this.earthPos, length)));
+		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / this.yearUnit);
+		return new CelestialPeriod("Day", length, coords.calculateInitialOffset(this.initialEarthPos, length));
 	}
 
 	@Override

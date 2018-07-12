@@ -19,23 +19,31 @@ public class Planet extends SolarObject {
 
 	private Matrix3 roti = new Matrix3(), rotw = new Matrix3(), rotom = new Matrix3();
 
-	public Planet(String name, SolarObject parent) {
-		super(name, parent, EnumObjectType.Planet);
+	public Planet(String name, SolarObject parent, double yearUnit) {
+		super(name, parent, EnumObjectType.Planet, yearUnit);
 		double LvsSun=this.radius*this.radius*this.albedo*1.4/(this.a0*this.a0*this.a0*this.a0);
 		this.setStandardMagnitude(-26.74-2.5*Math.log10(LvsSun));
 	}
 
 	@Override
-	public void setupCoord(ICCoordinates coords, CelestialPeriod yearPeriod) {
-		double period = this.getRevolutionPeriod() * yearPeriod.getPeriodLength();
-		this.setAbsolutePeriod(new CelestialPeriod(String.format("Sidereal Period of %s", this.getName().getResourcePath()), period, this.absoluteOffset()));
-		CelestialPeriod synodicPeriod = new CelestialPeriod(String.format("Synodic Period of %s", this.getName().getResourcePath()), 1/(1/period - 1/yearPeriod.getPeriodLength()),
-				this.phaseOffset());
-		this.setPhasePeriod(synodicPeriod);
+	public void initialUpdate() {
+		super.initialUpdate();
 
+		double period = this.getRevolutionPeriod() * this.yearUnit;
+		this.setAbsolutePeriod(new CelestialPeriod(String.format("Sidereal Period of %s",
+				this.getName().getResourcePath()), period, this.absoluteOffset()));
+		this.setPhasePeriod(new CelestialPeriod(String.format("Synodic Period of %s",
+				this.getName().getResourcePath()), 1/(1/period - 1/this.yearUnit), this.phaseOffset()));
+	}
+
+	@Override
+	public CelestialPeriod getHorizontalPeriod(ICCoordinates coords) {
+		double period = this.getRevolutionPeriod() * this.yearUnit;
+		double synodicLength = 1/(1/period - 1/this.yearUnit);
 		CelestialPeriod dayPeriod = coords.getPeriod();
-		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / synodicPeriod.getPeriodLength());
-		this.setHoritontalPeriod(new CelestialPeriod(String.format("Day for %s", this.getName().getResourcePath()), length, coords.calculateInitialOffset(this.earthPos, length)));
+		double length = 1 / (1 / dayPeriod.getPeriodLength() - 1 / synodicLength);
+		return new CelestialPeriod(String.format("Day for %s", this.getName().getResourcePath()),
+				length, coords.calculateInitialOffset(this.initialEarthPos, length));
 	}
 
 	@Override

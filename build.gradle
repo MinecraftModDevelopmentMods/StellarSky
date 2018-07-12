@@ -43,7 +43,7 @@ minecraft {
 
 
 dependencies {
-    deobfCompile 'stellarapi.api:stellarapi:1.12.2-0.5.1.1'
+    deobfCompile 'stellarapi.api:stellarapi:1.12.2-0.5.2.2'
 }
 
 

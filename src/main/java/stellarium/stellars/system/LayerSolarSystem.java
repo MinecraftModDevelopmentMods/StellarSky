@@ -22,33 +22,35 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 	protected static int planetRenderId = -1;
 	protected static int sunRenderId = -1;
 	protected static int moonRenderId = -1;
-	
+
 	public final double AU=1.496e+8;
 
 	@Override
 	public void initializeCommon(SolarSystemSettings settings, StellarCollection<SolarObject> container) throws IOException {		
+		double yearUnit = container.getManager().getYearPeriod().getPeriodLength();
+
 		////Solar System
 		StellarSky.INSTANCE.getLogger().info("Initializing Solar System...");
 		///Sun
 		StellarSky.INSTANCE.getLogger().info("Initializing Sun...");
-		Sun sun = new Sun("sun");
+		Sun sun = new Sun("sun", yearUnit);
 		sun.radius=0.00465469 * 4;
 		sun.mass=1.0;
 		sun.initialize();
 		container.loadObject("sun", sun);
 		container.loadObject("system", sun);
 		container.addRenderCache(sun, new SunRenderCache());
-		
+
 		///Earth System
 		//Declaration		
 		StellarSky.INSTANCE.getLogger().info("Initializing Earth...");
-		Earth earth = new Earth("earth", sun);
-		Moon moon = new Moon("moon", earth);
-		
+		Earth earth = new Earth("earth", sun, yearUnit);
+		Moon moon = new Moon("moon", earth, yearUnit);
+
 		earth.radius=4.2634e-5;
 		earth.mass=3.002458398e-6;
 		moon.radius = 4 * 1.158e-5 * settings.propMoonSize.getDouble();
-		
+
 		//Initialization
 		//-Earth
 		earth.a0=1.00000018;
@@ -63,7 +65,7 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 		earth.Ld=35999.37306;
 		earth.wbard=0.3179526;
 		earth.Omegad=-0.24123856;
-		
+
 		//-Moon
 		StellarSky.INSTANCE.getLogger().info("Initializing Moon...");
 		moon.albedo=0.12;
@@ -76,22 +78,22 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 		moon.M0_0=135.27;
 		moon.wd=40.678;
 		moon.Omegad=-19.355;
-		
+
 		//Earth Initialize
 		earth.initialize();
 		container.loadObject("earth", earth);
 		container.loadObject("system", earth);
-		
+
 		//Moon Initialize
 		moon.initialize();
 		container.loadObject("moon", moon);
 		container.loadObject("system", moon);
 		container.addRenderCache(moon, new MoonRenderCache());
-		
+
 		///Planets
 		//Mercury
 		StellarSky.INSTANCE.getLogger().info("Initializing Mercury...");
-		Planet mercury = new Planet("mercury", sun);
+		Planet mercury = new Planet("mercury", sun, yearUnit);
 		mercury.albedo=0.119;
 		mercury.radius=1.630815508e-5;
 		mercury.mass=1.660147806e-7;
@@ -107,14 +109,14 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 		mercury.Ld=149472.6749;
 		mercury.wbard=0.15940013;
 		mercury.Omegad=-0.12214182;
-		
+
 		mercury.initialize();
 		container.loadObject("system", mercury);
 		container.addRenderCache(mercury, new PlanetRenderCache());
-		
+
 		//Venus
 		StellarSky.INSTANCE.getLogger().info("Initizlizing Venus...");
-		Planet venus = new Planet("venus", sun);
+		Planet venus = new Planet("venus", sun, yearUnit);
 		venus.albedo=0.90;
 		venus.radius=4.0453208556e-5;
 		venus.mass=2.447589362e-6;
@@ -130,14 +132,14 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 		venus.Ld=58571.8156;
 		venus.wbard=0.05679648;
 		venus.Omegad=-0.27274174;
-		
+
 		venus.initialize();
 		container.loadObject("system", venus);
 		container.addRenderCache(venus, new PlanetRenderCache());
-		
+
 		//Mars
 		StellarSky.INSTANCE.getLogger().info("Initializing Mars...");
-		Planet mars = new Planet("mars", sun);
+		Planet mars = new Planet("mars", sun, yearUnit);
 		mars.albedo=0.25;
 		mars.radius=2.26604278e-5;
 		mars.mass=3.22683626e-7;
@@ -153,14 +155,14 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 		mars.Ld=19140.29934;
 		mars.wbard=0.45223625;
 		mars.Omegad=-0.26852431;
-		
+
 		mars.initialize();
 		container.loadObject("system", mars);
 		container.addRenderCache(mars, new PlanetRenderCache());
-		
+
 		//Jupiter
 		StellarSky.INSTANCE.getLogger().info("Initializing Jupiter...");
-		Planet jupiter = new Planet("jupiter", sun);
+		Planet jupiter = new Planet("jupiter", sun, yearUnit);
 		jupiter.albedo=0.343;
 		jupiter.radius=4.673195187e-4;
 		jupiter.mass=9.54502036e-4;
@@ -180,14 +182,14 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 		jupiter.c=0.0606406;
 		jupiter.s=-0.35635438;
 		jupiter.f=38.35125;
-		
+
 		jupiter.initialize();
 		container.loadObject("system", jupiter);
 		container.addRenderCache(jupiter, new PlanetRenderCache());
-		
+
 		//Saturn
 		StellarSky.INSTANCE.getLogger().info("Initializing Saturn...");
-		Planet saturn = new Planet("saturn", sun);
+		Planet saturn = new Planet("saturn", sun, yearUnit);
 		saturn.albedo=0.342;
 		saturn.radius=3.83128342e-4;
 		saturn.mass=2.8578754e-4;
@@ -207,14 +209,14 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 		saturn.c=-0.13434469;
 		saturn.s=0.87320147;
 		saturn.f=38.35125;
-		
+
 		saturn.initialize();
 		container.loadObject("system", saturn);
 		container.addRenderCache(saturn, new PlanetRenderCache());
 
 		//Uranus
 		StellarSky.INSTANCE.getLogger().info("Initializing Uranus...");
-		Planet uranus = new Planet("uranus", sun);
+		Planet uranus = new Planet("uranus", sun, yearUnit);
 		uranus.albedo=0.300;
 		uranus.radius=1.68890374e-4;
 		uranus.mass=4.3642853557e-5;
@@ -234,14 +236,14 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 		uranus.c=-0.97731848;
 		uranus.s=0.17689245;
 		uranus.f=7.67025;
-		
+
 		uranus.initialize();
 		container.loadObject("system", uranus);
 		container.addRenderCache(uranus, new PlanetRenderCache());
 
 		//Neptune
 		StellarSky.INSTANCE.getLogger().info("Initializing Neptune...");
-		Planet neptune = new Planet("neptune", sun);
+		Planet neptune = new Planet("neptune", sun, yearUnit);
 		neptune.albedo=0.290;
 		neptune.radius=1.641209893e-4;
 		neptune.mass=5.14956513e-5;
@@ -261,7 +263,7 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 		neptune.c=0.68346318;
 		neptune.s=-0.10162547;
 		neptune.f=7.67025;
-		
+
 		neptune.initialize();
 		container.loadObject("system", neptune);
 		container.addRenderCache(neptune, new PlanetRenderCache());
@@ -270,25 +272,31 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 	}
 
 	@Override
+	public void initialUpdate(StellarCollection<SolarObject> container) {
+		for(SolarObject object : container.getLoadedObjects("system"))
+			object.initialUpdate();
+	}
+
+	@Override
 	public void updateLayer(StellarCollection<SolarObject> container, double year) {
-		for(SolarObject object : container.getLoadedObjects("System"))
+		for(SolarObject object : container.getLoadedObjects("system"))
 			object.updatePre(year);
-		for(SolarObject object : container.getLoadedObjects("System"))
+		for(SolarObject object : container.getLoadedObjects("system"))
 			object.updateModulate();
-		for(SolarObject object : container.getLoadedObjects("System"))
-			object.updatePos(container.getLoadedSingleton("Sun"), container.getLoadedSingleton("Earth"));
-		for(SolarObject object : container.getLoadedObjects("System"))
-			object.updatePost(container.getLoadedSingleton("Earth"));
+		for(SolarObject object : container.getLoadedObjects("system"))
+			object.updatePos(container.getLoadedSingleton("sun"), container.getLoadedSingleton("earth"));
+		for(SolarObject object : container.getLoadedObjects("system"))
+			object.updatePost(container.getLoadedSingleton("earth"));
 	}
 
 	@Override
 	public Collection<SolarObject> getSuns(StellarCollection<SolarObject> container) {
-		return container.getLoadedObjects("Sun");
+		return container.getLoadedObjects("sun");
 	}
 
 	@Override
 	public Collection<SolarObject> getMoons(StellarCollection<SolarObject> container) {
-		return container.getLoadedObjects("Moon");
+		return container.getLoadedObjects("moon");
 	}
 
 	@SideOnly(Side.CLIENT)

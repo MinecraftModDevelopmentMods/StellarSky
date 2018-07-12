@@ -88,13 +88,13 @@ public final class StellarManager extends WorldSavedData {
 			StellarSky.INSTANCE.getLogger().info("Starting Common Initialization...");
 			this.celestialManager = manager;
 			StellarSky.PROXY.setupStellarLoad(this);
-			manager.initializeCommon(this.settings);
+			manager.initializeCommon(this, this.settings);
 			StellarSky.INSTANCE.getLogger().info("Common Initialization Ended.");
 		}
 		
 		this.setup = true;
 	}
-	
+
 	public ServerSettings getSettings() {
 		return this.settings;
 	}
@@ -116,8 +116,8 @@ public final class StellarManager extends WorldSavedData {
 	
 	
 	public void update(double time){
-		double year = this.getSkyYear(time);
-		celestialManager.update(year);
+		double currentYear = this.getSkyYear(time);
+		celestialManager.update(currentYear);
 	}
 
 	public void setLocked(boolean locked) {

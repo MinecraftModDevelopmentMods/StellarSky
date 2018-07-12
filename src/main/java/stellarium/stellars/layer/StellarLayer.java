@@ -23,17 +23,11 @@ public class StellarLayer<S extends StellarObject, L extends IConfigHandler, M e
 		this.searchOrder = order;
 	}
 
-	public void initializeClient(L config, StellarCollection<S> container) throws IOException {
-		// Defined by child classes - client initialization
-	}
+	public void initializeClient(L config, StellarCollection<S> container) throws IOException { }
 
-	public void initializeCommon(M config, StellarCollection<S> container) throws IOException {
-		// Defined by child classes - common initialization
-	}
+	public void initializeCommon(M config, StellarCollection<S> container) throws IOException { }
 
-	public void updateLayer(StellarCollection<S> container, double year) {
-		// Defined by child classes - updates the layer
-	}
+	public void updateLayer(StellarCollection<S> container, double currentYear) { }
 
 
 	/**
@@ -44,4 +38,6 @@ public class StellarLayer<S extends StellarObject, L extends IConfigHandler, M e
 
 	public Collection<S> getSuns(StellarCollection<S> container) { return Collections.emptySet(); }
 	public Collection<S> getMoons(StellarCollection<S> container) { return Collections.emptySet(); }
+
+	public void initialUpdate(StellarCollection<S> container) { }
 }

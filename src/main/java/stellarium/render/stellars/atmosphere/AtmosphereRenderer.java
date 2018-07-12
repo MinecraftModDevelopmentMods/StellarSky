@@ -65,7 +65,6 @@ public enum AtmosphereRenderer {
 			this.sphereIndicesBuffer = ByteBuffer.allocateDirect(bufferSize * EnumIndexType.INT.size).order(ByteOrder.nativeOrder()); 
 		this.setupSphereIndices(settings.fragLong, settings.fragLat);
 
-		settings.fragScreen = 64;
 		bufferSize = settings.fragScreen * settings.fragScreen * 4; // 4 Indices for Quad
 		if(this.scrPartIndicesBuffer == null || scrPartIndicesBuffer.capacity() != bufferSize * EnumIndexType.INT.size)
 			this.scrPartIndicesBuffer = ByteBuffer.allocateDirect(bufferSize * EnumIndexType.INT.size).order(ByteOrder.nativeOrder());
@@ -164,6 +163,7 @@ public enum AtmosphereRenderer {
 			GlStateManager.blendFunc(GL11.GL_ZERO, GL11.GL_SRC_COLOR);
 			atmShader.bindExtinctionShader(model);
 			// MAYBE Faster evaluation of extinction
+			// TODO AAAA Why is this taking time
 			if(this.vboEnabled)
 				sphereBuffer.drawElements(EnumIndexType.INT, this.sphereIndicesBuffer);
 			else GlStateManager.callList(this.sphereList);

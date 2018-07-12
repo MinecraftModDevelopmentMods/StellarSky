@@ -14,8 +14,9 @@ public abstract class StellarObject extends CelestialObject {
 		this.identifier = id;
 	}
 
-	public void setupCoord(ICCoordinates coords, CelestialPeriod yearPeriod) {
-		this.setHoritontalPeriod(coords.getPeriod());
+	@Override
+	public CelestialPeriod getHorizontalPeriod(ICCoordinates coords) {
+		return coords.getPeriod();
 	}
 
 	@Override

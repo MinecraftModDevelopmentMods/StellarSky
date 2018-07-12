@@ -27,19 +27,28 @@ public abstract class SolarObject extends StellarObject {
 	protected final SolarObject parent;
 	private final int level;
 
-	public SolarObject(String name, EnumObjectType type) {
+	protected final double yearUnit;
+
+	public SolarObject(String name, EnumObjectType type, double yearUnit) {
 		super(name, new ResourceLocation(StellarSkyReferences.MODID, name), type);
 		this.parent = null;
 		this.level = 0;
+		this.yearUnit = yearUnit;
 	}
 
-	public SolarObject(String name, SolarObject parent, EnumObjectType type) {
+	public SolarObject(String name, SolarObject parent, EnumObjectType type, double yearUnit) {
 		super(name, new ResourceLocation(StellarSkyReferences.MODID, name), type);
 		this.parent = parent;
 		this.level = parent.level + 1;
+		this.yearUnit = yearUnit;
 	}
 
 	public void initialize() { }
+
+	protected Vector3 initialEarthPos;
+	public void initialUpdate() {
+		this.initialEarthPos = this.earthPos;
+	}
 
 	public Vector3 positionTo(SolarObject object) {
 		if(this == object)

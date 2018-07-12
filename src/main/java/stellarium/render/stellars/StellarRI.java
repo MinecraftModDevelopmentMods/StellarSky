@@ -26,8 +26,8 @@ public class StellarRI {
 		this.info = info.info;
 		this.screenSize = info.screenSize;
 
-		this.relativeHeight = 2 * Spmath.tanf(0.5f *
-				MCUtil.getFOVModifier(info.minecraft.entityRenderer, info.partialTicks, true));
+		this.relativeHeight = 2 * Math.tan(0.5 *
+				Math.toRadians(MCUtil.getFOVModifier(info.minecraft.entityRenderer, info.partialTicks, true)));
 		this.relativeWidth = (this.relativeHeight * info.minecraft.displayWidth) / info.minecraft.displayHeight;
 	}
 

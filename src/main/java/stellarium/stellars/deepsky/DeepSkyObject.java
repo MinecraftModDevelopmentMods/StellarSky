@@ -46,8 +46,8 @@ public class DeepSkyObject extends StellarObject {
 	}
 
 	@Override
-	public void setupCoord(ICCoordinates coords, CelestialPeriod coordPeriod) {
-		new CelestialPeriod(String.format("Day; for %s", this.name),
+	public CelestialPeriod getHorizontalPeriod(ICCoordinates coords) {
+		return new CelestialPeriod(String.format("Day; for %s", this.name),
 				coords.getPeriod().getPeriodLength(),
 				coords.calculateInitialOffset(this.centerPos, coords.getPeriod().getPeriodLength()));
 	}

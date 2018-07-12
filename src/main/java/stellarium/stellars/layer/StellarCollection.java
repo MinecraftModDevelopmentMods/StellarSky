@@ -13,11 +13,13 @@ import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.observe.SearchRegion;
 import stellarium.render.stellars.layer.IObjRenderCache;
 import stellarium.render.stellars.layer.StellarLayerModel;
+import stellarium.stellars.StellarManager;
 
 public class StellarCollection<S extends StellarObject> extends CelestialCollection {
 	private final StellarLayer<S, IConfigHandler, INBTConfig> type;
 	private final String configName;
 
+	private StellarManager manager;
 	private StellarLayerModel<S> layerModel;
 
 	private SetMultimap<String, S> loadedObjects = HashMultimap.create();
@@ -30,6 +32,14 @@ public class StellarCollection<S extends StellarObject> extends CelestialCollect
 
 	public void bindRenderModel(StellarLayerModel<S> layerModel) {
 		this.layerModel = layerModel;
+	}
+
+	public void setManager(StellarManager manager) {
+		this.manager = manager;
+	}
+
+	public StellarManager getManager() {
+		return this.manager;
 	}
 	
 	public StellarLayer<S, IConfigHandler, INBTConfig> getType() {

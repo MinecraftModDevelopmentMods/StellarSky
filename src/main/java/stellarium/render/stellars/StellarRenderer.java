@@ -158,9 +158,9 @@ public enum StellarRenderer {
 		// MAYBE Separate resolution for each of R, G, B component when wavelengths are far apart
 		// MAYBE Apply star-shaped blur for eye
 		ViewerInfo viewer = info.info;
-		double multRed = viewer.colorMultiplier.getX() / Spmath.sqr(viewer.multiplyingPower);
-		double multGreen = viewer.colorMultiplier.getY() / Spmath.sqr(viewer.multiplyingPower);
-		double multBlue = viewer.colorMultiplier.getZ() / Spmath.sqr(viewer.multiplyingPower);
+		double multRed = viewer.colorMultiplier.getX();
+		double multGreen = viewer.colorMultiplier.getY();
+		double multBlue = viewer.colorMultiplier.getZ();
 
 		// MAYBE Calculate blur for each pixel
 		// Blur on X-axis

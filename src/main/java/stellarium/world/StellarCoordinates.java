@@ -23,7 +23,6 @@ public class StellarCoordinates implements ICCoordinates {
 	private double zeroTime;
 
 	private CelestialPeriod dayPeriod;
-	private CelestialPeriod yearPeriod;
 
 	public StellarCoordinates(ServerSettings commonSettings, PerDimensionSettings settings) {
 		this.yearLength = commonSettings.year;
@@ -40,9 +39,9 @@ public class StellarCoordinates implements ICCoordinates {
 		this.dayPeriod = new CelestialPeriod("Celestial Day", fixedDaylength,
 				(this.zeroTime / fixedDaylength - this.longitude / 2 / Math.PI - 0.25)%1.0);
 
-		double fixedYearLength = this.dayLength * this.yearLength;
+		/*double fixedYearLength = this.dayLength * this.yearLength;
 		this.yearPeriod = new CelestialPeriod("Year", fixedYearLength,
-				(this.zeroTime / fixedYearLength - this.longitude / 2 / Math.PI - 0.25)%1.0);
+				(this.zeroTime / fixedYearLength - this.longitude / 2 / Math.PI - 0.25)%1.0);*/
 
 		EqtoEc.setAsRotation(1.0, 0.0, 0.0, -this.axialTilt);
 		EctoEq.setAsRotation(1.0, 0.0, 0.0, this.axialTilt);
@@ -50,9 +49,9 @@ public class StellarCoordinates implements ICCoordinates {
 		HortoREq.setAsRotation(1.0, 0.0, 0.0, this.latitude - Math.PI / 2);
 	}
 
-	public CelestialPeriod getYearPeriod() {
+	/*public CelestialPeriod getYearPeriod() {
 		return this.yearPeriod;
-	}
+	}*/
 
 	public void update(double year) {
 		ZTEctoNEc.setAsRotation(0.0, 0.0, 1.0, -this.precession*year);
