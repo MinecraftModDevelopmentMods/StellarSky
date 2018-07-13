@@ -55,16 +55,4 @@ public class DeepSkyObject extends StellarObject {
 	public Optional<DeepSkyTexture> getTexture() {
 		return this.texture;
 	}
-
-	/**
-	 * Surface size in (rad)^2
-	 * */
-	public double getSurfaceSize() {
-		return this.width * this.height;
-	}
-
-	public double getRadius() {
-		return Math.sqrt(this.width * this.width + this.height * this.height);
-	}
-
 }

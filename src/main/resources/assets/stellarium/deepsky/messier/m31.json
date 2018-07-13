@@ -8,6 +8,7 @@
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
 	"size" : ["6.4d", "4.2d"],
+	"brightness" : 0.1767,
 	"attribution" : "CC BY-NC 2.0, by Adam Evans",
 	"attributionURL" : "http://www.flickr.com/photos/astroporn/4999978603/"
 	},

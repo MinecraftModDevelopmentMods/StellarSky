@@ -8,6 +8,7 @@
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
 	"size" : ["20m", "20m"],
+	"brightness" : 0.251,
 	"attribution" : "By Ngc1535 (Own work) [CC BY-SA 4.0 (http://creativecommons.org/licenses/by-sa/4.0)], via Wikimedia Commons"
 	},
 "Type" : "Cluster"

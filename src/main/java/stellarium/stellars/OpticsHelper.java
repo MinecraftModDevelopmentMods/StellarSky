@@ -4,6 +4,7 @@ import net.minecraftforge.common.config.Configuration;
 import stellarapi.api.lib.config.SimpleConfigHandler;
 import stellarapi.api.lib.config.property.ConfigPropertyDouble;
 import stellarapi.api.lib.math.Spmath;
+import stellarapi.api.optics.EyeDetector;
 import stellarium.util.math.CachedGaussianRandom;
 
 public class OpticsHelper extends SimpleConfigHandler {
@@ -14,11 +15,12 @@ public class OpticsHelper extends SimpleConfigHandler {
 	private static final double MAG_SUN = -26.74;
 
 	// Default resolution in rad
-	public static final float DEFAULT_RESOLUTION = (float) Math.toRadians(0.06);
+	public static final float DEFAULT_RESOLUTION = (float) Math.toRadians(EyeDetector.DEFAULT_RESOLUTION);
 
 	// Magnitude of star with maximal brightness(intensity) 1.0 with default resolution
-	private static final double MAG_UPPER_LIMIT = -1.0;
+	private static final double MAG_UPPER_LIMIT = -0.5;
 	// TODO Configurable Upper Magnitude Limit
+	// TODO AA This needs to be brighter
 
 	// Relative brightness of an object with size of 1 (rad)^2 compared to the star with default resolution (same flux)
 	private static final float SURF_MULTIPLIER = (float) (2 * Math.PI * Spmath.sqr(DEFAULT_RESOLUTION));

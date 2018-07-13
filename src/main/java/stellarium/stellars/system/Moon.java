@@ -149,7 +149,7 @@ public class Moon extends SolarObject {
 		double distE=earthFromSun.size();
 		double LvsSun=this.radius*this.radius*this.getCurrentPhase()*distE*distE*this.albedo*this.brightnessFactor*1.4/(dist*dist*distS*distS);
 		this.currentMag=-26.74-2.5*Math.log10(LvsSun);
-		this.brightness = distE*distE*this.albedo * this.brightnessFactor/(distS*distS)*10;
+		this.brightness = distE*distE*this.albedo * this.brightnessFactor/(distS*distS)*5;
 	}
 
 	//Illumination of Moon's Local Region (Update Needed)

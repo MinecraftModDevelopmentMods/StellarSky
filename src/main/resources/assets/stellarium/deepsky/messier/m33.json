@@ -8,6 +8,7 @@
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
 	"size" : ["57.04m", "68.01m"],
+	"brightness" : 0.2483,
 	"attribution" : "CCL BY 4.0, Credit: ESO"
 	},
 "Type" : "Galaxy"

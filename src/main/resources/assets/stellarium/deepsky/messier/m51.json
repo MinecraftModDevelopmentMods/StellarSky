@@ -8,6 +8,7 @@
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
 	"size" : ["6.64m", "9.56m"],
+	"brightness" : 0.2877,
 	"attribution" : "NASA, ESA, S. Beckwith (STScI), and The Hubble Heritage Team STScI/AURA)[Public Domain]"
 	},
 "Type" : "Galaxy"

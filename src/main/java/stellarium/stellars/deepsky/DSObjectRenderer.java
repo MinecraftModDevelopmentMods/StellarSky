@@ -17,9 +17,10 @@ public enum DSObjectRenderer implements ICelestialObjectRenderer<DeepSkyObjectCa
 		if(!cache.shouldRender)
 			return;
 
+		// MAYBE Searching for this should be hard objective
 		info.bindTexture(cache.location);
 
-		GlStateManager.color(cache.surfBr, cache.surfBr, cache.surfBr);
+		GlStateManager.color(cache.surfBr * 1.0f, cache.surfBr * 1.0f, cache.surfBr * 1.0f);
 
 		info.builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 

@@ -8,6 +8,7 @@
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
 	"size" : ["1.4d", "1.4d"],
+	"brightness" : 0.179,
 	"attribution" : "Stephane Dumont"
 	},
 "Type" : "Nebula"

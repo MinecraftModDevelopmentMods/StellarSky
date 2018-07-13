@@ -8,6 +8,7 @@
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
 	"size" : ["70m", "70m"],
+	"brightness" : 0.195,
 	"attribution" : "CCL BY-SA 3.0, by Hewholooks"
 	},
 "type" : "Nebula"

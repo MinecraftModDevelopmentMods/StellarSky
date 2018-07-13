@@ -8,6 +8,7 @@
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
 	"size" : ["6m", "6m"],
+	"brightness" : 0.387,
 	"attribution" : "By NASA, ESA, J. Hester and A. Loll (Arizona State University) (HubbleSite: gallery, release.) [Public domain]"
 	},
 "type" : "Nebula"

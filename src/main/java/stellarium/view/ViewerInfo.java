@@ -33,6 +33,7 @@ public class ViewerInfo {
 		return event.getQE();
 	}
 
+	private static boolean smoothByMag = false;
 	public ViewerInfo(ICCoordinates coordinate, IAtmosphereEffect sky, Entity viewer, float partialTicks) {
 		this.coordinate = coordinate;
 		this.sky = sky;
@@ -43,6 +44,20 @@ public class ViewerInfo {
 		EntityRenderer renderer = minecraft.entityRenderer;
 		float fov = MCUtil.getFOVModifier(renderer, partialTicks, true);
 		this.multiplyingPower = 70.0 / fov;
+
+		// TODO Stellar API Migrate this to Stellar API
+		if(this.multiplyingPower < 8.0) {
+			// TODO Control mouse speed here
+			if(smoothByMag)
+				minecraft.gameSettings.smoothCamera = false;
+		} else {
+			if(!minecraft.gameSettings.smoothCamera) {
+				minecraft.gameSettings.smoothCamera = true;
+				smoothByMag = true;
+			}
+		}
+
+		minecraft.gameSettings.smoothCamera = this.multiplyingPower > 8.0;
 
         IBlockState state = ActiveRenderInfo.getBlockStateAtEntityViewpoint(minecraft.world, viewer, partialTicks);
 

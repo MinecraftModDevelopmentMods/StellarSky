@@ -43,13 +43,13 @@ public class ExtinctionRefraction {
  		if(isApplying)
 		{
 			//Saemundsson (1986)
- 			R=1.02/Math.tan(Math.toDegrees(sp.y+10.3/(sp.y+5.11)));
+ 			R=1.02/Math.tan(Math.toRadians(sp.y+10.3/(sp.y+5.11)));
  			sp.y+=R/60.0;
 		}
 		else
 		{
 			//Garfinkel (1967)
-			R=1.0/Math.tan(Math.toDegrees(sp.y+7.31/(sp.y+4.4)));
+			R=1.0/Math.tan(Math.toRadians(sp.y+7.31/(sp.y+4.4)));
 			sp.y-=R/60.0;
 		}
 	}

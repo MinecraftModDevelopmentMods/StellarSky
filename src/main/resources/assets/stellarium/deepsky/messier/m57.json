@@ -8,6 +8,7 @@
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
 	"size" : ["2m", "2m"],
+	"brightness" : 0.295,
 	"attribution" : "By NASA and The Hubble Heritage Team (STScI/AURA))[Public domain]"
 	},
 "type" : "Nebula"

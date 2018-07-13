@@ -8,6 +8,7 @@
 	"orientation" : "equatorial",
    	"wavelength" : "visible",
 	"size" : ["0.19d", "0.13d"],
+	"brightness" : 0.362, // TODO Exclude star visible in the photo
 	"attribution" : "NASA, ESA, S. Beckwith (STScI), and The Hubble Heritage Team STScI/AURA)[Public Domain]"
 	},
 "Type" : "Galaxy"

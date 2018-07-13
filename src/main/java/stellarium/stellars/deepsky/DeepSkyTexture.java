@@ -11,6 +11,7 @@ public class DeepSkyTexture {
 	private ResourceLocation textureLocation;
 	private double width, height;
 	private String attribution;
+	private double brightness;
 	
 	public DeepSkyTexture(JsonObject textureInfo) {
 		this.textureLocation = new ResourceLocation(textureInfo.get("location").getAsString());
@@ -18,6 +19,8 @@ public class DeepSkyTexture {
 		this.width = Math.toRadians(PositionUtil.getDegreeFromDMS(size.get(0).getAsString()));
 		this.height = Math.toRadians(PositionUtil.getDegreeFromDMS(size.get(1).getAsString()));
 		this.attribution = textureInfo.get("attribution").getAsString();
+		this.brightness = textureInfo.get("brightness").getAsDouble();
+		// TODO Texture sRGB -> linear conversion
 	}
 	
 	public void fill(Vector3 center, Vector3 dirWidth, Vector3 dirHeight, Vector3[] points) {
@@ -33,4 +36,11 @@ public class DeepSkyTexture {
 		return this.textureLocation;
 	}
 
+	/**
+	 * Equivalent angular size in (rad)^2
+	 * */
+	public double equivalentSize() {
+		// Applies sRGB -> linear correction
+		return this.width * this.height * Math.pow(this.brightness, 2.2);
+	}
 }

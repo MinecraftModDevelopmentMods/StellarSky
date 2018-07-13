@@ -63,7 +63,7 @@ public class DeepSkyObjectCache implements IObjRenderCache<DeepSkyObject, IConfi
 
 		double magnitude = object.magnitude;
 		this.surfBr = OpticsHelper.getBrightnessFromMag(magnitude)
-				* OpticsHelper.getMultFromArea(object.getSurfaceSize());
+				* OpticsHelper.getMultFromArea(object.getTexture().get().equivalentSize());
 		this.shouldRender = true;
 	}
 
