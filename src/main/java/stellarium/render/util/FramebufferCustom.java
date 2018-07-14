@@ -141,9 +141,9 @@ public class FramebufferCustom {
 		}
 
 		this.framebufferClear();
+		this.checkFramebufferComplete();
 		OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, 0);
 		GlStateManager.bindTexture(0);
-		this.checkFramebufferComplete();
 	}
 
 	public void deleteFramebuffer() {

@@ -31,98 +31,16 @@ import stellarium.view.ViewerInfo;
 public enum StellarRenderer {
 	INSTANCE;
 
-	private FramebufferCustom frame1 = null, frame2 = null, brQuery = null, eyed = null;
+	private IPostProcessor postProcessor;
 	private int prevWidth = 0, prevHeight = 0;
-	private int prevFramebufferBound;
-
-	private IShaderObject scope, skyToQueried, hdrToldr, linearToSRGB;
-	private IUniformField fieldBrMult, fieldResDir, fieldBrScale, fieldRelative;
-
-	private int maxLevel;
-	private float screenRatio;
-	private int[] pBuffer;
-	private ByteBuffer brBuffer = null;
-
-	private long prevTime = -1;
-	private int index = 0;
-	private float brightness = 0.0f;
-
 	private UtilShaders shaders = new UtilShaders();
 
 	public void initialize(ClientSettings settings) {
 		AtmosphereSettings atmSettings = (AtmosphereSettings) settings.getSubConfig(AtmosphereSettings.KEY);
 		AtmosphereRenderer.INSTANCE.initialize(atmSettings);
 
-		this.setupShader();
-		this.setupPixelBuffer();
-	}
-
-	public void setupPixelBuffer() {
-		this.pBuffer = new int[] {GL15.glGenBuffers(), GL15.glGenBuffers()};
-		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[0]);
-		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, 3 << 2, GL15.GL_STREAM_READ);
-		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[1]);
-		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, 3 << 2, GL15.GL_STREAM_READ);
-		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, 0);
-	}
-
-	private static int log2(int n) {
-		return 31 - Integer.numberOfLeadingZeros(n);
-	}
-
-	public void setupFramebuffer(int width, int height) {
-		this.maxLevel = log2(Math.max(width, height) - 1) + 1;
-		int texSize = 1 << this.maxLevel;
-		this.screenRatio = (float)(width * height) / (texSize * texSize);
-
-		if(this.frame1 != null)
-			frame1.deleteFramebuffer();
-		if(this.frame2 != null)
-			frame2.deleteFramebuffer();
-		if(this.brQuery != null)
-			brQuery.deleteFramebuffer();
-
-		// RGBM format
-		this.frame1 = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGBA16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
-				.depthStencil(false, false)
-				.build(width, height);
-
-		// RGBM format
-		this.frame2 = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGBA16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
-				.depthStencil(false, false)
-				.build(width, height);
-
-		this.brQuery = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGB32F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
-				.renderRegion(0, 0, width, height)
-				.texMinMagFilter(GL11.GL_NEAREST_MIPMAP_NEAREST, GL11.GL_NEAREST)
-				.depthStencil(false, false)
-				.build(texSize, texSize);
-	}
-
-	public void setupShader() {
-		this.scope = ShaderHelper.getInstance().buildShader("Scope",
-				StellarSkyResources.vertexScope, StellarSkyResources.fragmentScope);
-		scope.getField("texture").setInteger(0);
-		this.fieldBrMult = scope.getField("brightnessMult");
-		this.fieldResDir = scope.getField("resDirection");
-
-		this.skyToQueried = ShaderHelper.getInstance().buildShader("SkyToQueried",
-				StellarSkyResources.vertexSkyToQueried, StellarSkyResources.fragmentSkyToQueried);
-		skyToQueried.getField("texture").setInteger(0);
-		this.fieldRelative = skyToQueried.getField("relative");
-
-		this.hdrToldr = ShaderHelper.getInstance().buildShader("HDRtoLDR",
-				StellarSkyResources.vertexHDRtoLDR, StellarSkyResources.fragmentHDRtoLDR);
-		hdrToldr.getField("texture").setInteger(0);
-		this.fieldBrScale = hdrToldr.getField("brScale");
-
-		this.linearToSRGB = ShaderHelper.getInstance().buildShader("linearToSRGB",
-				StellarSkyResources.vertexLinearToSRGB, StellarSkyResources.fragmentLinearToSRGB);
-		linearToSRGB.getField("texture").setInteger(0);
-
+		this.postProcessor = new CommonPostProc();
+		postProcessor.initialize();
 		shaders.reloadShaders();
 	}
 
@@ -132,126 +50,17 @@ public enum StellarRenderer {
 
 		Framebuffer mcBuffer = info.minecraft.getFramebuffer();
 		if(mcBuffer.framebufferWidth != this.prevWidth || mcBuffer.framebufferHeight != this.prevHeight) {
-			this.setupFramebuffer(mcBuffer.framebufferWidth, mcBuffer.framebufferHeight);
+			postProcessor.onResize(mcBuffer.framebufferWidth, mcBuffer.framebufferHeight);
 			this.prevWidth = mcBuffer.framebufferWidth;
 			this.prevHeight = mcBuffer.framebufferHeight;
 		}
-	}
-
-
-	public void preProcess() {
-		this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlUtil.FRAMEBUFFER_BINDING);
-
-		frame1.bindFramebuffer(false);
-		frame1.framebufferClear();
-	}
-
-	public void postProcess(StellarRI info) {
-		// TODO Render everything on floating framebuffers
-		// TODO Refactor to make everything clean and sweat
-
-		// Extract things needed
-		long currentTime = System.currentTimeMillis();
-
-		// Scope effects
-		// TODO Every scope effects should come here
-		// MAYBE Separate resolution for each of R, G, B component when wavelengths are far apart
-		// MAYBE Apply star-shaped blur for eye
-		ViewerInfo viewer = info.info;
-		double multRed = viewer.colorMultiplier.getX();
-		double multGreen = viewer.colorMultiplier.getY();
-		double multBlue = viewer.colorMultiplier.getZ();
-
-		// MAYBE Calculate blur for each pixel
-		// Blur on X-axis
-		frame2.bindFramebuffer(false);
-		frame2.framebufferClear();
-
-		double resolution = Math.toRadians(EyeDetector.DEFAULT_RESOLUTION) / viewer.multiplyingPower;
-
-		scope.bindShader();
-		fieldBrMult.setDouble4(1.0, 1.0, 1.0, 1.0);
-		fieldResDir.setDouble2(resolution / info.relativeWidth, 0.0);
-		frame1.bindFramebufferTexture();
-		frame1.renderFullQuad();
-		scope.releaseShader();
-
-		// Blur on Y-axis and Light Power
-		frame1.bindFramebuffer(false);
-		frame1.framebufferClear();
-
-		scope.bindShader();
-		fieldBrMult.setDouble4(multRed, multGreen, multBlue, 1.0);
-		fieldResDir.setDouble2(0.0, resolution / info.relativeHeight);
-		frame2.bindFramebufferTexture();
-		frame2.renderFullQuad();
-		scope.releaseShader();
-
-		// Visual effects
-		// Brightness Query
-		if(currentTime < this.prevTime || currentTime >= this.prevTime + 100) {
-			// Render to Brightness Query
-			brQuery.bindFramebuffer(true);
-			brQuery.framebufferClear();
-
-			skyToQueried.bindShader();
-			fieldRelative.setDouble3(info.relativeWidth, info.relativeHeight, 1.0f);
-			frame1.bindFramebufferTexture();
-			frame1.renderFullQuad();
-			skyToQueried.releaseShader();
-
-			// Actual Calculation
-			brQuery.bindFramebufferTexture();
-			OpenGlUtil.generateMipmap(GL11.GL_TEXTURE_2D);
-
-			this.index = (this.index + 1) % 2;
-			int nextIndex = (this.index + 1) % 2;
-
-			GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[this.index]);
-			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, this.maxLevel, GL11.GL_RGB, GL11.GL_FLOAT, 0);
-
-			GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[nextIndex]);
-			this.brBuffer = GL15.glMapBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, GL15.GL_READ_ONLY, this.brBuffer);
-
-			if(this.brBuffer != null) {
-				FloatBuffer brBufferF = brBuffer.asFloatBuffer();
-				float currentBrightness = (brBufferF.get(0) * 0.2126f
-						+ brBufferF.get(1) * 0.7152f
-						+ brBufferF.get(2) * 0.0722f) / this.screenRatio;
-				this.brightness += (currentBrightness - this.brightness) * 0.1f;
-			}
-
-			GL15.glUnmapBuffer(OpenGlUtil.PIXEL_PACK_BUFFER);
-			GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, 0);
-
-			this.prevTime = currentTime;
-		}
-
-		// HDR to LDR
-		frame2.bindFramebuffer(true);
-		frame2.framebufferClear();
-
-		hdrToldr.bindShader();
-		fieldBrScale.setDouble(Math.max(Math.min(
-				Math.pow(4.5 * this.brightness, 0.5) * 10.0, 1000.0), 1.0));
-		frame1.bindFramebufferTexture();
-		frame1.renderFullQuad();
-		hdrToldr.releaseShader();
-
-		// Linear RGB to sRGB
-		OpenGlUtil.bindFramebuffer(OpenGlUtil.FRAMEBUFFER_GL, this.prevFramebufferBound);
-
-		linearToSRGB.bindShader();
-		frame2.bindFramebufferTexture();
-		frame2.renderFullQuad();
-		linearToSRGB.releaseShader();
 	}
 
 	public void render(StellarModel model, StellarRI info) {
 		LayerRHelper layerInfo = new LayerRHelper(info, this.shaders);
 
 		// Pre-process
-		this.preProcess();
+		postProcessor.preProcess();
 
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
@@ -288,7 +97,7 @@ public enum StellarRenderer {
 		AtmosphereRenderer.INSTANCE.render(model.atmModel, EnumAtmospherePass.Finalize, info);
 
 		// Post-process
-		this.postProcess(info);
+		postProcessor.postProcess(info);
 
 		// State setup
 		GlStateManager.shadeModel(GL11.GL_FLAT);

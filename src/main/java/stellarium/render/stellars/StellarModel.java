@@ -10,7 +10,6 @@ import stellarium.view.ViewerInfo;
 import stellarium.world.StellarScene;
 
 public class StellarModel {
-
 	final StellarRenderModel layersModel;
 	final AtmosphereModel atmModel;
 
