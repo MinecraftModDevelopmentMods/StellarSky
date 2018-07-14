@@ -48,7 +48,6 @@ public class Planet extends SolarObject {
 
 	@Override
 	public double getCurrentBrightness(Wavelength wavelength) {
-		// TODO Fix this
 		return this.getCurrentPhase();
 	}
 

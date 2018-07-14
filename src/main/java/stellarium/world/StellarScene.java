@@ -105,7 +105,6 @@ public final class StellarScene implements ICelestialScene {
 
 	@Override
 	public void prepare() {
-		// TODO AAA horizontal period is dependent on coordinates - can't cache them in object
 		foundSuns.clear();
 		foundMoons.clear();
 

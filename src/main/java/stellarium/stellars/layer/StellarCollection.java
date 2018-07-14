@@ -1,6 +1,5 @@
 package stellarium.stellars.layer;
 
-import java.util.Collections;
 import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
@@ -60,8 +59,7 @@ public class StellarCollection<S extends StellarObject> extends CelestialCollect
 	 */
 	@Override
 	public Set<CelestialObject> findIn(SearchRegion region, float efficiency, float multPower) {
-		// TODO AA Fill in this
-		return Collections.emptySet();
+		return type.findIn(this, region, efficiency, multPower);
 	}
 
 	public Set<S> getLoadedObjects(String identifier) {

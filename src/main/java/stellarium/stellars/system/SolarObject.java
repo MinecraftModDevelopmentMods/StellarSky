@@ -2,7 +2,9 @@ package stellarium.stellars.system;
 
 import net.minecraft.util.ResourceLocation;
 import stellarapi.api.celestials.EnumObjectType;
+import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.observe.SearchRegion;
 import stellarium.StellarSkyReferences;
 import stellarium.stellars.layer.StellarObject;
 
@@ -48,6 +50,11 @@ public abstract class SolarObject extends StellarObject {
 	protected Vector3 initialEarthPos;
 	public void initialUpdate() {
 		this.initialEarthPos = this.earthPos;
+	}
+
+	public boolean isIn(SearchRegion region, SpCoord cache) {
+		// TODO Find Override this method on Sun and Moon
+		return region.test(cache.setWithVec(this.earthPos));
 	}
 
 	public Vector3 positionTo(SolarObject object) {

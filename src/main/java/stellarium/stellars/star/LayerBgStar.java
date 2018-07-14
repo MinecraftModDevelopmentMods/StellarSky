@@ -18,7 +18,7 @@ extends StellarLayer<BgStar, ClientConfig, CommonConfig> {
 
 	public static int renderIndex = -1;
 	public static int renderStarIndex = -1;
-	
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public ICelestialLayerRenderer getLayerRenderer() {

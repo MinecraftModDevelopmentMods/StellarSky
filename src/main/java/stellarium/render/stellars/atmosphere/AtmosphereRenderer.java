@@ -163,7 +163,6 @@ public enum AtmosphereRenderer {
 			GlStateManager.blendFunc(GL11.GL_ZERO, GL11.GL_SRC_COLOR);
 			atmShader.bindExtinctionShader(model);
 			// MAYBE Faster evaluation of extinction
-			// TODO AAAA Why is this taking time
 			if(this.vboEnabled)
 				sphereBuffer.drawElements(EnumIndexType.INT, this.sphereIndicesBuffer);
 			else GlStateManager.callList(this.sphereList);

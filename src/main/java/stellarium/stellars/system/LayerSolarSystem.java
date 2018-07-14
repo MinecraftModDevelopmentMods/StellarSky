@@ -2,11 +2,16 @@ package stellarium.stellars.system;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarapi.api.celestials.CelestialObject;
 import stellarapi.api.celestials.EnumCollectionType;
+import stellarapi.api.lib.math.SpCoord;
+import stellarapi.api.observe.SearchRegion;
 import stellarium.StellarSky;
 import stellarium.StellarSkyReferences;
 import stellarium.stellars.layer.StellarCollection;
@@ -269,6 +274,15 @@ public class LayerSolarSystem extends StellarLayer<SolarObject, SolarSystemClien
 		container.addRenderCache(neptune, new PlanetRenderCache());
 
 		StellarSky.INSTANCE.getLogger().info("Solar System Initialized!");
+	}
+
+	@Override
+	public Set<CelestialObject> findIn(StellarCollection<SolarObject> container, SearchRegion region, float efficiency, float multPower) {
+		// TODO Find Efficiency check is also needed (All is visible so unneeded for now)
+		SpCoord cache = new SpCoord();
+		return container.getLoadedObjects("system").stream()
+				.filter(object -> object.isIn(region, cache))
+				.collect(Collectors.toSet());
 	}
 
 	@Override

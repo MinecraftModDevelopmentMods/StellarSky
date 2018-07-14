@@ -47,7 +47,6 @@ public class ViewerInfo {
 		minecraft.gameSettings.smoothCamera = false;
 		// TODO Stellar API Migrate this to Stellar API
 		if(this.multiplyingPower < 8.0) {
-			// TODO Control mouse speed here
 			minecraft.gameSettings.mouseSensitivity = 0.5f;
 		} else {
 			minecraft.gameSettings.mouseSensitivity = 0.2f;

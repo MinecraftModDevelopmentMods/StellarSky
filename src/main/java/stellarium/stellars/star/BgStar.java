@@ -9,7 +9,7 @@ import stellarium.StellarSkyReferences;
 import stellarium.stellars.layer.StellarObject;
 
 public class BgStar extends StellarObject {
-
+	public final boolean hasName;
 	protected String name;
 	protected int number;
 	protected double mag;
@@ -23,6 +23,7 @@ public class BgStar extends StellarObject {
 		this.setPos(pos);
 		this.setStandardMagnitude(mag);
 
+		this.hasName = name.trim().isEmpty();
 		this.name = name;
 		this.number = number;
 		this.mag = mag;

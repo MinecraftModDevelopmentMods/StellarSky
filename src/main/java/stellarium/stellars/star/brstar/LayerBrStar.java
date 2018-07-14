@@ -4,15 +4,20 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import net.minecraft.util.ResourceLocation;
+import stellarapi.api.celestials.CelestialObject;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
 import stellarapi.api.lib.math.Matrix3;
 import stellarapi.api.lib.math.SpCoord;
 import stellarapi.api.lib.math.Vector3;
+import stellarapi.api.observe.SearchRegion;
 import stellarapi.api.optics.Wavelength;
 import stellarium.StellarSky;
 import stellarium.StellarSkyReferences;
@@ -51,6 +56,15 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 	}
 
 	@Override
+	public Set<CelestialObject> findIn(StellarCollection<BgStar> container, SearchRegion region, float efficiency, float multPower) {
+		// TODO Find More efficient search & Efficiency check is also needed (All is visible so unneeded for now)
+		SpCoord cache = new SpCoord();
+		return container.getLoadedObjects("star").stream()
+				.filter(star -> region.test(cache.setWithVec(star.getCurrentPos())))
+				.collect(Collectors.toSet());
+	}
+
+	@Override
 	public void initializeClient(IConfigHandler config,
 			StellarCollection<BgStar> container) throws IOException {
 		this.loadStarData(StellarSky.PROXY.getClientSettings().mag_Limit);
@@ -62,9 +76,9 @@ public class LayerBrStar extends LayerBgStar<IConfigHandler, INBTConfig> {
 		if(!this.IsInitialized)
 			this.loadStarData(4.0);
 		
-		for(BgStar star : this.stars)
-		{
-			container.loadObject("Star", star);
+		for(BgStar star : this.stars) {
+			if(star.hasName)
+				container.loadObject("star", star);
 			container.addRenderCache(star, new StarRenderCache());
 		}
 	}

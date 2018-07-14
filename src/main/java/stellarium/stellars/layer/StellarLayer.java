@@ -3,13 +3,16 @@ package stellarium.stellars.layer;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stellarapi.api.celestials.CelestialObject;
 import stellarapi.api.celestials.EnumCollectionType;
 import stellarapi.api.lib.config.IConfigHandler;
 import stellarapi.api.lib.config.INBTConfig;
+import stellarapi.api.observe.SearchRegion;
 import stellarium.stellars.render.ICelestialLayerRenderer;
 
 public class StellarLayer<S extends StellarObject, L extends IConfigHandler, M extends INBTConfig> {
@@ -24,10 +27,12 @@ public class StellarLayer<S extends StellarObject, L extends IConfigHandler, M e
 	}
 
 	public void initializeClient(L config, StellarCollection<S> container) throws IOException { }
-
 	public void initializeCommon(M config, StellarCollection<S> container) throws IOException { }
-
 	public void updateLayer(StellarCollection<S> container, double currentYear) { }
+
+	public Set<CelestialObject> findIn(StellarCollection<S> container, SearchRegion region, float efficiency, float multPower) {
+		return Collections.emptySet();
+	}
 
 
 	/**
