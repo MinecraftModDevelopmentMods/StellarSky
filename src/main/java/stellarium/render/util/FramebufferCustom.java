@@ -5,6 +5,7 @@ import java.nio.IntBuffer;
 import org.lwjgl.opengl.EXTPackedDepthStencil;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL30;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -180,6 +181,8 @@ public class FramebufferCustom {
 				throw new RuntimeException("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER");
 			} else if (i == OpenGlHelper.GL_FB_INCOMPLETE_READ_BUFFER) {
 				throw new RuntimeException("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER");
+			} else if (i == OpenGlUtil.GL_FB_UNSUPPORTED) {
+				throw new RuntimeException("GL_FRAMEBUFFER_UNSUPPORTED");
 			} else {
 				throw new RuntimeException("glCheckFramebufferStatus returned unknown status:" + i);
 			}

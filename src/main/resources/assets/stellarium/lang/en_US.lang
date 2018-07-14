@@ -66,6 +66,13 @@ config.property.client.turbulance=Twinkling(Turbulance)
 config.property.client.turbulance.tooltip=Degree of the twinkling effect of star. It determines the turbulance of atmosphere, which actually cause the twinkling effect. The greater the value, the more the stars will twinkle.
 
 
+///Quality
+config.category.quality=Quality
+config.category.quality.tooltip=Configurations for quality vs performance.
+
+config.property.quality.usergbe=Use RGBE
+config.property.quality.usergbe.tooltip=Decide whether to use RGBE format, which reduces memory bandwidth issue but consumes more processing power. Enable this if you have integrated graphics card.
+
 ///Optics
 config.category.optics=Optics
 config.category.optics.tooltip=Configuration for Optical settings.

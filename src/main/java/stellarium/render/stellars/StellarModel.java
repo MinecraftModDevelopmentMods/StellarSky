@@ -19,6 +19,7 @@ public class StellarModel {
 	}
 
 	public void initializeSettings(ClientSettings settings) {
+		settings.putSubConfig(QualitySettings.KEY, new QualitySettings());
 		atmModel.initializeSettings(settings);
 		layersModel.initializeSettings(settings);
 	}

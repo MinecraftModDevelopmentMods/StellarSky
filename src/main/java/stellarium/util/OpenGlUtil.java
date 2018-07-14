@@ -22,6 +22,7 @@ public class OpenGlUtil {
 	public static final boolean FRAMEBUFFER_SUPPORTED;
 	public static final int FRAMEBUFFER_GL;
 	public static final int FRAMEBUFFER_BINDING;
+	public static final int GL_FB_UNSUPPORTED;
 
 	public static final int RENDERBUFFER_GL;
 
@@ -59,6 +60,8 @@ public class OpenGlUtil {
 
 			RENDERBUFFER_GL = GL30.GL_RENDERBUFFER;
 
+			GL_FB_UNSUPPORTED = GL30.GL_FRAMEBUFFER_UNSUPPORTED;
+
 			MODE = FramebufferMode.CORE;
 		} else if(caps.GL_ARB_framebuffer_object) {
 			FRAMEBUFFER_SUPPORTED = true;
@@ -70,6 +73,8 @@ public class OpenGlUtil {
 			STENCIL_ATTACHMENT = ARBFramebufferObject.GL_STENCIL_ATTACHMENT;
 
 			RENDERBUFFER_GL = ARBFramebufferObject.GL_RENDERBUFFER;
+
+			GL_FB_UNSUPPORTED = ARBFramebufferObject.GL_FRAMEBUFFER_UNSUPPORTED;
 
 			MODE = FramebufferMode.ARB;
 		} else if(caps.GL_EXT_framebuffer_object) {
@@ -83,6 +88,8 @@ public class OpenGlUtil {
 
 			RENDERBUFFER_GL = EXTFramebufferObject.GL_RENDERBUFFER_EXT;
 
+			GL_FB_UNSUPPORTED = EXTFramebufferObject.GL_FRAMEBUFFER_UNSUPPORTED_EXT;
+
 			MODE = FramebufferMode.EXT;
 		} else {
 			FRAMEBUFFER_SUPPORTED = false;
@@ -94,6 +101,8 @@ public class OpenGlUtil {
 			STENCIL_ATTACHMENT = 0;
 
 			RENDERBUFFER_GL = 0;
+
+			GL_FB_UNSUPPORTED = 0;
 
 			MODE = null;
 		}

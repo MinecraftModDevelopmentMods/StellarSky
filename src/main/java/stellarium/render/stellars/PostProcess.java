@@ -16,7 +16,7 @@ import stellarium.render.util.FramebufferCustom;
 import stellarium.util.OpenGlUtil;
 import stellarium.view.ViewerInfo;
 
-public class CommonPostProc implements IPostProcessor {
+public class PostProcess {
 	private FramebufferCustom frame1 = null, frame2 = null, brQuery = null;
 	private int prevFramebufferBound;
 
@@ -32,13 +32,11 @@ public class CommonPostProc implements IPostProcessor {
 	private int index = 0;
 	private float brightness = 0.0f;
 
-	@Override
 	public void initialize() {
 		this.setupShader();
 		this.setupPixelBuffer();
 	}
 
-	@Override
 	public void onResize(int width, int height) {
 		this.maxLevel = log2(Math.max(width, height) - 1) + 1;
 		int texSize = 1 << this.maxLevel;
@@ -51,20 +49,20 @@ public class CommonPostProc implements IPostProcessor {
 		if(this.brQuery != null)
 			brQuery.deleteFramebuffer();
 
-		// RGBM format
+		// RGBE format
 		this.frame1 = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGBA16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.texFormat(GL11.GL_RGBA8, GL11.GL_RGBA, GL11.GL_BYTE)
 				.depthStencil(false, false)
 				.build(width, height);
 
-		// RGBM format
+		// RGBE format
 		this.frame2 = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGBA16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.texFormat(GL11.GL_RGBA8, GL11.GL_RGBA, GL11.GL_BYTE)
 				.depthStencil(false, false)
 				.build(width, height);
 
 		this.brQuery = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGB32F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
+				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
 				.renderRegion(0, 0, width, height)
 				.texMinMagFilter(GL11.GL_NEAREST_MIPMAP_NEAREST, GL11.GL_NEAREST)
 				.depthStencil(false, false)
@@ -86,27 +84,30 @@ public class CommonPostProc implements IPostProcessor {
 
 	public void setupShader() {
 		this.scope = ShaderHelper.getInstance().buildShader("Scope",
-				StellarSkyResources.vertexScope, StellarSkyResources.fragmentScope);
+				StellarSkyResources.vertexScope,
+				StellarSkyResources.fragmentScope);
 		scope.getField("texture").setInteger(0);
 		this.fieldBrMult = scope.getField("brightnessMult");
 		this.fieldResDir = scope.getField("resDirection");
 
 		this.skyToQueried = ShaderHelper.getInstance().buildShader("SkyToQueried",
-				StellarSkyResources.vertexSkyToQueried, StellarSkyResources.fragmentSkyToQueried);
+				StellarSkyResources.vertexSkyToQueried,
+				StellarSkyResources.fragmentSkyToQueried);
 		skyToQueried.getField("texture").setInteger(0);
 		this.fieldRelative = skyToQueried.getField("relative");
 
 		this.hdrToldr = ShaderHelper.getInstance().buildShader("HDRtoLDR",
-				StellarSkyResources.vertexHDRtoLDR, StellarSkyResources.fragmentHDRtoLDR);
+				StellarSkyResources.vertexHDRtoLDR,
+				StellarSkyResources.fragmentHDRtoLDR);
 		hdrToldr.getField("texture").setInteger(0);
 		this.fieldBrScale = hdrToldr.getField("brScale");
 
 		this.linearToSRGB = ShaderHelper.getInstance().buildShader("linearToSRGB",
-				StellarSkyResources.vertexLinearToSRGB, StellarSkyResources.fragmentLinearToSRGB);
+				StellarSkyResources.vertexLinearToSRGB,
+				StellarSkyResources.fragmentLinearToSRGB);
 		linearToSRGB.getField("texture").setInteger(0);
 	}
 
-	@Override
 	public void preProcess() {
 		this.prevFramebufferBound = GlStateManager.glGetInteger(OpenGlUtil.FRAMEBUFFER_BINDING);
 
@@ -114,7 +115,6 @@ public class CommonPostProc implements IPostProcessor {
 		frame1.framebufferClear();
 	}
 
-	@Override
 	public void postProcess(StellarRI info) {
 		// TODO Render everything on floating framebuffers
 		// TODO Refactor to make everything clean and sweat
@@ -184,9 +184,7 @@ public class CommonPostProc implements IPostProcessor {
 
 			if(this.brBuffer != null) {
 				FloatBuffer brBufferF = brBuffer.asFloatBuffer();
-				float currentBrightness = (brBufferF.get(0) * 0.2126f
-						+ brBufferF.get(1) * 0.7152f
-						+ brBufferF.get(2) * 0.0722f) / this.screenRatio;
+				float currentBrightness = brBufferF.get(0) * 1000.0f / this.screenRatio;
 				this.brightness += (currentBrightness - this.brightness) * 0.1f;
 			}
 

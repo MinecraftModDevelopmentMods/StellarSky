@@ -3,17 +3,22 @@
 uniform sampler2D texture;
 uniform vec3 relative;
 
-vec4 encode(vec4 color) {
-    float alpha = min(max(max(color.r, 0.0001), max(color.g, color.b)), 10000.0);
-    color /= alpha;
-    color.a = alpha;
-    return color;
+vec4 encode(vec4 color)
+{
+    vec4 vEncoded;
+    float maxComponent = max(max(color.r, color.g), color.b );
+    float fExp = ceil( log2(maxComponent) );
+    vEncoded = color / exp2(fExp);
+    vEncoded.a = (fExp + 128) / 255;
+    return vEncoded;
 }
 
-vec4 decode(vec4 color) {
-    color *= color.a;
-    color.a = 1.0;
-    return color;
+vec4 decode(vec4 rgbe)
+{
+    vec4 vDecoded;
+    float fExp = rgbe.a * 255 - 128;
+    vDecoded = rgbe * exp2(fExp);
+    return vDecoded;
 }
 
 void main()
@@ -25,6 +30,7 @@ void main()
     float size = length(coord);
 
     vec4 fragColor = decode(texture2D(texture, gl_TexCoord[0].st));
+    float brightness = fragColor.r * 0.2126 + fragColor.g * 0.7152 + fragColor.b * 0.0722;
     // Cap the brightness
-    gl_FragColor = min(fragColor, 400000.0) / (size * size * size);
+    gl_FragColor.r = min(brightness, 400000.0) / (1000 * size * size * size);
 }

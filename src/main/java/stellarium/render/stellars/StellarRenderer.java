@@ -1,29 +1,16 @@
 package stellarium.render.stellars;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.shader.Framebuffer;
-import stellarapi.api.lib.math.Spmath;
-import stellarapi.api.optics.EyeDetector;
-import stellarium.StellarSkyResources;
 import stellarium.client.ClientSettings;
-import stellarium.render.shader.IShaderObject;
-import stellarium.render.shader.IUniformField;
-import stellarium.render.shader.ShaderHelper;
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.render.stellars.atmosphere.AtmosphereRenderer;
 import stellarium.render.stellars.atmosphere.AtmosphereSettings;
 import stellarium.render.stellars.atmosphere.EnumAtmospherePass;
 import stellarium.render.stellars.layer.LayerRHelper;
 import stellarium.render.stellars.phased.StellarPhasedRenderer;
-import stellarium.render.util.FramebufferCustom;
-import stellarium.util.OpenGlUtil;
-import stellarium.view.ViewerInfo;
 
 /**
  * Renderer for various visual effects
@@ -31,15 +18,17 @@ import stellarium.view.ViewerInfo;
 public enum StellarRenderer {
 	INSTANCE;
 
-	private IPostProcessor postProcessor;
+	private boolean prevUseRGBE = false;
+	private PostProcess postProcessor = new PostProcess();
 	private int prevWidth = 0, prevHeight = 0;
 	private UtilShaders shaders = new UtilShaders();
 
 	public void initialize(ClientSettings settings) {
+		QualitySettings quality = (QualitySettings) settings.getSubConfig(QualitySettings.KEY);
+
 		AtmosphereSettings atmSettings = (AtmosphereSettings) settings.getSubConfig(AtmosphereSettings.KEY);
 		AtmosphereRenderer.INSTANCE.initialize(atmSettings);
 
-		this.postProcessor = new CommonPostProc();
 		postProcessor.initialize();
 		shaders.reloadShaders();
 	}
