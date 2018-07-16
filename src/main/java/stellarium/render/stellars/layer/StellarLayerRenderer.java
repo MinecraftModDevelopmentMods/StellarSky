@@ -1,5 +1,7 @@
 package stellarium.render.stellars.layer;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import stellarium.render.stellars.access.EnumStellarPass;
 import stellarium.stellars.layer.StellarObject;
 import stellarium.stellars.render.ICelestialLayerRenderer;
@@ -16,7 +18,8 @@ public enum StellarLayerRenderer {
 
 		layerRenderer.preRender(pass, info);
 
-		for(IObjRenderCache cache : model.getRenderCaches()) {
+		for(Pair<StellarObject, IObjRenderCache> pair : model.getRenderCaches()) {
+			IObjRenderCache cache = pair.getRight();
 			ICelestialObjectRenderer objRenderer = cache.getRenderer();
 			objRenderer.render(cache, pass, info);
 		}
