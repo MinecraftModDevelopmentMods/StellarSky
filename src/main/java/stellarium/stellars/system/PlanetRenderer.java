@@ -18,7 +18,7 @@ public enum PlanetRenderer implements ICelestialObjectRenderer<PlanetRenderCache
 		float multiplier = OpticsHelper.getMultFromArea(info.pointArea());
 
 		info.beginPoint();
-		info.renderPoint(cache.pos,
+		info.renderPoint(cache.pos, LayerRHelper.DEEP_DEPTH,
 				cache.brightness * multiplier, cache.brightness * multiplier, cache.brightness * multiplier);
 		info.endPoint();
 	}

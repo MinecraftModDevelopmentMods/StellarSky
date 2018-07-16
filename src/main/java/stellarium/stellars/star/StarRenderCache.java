@@ -14,7 +14,6 @@ import stellarium.stellars.util.StarColor;
 import stellarium.view.ViewerInfo;
 
 public class StarRenderCache implements IObjRenderCache<BgStar, IConfigHandler> {
-	protected boolean shouldRender;
 	protected SpCoord appPos = new SpCoord();
 	protected Vector3 pos = new Vector3();
 	protected float red, green, blue;
@@ -36,8 +35,6 @@ public class StarRenderCache implements IObjRenderCache<BgStar, IConfigHandler> 
 		this.red = (float) (alpha * starColor.r / 255.0);
 		this.green = (float) (alpha * starColor.g / 255.0);
 		this.blue = (float) (alpha * starColor.b / 255.0);
-
-		this.shouldRender = true;
 	}
 
 	@SideOnly(Side.CLIENT)

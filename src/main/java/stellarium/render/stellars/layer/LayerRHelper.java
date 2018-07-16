@@ -79,8 +79,7 @@ public class LayerRHelper {
 		shaders.releaseShader();
 	}
 
-	public void renderPoint(Vector3 pos, float red, float green, float blue) {
-		double length = pos.size();
+	public void renderPoint(Vector3 pos, double length, float red, float green, float blue) {
 		builder.pos(
 				pos.getX() + (xAxis.getX() - yAxis.getX()) * length,
 				pos.getY() + (xAxis.getY() - yAxis.getY()) * length,

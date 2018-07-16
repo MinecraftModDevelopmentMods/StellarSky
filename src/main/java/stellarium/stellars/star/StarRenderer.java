@@ -6,16 +6,12 @@ import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.render.ICelestialObjectRenderer;
 
 public enum StarRenderer implements ICelestialObjectRenderer<StarRenderCache> {
-	
 	INSTANCE;
 
 	@Override
 	public void render(StarRenderCache cache, EnumStellarPass pass, LayerRHelper info) {
-		if(!cache.shouldRender)
-			return;
-
 		float multiplier = OpticsHelper.getMultFromArea(info.pointArea());
-		info.renderPoint(cache.pos,
+		info.renderPoint(cache.pos, LayerRHelper.DEEP_DEPTH,
 				cache.red * multiplier, cache.green * multiplier, cache.blue * multiplier);
 	}
 
