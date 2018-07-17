@@ -1,11 +1,10 @@
 package stellarium.render.stellars;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 
@@ -17,7 +16,6 @@ import stellarium.render.shader.IUniformField;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.util.FramebufferCustom;
 import stellarium.util.OpenGlUtil;
-import stellarium.util.RenderUtil;
 import stellarium.view.ViewerInfo;
 
 public class PostProcess {
@@ -77,9 +75,9 @@ public class PostProcess {
 		this.pBuffer = new int[] {GL15.glGenBuffers(), GL15.glGenBuffers()};
 
 		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[0]);
-		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, 3 << 2, GL15.GL_STREAM_READ);
+		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, 4 << 2, GL15.GL_STREAM_READ);
 		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[1]);
-		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, 3 << 2, GL15.GL_STREAM_READ);
+		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, 4 << 2, GL15.GL_STREAM_READ);
 		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, 0);
 	}
 
@@ -111,6 +109,33 @@ public class PostProcess {
 				StellarSkyResources.vertexLinearToSRGB,
 				StellarSkyResources.fragmentLinearToSRGB);
 		linearToSRGB.getField("texture").setInteger(0);
+	}
+
+	public static float toFloat(short hbits)
+	{
+	    int mant = hbits & 0x03ff;            // 10 bits mantissa
+	    int exp =  hbits & 0x7c00;            // 5 bits exponent
+	    if( exp == 0x7c00 )                   // NaN/Inf
+	        exp = 0x3fc00;                    // -> NaN/Inf
+	    else if( exp != 0 )                   // normalized value
+	    {
+	        exp += 0x1c000;                   // exp - 15 + 127
+	        if( mant == 0 && exp > 0x1c400 )  // smooth transition
+	            return Float.intBitsToFloat( ( hbits & 0x8000 ) << 16
+	                                            | exp << 13 | 0x3ff );
+	    }
+	    else if( mant != 0 )                  // && exp==0 -> subnormal
+	    {
+	        exp = 0x1c400;                    // make it normal
+	        do {
+	            mant <<= 1;                   // mantissa * 2
+	            exp -= 0x400;                 // decrease exp by 1
+	        } while( ( mant & 0x400 ) == 0 ); // while not normal
+	        mant &= 0x3ff;                    // discard subnormal bit
+	    }                                     // else +/-0 -> +/-0
+	    return Float.intBitsToFloat(          // combine all parts
+	        ( hbits & 0x8000 ) << 16          // sign  << ( 31 - 15 )
+	        | ( exp | mant ) << 13 );         // value << ( 23 - 10 )
 	}
 
 	public void preProcess() {
@@ -163,7 +188,7 @@ public class PostProcess {
 
 		// Visual effects
 		// Brightness Query
-		if(currentTime < this.prevTime || currentTime >= this.prevTime + 100) {
+		if(currentTime < this.prevTime || currentTime >= this.prevTime + 50) {
 			// Render to Brightness Query
 			brQuery.bindFramebuffer(true);
 			brQuery.framebufferClear();
@@ -182,14 +207,16 @@ public class PostProcess {
 			int nextIndex = (this.index + 1) % 2;
 
 			GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[this.index]);
-			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, this.maxLevel, GL12.GL_BGRA, GL11.GL_FLOAT, 0);
+			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, this.maxLevel, GL12.GL_BGRA, GL30.GL_HALF_FLOAT, 0);
 
 			GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[nextIndex]);
-			this.brBuffer = GL15.glMapBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, GL15.GL_READ_ONLY, this.brBuffer);
+			this.brBuffer = GL15.glMapBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, GL15.GL_READ_ONLY, 4 << 1, this.brBuffer);
 
 			if(this.brBuffer != null) {
-				FloatBuffer brBufferF = brBuffer.asFloatBuffer();
-				float currentBrightness = brBufferF.get(2) * 1000.0f / this.screenRatio;
+				ShortBuffer brBufferS = brBuffer.asShortBuffer();
+				short readShBr = brBufferS.get(2);
+				float readBr = toFloat(readShBr);
+				float currentBrightness = readBr * 1000.0f / this.screenRatio;
 				this.brightness += (currentBrightness - this.brightness) * 0.1f;
 			}
 
