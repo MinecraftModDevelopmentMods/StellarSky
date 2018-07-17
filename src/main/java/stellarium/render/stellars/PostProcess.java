@@ -3,6 +3,7 @@ package stellarium.render.stellars;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
+import org.lwjgl.opengl.ARBHalfFloatPixel;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL15;
@@ -16,6 +17,7 @@ import stellarium.render.shader.IUniformField;
 import stellarium.render.shader.ShaderHelper;
 import stellarium.render.util.FramebufferCustom;
 import stellarium.util.OpenGlUtil;
+import stellarium.util.math.StellarMath;
 import stellarium.view.ViewerInfo;
 
 public class PostProcess {
@@ -64,7 +66,7 @@ public class PostProcess {
 				.build(width, height);
 
 		this.brQuery = FramebufferCustom.builder()
-				.texFormat(OpenGlUtil.RGBA16F, GL11.GL_RGBA, OpenGlUtil.TEXTURE_FLOAT)
+				.texFormat(OpenGlUtil.RGB16F, GL11.GL_RGB, OpenGlUtil.TEXTURE_FLOAT)
 				.renderRegion(0, 0, width, height)
 				.texMinMagFilter(GL11.GL_NEAREST_MIPMAP_NEAREST, GL11.GL_NEAREST)
 				.depthStencil(false, false)
@@ -74,10 +76,12 @@ public class PostProcess {
 	public void setupPixelBuffer() {
 		this.pBuffer = new int[] {GL15.glGenBuffers(), GL15.glGenBuffers()};
 
+		boolean isHalf = OpenGlUtil.HALF_FLOAT_SUPPORTED;
+
 		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[0]);
-		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, 4 << 2, GL15.GL_STREAM_READ);
+		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, isHalf? 4 << 1 : 4 << 2, GL15.GL_STREAM_READ);
 		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[1]);
-		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, 4 << 2, GL15.GL_STREAM_READ);
+		GL15.glBufferData(OpenGlUtil.PIXEL_PACK_BUFFER, isHalf? 4 << 1 : 4 << 2, GL15.GL_STREAM_READ);
 		GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, 0);
 	}
 
@@ -109,33 +113,6 @@ public class PostProcess {
 				StellarSkyResources.vertexLinearToSRGB,
 				StellarSkyResources.fragmentLinearToSRGB);
 		linearToSRGB.getField("texture").setInteger(0);
-	}
-
-	public static float toFloat(short hbits)
-	{
-	    int mant = hbits & 0x03ff;            // 10 bits mantissa
-	    int exp =  hbits & 0x7c00;            // 5 bits exponent
-	    if( exp == 0x7c00 )                   // NaN/Inf
-	        exp = 0x3fc00;                    // -> NaN/Inf
-	    else if( exp != 0 )                   // normalized value
-	    {
-	        exp += 0x1c000;                   // exp - 15 + 127
-	        if( mant == 0 && exp > 0x1c400 )  // smooth transition
-	            return Float.intBitsToFloat( ( hbits & 0x8000 ) << 16
-	                                            | exp << 13 | 0x3ff );
-	    }
-	    else if( mant != 0 )                  // && exp==0 -> subnormal
-	    {
-	        exp = 0x1c400;                    // make it normal
-	        do {
-	            mant <<= 1;                   // mantissa * 2
-	            exp -= 0x400;                 // decrease exp by 1
-	        } while( ( mant & 0x400 ) == 0 ); // while not normal
-	        mant &= 0x3ff;                    // discard subnormal bit
-	    }                                     // else +/-0 -> +/-0
-	    return Float.intBitsToFloat(          // combine all parts
-	        ( hbits & 0x8000 ) << 16          // sign  << ( 31 - 15 )
-	        | ( exp | mant ) << 13 );         // value << ( 23 - 10 )
 	}
 
 	public void preProcess() {
@@ -206,16 +183,25 @@ public class PostProcess {
 			this.index = (this.index + 1) % 2;
 			int nextIndex = (this.index + 1) % 2;
 
+			boolean isHalf = OpenGlUtil.HALF_FLOAT_SUPPORTED;
 			GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[this.index]);
-			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, this.maxLevel, GL12.GL_BGRA, GL30.GL_HALF_FLOAT, 0);
+			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, this.maxLevel, GL12.GL_BGR,
+					isHalf? OpenGlUtil.HALF_FLOAT : GL11.GL_FLOAT, 0);
 
 			GL15.glBindBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, this.pBuffer[nextIndex]);
-			this.brBuffer = GL15.glMapBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, GL15.GL_READ_ONLY, 4 << 1, this.brBuffer);
+			this.brBuffer = GL15.glMapBuffer(OpenGlUtil.PIXEL_PACK_BUFFER, GL15.GL_READ_ONLY,
+					isHalf? 3 << 1 : 3 << 2, this.brBuffer);
 
 			if(this.brBuffer != null) {
-				ShortBuffer brBufferS = brBuffer.asShortBuffer();
-				short readShBr = brBufferS.get(2);
-				float readBr = toFloat(readShBr);
+				float readBr;
+				if(isHalf) {
+					ShortBuffer brBufferS = brBuffer.asShortBuffer();
+					short readShBr = brBufferS.get(2);
+					readBr = StellarMath.toFloat(readShBr);
+				} else {
+					readBr = brBuffer.asFloatBuffer().get(2);
+				}
+
 				float currentBrightness = readBr * 1000.0f / this.screenRatio;
 				this.brightness += (currentBrightness - this.brightness) * 0.1f;
 			}

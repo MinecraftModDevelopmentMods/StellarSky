@@ -48,6 +48,8 @@ public class SettingSpecific {
 		model.addSubModel("config.category.optics", new ModelSimpleTextured(StellarSkyResources.optics));
 		model.addSubModel("config.property.client.turbulance", new ModelSimpleTextured(StellarSkyResources.turbulance));
 
+		model.addSubModel("config.category.quality", new ModelSimpleTextured(StellarSkyResources.optics));
+
 		model.addSubModel("config.category.atmosphere", new ModelSimpleTextured(StellarSkyResources.atmosphereSettings));
 		model.addSubModel("config.property.atmosphere.fragnumber", new ModelSimpleTextured(StellarSkyResources.fragment));
 		model.addSubModel("config.property.atmosphere.fragscreen", new ModelSimpleTextured(StellarSkyResources.fragment));

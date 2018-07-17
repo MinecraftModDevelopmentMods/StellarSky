@@ -18,7 +18,6 @@ import stellarium.render.stellars.phased.StellarPhasedRenderer;
 public enum StellarRenderer {
 	INSTANCE;
 
-	private boolean prevUseRGBE = false;
 	private PostProcess postProcessor = new PostProcess();
 	private int prevWidth = 0, prevHeight = 0;
 	private UtilShaders shaders = new UtilShaders();

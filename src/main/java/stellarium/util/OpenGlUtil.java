@@ -1,6 +1,8 @@
 package stellarium.util;
 
 import org.lwjgl.opengl.ARBFramebufferObject;
+import org.lwjgl.opengl.ARBHalfFloatPixel;
+import org.lwjgl.opengl.ARBHalfFloatVertex;
 import org.lwjgl.opengl.ARBPixelBufferObject;
 import org.lwjgl.opengl.ARBPointSprite;
 import org.lwjgl.opengl.ARBTextureFloat;
@@ -11,6 +13,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL21;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.NVHalfFloat;
 
 public class OpenGlUtil {
 	
@@ -18,6 +21,9 @@ public class OpenGlUtil {
 	public static final int PIXEL_PACK_BUFFER;
 	public static final int RGB16F, RGBA16F, RGB32F;
 	public static final int TEXTURE_FLOAT;
+
+	public static final boolean HALF_FLOAT_SUPPORTED;
+	public static final int HALF_FLOAT;
 
 	public static final boolean FRAMEBUFFER_SUPPORTED;
 	public static final int FRAMEBUFFER_GL;
@@ -48,6 +54,20 @@ public class OpenGlUtil {
 				(caps.OpenGL30? GL30.GL_RGB32F : ARBTextureFloat.GL_RGB32F_ARB)
 				: GL11.GL_RGB16;
 		TEXTURE_FLOAT = caps.GL_ARB_texture_float? GL11.GL_FLOAT : GL11.GL_UNSIGNED_SHORT;
+
+		if(caps.OpenGL30) {
+			HALF_FLOAT_SUPPORTED = true;
+			HALF_FLOAT = GL30.GL_HALF_FLOAT;
+		} else if(caps.GL_ARB_half_float_pixel) {
+			HALF_FLOAT_SUPPORTED = true;
+			HALF_FLOAT = ARBHalfFloatPixel.GL_HALF_FLOAT_ARB;
+		} else if(caps.GL_NV_half_float) {
+			HALF_FLOAT_SUPPORTED = true;
+			HALF_FLOAT = NVHalfFloat.GL_HALF_FLOAT_NV;
+		} else {
+			HALF_FLOAT_SUPPORTED = false;
+			HALF_FLOAT = 0;
+		}
 
 		if(caps.OpenGL30) {
 			FRAMEBUFFER_SUPPORTED = true;

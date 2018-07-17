@@ -19,7 +19,7 @@ public class OpticsHelper extends SimpleConfigHandler {
 
 	// Magnitude of star with maximal brightness(intensity) 1.0 with default resolution
 	private static final double MAG_UPPER_LIMIT = -0.5;
-	// TODO Configurable Upper Magnitude Limit
+	// MAYBE Configurable Upper Magnitude Limit
 
 	// Relative brightness of an object with size of 1 (rad)^2 compared to the star with default resolution (same flux)
 	private static final float SURF_MULTIPLIER = (float) (2 * Math.PI * Spmath.sqr(DEFAULT_RESOLUTION));

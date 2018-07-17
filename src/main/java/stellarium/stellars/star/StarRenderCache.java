@@ -29,6 +29,7 @@ public class StarRenderCache implements IObjRenderCache<BgStar, IConfigHandler> 
 		pos.set(this.ref);
 		pos.scale(LayerRHelper.DEEP_DEPTH);
 
+		// TODO AA Mark object size to some buffer
 		StarColor starColor = StarColor.getColor(object.B_V);
 
 		double alpha = OpticsHelper.getBrightnessFromMag(OpticsHelper.turbulance() + object.mag);
