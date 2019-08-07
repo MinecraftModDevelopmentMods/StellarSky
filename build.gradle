@@ -41,6 +41,15 @@ minecraft {
     replace "@VERSION@", project.version
 }
 
+eclipse.project {
+  buildCommand 'org.eclipse.buildship.core.gradleprojectbuilder'
+  natures 'org.eclipse.buildship.core.gradleprojectnature'
+}
+
+idea.module {
+  downloadJavadoc = true
+  //inheritOutputDirs = true
+}
 
 dependencies {
     deobfCompile 'stellarapi.api:stellarapi:1.12.2-0.5.2.2'
