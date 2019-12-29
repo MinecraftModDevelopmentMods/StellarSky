@@ -15,21 +15,14 @@ public class DisplayModel implements IDisplayInjectable {
 
 	List<Delegate> displayList = Lists.newArrayList();
 
+	public DisplayModel() {
+		DisplayRegistry.getInstance().setupDisplay(this);
+	}
+
 	@Override
 	public <Cfg extends PerDisplaySettings, Cache extends IDisplayCache<Cfg>> void injectDisplay(
 			IDisplayElementType<Cfg, Cache> type, Cfg settings) {
 		displayList.add(new Delegate(type, settings));
-	}
-
-	@Override
-	public SimpleHierarchicalConfig getSubSettings(ClientSettings settings) {
-		DisplayOverallSettings displaySettings = new DisplayOverallSettings();
-		settings.putSubConfig("Display", displaySettings);
-		return displaySettings;
-	}
-
-	public void initializeSettings(ClientSettings settings) {
-		DisplayRegistry.getInstance().setupDisplay(settings, this);
 	}
 
 	public void updateSettings(ClientSettings settings) {

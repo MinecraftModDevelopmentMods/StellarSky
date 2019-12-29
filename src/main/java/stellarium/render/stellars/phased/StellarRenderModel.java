@@ -29,10 +29,6 @@ public class StellarRenderModel {
 		}
 	}
 
-	public void initializeSettings(ClientSettings settings) {
-		StellarLayerRegistry.getInstance().composeSettings(settings);
-	}
-
 	public void updateSettings(ClientSettings settings) {
 		for(StellarLayerModel<?> model : this.layerModels)
 			model.updateSettings(settings);

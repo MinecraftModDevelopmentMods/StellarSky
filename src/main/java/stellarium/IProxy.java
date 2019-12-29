@@ -45,4 +45,6 @@ public interface IProxy {
 
 	public void setupStellarLoad(StellarManager manager);
 	public void setupDimensionLoad(StellarScene dimManager);
+
+	public void removeSkyModel(World world);
 }

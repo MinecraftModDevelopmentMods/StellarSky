@@ -2,7 +2,9 @@ package stellarium;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
@@ -16,13 +18,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import stellarapi.api.SAPICapabilities;
 import stellarapi.api.gui.overlay.OverlayRegistry;
 import stellarapi.api.lib.config.ConfigManager;
 import stellarapi.api.render.IAdaptiveRenderer;
-import stellarapi.api.view.IAtmosphereEffect;
-import stellarapi.api.view.ICCoordinates;
-import stellarapi.api.world.ICelestialWorld;
 import stellarapi.api.world.worldset.WorldSet;
 import stellarium.api.StellarSkyAPI;
 import stellarium.client.ClientSettings;
@@ -30,14 +28,19 @@ import stellarium.client.StellarClientFMLHook;
 import stellarium.client.overlay.StellarSkyOverlays;
 import stellarium.client.overlay.clientcfg.OverlayClientSettingsType;
 import stellarium.client.overlay.clock.OverlayClockType;
+import stellarium.display.DisplayRegistry;
 import stellarium.render.GenericSkyRenderer;
 import stellarium.render.SkyModel;
 import stellarium.render.SkyRenderer;
+import stellarium.render.stellars.QualitySettings;
+import stellarium.render.stellars.atmosphere.AtmosphereSettings;
 import stellarium.stellars.OpticsHelper;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
+import stellarium.stellars.layer.StellarLayerRegistry;
 import stellarium.view.ViewerInfo;
 import stellarium.world.StellarScene;
+import stellarium.world.landscape.LandscapeClientSettings;
 
 public class ClientProxy extends CommonProxy implements IProxy {
 	
@@ -51,7 +54,7 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	private ConfigManager guiConfig;
 	private CelestialManager celestialManager = new CelestialManager(true);
 	
-	private SkyModel skyModel;
+	private Map<World, SkyModel> skyModels = new HashMap<>();
 	
 	public ClientSettings getClientSettings() {
 		return this.clientSettings;
@@ -75,8 +78,11 @@ public class ClientProxy extends CommonProxy implements IProxy {
 		OverlayRegistry.registerOverlay("clock", new OverlayClockType(), this.guiConfig);
 		OverlayRegistry.registerOverlay("clientconfig", new OverlayClientSettingsType(), this.guiConfig);
 
-		this.skyModel = new SkyModel(this.celestialManager);
-		skyModel.initializeSettings(this.clientSettings);
+		clientSettings.putSubConfig(QualitySettings.KEY, new QualitySettings());
+		clientSettings.putSubConfig(AtmosphereSettings.KEY, new AtmosphereSettings());
+		clientSettings.putSubConfig(LandscapeClientSettings.KEY, new LandscapeClientSettings());
+		StellarLayerRegistry.getInstance().composeSettings(clientSettings);
+		DisplayRegistry.getInstance().composeSettings(clientSettings);
 	}
 
 	@Override
@@ -111,25 +117,31 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	
 	@Override
 	public void setupStellarLoad(StellarManager manager) {
+		World world = manager.getWorld();
+		SkyModel skyModel = new SkyModel(this.celestialManager, world);
 		skyModel.stellarLoad(manager);
+		skyModels.put(world, skyModel);
 	}
 
 	@Override
 	public void setupDimensionLoad(StellarScene dimManager) {
-		skyModel.dimensionLoad(dimManager);
+		skyModels.get(dimManager.getWorld()).dimensionLoad(dimManager);
 	}
 
 	public void onSettingsChanged(ClientSettings settings) {
-		skyModel.updateSettings(settings);
+		for(SkyModel skyModel : skyModels.values())
+			skyModel.updateSettings(settings);
+		
 		SkyRenderer.INSTANCE.initialize(settings);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public IAdaptiveRenderer setupSkyRenderer(World world, WorldSet worldSet, String option) {
+		SkyModel skyModel = skyModels.get(world);
 		skyModel.updateSettings(this.clientSettings);
 		SkyRenderer.INSTANCE.initialize(this.clientSettings);
-		IRenderHandler genericRenderer = new GenericSkyRenderer(this.skyModel);
+		IRenderHandler genericRenderer = new GenericSkyRenderer(skyModel);
 		return StellarSkyAPI.getRendererFor(option, genericRenderer);
 	}
 
@@ -140,39 +152,46 @@ public class ClientProxy extends CommonProxy implements IProxy {
 	
 	@Override
 	public void updateTick() {
-		if(clientSettings.checkDirty())
-			this.onSettingsChanged(this.clientSettings);
-
-		Minecraft mc = Minecraft.getMinecraft();
-		World world = mc.world;
-		Entity viewer = mc.getRenderViewEntity();
-
-		// Placeholder fix for vanilla lighting glitch.
-		try {
-			@SuppressWarnings("unchecked")
-			Set<BlockPos> lightUpdates = (Set<BlockPos>) fieldLightUpdateSet.get(mc.renderGlobal);
-			Iterator<BlockPos> ite = lightUpdates.iterator();
-			while(ite.hasNext()) {
-				BlockPos pos = ite.next();
-				ite.remove();
-				int x = pos.getX();
-				int y = pos.getY();
-				int z = pos.getZ();
-				mc.renderGlobal.markBlockRangeForRenderUpdate(x-1, y-1, z-1, x+1, y+1, z+1);
+		if(!skyModels.isEmpty()) {
+			Minecraft mc = Minecraft.getMinecraft();
+			Entity viewer = mc.getRenderViewEntity();
+			
+			if(clientSettings.checkDirty())
+				this.onSettingsChanged(this.clientSettings);
+	
+			// Placeholder fix for vanilla lighting glitch.
+			try {
+				@SuppressWarnings("unchecked")
+				Set<BlockPos> lightUpdates = (Set<BlockPos>) fieldLightUpdateSet.get(mc.renderGlobal);
+				Iterator<BlockPos> ite = lightUpdates.iterator();
+				while(ite.hasNext()) {
+					BlockPos pos = ite.next();
+					ite.remove();
+					int x = pos.getX();
+					int y = pos.getY();
+					int z = pos.getZ();
+					mc.renderGlobal.markBlockRangeForRenderUpdate(x-1, y-1, z-1, x+1, y+1, z+1);
+				}
+			} catch(IllegalAccessException exception) {
+				throw new IllegalStateException("Illegal access to field " + fieldLightUpdateSet.getName() + ", Unexpected.");
 			}
-		} catch(IllegalAccessException exception) {
-			throw new IllegalStateException("Illegal access to field " + fieldLightUpdateSet.getName() + ", Unexpected.");
+	
+			if(viewer != null) {
+				for (SkyModel skyModel : skyModels.values()) {
+					skyModel.onTick(viewer);
+				}
+			}
 		}
-
-		ICelestialWorld cWorld = world.getCapability(SAPICapabilities.CELESTIAL_CAPABILITY, null);
-		ICCoordinates coordinate = cWorld.getCoordinate();
-		IAtmosphereEffect sky = cWorld.getSkyEffect();
-
-		skyModel.onTick(this.getDefWorld(), new ViewerInfo(coordinate, sky, viewer, 0.0f));
 	}
 	
 	@Override
 	public void addScheduledTask(Runnable runnable) {
 		Minecraft.getMinecraft().addScheduledTask(runnable);
+	}
+	
+	@Override
+	public void removeSkyModel(World world) {
+		if(skyModels.containsKey(world))
+			skyModels.remove(world);
 	}
 }

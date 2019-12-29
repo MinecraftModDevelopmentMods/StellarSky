@@ -10,10 +10,6 @@ public class LandscapeModel {
 	protected Vector3[][] displayvec = null;
 	protected int latn, longn;
 	protected boolean rendered;
-	
-	public void initializeSettings(ClientSettings settings) {
-		settings.putSubConfig(LandscapeClientSettings.KEY, new LandscapeClientSettings());
-	}
 
 	public void updateSettings(ClientSettings settings) {
 		if(!this.rendered)
