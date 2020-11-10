@@ -11,8 +11,6 @@ import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
 
 public class StellarForgeEventHook {
-	private StellarManager manager;
-	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void preAttachCapabilities(AttachCapabilitiesEvent<World> event) {
 		World world = event.getObject();
@@ -21,19 +19,19 @@ public class StellarForgeEventHook {
 			return;
 		
 		// Now setup StellarManager here
-		manager = StellarManager.loadOrCreateManager(world);
+		StellarManager manager = StellarManager.loadOrCreateManager(world);
 		if(!world.isRemote)
 			manager.setup(new CelestialManager(false));
 		// On client - load default before the packet arrives
 		manager.handleServerWithoutMod();
-	}
-	
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void onWorldLoad(WorldEvent.Load event) {
-		World world = event.getWorld();
-		
 		if(manager.getCelestialManager() == null && world.hasCapability(SAPICapabilities.CELESTIAL_CAPABILITY, null))
 			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
+	}
+
+	@SubscribeEvent
+	public void onSyncConfig(ConfigChangedEvent.OnConfigChangedEvent event) {
+		if(StellarSkyReferences.MODID.equals(event.getModID()))
+			StellarSky.INSTANCE.getCelestialConfigManager().syncFromGUI();
 	}
 	
 	@SubscribeEvent
@@ -42,11 +40,5 @@ public class StellarForgeEventHook {
 		
 		if(world.isRemote)
 			StellarSky.PROXY.removeSkyModel(world);
-	}
-
-	@SubscribeEvent
-	public void onSyncConfig(ConfigChangedEvent.OnConfigChangedEvent event) {
-		if(StellarSkyReferences.MODID.equals(event.getModID()))
-			StellarSky.INSTANCE.getCelestialConfigManager().syncFromGUI();
 	}
 }
