@@ -2,9 +2,11 @@ package stellarium;
 
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import stellarapi.api.SAPICapabilities;
 import stellarium.stellars.StellarManager;
 import stellarium.stellars.layer.CelestialManager;
 
@@ -15,14 +17,14 @@ public class StellarForgeEventHook {
 		// Check if it's initial
 		if(!world.isRemote && world.provider.getDimension() != 0)
 			return;
-
+		
 		// Now setup StellarManager here
 		StellarManager manager = StellarManager.loadOrCreateManager(world);
 		if(!world.isRemote)
 			manager.setup(new CelestialManager(false));
 		// On client - load default before the packet arrives
 		manager.handleServerWithoutMod();
-		if(manager.getCelestialManager() == null)
+		if(manager.getCelestialManager() == null && world.hasCapability(SAPICapabilities.CELESTIAL_CAPABILITY, null))
 			manager.setup(StellarSky.PROXY.getClientCelestialManager().copyFromClient());
 	}
 
@@ -30,5 +32,13 @@ public class StellarForgeEventHook {
 	public void onSyncConfig(ConfigChangedEvent.OnConfigChangedEvent event) {
 		if(StellarSkyReferences.MODID.equals(event.getModID()))
 			StellarSky.INSTANCE.getCelestialConfigManager().syncFromGUI();
+	}
+	
+	@SubscribeEvent
+	public void onWorldUnload(WorldEvent.Unload event) {
+		World world = event.getWorld();
+		
+		if(world.isRemote)
+			StellarSky.PROXY.removeSkyModel(world);
 	}
 }

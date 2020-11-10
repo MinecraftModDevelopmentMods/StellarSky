@@ -25,10 +25,6 @@ public class AtmosphereModel implements ICheckedAtmModel {
 	private boolean azimuthCheckEnabled;
 	private double leastAzimuthRendered;
 
-	public void initializeSettings(ClientSettings settings) {
-		settings.putSubConfig(AtmosphereSettings.KEY, new AtmosphereSettings());
-	}
-
 	public void dimensionLoad(StellarScene dimManager) {
 		this.azimuthCheckEnabled = dimManager.getSettings().hideObjectsUnderHorizon();
 		this.leastAzimuthRendered = -90.0f;

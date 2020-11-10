@@ -93,4 +93,6 @@ public class CommonProxy implements IProxy {
 	@Override
 	public void setupDimensionLoad(StellarScene dimManager) { }
 
+	@Override
+	public void removeSkyModel(World world) { }
 }
