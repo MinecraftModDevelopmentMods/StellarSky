@@ -174,4 +174,8 @@ public final class StellarScene implements ICelestialScene {
 	public IAdaptiveRenderer createSkyRenderer() {
 		return StellarSky.PROXY.setupSkyRenderer(this.world, this.worldSet, settings.getSkyRendererType());
 	}
+	
+	public World getWorld() {
+		return world;
+	}
 }

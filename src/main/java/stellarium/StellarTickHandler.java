@@ -12,20 +12,8 @@ import stellarium.world.StellarScene;
 public class StellarTickHandler {
 	@SubscribeEvent
 	public void tickStart(TickEvent.ClientTickEvent e) {
-		if(e.phase == TickEvent.Phase.START){
-			World world = StellarSky.PROXY.getDefWorld();
-			
-			if(world != null) {				
-				StellarManager manager = StellarManager.getManager(world);
-				if(manager.getCelestialManager() != null) {
-					manager.update(world.getWorldTime());
-					StellarScene dimManager = StellarScene.getScene(world);
-					if(dimManager != null) {
-						dimManager.update(world, world.getWorldTime(), world.getTotalWorldTime());
-						StellarSky.PROXY.updateTick();
-					}
-				}
-			}
+		if(e.phase == TickEvent.Phase.START) {
+			StellarSky.PROXY.updateTick();
 		}
 	}
 

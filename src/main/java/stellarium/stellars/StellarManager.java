@@ -17,9 +17,11 @@ public final class StellarManager extends WorldSavedData {
 	private ServerSettings settings;
 	private CelestialManager celestialManager;
 	private boolean locked = false, setup = false;
+	private World world;
 	
-	public StellarManager(String id) {
+	public StellarManager(String id, World world) {
 		super(id);
+		this.world = world;
 	}
 
 	public static @Nonnull StellarManager loadOrCreateManager(World world) {		
@@ -27,7 +29,7 @@ public final class StellarManager extends WorldSavedData {
 
 		if(!(data instanceof StellarManager))
 		{
-			StellarManager manager = new StellarManager(ID);
+			StellarManager manager = new StellarManager(ID, world);
 			world.getMapStorage().setData(ID, manager);
 			
 			manager.loadSettingsFromConfig();
@@ -87,7 +89,10 @@ public final class StellarManager extends WorldSavedData {
 		if(!this.setup) {
 			StellarSky.INSTANCE.getLogger().info("Starting Common Initialization...");
 			this.celestialManager = manager;
-			StellarSky.PROXY.setupStellarLoad(this);
+			
+			if(world.isRemote)
+				StellarSky.PROXY.setupStellarLoad(this);
+			
 			manager.initializeCommon(this, this.settings);
 			StellarSky.INSTANCE.getLogger().info("Common Initialization Ended.");
 		}
@@ -135,5 +140,9 @@ public final class StellarManager extends WorldSavedData {
 
 	public static boolean hasSetup(World world) {
 		return StellarManager.getManager(world).hasSetup();
+	}
+	
+	public World getWorld() {
+		return world;
 	}
 }

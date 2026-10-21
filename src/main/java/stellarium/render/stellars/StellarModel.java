@@ -18,12 +18,6 @@ public class StellarModel {
 		this.layersModel = new StellarRenderModel(clientCelestialManager, this.atmModel);
 	}
 
-	public void initializeSettings(ClientSettings settings) {
-		settings.putSubConfig(QualitySettings.KEY, new QualitySettings());
-		atmModel.initializeSettings(settings);
-		layersModel.initializeSettings(settings);
-	}
-
 	public void updateSettings(ClientSettings settings) {
 		layersModel.updateSettings(settings);
 	}

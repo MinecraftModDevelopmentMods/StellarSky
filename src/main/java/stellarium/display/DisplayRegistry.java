@@ -2,7 +2,6 @@ package stellarium.display;
 
 import com.google.common.collect.ImmutableList;
 
-import stellarapi.api.lib.config.SimpleHierarchicalConfig;
 import stellarium.client.ClientSettings;
 import stellarium.display.ecgrid.EcGridType;
 import stellarium.display.eqgrid.EqGridType;
@@ -30,23 +29,25 @@ public class DisplayRegistry {
 		builder.add(new RegistryDelegate<Cfg, Cache>(type));
 	}
 	
-	public void setupDisplay(ClientSettings settings, IDisplayInjectable injectable) {
-		SimpleHierarchicalConfig displaySettings = injectable.getSubSettings(settings);
+	public void composeSettings(ClientSettings settings) {
+		DisplayOverallSettings displaySettings = new DisplayOverallSettings();
+		settings.putSubConfig("Display", displaySettings);
 		for(RegistryDelegate delegate : builder.build())
-			delegate.inject(displaySettings, injectable);
+			displaySettings.putSubConfig(delegate.type.getName(), delegate.perDisplay);
+	}
+	
+	public void setupDisplay(IDisplayInjectable injectable) {
+		for(RegistryDelegate delegate : builder.build())
+			injectable.injectDisplay(delegate.type, delegate.perDisplay);
 	}
 	
 	private static class RegistryDelegate<Cfg extends PerDisplaySettings, Cache extends IDisplayCache<Cfg>> {
-		private RegistryDelegate(IDisplayElementType<Cfg, Cache> input) {
-			this.type = input;
-		}
-
 		private IDisplayElementType<Cfg, Cache> type;
+		private Cfg perDisplay;
 		
-		public void inject(SimpleHierarchicalConfig settings, IDisplayInjectable injectable) {
-			Cfg perDisplay = type.generateSettings();
-			settings.putSubConfig(type.getName(), perDisplay);
-			injectable.injectDisplay(this.type, perDisplay);
+		private RegistryDelegate(IDisplayElementType<Cfg, Cache> type) {
+			this.type = type;
+			this.perDisplay = type.generateSettings();
 		}
 	}
 }
